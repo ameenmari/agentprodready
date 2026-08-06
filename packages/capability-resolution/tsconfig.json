@@ -1,0 +1,1 @@
+{"extends":"../../tsconfig.base.json","compilerOptions":{"rootDir":"src","outDir":"dist","composite":true},"references":[{"path":"../foundation"},{"path":"../plugin-framework"},{"path":"../runtime"},{"path":"../workflow"}],"include":["src/**/*.ts"],"exclude":["src/**/*.spec.ts"]}

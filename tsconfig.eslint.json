@@ -1,0 +1,36 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@agentforge/foundation": ["packages/foundation/src/index.ts"],
+      "@agentforge/plugin-framework": ["packages/plugin-framework/src/index.ts"],
+      "@agentforge/composition": ["packages/composition/src/index.ts"],
+      "@agentforge/runtime": ["packages/runtime/src/index.ts"],
+      "@agentforge/planning": ["packages/planning/src/index.ts"],
+      "@agentforge/workflow": ["packages/workflow/src/index.ts"],
+      "@agentforge/capability-resolution": ["packages/capability-resolution/src/index.ts"],
+      "@agentforge/ai-provider": ["packages/ai-provider/src/index.ts"],
+      "@agentforge/tool-framework": ["packages/tool-framework/src/index.ts"],
+      "@agentforge/knowledge": ["packages/knowledge/src/index.ts"],
+      "@agentforge/memory": ["packages/memory/src/index.ts"],
+      "@agentforge/context-assembly": ["packages/context-assembly/src/index.ts"],
+      "@agentforge/prompt-builder": ["packages/prompt-builder/src/index.ts"],
+      "@agentforge/evaluation": ["packages/evaluation/src/index.ts"],
+      "@agentforge/security": ["packages/security/src/index.ts"],
+      "@agentforge/event-bus": ["packages/event-bus/src/index.ts"],
+      "@agentforge/audit": ["packages/audit/src/index.ts"],
+      "@agentforge/agent-framework": ["packages/agent-framework/src/index.ts"],
+      "@agentforge/multi-agent": ["packages/multi-agent/src/index.ts"],
+      "@agentforge/human-interaction": ["packages/human-interaction/src/index.ts"],
+      "@agentforge/plugin-marketplace": ["packages/plugin-marketplace/src/index.ts"],
+      "@agentforge/observability": ["packages/observability/src/index.ts"],
+      "@agentforge/configuration": ["packages/configuration/src/index.ts"],
+      "@agentforge/persistence": ["packages/persistence/src/index.ts"],
+      "@agentforge/scheduler": ["packages/scheduler/src/index.ts"],
+      "@agentforge/api-framework": ["packages/api-framework/src/index.ts"]
+    }
+  },
+  "include": ["apps/**/*.ts", "packages/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
+}

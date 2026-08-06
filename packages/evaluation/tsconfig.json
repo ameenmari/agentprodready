@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "composite": true },
+  "references": [
+    { "path": "../ai-provider" },
+    { "path": "../capability-resolution" },
+    { "path": "../prompt-builder" }
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

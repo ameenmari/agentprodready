@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "composite": true },
+  "references": [
+    { "path": "../capability-resolution" },
+    { "path": "../composition" },
+    { "path": "../evaluation" },
+    { "path": "../foundation" },
+    { "path": "../plugin-framework" },
+    { "path": "../runtime" }
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

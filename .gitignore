@@ -1,0 +1,47 @@
+# Dependencies and package-manager state
+node_modules/
+.pnpm-store/
+
+# Build and generated output
+dist/
+build/
+out/
+*.tsbuildinfo
+coverage/
+.nyc_output/
+typedoc/
+
+# Logs and caches
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.cache/
+.turbo/
+.eslintcache
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Test and framework output
+test-results/
+playwright-report/
+.nestjs/
+
+# Editors and operating systems
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+~$*

@@ -1,0 +1,8 @@
+---
+description: Always apply the AgentForge architectural implementation workflow.
+alwaysApply: true
+---
+
+Follow @AGENTS.md and @docs/cursor-start-here.md before planning or changing implementation.
+
+Use the canonical dependency graph and implementation mode. Implement one blueprint at a time, create its plan and specification before code, and do not claim completion without tests, report, and checklist.

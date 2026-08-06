@@ -1,0 +1,11 @@
+{
+  "name": "@agentforge/foundation",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist", "README.md"],
+  "scripts": { "build": "tsc -b", "typecheck": "tsc -b --pretty false" },
+  "dependencies": { "@nestjs/common": "^11.1.6", "@nestjs/core": "^11.1.6", "reflect-metadata": "^0.2.2", "rxjs": "^7.8.2" }
+}

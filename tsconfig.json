@@ -1,0 +1,32 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/foundation" },
+    { "path": "packages/plugin-framework" },
+    { "path": "packages/composition" },
+    { "path": "packages/runtime" },
+    { "path": "packages/planning" },
+    { "path": "packages/workflow" },
+    { "path": "packages/capability-resolution" },
+    { "path": "packages/ai-provider" },
+    { "path": "packages/tool-framework" },
+    { "path": "packages/knowledge" },
+    { "path": "packages/memory" },
+    { "path": "packages/context-assembly" },
+    { "path": "packages/prompt-builder" },
+    { "path": "packages/evaluation" },
+    { "path": "packages/security" },
+    { "path": "packages/event-bus" },
+    { "path": "packages/audit" },
+    { "path": "packages/agent-framework" },
+    { "path": "packages/multi-agent" },
+    { "path": "packages/human-interaction" },
+    { "path": "packages/plugin-marketplace" },
+    { "path": "packages/observability" },
+    { "path": "packages/configuration" },
+    { "path": "packages/persistence" },
+    { "path": "packages/scheduler" },
+    { "path": "packages/api-framework" },
+    { "path": "apps/platform-host" }
+  ]
+}

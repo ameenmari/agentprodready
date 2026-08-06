@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "composite": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    { "path": "../security" },
+    { "path": "../event-bus" },
+    { "path": "../audit" },
+    { "path": "../observability" },
+    { "path": "../configuration" },
+    { "path": "../persistence" },
+    { "path": "../scheduler" }
+  ]
+}

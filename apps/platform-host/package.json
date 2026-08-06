@@ -1,0 +1,8 @@
+{
+  "name": "@agentforge/platform-host",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "tsc -b", "typecheck": "tsc -b --pretty false", "start": "node dist/main.js" },
+  "dependencies": { "@agentforge/foundation": "workspace:*", "@nestjs/core": "^11.1.6", "reflect-metadata": "^0.2.2" }
+}
