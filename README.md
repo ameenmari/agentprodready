@@ -224,10 +224,11 @@ No blueprint should be implemented without an implementation plan.
 | ----------------------- | ---------------------------------- |
 | Architecture            | Approved — 31 blueprints           |
 | Documentation Hardening | Complete                            |
-| Implementation          | Not Started                        |
-| Tests                   | Not Started                        |
-| Blueprint 01            | Ready after this consistency pass  |
-| Production Readiness    | Not Ready                          |
+| Implementation          | Blueprints 01–31 + v0.1 product + v0.2 OpenAI provider |
+| Tests                   | Deterministic CI green; OpenAI live tests opt-in |
+| Local reference product | v0.1 complete (`reference-ai` default) |
+| Real AI provider        | v0.2 OpenAI (`AI_PROVIDER=openai`) |
+| Production Readiness    | Not Ready (no staging/secrets manager yet) |
 
 ---
 
@@ -301,12 +302,12 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Not Started
+**Implementation:** Blueprints 01–31 complete; v0.1 local reference + container/CI; v0.2 OpenAI provider (additive)
 
-**Tests:** Not Started
+**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`
 
-**Blueprint 01:** Ready after documentation consistency pass
+**AI providers:** `reference-ai` (default) · `openai-ai` (`AI_PROVIDER=openai`, see [docs/guides/ai-providers.md](docs/guides/ai-providers.md))
 
 **Production Readiness:** Not Ready
 
-**Current Phase:** Architecture → Engineering Implementation
+**Current Phase:** Product slices after architecture implementation

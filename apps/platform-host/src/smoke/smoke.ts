@@ -11,6 +11,7 @@ async function main(): Promise<void> {
     port: 0,
     logLevel: 'error',
     referenceAgentEnabled: true,
+    aiProvider: 'reference',
   });
 
   const address = host.server.address();

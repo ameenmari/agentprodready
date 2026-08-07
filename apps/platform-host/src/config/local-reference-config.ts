@@ -1,8 +1,14 @@
+import { loadOpenAiProviderConfig, type OpenAiProviderConfig } from '@agentforge/ai-provider-openai';
+
+export type AiProviderSelection = 'reference' | 'openai';
+
 export interface LocalReferenceConfig {
   readonly host: string;
   readonly port: number;
   readonly logLevel: 'debug' | 'info' | 'warn' | 'error';
   readonly referenceAgentEnabled: boolean;
+  readonly aiProvider: AiProviderSelection;
+  readonly openAi?: OpenAiProviderConfig;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -14,7 +20,7 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.1.0';
+export const PRODUCT_VERSION = '0.2.0';
 
 export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): LocalReferenceConfig {
   const port = Number.parseInt(env['PORT'] ?? '3000', 10);
@@ -25,10 +31,21 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
   if (logLevel !== 'debug' && logLevel !== 'info' && logLevel !== 'warn' && logLevel !== 'error') {
     throw new Error('LOG_LEVEL must be debug, info, warn, or error');
   }
-  return {
+
+  const aiProviderRaw = (env['AI_PROVIDER'] ?? 'reference').trim().toLowerCase();
+  if (aiProviderRaw !== 'reference' && aiProviderRaw !== 'openai') {
+    throw new Error('AI_PROVIDER must be reference or openai');
+  }
+  const aiProvider: AiProviderSelection = aiProviderRaw;
+
+  const openAi = aiProvider === 'openai' ? loadOpenAiProviderConfig(env) : undefined;
+
+  return Object.freeze({
     host: env['HOST'] ?? '127.0.0.1',
     port,
     logLevel,
     referenceAgentEnabled: (env['REFERENCE_AGENT_ENABLED'] ?? 'true') !== 'false',
-  };
+    aiProvider,
+    ...(openAi === undefined ? {} : { openAi }),
+  });
 }

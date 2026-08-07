@@ -12,6 +12,7 @@
       "@agentforge/workflow": ["packages/workflow/src/index.ts"],
       "@agentforge/capability-resolution": ["packages/capability-resolution/src/index.ts"],
       "@agentforge/ai-provider": ["packages/ai-provider/src/index.ts"],
+      "@agentforge/ai-provider-openai": ["packages/ai-provider-openai/src/index.ts"],
       "@agentforge/tool-framework": ["packages/tool-framework/src/index.ts"],
       "@agentforge/knowledge": ["packages/knowledge/src/index.ts"],
       "@agentforge/memory": ["packages/memory/src/index.ts"],

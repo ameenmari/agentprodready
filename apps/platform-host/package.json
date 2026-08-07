@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/platform-host",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "@agentforge/agent-framework": "workspace:*",
     "@agentforge/ai-provider": "workspace:*",
+    "@agentforge/ai-provider-openai": "workspace:*",
     "@agentforge/audit": "workspace:*",
     "@agentforge/capability-resolution": "workspace:*",
     "@agentforge/composition": "workspace:*",

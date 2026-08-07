@@ -4,6 +4,7 @@ import {
   ProviderRegistry,
   StaticResolutionConfiguration,
 } from '@agentforge/capability-resolution';
+import { OPENAI_AI_ID } from '@agentforge/ai-provider-openai';
 import { REFERENCE_AI_ID } from '../config/local-reference-config.js';
 
 export function seedReferenceCapabilities(): {
@@ -38,14 +39,32 @@ export function seedReferenceCapabilities(): {
     }),
   );
 
+  providers.register(
+    Object.freeze({
+      id: OPENAI_AI_ID,
+      capabilityId: 'text-generation',
+      providerId: 'openai',
+      pluginId: 'openai',
+      contributionId: 'contribution:openai-ai',
+      contractVersions: Object.freeze(['1']),
+      implementationVersion: '1.0.0',
+      enabled: true,
+      health: 'healthy' as const,
+      priority: 10,
+      attributes: Object.freeze({ locality: 'external', compliance: 'production-capable' }),
+    }),
+  );
+
   return { capabilities, providers };
 }
 
-export function referenceResolutionConfiguration(): StaticResolutionConfiguration {
+export function referenceResolutionConfiguration(
+  implementationId: string = REFERENCE_AI_ID,
+): StaticResolutionConfiguration {
   return new StaticResolutionConfiguration(
     Object.freeze({
       global: Object.freeze({
-        'text-generation': REFERENCE_AI_ID,
+        'text-generation': implementationId,
       }),
     }),
   );

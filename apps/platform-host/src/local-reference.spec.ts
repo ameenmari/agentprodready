@@ -29,4 +29,18 @@ describe('local reference composition', () => {
     expect(await composition.readinessService.isReady()).toBe(false);
     await composition.dispose();
   });
+
+  it('defaults AI_PROVIDER to reference and requires OpenAI key in openai mode', () => {
+    const config = loadLocalReferenceConfig({ PORT: '3000' });
+    expect(config.aiProvider).toBe('reference');
+    expect(config.openAi).toBeUndefined();
+    expect(() => loadLocalReferenceConfig({ PORT: '3000', AI_PROVIDER: 'openai' })).toThrow(/OPENAI_API_KEY/);
+    const openAi = loadLocalReferenceConfig({
+      PORT: '3000',
+      AI_PROVIDER: 'openai',
+      OPENAI_API_KEY: 'sk-test',
+    });
+    expect(openAi.aiProvider).toBe('openai');
+    expect(openAi.openAi?.model).toBe('gpt-5');
+  });
 });

@@ -9,6 +9,7 @@
     { "path": "../../packages/workflow" },
     { "path": "../../packages/capability-resolution" },
     { "path": "../../packages/ai-provider" },
+    { "path": "../../packages/ai-provider-openai" },
     { "path": "../../packages/security" },
     { "path": "../../packages/event-bus" },
     { "path": "../../packages/audit" },

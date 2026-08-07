@@ -14,6 +14,7 @@ import {
   DeterministicRetentionResolver,
 } from '@agentforge/audit';
 import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentforge/ai-provider';
+import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentforge/ai-provider-openai';
 import { CapabilityResolver, InMemoryResolutionDiagnostics, InMemoryResolutionEvents, NoopResolutionTelemetry } from '@agentforge/capability-resolution';
 import { CompositionRoot } from '@agentforge/composition';
 import {
@@ -78,6 +79,7 @@ import { InMemoryWorkflowFacts, InMemoryWorkflowSnapshots, NoopWorkflowTelemetry
 
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
 import { LOCAL_AGENT_PRINCIPAL, LOCAL_POLICY_VERSION, LOCAL_PROJECT, LOCAL_TENANT, LOCAL_USER, LOCAL_WORKSPACE, REFERENCE_AI_ID } from '../config/local-reference-config.js';
+import type { AiProviderSelection } from '../config/local-reference-config.js';
 import { referenceAgentManifest, referenceValidationCatalog } from '../seed/reference-agent.seed.js';
 import {
   DeterministicResolutionPolicy,
@@ -118,6 +120,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   const compositionRoot = new CompositionRoot();
   compositionRoot.build();
 
+  const selectedImplementationId = selectedAiImplementationId(config.aiProvider);
   const { capabilities, providers } = seedReferenceCapabilities();
   const resolutionDiagnostics = new InMemoryResolutionDiagnostics();
   const resolutionEvents = new InMemoryResolutionEvents();
@@ -125,7 +128,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     capabilities,
     providers,
     new DeterministicResolutionPolicy(),
-    referenceResolutionConfiguration(),
+    referenceResolutionConfiguration(selectedImplementationId),
     resolutionDiagnostics,
     resolutionEvents,
     new NoopResolutionTelemetry(),
@@ -133,6 +136,13 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 
   const aiResolver = new FactoryAiAdapterResolver();
   aiResolver.bind(REFERENCE_AI_ID, async () => new ReferenceAiProviderAdapter());
+  if (config.aiProvider === 'openai') {
+    if (config.openAi === undefined) {
+      throw new Error('OpenAI configuration is required when AI_PROVIDER=openai');
+    }
+    const openAiConfig = config.openAi;
+    aiResolver.bind(OPENAI_AI_ID, async () => new OpenAiProviderAdapter(openAiConfig));
+  }
   const aiFramework = new AiProviderFramework(aiResolver, new InMemoryAiDiagnostics(), new InMemoryAiEvents(), new NoopAiTelemetry());
 
   const capabilityExecution = new LocalReferenceCapabilityExecution(capabilityResolver, aiFramework);
@@ -427,6 +437,10 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     invoke,
     dispose,
   });
+}
+
+function selectedAiImplementationId(aiProvider: AiProviderSelection): string {
+  return aiProvider === 'openai' ? OPENAI_AI_ID : REFERENCE_AI_ID;
 }
 
 export { validateInvokeRequest };
