@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/platform-host",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,6 +21,7 @@
     "@agentforge/memory": "workspace:*",
     "@agentforge/observability": "workspace:*",
     "@agentforge/persistence": "workspace:*",
+    "@agentforge/persistence-postgres": "workspace:*",
     "@agentforge/planning": "workspace:*",
     "@agentforge/runtime": "workspace:*",
     "@agentforge/security": "workspace:*",

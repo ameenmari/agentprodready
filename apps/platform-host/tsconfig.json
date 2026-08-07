@@ -16,6 +16,7 @@
     { "path": "../../packages/agent-framework" },
     { "path": "../../packages/observability" },
     { "path": "../../packages/persistence" },
+    { "path": "../../packages/persistence-postgres" },
     { "path": "../../packages/memory" }
   ],
   "include": ["src/**/*.ts"]

@@ -113,6 +113,33 @@ Every blueprint implementation must define its exact public TypeScript contracts
 
 ---
 
+## implementation/amendments/
+
+Versioned implementation-contract amendments that refine TypeScript contract shapes without rewriting Engineering Blueprints or ADRs.
+
+Examples:
+
+- [24-persistence-async-io-contract-amendment.md](implementation/amendments/24-persistence-async-io-contract-amendment.md)
+- [04-runtime-execution-checkpoint-amendment.md](implementation/amendments/04-runtime-execution-checkpoint-amendment.md) (v0.4 design — in review)
+
+---
+
+## guides/
+
+Operator-facing guides for product slices.
+
+- [AI providers](guides/ai-providers.md)
+- [Persistence providers](guides/persistence.md)
+
+## product/
+
+Product slice definitions.
+
+- [v0.3 PostgreSQL persistence](product/agentforge-v0.3-postgresql-persistence.md)
+- [v0.4 Runtime restart & recovery](product/agentforge-v0.4-runtime-restart-recovery.md) (design — in review)
+
+---
+
 ## implementation/reports/
 
 Every completed blueprint implementation produces an implementation report.

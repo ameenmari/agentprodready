@@ -26,6 +26,7 @@
     { "path": "packages/observability" },
     { "path": "packages/configuration" },
     { "path": "packages/persistence" },
+    { "path": "packages/persistence-postgres" },
     { "path": "packages/scheduler" },
     { "path": "packages/api-framework" },
     { "path": "packages/sdk-framework" },

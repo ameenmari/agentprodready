@@ -10,7 +10,7 @@ import type {
   LoggingProvider,
   OperationalLog,
 } from '@agentforge/observability';
-import type { InMemoryPersistenceProvider } from '@agentforge/persistence';
+import type { PersistenceProvider } from '@agentforge/persistence';
 import type { RuntimeOrchestrator } from '@agentforge/runtime';
 import type { SecurityContext, SecurityPlatform } from '@agentforge/security';
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
@@ -69,7 +69,7 @@ export interface LocalReferenceComposition {
   readonly logs: InMemoryLoggingProvider;
   readonly metrics: InMemoryMetricsProvider;
   readonly traces: InMemoryTracingProvider;
-  readonly persistence: InMemoryPersistenceProvider;
+  readonly persistence: PersistenceProvider;
   readonly memory: InMemoryMemoryProvider;
   readonly agentFacts: readonly AgentFact[];
   readonly securityContexts: Map<string, SecurityContext>;

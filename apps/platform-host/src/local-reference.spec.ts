@@ -6,7 +6,12 @@ import { LOCAL_TENANT, LOCAL_WORKSPACE, LOCAL_PROJECT, REFERENCE_AGENT_ID } from
 describe('local reference composition', () => {
   it('builds, seeds reference agent, and reports readiness', async () => {
     const composition = await buildLocalReferenceComposition(
-      loadLocalReferenceConfig({ ...process.env, PORT: '3001', HOST: '127.0.0.1' }),
+      loadLocalReferenceConfig({
+        ...process.env,
+        PORT: '3001',
+        HOST: '127.0.0.1',
+        PERSISTENCE_PROVIDER: 'in-memory',
+      }),
     );
     await composition.seed();
     expect(await composition.readinessService.isReady()).toBe(true);
@@ -21,7 +26,12 @@ describe('local reference composition', () => {
 
   it('marks readiness false when reference agent seeding is disabled', async () => {
     const composition = await buildLocalReferenceComposition(
-      loadLocalReferenceConfig({ ...process.env, PORT: '3002', REFERENCE_AGENT_ENABLED: 'false' }),
+      loadLocalReferenceConfig({
+        ...process.env,
+        PORT: '3002',
+        REFERENCE_AGENT_ENABLED: 'false',
+        PERSISTENCE_PROVIDER: 'in-memory',
+      }),
     );
     await composition.seed();
     const checks = await composition.healthService.check();
@@ -34,6 +44,7 @@ describe('local reference composition', () => {
     const config = loadLocalReferenceConfig({ PORT: '3000' });
     expect(config.aiProvider).toBe('reference');
     expect(config.openAi).toBeUndefined();
+    expect(config.persistenceProvider).toBe('in-memory');
     expect(() => loadLocalReferenceConfig({ PORT: '3000', AI_PROVIDER: 'openai' })).toThrow(/OPENAI_API_KEY/);
     const openAi = loadLocalReferenceConfig({
       PORT: '3000',
@@ -42,5 +53,18 @@ describe('local reference composition', () => {
     });
     expect(openAi.aiProvider).toBe('openai');
     expect(openAi.openAi?.model).toBe('gpt-5');
+  });
+
+  it('requires PostgreSQL config when PERSISTENCE_PROVIDER=postgres', () => {
+    expect(() =>
+      loadLocalReferenceConfig({ PORT: '3000', PERSISTENCE_PROVIDER: 'postgres' }),
+    ).toThrow(/DATABASE_URL/);
+    const postgres = loadLocalReferenceConfig({
+      PORT: '3000',
+      PERSISTENCE_PROVIDER: 'postgres',
+      DATABASE_URL: 'postgres://agentforge:agentforge@127.0.0.1:5432/agentforge',
+    });
+    expect(postgres.persistenceProvider).toBe('postgres');
+    expect(postgres.postgres?.poolMax).toBe(10);
   });
 });

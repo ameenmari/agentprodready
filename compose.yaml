@@ -1,9 +1,14 @@
+# Default: single-service AgentForge (in-memory persistence).
+# Optional PostgreSQL: docker compose --profile postgres up -d
+#   then: pnpm db:migrate
+#   then: PERSISTENCE_PROVIDER=postgres DATABASE_URL=postgres://agentforge:agentforge@127.0.0.1:5432/agentforge pnpm start
+
 services:
   agentforge:
     build:
       context: .
       dockerfile: Dockerfile
-    image: agentforge/platform-host:0.2.0
+    image: agentforge/platform-host:0.3.0
     ports:
       - "3000:3000"
     environment:
@@ -11,3 +16,24 @@ services:
       PORT: "3000"
       LOG_LEVEL: "info"
       REFERENCE_AGENT_ENABLED: "true"
+      PERSISTENCE_PROVIDER: "in-memory"
+
+  postgres:
+    profiles: ["postgres"]
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: agentforge
+      POSTGRES_PASSWORD: agentforge
+      POSTGRES_DB: agentforge
+    ports:
+      - "5432:5432"
+    volumes:
+      - agentforge_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentforge -d agentforge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  agentforge_pg:

@@ -15,6 +15,7 @@ describe('local reference e2e', () => {
       logLevel: 'error',
       referenceAgentEnabled: true,
       aiProvider: 'reference',
+      persistenceProvider: 'in-memory',
     });
     const address = host.server.address();
     if (address === null || typeof address === 'string') throw new TypeError('Server address unavailable');

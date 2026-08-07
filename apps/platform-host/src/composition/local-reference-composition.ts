@@ -52,7 +52,8 @@ import {
   TaskStrategySelector,
   NoopPlanningTelemetry,
 } from '@agentforge/planning';
-import { InMemoryPersistenceProvider } from '@agentforge/persistence';
+import { InMemoryPersistenceProvider, type PersistenceProvider } from '@agentforge/persistence';
+import { PostgresPersistenceProvider } from '@agentforge/persistence-postgres';
 import {
   InMemoryExecutionSnapshotPort,
   InMemoryRuntimeEventPublisher,
@@ -272,7 +273,15 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   });
   const metrics = new InMemoryMetricsProvider();
   const traces = new InMemoryTracingProvider();
-  const persistence = new InMemoryPersistenceProvider();
+  const persistence: PersistenceProvider =
+    config.persistenceProvider === 'postgres'
+      ? new PostgresPersistenceProvider(
+          config.postgres ??
+            ((): never => {
+              throw new Error('postgres config missing for PERSISTENCE_PROVIDER=postgres');
+            })(),
+        )
+      : new InMemoryPersistenceProvider();
   const memory = new InMemoryMemoryProvider();
   const healthService = new HealthService(
     createHealthContributors({
@@ -288,6 +297,9 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   const readinessService = new ReadinessService(healthService);
 
   async function seed(): Promise<void> {
+    if (persistence instanceof PostgresPersistenceProvider) {
+      await persistence.assertReady();
+    }
     if (!config.referenceAgentEnabled) {
       ready = true;
       return;
@@ -411,6 +423,9 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     ready = false;
     runtimePort.clear();
     securityContexts.clear();
+    if (persistence instanceof PostgresPersistenceProvider) {
+      await persistence.close();
+    }
     await compositionRoot.dispose();
   }
 

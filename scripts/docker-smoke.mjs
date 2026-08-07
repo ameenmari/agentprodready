@@ -57,7 +57,7 @@ const health = await fetchJson('/health');
 assert(health.status === 200, `Health status ${String(health.status)}`);
 assert(health.body.status === 'ok', 'health.status must be ok');
 assert(health.body.service === 'agentforge-local-reference', 'unexpected health.service');
-assert(health.body.version === '0.2.0', 'unexpected health.version');
+assert(health.body.version === '0.3.0', 'unexpected health.version');
 
 const readyAgain = await fetchJson('/ready');
 assert(readyAgain.status === 200 && readyAgain.body.ready === true, 'Readiness check failed');

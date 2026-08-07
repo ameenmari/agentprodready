@@ -17,7 +17,13 @@
     "test": "vitest run --coverage",
     "build": "tsc -b --pretty false",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:up": "docker compose --profile postgres up -d postgres",
+    "db:down": "docker compose --profile postgres down",
+    "db:migrate": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js migrate",
+    "db:status": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js status",
+    "db:reset:test": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js reset",
+    "test:postgres": "node scripts/run-postgres-tests.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

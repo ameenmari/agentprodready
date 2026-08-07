@@ -224,10 +224,11 @@ No blueprint should be implemented without an implementation plan.
 | ----------------------- | ---------------------------------- |
 | Architecture            | Approved — 31 blueprints           |
 | Documentation Hardening | Complete                            |
-| Implementation          | Blueprints 01–31 + v0.1 product + v0.2 OpenAI provider |
-| Tests                   | Deterministic CI green; OpenAI live tests opt-in |
+| Implementation          | Blueprints 01–31 + v0.1–v0.3 product slices |
+| Tests                   | Deterministic CI green; OpenAI/Postgres tests opt-in |
 | Local reference product | v0.1 complete (`reference-ai` default) |
 | Real AI provider        | v0.2 OpenAI (`AI_PROVIDER=openai`) |
+| Durable persistence     | v0.3 PostgreSQL (`PERSISTENCE_PROVIDER=postgres`, default in-memory) |
 | Production Readiness    | Not Ready (no staging/secrets manager yet) |
 
 ---
@@ -302,11 +303,13 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Blueprints 01–31 complete; v0.1 local reference + container/CI; v0.2 OpenAI provider (additive)
+**Implementation:** Blueprints 01–31 complete; v0.1 local reference + container/CI; v0.2 OpenAI; v0.3 PostgreSQL persistence (additive)
 
-**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`
+**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres`
 
 **AI providers:** `reference-ai` (default) · `openai-ai` (`AI_PROVIDER=openai`, see [docs/guides/ai-providers.md](docs/guides/ai-providers.md))
+
+**Persistence:** `in-memory` (default) · `postgres` (`PERSISTENCE_PROVIDER=postgres`, see [docs/guides/persistence.md](docs/guides/persistence.md))
 
 **Production Readiness:** Not Ready
 

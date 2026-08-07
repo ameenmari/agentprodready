@@ -12,6 +12,7 @@ async function main(): Promise<void> {
     logLevel: 'error',
     referenceAgentEnabled: true,
     aiProvider: 'reference',
+    persistenceProvider: 'in-memory',
   });
 
   const address = host.server.address();
@@ -58,8 +59,10 @@ async function main(): Promise<void> {
   if (!(host.composition.memory instanceof InMemoryMemoryProvider)) {
     throw new Error('Expected in-memory memory provider');
   }
-  if (!(host.composition.persistence instanceof InMemoryPersistenceProvider)) {
-    throw new Error('Expected in-memory persistence provider');
+  if (host.composition.config.persistenceProvider === 'in-memory') {
+    if (!(host.composition.persistence instanceof InMemoryPersistenceProvider)) {
+      throw new Error('Expected in-memory persistence provider');
+    }
   }
 
   await host.stop();

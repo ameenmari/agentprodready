@@ -9,6 +9,7 @@ describe('platform host bootstrap', () => {
       logLevel: 'error',
       referenceAgentEnabled: true,
       aiProvider: 'reference',
+      persistenceProvider: 'in-memory',
     });
     expect(await host.composition.readinessService.isReady()).toBe(true);
     await host.stop();
