@@ -8,6 +8,7 @@ import {
 
 export type AiProviderSelection = 'reference' | 'openai';
 export type MemoryProviderSelection = 'in-memory' | 'persistent';
+export type EvaluationResultStoreSelection = 'in-memory' | 'persistent';
 
 export interface LocalReferenceConfig {
   readonly host: string;
@@ -22,6 +23,10 @@ export interface LocalReferenceConfig {
   readonly runtimeRecoveryEnabled: boolean;
   /** Memory storage selection. Default in-memory. */
   readonly memoryProvider: MemoryProviderSelection;
+  /** Evaluation productization. Default false. */
+  readonly evaluationEnabled: boolean;
+  /** Evaluation result store. Default in-memory. */
+  readonly evaluationResultStore: EvaluationResultStoreSelection;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -33,7 +38,7 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.5.0';
+export const PRODUCT_VERSION = '0.6.0';
 
 export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): LocalReferenceConfig {
   const port = Number.parseInt(env['PORT'] ?? '3000', 10);
@@ -62,6 +67,20 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
   }
   const memoryProvider: MemoryProviderSelection = memoryProviderRaw;
 
+  const evaluationEnabledRaw = (env['EVALUATION_ENABLED'] ?? 'false').trim().toLowerCase();
+  if (evaluationEnabledRaw !== 'true' && evaluationEnabledRaw !== 'false') {
+    throw new Error('EVALUATION_ENABLED must be true or false');
+  }
+  const evaluationEnabled = evaluationEnabledRaw === 'true';
+
+  const evaluationResultStoreRaw = (env['EVALUATION_RESULT_STORE'] ?? 'in-memory')
+    .trim()
+    .toLowerCase();
+  if (evaluationResultStoreRaw !== 'in-memory' && evaluationResultStoreRaw !== 'persistent') {
+    throw new Error('EVALUATION_RESULT_STORE must be in-memory or persistent');
+  }
+  const evaluationResultStore: EvaluationResultStoreSelection = evaluationResultStoreRaw;
+
   return Object.freeze({
     host: env['HOST'] ?? '127.0.0.1',
     port,
@@ -73,5 +92,7 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     ...(postgres === undefined ? {} : { postgres }),
     runtimeRecoveryEnabled: (env['RUNTIME_RECOVERY_ENABLED'] ?? 'false') === 'true',
     memoryProvider,
+    evaluationEnabled,
+    evaluationResultStore,
   });
 }

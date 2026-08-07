@@ -132,6 +132,7 @@ Operator-facing guides for product slices.
 - [Persistence providers](guides/persistence.md)
 - [Runtime restart & recovery](guides/runtime-recovery.md)
 - [Memory providers](guides/memory.md)
+- [Evaluation Framework](guides/evaluation.md)
 
 ## product/
 
@@ -140,6 +141,7 @@ Product slice definitions.
 - [v0.3 PostgreSQL persistence](product/agentforge-v0.3-postgresql-persistence.md)
 - [v0.4 Runtime restart & recovery](product/agentforge-v0.4-runtime-restart-recovery.md)
 - [v0.5 Persistent Memory](product/agentforge-v0.5-persistent-memory.md)
+- [v0.6 Evaluation Framework](product/agentforge-v0.6-evaluation-framework.md)
 
 ---
 

@@ -47,6 +47,8 @@ describe('local reference composition', () => {
     expect(config.persistenceProvider).toBe('in-memory');
     expect(config.runtimeRecoveryEnabled).toBe(false);
     expect(config.memoryProvider).toBe('in-memory');
+    expect(config.evaluationEnabled).toBe(false);
+    expect(config.evaluationResultStore).toBe('in-memory');
     expect(() => loadLocalReferenceConfig({ PORT: '3000', AI_PROVIDER: 'openai' })).toThrow(/OPENAI_API_KEY/);
     const openAi = loadLocalReferenceConfig({
       PORT: '3000',

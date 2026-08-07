@@ -116,6 +116,7 @@ import {
 } from './local-reference-security.js';
 import { LocalReferenceRuntimePort } from './local-reference-runtime-port.js';
 import { PersistenceExecutionCheckpointStore } from './persistence-execution-checkpoint-store.js';
+import { buildLocalReferenceEvaluation } from './evaluation/build-local-reference-evaluation.js';
 import { ReferenceAgentTaskDecomposer } from './reference-task-decomposer.js';
 import { ReferenceWorkflowCatalog } from './reference-workflow-catalog.js';
 
@@ -157,12 +158,14 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 
   const aiResolver = new FactoryAiAdapterResolver();
   aiResolver.bind(REFERENCE_AI_ID, async () => new ReferenceAiProviderAdapter());
+  aiResolver.bind(`${REFERENCE_AI_ID}:evaluation.judge`, async () => new ReferenceAiProviderAdapter());
   if (config.aiProvider === 'openai') {
     if (config.openAi === undefined) {
       throw new Error('OpenAI configuration is required when AI_PROVIDER=openai');
     }
     const openAiConfig = config.openAi;
     aiResolver.bind(OPENAI_AI_ID, async () => new OpenAiProviderAdapter(openAiConfig));
+    aiResolver.bind(`${OPENAI_AI_ID}:evaluation.judge`, async () => new OpenAiProviderAdapter(openAiConfig));
   }
   const aiFramework = new AiProviderFramework(aiResolver, new InMemoryAiDiagnostics(), new InMemoryAiEvents(), new NoopAiTelemetry());
 
@@ -325,6 +328,16 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     config.memoryProvider === 'persistent'
       ? new PersistenceBackedMemoryProvider(persistence)
       : new InMemoryMemoryProvider();
+
+  const evaluation = buildLocalReferenceEvaluation({
+    config,
+    persistence,
+    eventBus,
+    metrics,
+    capabilityResolver,
+    aiFramework,
+  });
+
   const healthService = new HealthService(
     createHealthContributors({
       compositionReady: () => ready,
@@ -335,6 +348,39 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       audit: auditPlatform,
       referenceAgentEnabled: config.referenceAgentEnabled,
       ...(config.memoryProvider === 'persistent' ? { memory } : {}),
+      ...(evaluation === undefined
+        ? {}
+        : {
+            evaluation: Object.freeze({
+              health: async () => {
+                if (
+                  config.evaluationResultStore === 'persistent' &&
+                  persistence instanceof PostgresPersistenceProvider
+                ) {
+                  try {
+                    await persistence.assertReady();
+                  } catch {
+                    return Object.freeze({
+                      name: 'evaluation',
+                      status: 'unhealthy' as const,
+                      details: Object.freeze({
+                        resultStore: config.evaluationResultStore,
+                        evaluators: String(evaluation.evaluatorCount),
+                      }),
+                    });
+                  }
+                }
+                return Object.freeze({
+                  name: 'evaluation',
+                  status: 'healthy' as const,
+                  details: Object.freeze({
+                    resultStore: config.evaluationResultStore,
+                    evaluators: String(evaluation.evaluatorCount),
+                  }),
+                });
+              },
+            }),
+          }),
     }),
   );
   const readinessService = new ReadinessService(healthService);
@@ -345,12 +391,18 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       try {
         await persistence.assertReady();
       } catch (error) {
-        if (config.runtimeRecoveryEnabled || config.memoryProvider === 'persistent') {
+        if (
+          config.runtimeRecoveryEnabled ||
+          config.memoryProvider === 'persistent' ||
+          (config.evaluationEnabled && config.evaluationResultStore === 'persistent')
+        ) {
           const message = error instanceof Error ? error.message : 'persistence unavailable';
           const reason =
             config.memoryProvider === 'persistent'
               ? 'Persistent Memory selected but PostgreSQL is unavailable'
-              : 'Durable runtime recovery enabled but PostgreSQL is unavailable';
+              : config.evaluationEnabled && config.evaluationResultStore === 'persistent'
+                ? 'Persistent Evaluation result store selected but PostgreSQL is unavailable'
+                : 'Durable runtime recovery enabled but PostgreSQL is unavailable';
           throw new Error(`${reason}: ${message}`);
         }
         throw error;
@@ -361,6 +413,19 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       const memoryHealth = await memory.health();
       if (memoryHealth.status !== 'healthy') {
         throw new Error('Persistent Memory selected but Memory storage is unavailable');
+      }
+    }
+
+    if (
+      config.evaluationEnabled &&
+      config.evaluationResultStore === 'persistent' &&
+      persistence instanceof PostgresPersistenceProvider
+    ) {
+      try {
+        await persistence.assertReady();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'persistence unavailable';
+        throw new Error(`Persistent Evaluation result store selected but PostgreSQL is unavailable: ${message}`);
       }
     }
 
@@ -530,6 +595,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     traces,
     persistence,
     memory,
+    evaluation,
     agentFacts: agentEvents.facts,
     securityContexts,
     startedAt,

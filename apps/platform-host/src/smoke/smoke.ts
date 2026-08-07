@@ -15,6 +15,8 @@ async function main(): Promise<void> {
     persistenceProvider: 'in-memory',
     runtimeRecoveryEnabled: false,
     memoryProvider: 'in-memory',
+    evaluationEnabled: false,
+    evaluationResultStore: 'in-memory',
   });
 
   const address = host.server.address();

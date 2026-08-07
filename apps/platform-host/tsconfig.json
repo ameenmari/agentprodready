@@ -19,7 +19,9 @@
     { "path": "../../packages/persistence-postgres" },
     { "path": "../../packages/memory" },
     { "path": "../../packages/knowledge" },
-    { "path": "../../packages/context-assembly" }
+    { "path": "../../packages/context-assembly" },
+    { "path": "../../packages/evaluation" },
+    { "path": "../../packages/prompt-builder" }
   ],
   "include": ["src/**/*.ts"]
 }

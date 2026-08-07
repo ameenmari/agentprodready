@@ -46,6 +46,7 @@
     "vitest.config.ts",
     "vitest.postgres.config.ts",
     "vitest.runtime-recovery.config.ts",
-    "vitest.memory-persistence.config.ts"
+    "vitest.memory-persistence.config.ts",
+    "vitest.evaluation-persistence.config.ts"
   ]
 }

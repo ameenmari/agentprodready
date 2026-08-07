@@ -12,6 +12,8 @@ describe('platform host bootstrap', () => {
       persistenceProvider: 'in-memory',
       runtimeRecoveryEnabled: false,
       memoryProvider: 'in-memory',
+      evaluationEnabled: false,
+      evaluationResultStore: 'in-memory',
     });
     expect(await host.composition.readinessService.isReady()).toBe(true);
     await host.stop();

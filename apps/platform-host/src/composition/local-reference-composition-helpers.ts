@@ -15,6 +15,7 @@ import type { RuntimeOrchestrator } from '@agentforge/runtime';
 import type { SecurityContext, SecurityPlatform } from '@agentforge/security';
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
 import type { LocalReferenceRuntimePort, StoredExecutionResult } from './local-reference-runtime-port.js';
+import type { LocalReferenceEvaluationBundle } from './evaluation/build-local-reference-evaluation.js';
 import {
   LOCAL_AGENT_PRINCIPAL,
   LOCAL_POLICY_VERSION,
@@ -71,6 +72,7 @@ export interface LocalReferenceComposition {
   readonly traces: InMemoryTracingProvider;
   readonly persistence: PersistenceProvider;
   readonly memory: MemoryStorageProvider & MemorySearchProvider;
+  readonly evaluation: LocalReferenceEvaluationBundle | undefined;
   readonly agentFacts: readonly AgentFact[];
   readonly securityContexts: Map<string, SecurityContext>;
   readonly startedAt: number;
@@ -91,6 +93,7 @@ export function createHealthContributors(deps: {
   readonly audit: AuditPlatform;
   readonly referenceAgentEnabled: boolean;
   readonly memory?: MemoryStorageProvider;
+  readonly evaluation?: HealthContributor;
 }): readonly HealthContributor[] {
   const contributors: HealthContributor[] = [
     Object.freeze({
@@ -168,6 +171,9 @@ export function createHealthContributors(deps: {
         },
       }),
     );
+  }
+  if (deps.evaluation !== undefined) {
+    contributors.push(deps.evaluation);
   }
   return Object.freeze(contributors);
 }

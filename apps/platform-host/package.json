@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/platform-host",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,6 +17,7 @@
     "@agentforge/capability-resolution": "workspace:*",
     "@agentforge/composition": "workspace:*",
     "@agentforge/context-assembly": "workspace:*",
+    "@agentforge/evaluation": "workspace:*",
     "@agentforge/event-bus": "workspace:*",
     "@agentforge/foundation": "workspace:*",
     "@agentforge/knowledge": "workspace:*",
@@ -25,6 +26,7 @@
     "@agentforge/persistence": "workspace:*",
     "@agentforge/persistence-postgres": "workspace:*",
     "@agentforge/planning": "workspace:*",
+    "@agentforge/prompt-builder": "workspace:*",
     "@agentforge/runtime": "workspace:*",
     "@agentforge/security": "workspace:*",
     "@agentforge/workflow": "workspace:*"

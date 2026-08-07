@@ -18,6 +18,8 @@ describe('local reference e2e', () => {
       persistenceProvider: 'in-memory',
       runtimeRecoveryEnabled: false,
       memoryProvider: 'in-memory',
+      evaluationEnabled: false,
+      evaluationResultStore: 'in-memory',
     });
     const address = host.server.address();
     if (address === null || typeof address === 'string') throw new TypeError('Server address unavailable');
