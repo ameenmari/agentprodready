@@ -32,7 +32,12 @@ import {
   InProcessEventTransport,
 } from '@agentforge/event-bus';
 import { HealthService, ReadinessService } from '@agentforge/foundation';
-import { InMemoryMemoryProvider } from '@agentforge/memory';
+import {
+  InMemoryMemoryProvider,
+  PersistenceBackedMemoryProvider,
+  type MemorySearchProvider,
+  type MemoryStorageProvider,
+} from '@agentforge/memory';
 import {
   ConsoleLoggingProvider,
   InMemoryLoggingProvider,
@@ -316,7 +321,10 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     telemetry: new InMemoryAuditTelemetry(),
   });
 
-  const memory = new InMemoryMemoryProvider();
+  const memory: MemoryStorageProvider & MemorySearchProvider =
+    config.memoryProvider === 'persistent'
+      ? new PersistenceBackedMemoryProvider(persistence)
+      : new InMemoryMemoryProvider();
   const healthService = new HealthService(
     createHealthContributors({
       compositionReady: () => ready,
@@ -326,6 +334,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       eventBus,
       audit: auditPlatform,
       referenceAgentEnabled: config.referenceAgentEnabled,
+      ...(config.memoryProvider === 'persistent' ? { memory } : {}),
     }),
   );
   const readinessService = new ReadinessService(healthService);
@@ -336,11 +345,22 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       try {
         await persistence.assertReady();
       } catch (error) {
-        if (config.runtimeRecoveryEnabled) {
+        if (config.runtimeRecoveryEnabled || config.memoryProvider === 'persistent') {
           const message = error instanceof Error ? error.message : 'persistence unavailable';
-          throw new Error(`Durable runtime recovery enabled but PostgreSQL is unavailable: ${message}`);
+          const reason =
+            config.memoryProvider === 'persistent'
+              ? 'Persistent Memory selected but PostgreSQL is unavailable'
+              : 'Durable runtime recovery enabled but PostgreSQL is unavailable';
+          throw new Error(`${reason}: ${message}`);
         }
         throw error;
+      }
+    }
+
+    if (config.memoryProvider === 'persistent') {
+      const memoryHealth = await memory.health();
+      if (memoryHealth.status !== 'healthy') {
+        throw new Error('Persistent Memory selected but Memory storage is unavailable');
       }
     }
 

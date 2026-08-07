@@ -17,7 +17,9 @@
     { "path": "../../packages/observability" },
     { "path": "../../packages/persistence" },
     { "path": "../../packages/persistence-postgres" },
-    { "path": "../../packages/memory" }
+    { "path": "../../packages/memory" },
+    { "path": "../../packages/knowledge" },
+    { "path": "../../packages/context-assembly" }
   ],
   "include": ["src/**/*.ts"]
 }

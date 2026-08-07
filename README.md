@@ -304,13 +304,15 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Blueprints 01–31 complete; v0.1–v0.4 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery)
+**Implementation:** Blueprints 01–31 complete; v0.1–v0.5 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory)
 
-**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery`
+**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`
 
 **AI providers:** `reference-ai` (default) · `openai-ai` (`AI_PROVIDER=openai`, see [docs/guides/ai-providers.md](docs/guides/ai-providers.md))
 
 **Persistence:** `in-memory` (default) · `postgres` (`PERSISTENCE_PROVIDER=postgres`, see [docs/guides/persistence.md](docs/guides/persistence.md))
+
+**Memory:** `in-memory` (default) · `persistent` (`MEMORY_PROVIDER=persistent`, see [docs/guides/memory.md](docs/guides/memory.md))
 
 **Runtime recovery:** disabled by default; see [docs/guides/runtime-recovery.md](docs/guides/runtime-recovery.md)
 

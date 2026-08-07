@@ -14,6 +14,7 @@ async function main(): Promise<void> {
     aiProvider: 'reference',
     persistenceProvider: 'in-memory',
     runtimeRecoveryEnabled: false,
+    memoryProvider: 'in-memory',
   });
 
   const address = host.server.address();

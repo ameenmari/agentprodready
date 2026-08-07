@@ -1,10 +1,12 @@
 # Persistence Providers
 
-**Version:** 0.3.0 (storage) / 0.4.0 (Runtime checkpoint rows)
+**Version:** 0.3.0 (storage) / 0.4.0 (Runtime checkpoint rows) / 0.5.0 (Memory rows)
 
 AgentForge persistence is provider-independent (Blueprint 24). Composition selects one `PersistenceProvider`.
 
 Runtime restart checkpoints (v0.4) are stored as ordinary repository entities in `runtime-executions` — see [runtime-recovery.md](./runtime-recovery.md). No Runtime-specific PostgreSQL tables are added.
+
+Durable Memory (v0.5) uses repository `memory-records` with tenant-only Persistence scope — see [memory.md](./memory.md). No Memory-specific PostgreSQL tables are added.
 
 ## Selection
 
@@ -66,13 +68,15 @@ Host startup never auto-migrates. Production should treat SQL migrations as forw
 |---|---|
 | Generic entities / Blueprint 24 snapshots / migrations | Yes (v0.3) |
 | Runtime `ExecutionCheckpoint` in `runtime-executions` | Yes (v0.4) — recovery still owned by Runtime |
-| Agents, audit journal, event journal, memory, knowledge, OpenAI adapter state | No |
+| Memory records in `memory-records` when `MEMORY_PROVIDER=persistent` | Yes (v0.5) — semantics still owned by Memory |
+| Agents, audit journal, event journal, knowledge, OpenAI adapter state | No |
 
 ## CI
 
 - `verify` / `docker`: in-memory only, no DB secrets  
 - `persistence-postgres`: ephemeral Postgres service + migrate + `pnpm test:postgres`
 - `runtime-recovery-postgres`: ephemeral Postgres + `pnpm test:runtime-recovery`
+- `memory-persistence-postgres`: ephemeral Postgres + `pnpm test:memory-persistence`
 
 ## Packages
 

@@ -56,12 +56,18 @@ importers:
       '@agentforge/composition':
         specifier: workspace:*
         version: link:../../packages/composition
+      '@agentforge/context-assembly':
+        specifier: workspace:*
+        version: link:../../packages/context-assembly
       '@agentforge/event-bus':
         specifier: workspace:*
         version: link:../../packages/event-bus
       '@agentforge/foundation':
         specifier: workspace:*
         version: link:../../packages/foundation
+      '@agentforge/knowledge':
+        specifier: workspace:*
+        version: link:../../packages/knowledge
       '@agentforge/memory':
         specifier: workspace:*
         version: link:../../packages/memory
@@ -395,9 +401,16 @@ importers:
       '@agentforge/foundation':
         specifier: workspace:*
         version: link:../foundation
+      '@agentforge/persistence':
+        specifier: workspace:*
+        version: link:../persistence
       '@agentforge/workflow':
         specifier: workspace:*
         version: link:../workflow
+    devDependencies:
+      '@agentforge/persistence-postgres':
+        specifier: workspace:*
+        version: link:../persistence-postgres
 
   packages/multi-agent:
     dependencies:

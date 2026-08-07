@@ -1,1 +1,24 @@
-{"name":"@agentforge/memory","version":"0.1.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"files":["dist","README.md"],"dependencies":{"@agentforge/ai-provider":"workspace:*","@agentforge/capability-resolution":"workspace:*","@agentforge/foundation":"workspace:*","@agentforge/workflow":"workspace:*"}}
+{
+  "name": "@agentforge/memory",
+  "version": "0.5.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "dependencies": {
+    "@agentforge/ai-provider": "workspace:*",
+    "@agentforge/capability-resolution": "workspace:*",
+    "@agentforge/foundation": "workspace:*",
+    "@agentforge/persistence": "workspace:*",
+    "@agentforge/workflow": "workspace:*"
+  },
+  "devDependencies": {
+    "@agentforge/persistence-postgres": "workspace:*"
+  }
+}

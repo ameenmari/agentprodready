@@ -2,7 +2,7 @@ import type { AgentAuthorizationOutcome, AgentEvents, AgentFact, AgentFramework,
 import type { AuditIngestionRequest, AuditPlatform } from '@agentforge/audit';
 import type { HealthContributor, HealthService, ReadinessService } from '@agentforge/foundation';
 import type { CreatePlatformEvent, EventBus } from '@agentforge/event-bus';
-import type { InMemoryMemoryProvider } from '@agentforge/memory';
+import type { MemorySearchProvider, MemoryStorageProvider } from '@agentforge/memory';
 import type {
   InMemoryLoggingProvider,
   InMemoryMetricsProvider,
@@ -70,7 +70,7 @@ export interface LocalReferenceComposition {
   readonly metrics: InMemoryMetricsProvider;
   readonly traces: InMemoryTracingProvider;
   readonly persistence: PersistenceProvider;
-  readonly memory: InMemoryMemoryProvider;
+  readonly memory: MemoryStorageProvider & MemorySearchProvider;
   readonly agentFacts: readonly AgentFact[];
   readonly securityContexts: Map<string, SecurityContext>;
   readonly startedAt: number;
@@ -90,8 +90,9 @@ export function createHealthContributors(deps: {
   readonly eventBus: EventBus;
   readonly audit: AuditPlatform;
   readonly referenceAgentEnabled: boolean;
+  readonly memory?: MemoryStorageProvider;
 }): readonly HealthContributor[] {
-  return Object.freeze([
+  const contributors: HealthContributor[] = [
     Object.freeze({
       health: async () =>
         Object.freeze({
@@ -152,7 +153,23 @@ export function createHealthContributors(deps: {
         });
       },
     }),
-  ]);
+  ];
+  if (deps.memory !== undefined) {
+    const memory = deps.memory;
+    contributors.push(
+      Object.freeze({
+        health: async () => {
+          const result = await memory.health();
+          return Object.freeze({
+            name: 'memory',
+            status: result.status === 'healthy' ? ('healthy' as const) : ('unhealthy' as const),
+            ...(result.details === undefined ? {} : { details: result.details }),
+          });
+        },
+      }),
+    );
+  }
+  return Object.freeze(contributors);
 }
 
 export function mapInvokeResponse(

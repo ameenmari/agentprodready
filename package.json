@@ -24,7 +24,8 @@
     "db:status": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js status",
     "db:reset:test": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js reset",
     "test:postgres": "node scripts/run-postgres-tests.mjs",
-    "test:runtime-recovery": "node scripts/run-runtime-recovery-tests.mjs"
+    "test:runtime-recovery": "node scripts/run-runtime-recovery-tests.mjs",
+    "test:memory-persistence": "node scripts/run-memory-persistence-tests.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

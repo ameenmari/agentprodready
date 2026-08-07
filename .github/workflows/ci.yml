@@ -50,7 +50,7 @@ jobs:
       - name: Compute tags
         id: meta
         run: |
-          echo "version=0.4.0" >> "$GITHUB_OUTPUT"
+          echo "version=0.5.0" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
@@ -74,7 +74,7 @@ jobs:
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
             -e PERSISTENCE_PROVIDER=in-memory \
-            agentforge/platform-host:0.4.0
+            agentforge/platform-host:0.5.0
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container
@@ -162,3 +162,45 @@ jobs:
         run: pnpm db:migrate
       - name: Runtime recovery PostgreSQL tests
         run: pnpm test:runtime-recovery
+
+  memory-persistence-postgres:
+    name: Memory Persistence PostgreSQL
+    runs-on: ubuntu-latest
+    needs: verify
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: agentforge_ci
+          POSTGRES_PASSWORD: agentforge_ci
+          POSTGRES_DB: agentforge_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      RUN_POSTGRES_TESTS: "1"
+      PERSISTENCE_PROVIDER: postgres
+      MEMORY_PROVIDER: persistent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.1 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm build
+      - name: Migrate
+        run: pnpm db:migrate
+      - name: Memory persistence PostgreSQL tests
+        run: pnpm test:memory-persistence
