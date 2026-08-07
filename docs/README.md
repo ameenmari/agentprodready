@@ -133,6 +133,7 @@ Operator-facing guides for product slices.
 - [Runtime restart & recovery](guides/runtime-recovery.md)
 - [Memory providers](guides/memory.md)
 - [Evaluation Framework](guides/evaluation.md)
+- [Vector Search & Semantic Memory](guides/vector-search.md)
 
 ## product/
 
@@ -142,6 +143,7 @@ Product slice definitions.
 - [v0.4 Runtime restart & recovery](product/agentforge-v0.4-runtime-restart-recovery.md)
 - [v0.5 Persistent Memory](product/agentforge-v0.5-persistent-memory.md)
 - [v0.6 Evaluation Framework](product/agentforge-v0.6-evaluation-framework.md)
+- [v0.7 Vector Search & Semantic Memory](product/agentforge-v0.7-vector-search-semantic-memory.md)
 
 ---
 

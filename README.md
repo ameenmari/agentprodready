@@ -304,7 +304,7 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Blueprints 01–31 complete; v0.1–v0.6 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework)
+**Implementation:** Blueprints 01–31 complete; v0.1–v0.7 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory)
 
 **Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`
 
@@ -315,6 +315,8 @@ License information will be added as the project enters public release.
 **Memory:** `in-memory` (default) · `persistent` (`MEMORY_PROVIDER=persistent`, see [docs/guides/memory.md](docs/guides/memory.md))
 
 **Evaluation:** disabled by default; `EVALUATION_ENABLED=true` wires Blueprint 14 in the host (see [docs/guides/evaluation.md](docs/guides/evaluation.md))
+
+**Vector search:** disabled by default; `VECTOR_SEARCH_ENABLED=true` enables semantic/hybrid Memory (see [docs/guides/vector-search.md](docs/guides/vector-search.md))
 
 **Runtime recovery:** disabled by default; see [docs/guides/runtime-recovery.md](docs/guides/runtime-recovery.md)
 

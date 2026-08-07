@@ -95,6 +95,12 @@ importers:
       '@agentforge/security':
         specifier: workspace:*
         version: link:../../packages/security
+      '@agentforge/vector-store':
+        specifier: workspace:*
+        version: link:../../packages/vector-store
+      '@agentforge/vector-store-pgvector':
+        specifier: workspace:*
+        version: link:../../packages/vector-store-pgvector
       '@agentforge/workflow':
         specifier: workspace:*
         version: link:../../packages/workflow
@@ -410,6 +416,9 @@ importers:
       '@agentforge/persistence':
         specifier: workspace:*
         version: link:../persistence
+      '@agentforge/vector-store':
+        specifier: workspace:*
+        version: link:../vector-store
       '@agentforge/workflow':
         specifier: workspace:*
         version: link:../workflow
@@ -742,6 +751,25 @@ importers:
       '@agentforge/workflow':
         specifier: workspace:*
         version: link:../workflow
+
+  packages/vector-store:
+    dependencies:
+      '@agentforge/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+
+  packages/vector-store-pgvector:
+    dependencies:
+      '@agentforge/vector-store':
+        specifier: workspace:*
+        version: link:../vector-store
+      pg:
+        specifier: 8.22.0
+        version: 8.22.0
+    devDependencies:
+      '@types/pg':
+        specifier: 8.20.4
+        version: 8.20.4
 
   packages/workflow:
     dependencies:

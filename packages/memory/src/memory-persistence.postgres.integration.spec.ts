@@ -9,6 +9,7 @@ import {
   InMemoryMemoryEvents,
   MemoryEngine,
   NoopMemoryAiPort,
+  NoopMemoryIndexProvider,
   PersistenceBackedMemoryProvider,
   WeightedMemoryRanking,
   type MemoryAuthorization,
@@ -66,6 +67,7 @@ describe.skipIf(process.env['RUN_POSTGRES_TESTS'] !== '1')(
         new InMemoryMemoryDiagnostics(),
         new InMemoryMemoryEvents(),
         telemetry,
+        new NoopMemoryIndexProvider(),
         now,
       );
     }

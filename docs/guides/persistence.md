@@ -1,12 +1,14 @@
 # Persistence Providers
 
-**Version:** 0.3.0 (storage) / 0.4.0 (Runtime checkpoint rows) / 0.5.0 (Memory rows)
+**Version:** 0.3.0 (storage) / 0.4.0 (Runtime checkpoint rows) / 0.5.0 (Memory rows) / 0.7.0 (shared pgvector-capable Postgres image)
 
 AgentForge persistence is provider-independent (Blueprint 24). Composition selects one `PersistenceProvider`.
 
 Runtime restart checkpoints (v0.4) are stored as ordinary repository entities in `runtime-executions` — see [runtime-recovery.md](./runtime-recovery.md). No Runtime-specific PostgreSQL tables are added.
 
 Durable Memory (v0.5) uses repository `memory-records` with tenant-only Persistence scope — see [memory.md](./memory.md). No Memory-specific PostgreSQL tables are added.
+
+Vector search (v0.7) uses a **separate** `memory_vector_index` owned by `@agentforge/vector-store-pgvector`, not generic Persistence ranking — see [vector-search.md](./vector-search.md). Compose/CI Postgres image is pgvector-enabled PostgreSQL 16; Persistence migrations remain `pnpm db:migrate`, vector migrations are `pnpm db:migrate:vector`.
 
 ## Selection
 

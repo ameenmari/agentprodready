@@ -27,6 +27,8 @@
     { "path": "packages/configuration" },
     { "path": "packages/persistence" },
     { "path": "packages/persistence-postgres" },
+    { "path": "packages/vector-store" },
+    { "path": "packages/vector-store-pgvector" },
     { "path": "packages/scheduler" },
     { "path": "packages/api-framework" },
     { "path": "packages/sdk-framework" },

@@ -14,6 +14,12 @@ describe('platform host bootstrap', () => {
       memoryProvider: 'in-memory',
       evaluationEnabled: false,
       evaluationResultStore: 'in-memory',
+      vectorSearchEnabled: false,
+      vectorStoreProvider: 'none',
+      embeddingProvider: 'none',
+      embeddingModel: '',
+      embeddingDimensions: 0,
+      vectorIndexProfile: 'none',
     });
     expect(await host.composition.readinessService.isReady()).toBe(true);
     await host.stop();

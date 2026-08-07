@@ -21,7 +21,9 @@
     { "path": "../../packages/knowledge" },
     { "path": "../../packages/context-assembly" },
     { "path": "../../packages/evaluation" },
-    { "path": "../../packages/prompt-builder" }
+    { "path": "../../packages/prompt-builder" },
+    { "path": "../../packages/vector-store" },
+    { "path": "../../packages/vector-store-pgvector" }
   ],
   "include": ["src/**/*.ts"]
 }

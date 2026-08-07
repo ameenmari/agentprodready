@@ -1,6 +1,6 @@
 # Memory Providers
 
-**Version:** 0.5.0
+**Version:** 0.7.0
 
 AgentForge Memory (Blueprint 11) owns capture, lifecycle, retrieval ranking, visibility, and security-label filtering. Storage is provider-independent.
 
@@ -77,7 +77,11 @@ Canonical id shape used by v0.5: `memory:{tenantId}:{sourceEventId}` with a stri
 
 ## Search
 
-Deterministic keyword / metadata / temporal filtering. Strategies `semantic` and `hybrid` degrade to keyword with `partialReasons` including `semantic-unavailable`. No embeddings, OpenAI embedding calls, or pgvector.
+Deterministic keyword / metadata / temporal filtering remain the default.
+
+When `VECTOR_SEARCH_ENABLED=false` (default), strategies `semantic` and `hybrid` degrade to keyword with `partialReasons` including `semantic-unavailable`.
+
+When vector search is enabled, see [vector-search.md](vector-search.md) for semantic NN retrieval, hybrid RRF, INDEX/REMOVE consistency, and pgvector profiles.
 
 Category `semantic` is a Memory category enum value — not vector search.
 

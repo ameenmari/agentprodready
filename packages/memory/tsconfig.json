@@ -10,6 +10,7 @@
     { "path": "../capability-resolution" },
     { "path": "../foundation" },
     { "path": "../persistence" },
+    { "path": "../vector-store" },
     { "path": "../workflow" }
   ],
   "include": ["src/**/*.ts"],

@@ -33,12 +33,6 @@ import {
 } from '@agentforge/event-bus';
 import { HealthService, ReadinessService } from '@agentforge/foundation';
 import {
-  InMemoryMemoryProvider,
-  PersistenceBackedMemoryProvider,
-  type MemorySearchProvider,
-  type MemoryStorageProvider,
-} from '@agentforge/memory';
-import {
   ConsoleLoggingProvider,
   InMemoryLoggingProvider,
   InMemoryMetricsProvider,
@@ -117,6 +111,7 @@ import {
 import { LocalReferenceRuntimePort } from './local-reference-runtime-port.js';
 import { PersistenceExecutionCheckpointStore } from './persistence-execution-checkpoint-store.js';
 import { buildLocalReferenceEvaluation } from './evaluation/build-local-reference-evaluation.js';
+import { buildLocalReferenceMemory } from './build-local-reference-memory.js';
 import { ReferenceAgentTaskDecomposer } from './reference-task-decomposer.js';
 import { ReferenceWorkflowCatalog } from './reference-workflow-catalog.js';
 
@@ -143,6 +138,12 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   );
 
   const selectedImplementationId = selectedAiImplementationId(config.aiProvider);
+  const embeddingSelection =
+    config.embeddingProvider !== 'none'
+      ? config.embeddingProvider
+      : config.aiProvider === 'openai'
+        ? 'openai'
+        : 'reference';
   const { capabilities, providers } = seedReferenceCapabilities();
   const resolutionDiagnostics = new InMemoryResolutionDiagnostics();
   const resolutionEvents = new InMemoryResolutionEvents();
@@ -150,7 +151,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     capabilities,
     providers,
     new DeterministicResolutionPolicy(),
-    referenceResolutionConfiguration(selectedImplementationId),
+    referenceResolutionConfiguration(selectedImplementationId, embeddingSelection),
     resolutionDiagnostics,
     resolutionEvents,
     new NoopResolutionTelemetry(),
@@ -324,10 +325,12 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     telemetry: new InMemoryAuditTelemetry(),
   });
 
-  const memory: MemoryStorageProvider & MemorySearchProvider =
-    config.memoryProvider === 'persistent'
-      ? new PersistenceBackedMemoryProvider(persistence)
-      : new InMemoryMemoryProvider();
+  const memoryBundle = buildLocalReferenceMemory({
+    config,
+    persistence,
+    capabilityResolver,
+  });
+  const memory = memoryBundle.keyword;
 
   const evaluation = buildLocalReferenceEvaluation({
     config,
@@ -348,6 +351,13 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       audit: auditPlatform,
       referenceAgentEnabled: config.referenceAgentEnabled,
       ...(config.memoryProvider === 'persistent' ? { memory } : {}),
+      ...(config.vectorSearchEnabled && memoryBundle.vectorHealth !== undefined
+        ? {
+            vectorStore: Object.freeze({
+              health: memoryBundle.vectorHealth,
+            }),
+          }
+        : {}),
       ...(evaluation === undefined
         ? {}
         : {
@@ -394,12 +404,15 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
         if (
           config.runtimeRecoveryEnabled ||
           config.memoryProvider === 'persistent' ||
-          (config.evaluationEnabled && config.evaluationResultStore === 'persistent')
+          (config.evaluationEnabled && config.evaluationResultStore === 'persistent') ||
+          (config.vectorSearchEnabled && config.vectorStoreProvider === 'pgvector')
         ) {
           const message = error instanceof Error ? error.message : 'persistence unavailable';
           const reason =
             config.memoryProvider === 'persistent'
               ? 'Persistent Memory selected but PostgreSQL is unavailable'
+              : config.vectorSearchEnabled && config.vectorStoreProvider === 'pgvector'
+                ? 'Vector search (pgvector) selected but PostgreSQL is unavailable'
               : config.evaluationEnabled && config.evaluationResultStore === 'persistent'
                 ? 'Persistent Evaluation result store selected but PostgreSQL is unavailable'
                 : 'Durable runtime recovery enabled but PostgreSQL is unavailable';
@@ -413,6 +426,22 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       const memoryHealth = await memory.health();
       if (memoryHealth.status !== 'healthy') {
         throw new Error('Persistent Memory selected but Memory storage is unavailable');
+      }
+    }
+
+    if (config.vectorSearchEnabled) {
+      if (config.vectorStoreProvider === 'pgvector') {
+        if (memoryBundle.vectorHealth === undefined) {
+          throw new Error('Vector search enabled but vector store health is unavailable');
+        }
+        const vectorHealth = await memoryBundle.vectorHealth();
+        if (vectorHealth.status !== 'healthy') {
+          throw new Error('Vector search enabled with pgvector but vector store is not ready');
+        }
+      }
+      const indexHealth = await memoryBundle.indexProvider.health();
+      if (indexHealth.status === 'unhealthy') {
+        throw new Error('Vector search enabled but Memory index provider is unhealthy');
       }
     }
 
@@ -573,6 +602,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     ready = false;
     runtimePort.clear();
     securityContexts.clear();
+    await memoryBundle.dispose();
     if (persistence instanceof PostgresPersistenceProvider) {
       await persistence.close();
     }
@@ -595,6 +625,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     traces,
     persistence,
     memory,
+    memoryEngine: memoryBundle.engine,
     evaluation,
     agentFacts: agentEvents.facts,
     securityContexts,

@@ -20,6 +20,14 @@ export interface AdapterFailure {readonly kind:'authentication'|'rate-limit'|'co
 export interface AiProviderAdapter {readonly id:string;execute(request:AiExecutionRequest):Promise<NormalizedAiResult>;stream(request:AiExecutionRequest):AsyncIterable<NormalizedAiStreamEvent>;health():Promise<HealthResult>;}
 /** Composition-owned resolution boundary: resolves the already-selected binding to an adapter instance. */
 export interface AiAdapterResolver {resolve(binding:CapabilityBinding):Promise<AiProviderAdapter>;}
+
+/** Parallel embedding surface — independent of chat AiProviderAdapter. */
+export type EmbeddingInput=Readonly<{readonly id:string;readonly text:string;}>;
+export interface AiEmbeddingRequest {readonly requestId:string;readonly binding:CapabilityBinding;readonly context:ExecutionContext;readonly inputs:readonly EmbeddingInput[];readonly model:Readonly<{id:string;dimensions?:number}>;readonly metadata:Readonly<Record<string,string>>;}
+export interface NormalizedEmbedding {readonly id:string;readonly vector:readonly number[];readonly dimensions:number;}
+export interface NormalizedEmbeddingResult {readonly requestId:string;readonly embeddings:readonly NormalizedEmbedding[];readonly model:AiModelMetadata;readonly usage:AiUsage;readonly diagnosticId:string;readonly metadata:Readonly<Record<string,string>>;}
+export interface AiEmbeddingAdapter {readonly id:string;embed(request:AiEmbeddingRequest):Promise<NormalizedEmbeddingResult>;health():Promise<HealthResult>;}
+export interface AiEmbeddingAdapterResolver {resolve(binding:CapabilityBinding):Promise<AiEmbeddingAdapter>;}
 export interface AiDiagnostic {readonly id:string;readonly requestId:string;readonly adapterId:string;readonly outcome:'completed'|'failed';readonly errorCode?:AiErrorCode;readonly finishReason?:AiFinishReason;}
 export interface AiDiagnostics {record(value:AiDiagnostic):void;get(id:string):AiDiagnostic|undefined;list():readonly AiDiagnostic[];}
 export interface AiFact {readonly type:'ai.completed'|'ai.failed'|'ai.stream.completed';readonly requestId:string;readonly executionId:string;readonly diagnosticId:string;}

@@ -23,7 +23,11 @@
     "db:migrate": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js migrate",
     "db:status": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js status",
     "db:reset:test": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js reset",
+    "db:migrate:vector": "pnpm --filter @agentforge/vector-store-pgvector exec node dist/cli.js migrate",
+    "db:status:vector": "pnpm --filter @agentforge/vector-store-pgvector exec node dist/cli.js status",
     "test:postgres": "node scripts/run-postgres-tests.mjs",
+    "test:vector-pgvector": "node scripts/run-vector-pgvector-tests.mjs",
+    "test:vector-search": "node scripts/run-vector-search-tests.mjs",
     "test:runtime-recovery": "node scripts/run-runtime-recovery-tests.mjs",
     "test:memory-persistence": "node scripts/run-memory-persistence-tests.mjs",
     "test:evaluation-persistence": "node scripts/run-evaluation-persistence-tests.mjs"

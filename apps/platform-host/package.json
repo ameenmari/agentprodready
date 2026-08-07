@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/platform-host",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -29,6 +29,8 @@
     "@agentforge/prompt-builder": "workspace:*",
     "@agentforge/runtime": "workspace:*",
     "@agentforge/security": "workspace:*",
+    "@agentforge/vector-store": "workspace:*",
+    "@agentforge/vector-store-pgvector": "workspace:*",
     "@agentforge/workflow": "workspace:*"
   }
 }

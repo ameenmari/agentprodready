@@ -49,6 +49,9 @@ describe('local reference composition', () => {
     expect(config.memoryProvider).toBe('in-memory');
     expect(config.evaluationEnabled).toBe(false);
     expect(config.evaluationResultStore).toBe('in-memory');
+    expect(config.vectorSearchEnabled).toBe(false);
+    expect(config.vectorStoreProvider).toBe('none');
+    expect(config.embeddingProvider).toBe('none');
     expect(() => loadLocalReferenceConfig({ PORT: '3000', AI_PROVIDER: 'openai' })).toThrow(/OPENAI_API_KEY/);
     const openAi = loadLocalReferenceConfig({
       PORT: '3000',
@@ -70,5 +73,57 @@ describe('local reference composition', () => {
     });
     expect(postgres.persistenceProvider).toBe('postgres');
     expect(postgres.postgres?.poolMax).toBe(10);
+  });
+
+  it('fail-closes vector search when enabled with mismatched or missing config', () => {
+    expect(() =>
+      loadLocalReferenceConfig({
+        PORT: '3000',
+        VECTOR_SEARCH_ENABLED: 'true',
+      }),
+    ).toThrow(/VECTOR_STORE_PROVIDER/);
+    expect(() =>
+      loadLocalReferenceConfig({
+        PORT: '3000',
+        VECTOR_SEARCH_ENABLED: 'true',
+        VECTOR_STORE_PROVIDER: 'memory',
+      }),
+    ).toThrow(/EMBEDDING_PROVIDER/);
+    expect(() =>
+      loadLocalReferenceConfig({
+        PORT: '3000',
+        VECTOR_SEARCH_ENABLED: 'true',
+        VECTOR_STORE_PROVIDER: 'memory',
+        EMBEDDING_PROVIDER: 'reference',
+        EMBEDDING_MODEL: 'wrong-model',
+      }),
+    ).toThrow(/EMBEDDING_MODEL/);
+    const reference = loadLocalReferenceConfig({
+      PORT: '3000',
+      VECTOR_SEARCH_ENABLED: 'true',
+      VECTOR_STORE_PROVIDER: 'memory',
+      EMBEDDING_PROVIDER: 'reference',
+    });
+    expect(reference.embeddingModel).toBe('reference-embedding-32');
+    expect(reference.embeddingDimensions).toBe(32);
+    expect(reference.vectorIndexProfile).toBe('reference-32');
+    expect(() =>
+      loadLocalReferenceConfig({
+        PORT: '3000',
+        VECTOR_SEARCH_ENABLED: 'true',
+        VECTOR_STORE_PROVIDER: 'memory',
+        EMBEDDING_PROVIDER: 'openai',
+      }),
+    ).toThrow(/OPENAI/);
+    const openai = loadLocalReferenceConfig({
+      PORT: '3000',
+      VECTOR_SEARCH_ENABLED: 'true',
+      VECTOR_STORE_PROVIDER: 'memory',
+      EMBEDDING_PROVIDER: 'openai',
+      OPENAI_API_KEY: 'sk-test',
+    });
+    expect(openai.embeddingModel).toBe('text-embedding-3-small');
+    expect(openai.embeddingDimensions).toBe(1536);
+    expect(openai.vectorIndexProfile).toBe('openai-1536-small');
   });
 });

@@ -2,7 +2,7 @@ import type { AgentAuthorizationOutcome, AgentEvents, AgentFact, AgentFramework,
 import type { AuditIngestionRequest, AuditPlatform } from '@agentforge/audit';
 import type { HealthContributor, HealthService, ReadinessService } from '@agentforge/foundation';
 import type { CreatePlatformEvent, EventBus } from '@agentforge/event-bus';
-import type { MemorySearchProvider, MemoryStorageProvider } from '@agentforge/memory';
+import type { MemoryEngine, MemorySearchProvider, MemoryStorageProvider } from '@agentforge/memory';
 import type {
   InMemoryLoggingProvider,
   InMemoryMetricsProvider,
@@ -72,6 +72,7 @@ export interface LocalReferenceComposition {
   readonly traces: InMemoryTracingProvider;
   readonly persistence: PersistenceProvider;
   readonly memory: MemoryStorageProvider & MemorySearchProvider;
+  readonly memoryEngine: MemoryEngine;
   readonly evaluation: LocalReferenceEvaluationBundle | undefined;
   readonly agentFacts: readonly AgentFact[];
   readonly securityContexts: Map<string, SecurityContext>;
@@ -93,6 +94,7 @@ export function createHealthContributors(deps: {
   readonly audit: AuditPlatform;
   readonly referenceAgentEnabled: boolean;
   readonly memory?: MemoryStorageProvider;
+  readonly vectorStore?: HealthContributor;
   readonly evaluation?: HealthContributor;
 }): readonly HealthContributor[] {
   const contributors: HealthContributor[] = [
@@ -166,6 +168,21 @@ export function createHealthContributors(deps: {
           return Object.freeze({
             name: 'memory',
             status: result.status === 'healthy' ? ('healthy' as const) : ('unhealthy' as const),
+            ...(result.details === undefined ? {} : { details: result.details }),
+          });
+        },
+      }),
+    );
+  }
+  if (deps.vectorStore !== undefined) {
+    const vectorStore = deps.vectorStore;
+    contributors.push(
+      Object.freeze({
+        health: async () => {
+          const result = await vectorStore.health();
+          return Object.freeze({
+            name: 'vector-store',
+            status: result.status,
             ...(result.details === undefined ? {} : { details: result.details }),
           });
         },
