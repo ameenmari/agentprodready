@@ -50,6 +50,12 @@ export interface LocalReferenceConfig {
   readonly streamingHeartbeatIntervalMs: number;
   /** Max wait for response drain before Runtime cancel. Default 30000. */
   readonly streamingMaxDrainWaitMs: number;
+  /** Tool calling / agent actions. Default false. */
+  readonly toolsEnabled: boolean;
+  readonly toolMaxCallsPerInvocation: number;
+  readonly toolMaxTurns: number;
+  readonly toolMaxArgumentBytes: number;
+  readonly toolMaxResultBytes: number;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -61,7 +67,7 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.8.0';
+export const PRODUCT_VERSION = '0.9.0';
 
 const REFERENCE_PROFILE = Object.freeze({
   embeddingProvider: 'reference' as const,
@@ -253,6 +259,24 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     30_000,
   );
 
+  const toolsEnabled = parseBooleanFlag(env['TOOLS_ENABLED'], 'TOOLS_ENABLED', false);
+  const toolMaxCallsPerInvocation = parsePositiveInt(
+    env['TOOL_MAX_CALLS_PER_INVOCATION'],
+    'TOOL_MAX_CALLS_PER_INVOCATION',
+    8,
+  );
+  const toolMaxTurns = parsePositiveInt(env['TOOL_MAX_TURNS'], 'TOOL_MAX_TURNS', 4);
+  const toolMaxArgumentBytes = parsePositiveInt(
+    env['TOOL_MAX_ARGUMENT_BYTES'],
+    'TOOL_MAX_ARGUMENT_BYTES',
+    16_384,
+  );
+  const toolMaxResultBytes = parsePositiveInt(
+    env['TOOL_MAX_RESULT_BYTES'],
+    'TOOL_MAX_RESULT_BYTES',
+    65_536,
+  );
+
   const resolvedOpenAi =
     openAi ??
     (vectorSearchEnabled && embeddingProvider === 'openai'
@@ -280,6 +304,11 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     vectorIndexProfile,
     streamingHeartbeatIntervalMs,
     streamingMaxDrainWaitMs,
+    toolsEnabled,
+    toolMaxCallsPerInvocation,
+    toolMaxTurns,
+    toolMaxArgumentBytes,
+    toolMaxResultBytes,
   });
 }
 
@@ -328,5 +357,22 @@ export function defaultStreamingConfigFields(): Pick<
   return Object.freeze({
     streamingHeartbeatIntervalMs: 15_000,
     streamingMaxDrainWaitMs: 30_000,
+  });
+}
+
+export function defaultToolsConfigFields(): Pick<
+  LocalReferenceConfig,
+  | 'toolsEnabled'
+  | 'toolMaxCallsPerInvocation'
+  | 'toolMaxTurns'
+  | 'toolMaxArgumentBytes'
+  | 'toolMaxResultBytes'
+> {
+  return Object.freeze({
+    toolsEnabled: false,
+    toolMaxCallsPerInvocation: 8,
+    toolMaxTurns: 4,
+    toolMaxArgumentBytes: 16_384,
+    toolMaxResultBytes: 65_536,
   });
 }

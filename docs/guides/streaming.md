@@ -36,6 +36,8 @@ Guarantees for one streaming request:
 - one `agent.invocation.accepted` fact
 - one terminal `RuntimeResult` / SSE terminal event
 
+When `TOOLS_ENABLED=true`, the stream may also emit safe `tool_call` / `tool_result` lifecycle events (ids + status only). See [tools.md](./tools.md).
+
 ## SSE events
 
 | Event | Meaning |

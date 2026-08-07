@@ -25,6 +25,11 @@ async function main(): Promise<void> {
     vectorIndexProfile: 'none',
     streamingHeartbeatIntervalMs: 0,
     streamingMaxDrainWaitMs: 30_000,
+    toolsEnabled: false,
+    toolMaxCallsPerInvocation: 8,
+    toolMaxTurns: 4,
+    toolMaxArgumentBytes: 16_384,
+    toolMaxResultBytes: 65_536,
   });
 
   const address = host.server.address();

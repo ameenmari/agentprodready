@@ -225,7 +225,9 @@ function validateRequest(request: AiExecutionRequest, stream: boolean): void {
     );
   }
   for (const message of request.messages) {
-    if (message.content.length === 0) {
+    const assistantToolCalls =
+      message.role === 'assistant' && message.toolCalls !== undefined && message.toolCalls.length > 0;
+    if (message.content.length === 0 && !assistantToolCalls) {
       throw new NormalizedAiError(
         'AI_INVALID_REQUEST',
         'Messages require content',
@@ -278,6 +280,9 @@ function copyRequest(value: AiExecutionRequest): AiExecutionRequest {
     messages: value.messages.map((message) => ({
       ...message,
       content: message.content.map((part) => ({ ...part })),
+      ...(message.toolCalls === undefined
+        ? {}
+        : { toolCalls: message.toolCalls.map((call) => ({ ...call, arguments: { ...call.arguments } })) }),
     })),
     generation: {
       ...value.generation,

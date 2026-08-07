@@ -5,6 +5,12 @@ import {
   StaticResolutionConfiguration,
 } from '@agentforge/capability-resolution';
 import { OPENAI_AI_ID } from '@agentforge/ai-provider-openai';
+import {
+  REFERENCE_COUNTER_CAPABILITY,
+  REFERENCE_COUNTER_TOOL_ID,
+  REFERENCE_ECHO_CAPABILITY,
+  REFERENCE_ECHO_TOOL_ID,
+} from '@agentforge/tool-framework';
 import { REFERENCE_AI_ID } from '../config/local-reference-config.js';
 import type { EmbeddingProviderSelection } from '../config/local-reference-config.js';
 
@@ -135,6 +141,35 @@ export function seedReferenceCapabilities(): {
     }),
   );
 
+  for (const tool of [
+    { capability: REFERENCE_ECHO_CAPABILITY, id: REFERENCE_ECHO_TOOL_ID },
+    { capability: REFERENCE_COUNTER_CAPABILITY, id: REFERENCE_COUNTER_TOOL_ID },
+  ]) {
+    capabilities.register(
+      Object.freeze({
+        id: tool.capability,
+        contractVersions: Object.freeze(['1']),
+        defaultImplementationId: tool.id,
+        metadata: Object.freeze({ referenceOnly: 'true', role: 'tool' }),
+      }),
+    );
+    providers.register(
+      Object.freeze({
+        id: tool.id,
+        capabilityId: tool.capability,
+        providerId: 'agentforge-local',
+        pluginId: 'reference-tools',
+        contributionId: `contribution:${tool.id}`,
+        contractVersions: Object.freeze(['1']),
+        implementationVersion: '1.0.0',
+        enabled: true,
+        health: 'healthy' as const,
+        priority: 0,
+        attributes: Object.freeze({ locality: 'local', compliance: 'reference' }),
+      }),
+    );
+  }
+
   return { capabilities, providers };
 }
 
@@ -153,6 +188,8 @@ export function referenceResolutionConfiguration(
         'text-generation': implementationId,
         'evaluation.judge': judgeImplementationId,
         embedding: embeddingImplementationId,
+        [REFERENCE_ECHO_CAPABILITY]: REFERENCE_ECHO_TOOL_ID,
+        [REFERENCE_COUNTER_CAPABILITY]: REFERENCE_COUNTER_TOOL_ID,
       }),
     }),
   );

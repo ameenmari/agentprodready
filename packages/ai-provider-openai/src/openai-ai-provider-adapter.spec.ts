@@ -85,15 +85,142 @@ describe('OpenAiProviderAdapter', () => {
     );
   });
 
-  it('rejects tools on execute', async () => {
-    const adapter = new OpenAiProviderAdapter({ apiKey: 'sk-test', model: 'gpt-5' }, mockClient({}).client);
-    await expect(
-      adapter.execute(
-        baseRequest({
-          tools: Object.freeze([{ name: 'lookup', description: 'x', inputSchema: Object.freeze({}) }]),
-        }),
-      ),
-    ).rejects.toMatchObject({ kind: 'invalid-request' });
+  it('translates tools on execute and returns normalized tool calls', async () => {
+    const { client, create } = mockClient({
+      choices: [
+        {
+          finish_reason: 'tool_calls',
+          message: {
+            content: null,
+            tool_calls: [
+              {
+                id: 'call_1',
+                type: 'function',
+                function: { name: 'lookup', arguments: '{"q":"a"}' },
+              },
+            ],
+          },
+        },
+      ],
+      usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+    });
+    const adapter = new OpenAiProviderAdapter({ apiKey: 'sk-test', model: 'gpt-5' }, client);
+    const result = await adapter.execute(
+      baseRequest({
+        tools: Object.freeze([{ name: 'lookup', description: 'x', inputSchema: Object.freeze({ type: 'object' }) }]),
+      }),
+    );
+    expect(result.finishReason).toBe('tool-calls');
+    expect(result.toolCalls).toEqual([{ id: 'call_1', name: 'lookup', arguments: { q: 'a' } }]);
+    expect(create.mock.calls[0]?.[0]).toMatchObject({
+      tools: [{ type: 'function', function: { name: 'lookup' } }],
+    });
+  });
+
+  it('translates normalized continuation assistant toolCalls and tool messages', async () => {
+    const { client, create } = mockClient({
+      choices: [{ finish_reason: 'stop', message: { content: 'done', role: 'assistant' } }],
+      usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+    });
+    const adapter = new OpenAiProviderAdapter({ apiKey: 'sk-test', model: 'gpt-5' }, client);
+    await adapter.execute(
+      baseRequest({
+        messages: Object.freeze([
+          Object.freeze({
+            role: 'user' as const,
+            content: Object.freeze([Object.freeze({ type: 'text' as const, text: 'hi' })]),
+          }),
+          Object.freeze({
+            role: 'assistant' as const,
+            content: Object.freeze([]),
+            toolCalls: Object.freeze([
+              Object.freeze({ id: 'call_1', name: 'lookup', arguments: Object.freeze({ q: 'a' }) }),
+            ]),
+          }),
+          Object.freeze({
+            role: 'tool' as const,
+            toolCallId: 'call_1',
+            name: 'lookup',
+            content: Object.freeze([Object.freeze({ type: 'text' as const, text: '{"ok":true}' })]),
+          }),
+        ]),
+      }),
+    );
+    expect(create.mock.calls[0]?.[0]).toMatchObject({
+      messages: [
+        { role: 'user', content: 'hi' },
+        {
+          role: 'assistant',
+          tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'lookup', arguments: '{"q":"a"}' } }],
+        },
+        { role: 'tool', tool_call_id: 'call_1', content: '{"ok":true}' },
+      ],
+    });
+  });
+
+  it('assembles streamed tool-call fragments into one NormalizedToolCall', async () => {
+    async function* chunks(): AsyncGenerator<{
+      choices?: {
+        delta?: {
+          tool_calls?: readonly {
+            index?: number;
+            id?: string;
+            function?: { name?: string; arguments?: string };
+          }[];
+        };
+        finish_reason?: string | null;
+      }[];
+    }> {
+      yield { choices: [{ delta: { tool_calls: [{ index: 0, id: 'call_1', function: { name: 'look' } }] } }] };
+      yield { choices: [{ delta: { tool_calls: [{ index: 0, function: { name: 'up', arguments: '{"q"' } }] } }] };
+      yield {
+        choices: [{ delta: { tool_calls: [{ index: 0, function: { arguments: ':"a"}' } }] }, finish_reason: 'tool_calls' }],
+      };
+    }
+    const create = vi.fn(async () => chunks());
+    const adapter = new OpenAiProviderAdapter(
+      { apiKey: 'sk-test', model: 'gpt-5' },
+      { chat: { completions: { create } } },
+    );
+    const events = [];
+    for await (const event of adapter.stream(
+      baseRequest({
+        streaming: Object.freeze({ enabled: true, includeUsage: false }),
+        tools: Object.freeze([{ name: 'lookup', description: 'x', inputSchema: Object.freeze({ type: 'object' }) }]),
+      }),
+    )) {
+      events.push(event);
+    }
+    expect(events.map((e) => e.type)).toEqual(['tool-call', 'completed']);
+    expect(events[0]).toMatchObject({
+      type: 'tool-call',
+      call: { id: 'call_1', name: 'lookup', arguments: { q: 'a' } },
+    });
+  });
+
+  it('fails closed once on incomplete streamed tool call at terminal', async () => {
+    async function* chunks(): AsyncGenerator<{
+      choices?: {
+        delta?: { tool_calls?: readonly { index?: number; id?: string; function?: { name?: string; arguments?: string } }[] };
+        finish_reason?: string | null;
+      }[];
+    }> {
+      yield { choices: [{ delta: { tool_calls: [{ index: 0, id: 'call_1', function: { name: 'lookup', arguments: '{"q"' } }] } }] };
+      yield { choices: [{ delta: {}, finish_reason: 'tool_calls' }] };
+    }
+    const create = vi.fn(async () => chunks());
+    const adapter = new OpenAiProviderAdapter(
+      { apiKey: 'sk-test', model: 'gpt-5' },
+      { chat: { completions: { create } } },
+    );
+    const events = [];
+    for await (const event of adapter.stream(
+      baseRequest({ streaming: Object.freeze({ enabled: true, includeUsage: false }) }),
+    )) {
+      events.push(event);
+    }
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ type: 'failed', code: 'AI_INVALID_REQUEST' });
   });
 
   it('streams normalized deltas from mock OpenAI chunks', async () => {

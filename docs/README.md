@@ -135,6 +135,7 @@ Operator-facing guides for product slices.
 - [Evaluation Framework](guides/evaluation.md)
 - [Vector Search & Semantic Memory](guides/vector-search.md)
 - [Streaming Responses](guides/streaming.md)
+- [Tool Calling & Agent Actions](guides/tools.md)
 
 ## product/
 

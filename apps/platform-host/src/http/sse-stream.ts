@@ -144,10 +144,31 @@ export async function pipeRuntimeStreamToSse(
               drainTimeoutCancel,
             );
             if (status !== 'ok') return;
-          } else {
+          } else if (event.payload.kind === 'usage') {
             const status = await writeFrame(
               response,
               frame('usage', { sequence: event.sequence, usage: event.payload.usage }),
+              options.maxDrainWaitMs,
+              drainTimeoutCancel,
+            );
+            if (status !== 'ok') return;
+          } else {
+            const toolPayload = event.payload as Readonly<{
+              kind: 'tool_call' | 'tool_result';
+              toolCallId: string;
+              toolId: string;
+              status: string;
+              errorCode?: string;
+            }>;
+            const status = await writeFrame(
+              response,
+              frame(toolPayload.kind, {
+                sequence: event.sequence,
+                toolCallId: toolPayload.toolCallId,
+                toolId: toolPayload.toolId,
+                status: toolPayload.status,
+                ...(toolPayload.errorCode ? { errorCode: toolPayload.errorCode } : {}),
+              }),
               options.maxDrainWaitMs,
               drainTimeoutCancel,
             );

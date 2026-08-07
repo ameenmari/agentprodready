@@ -11,6 +11,7 @@ import type {
   AiUsage,
   NormalizedAiResult,
   NormalizedAiStreamEvent,
+  NormalizedToolCall,
 } from '../contracts/ai.js';
 
 interface ReferenceVendorRequest {
@@ -21,7 +22,8 @@ interface ReferenceVendorResponse {
   readonly answer: string;
   readonly inputUnits: number;
   readonly outputUnits: number;
-  readonly stopCode: 'done';
+  readonly stopCode: 'done' | 'tool-calls';
+  readonly toolCalls: readonly NormalizedToolCall[];
 }
 
 /** Split text into whitespace-preserving deterministic chunks (not model tokens). */
@@ -36,21 +38,86 @@ export function referenceStreamChunks(text: string): readonly string[] {
   return Object.freeze(chunks.length === 0 ? [''] : chunks);
 }
 
+function lastUserText(request: AiExecutionRequest): string {
+  for (let index = request.messages.length - 1; index >= 0; index -= 1) {
+    const message = request.messages[index];
+    if (message?.role === 'user') {
+      return message.content.filter((part) => part.type === 'text').map((part) => part.text).join('\n');
+    }
+  }
+  return request.messages
+    .flatMap((message) => message.content.filter((part) => part.type === 'text').map((part) => part.text))
+    .join('\n');
+}
+
+function hasToolResults(request: AiExecutionRequest): boolean {
+  return request.messages.some((message) => message.role === 'tool');
+}
+
+function resolveToolCalls(request: AiExecutionRequest, transcript: string): readonly NormalizedToolCall[] {
+  if (request.tools === undefined || request.tools.length === 0) return Object.freeze([]);
+  if (hasToolResults(request)) return Object.freeze([]);
+
+  const echoMatch = /USE_TOOL_ECHO:\s*(.+)$/u.exec(transcript.trim());
+  if (echoMatch !== null && request.tools.some((tool) => tool.name === 'reference.echo')) {
+    return Object.freeze([
+      Object.freeze({
+        id: 'call-echo-1',
+        name: 'reference.echo',
+        arguments: Object.freeze({ message: echoMatch[1]?.trim() ?? '' }),
+      }),
+    ]);
+  }
+
+  if (/USE_TOOL_COUNTER\b/u.test(transcript) && request.tools.some((tool) => tool.name === 'reference.counter')) {
+    return Object.freeze([
+      Object.freeze({
+        id: 'call-counter-1',
+        name: 'reference.counter',
+        arguments: Object.freeze({}),
+      }),
+    ]);
+  }
+
+  return Object.freeze([]);
+}
+
+function continuationAnswer(request: AiExecutionRequest): string | undefined {
+  if (!hasToolResults(request)) return undefined;
+  const toolMessage = [...request.messages].reverse().find((message) => message.role === 'tool');
+  if (toolMessage === undefined) return 'Tool returned:';
+  const text = toolMessage.content
+    .filter((part) => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
+  try {
+    const parsed = JSON.parse(text) as { message?: string; value?: number };
+    if (typeof parsed.message === 'string') return `Tool returned: ${parsed.message}`;
+    if (typeof parsed.value === 'number') return `Tool returned: ${String(parsed.value)}`;
+  } catch {
+    // fall through
+  }
+  return `Tool returned: ${text}`;
+}
+
 export class ReferenceAiProviderAdapter implements AiProviderAdapter {
   public readonly id = 'reference-ai';
 
   public async execute(request: AiExecutionRequest): Promise<NormalizedAiResult> {
+    const transcript = lastUserText(request);
+    const continued = continuationAnswer(request);
+    const toolCalls = resolveToolCalls(request, transcript);
     const vendorRequest: ReferenceVendorRequest = {
-      transcript: request.messages
-        .flatMap((message) => message.content.filter((part) => part.type === 'text').map((part) => part.text))
-        .join('\n'),
+      transcript,
       tokenLimit: request.generation.maximumOutputTokens ?? 128,
     };
+    const answer = continued ?? (toolCalls.length > 0 ? '' : vendorRequest.transcript);
     const response: ReferenceVendorResponse = {
-      answer: vendorRequest.transcript,
+      answer,
       inputUnits: vendorRequest.transcript.length,
-      outputUnits: Math.min(vendorRequest.transcript.length, vendorRequest.tokenLimit),
-      stopCode: 'done',
+      outputUnits: Math.min(Math.max(answer.length, 1), vendorRequest.tokenLimit),
+      stopCode: toolCalls.length > 0 ? 'tool-calls' : 'done',
+      toolCalls,
     };
     const usage = {
       inputTokens: response.inputUnits,
@@ -62,9 +129,9 @@ export class ReferenceAiProviderAdapter implements AiProviderAdapter {
       content: [{ type: 'text', text: response.answer }],
       usage,
       model: { id: 'reference-model', capabilities: [request.binding.capability] },
-      finishReason: 'completed',
+      finishReason: toolCalls.length > 0 ? 'tool-calls' : 'completed',
       structuredOutput: request.structuredOutput === undefined ? undefined : { echo: response.answer },
-      toolCalls: (request.tools ?? []).slice(0, 1).map((tool) => ({ id: 'call-1', name: tool.name, arguments: {} })),
+      toolCalls: [...toolCalls],
       diagnosticId: `ai:${request.requestId}`,
       metadata: { adapter: 'reference' },
     };
@@ -73,9 +140,23 @@ export class ReferenceAiProviderAdapter implements AiProviderAdapter {
   public async *stream(request: AiExecutionRequest): AsyncIterable<NormalizedAiStreamEvent> {
     const diagnosticId = `ai:${request.requestId}`;
     let sequence = 0;
-    const text = request.messages
-      .flatMap((message) => message.content.filter((part) => part.type === 'text').map((part) => part.text))
-      .join('\n');
+    const transcript = lastUserText(request);
+    const continued = continuationAnswer(request);
+    const toolCalls = resolveToolCalls(request, transcript);
+
+    if (toolCalls.length > 0) {
+      for (const call of toolCalls) {
+        if (request.signal?.aborted === true) {
+          yield { type: 'cancelled', sequence, diagnosticId };
+          return;
+        }
+        yield { type: 'tool-call', sequence: sequence++, call };
+      }
+      yield { type: 'completed', sequence, finishReason: 'tool-calls', diagnosticId };
+      return;
+    }
+
+    const text = continued ?? transcript;
     const chunks = referenceStreamChunks(text);
 
     for (const chunk of chunks) {

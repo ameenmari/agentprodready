@@ -22,6 +22,11 @@ describe('platform host bootstrap', () => {
       vectorIndexProfile: 'none',
       streamingHeartbeatIntervalMs: 0,
       streamingMaxDrainWaitMs: 30_000,
+      toolsEnabled: false,
+      toolMaxCallsPerInvocation: 8,
+      toolMaxTurns: 4,
+      toolMaxArgumentBytes: 16_384,
+      toolMaxResultBytes: 65_536,
     });
     expect(await host.composition.readinessService.isReady()).toBe(true);
     await host.stop();

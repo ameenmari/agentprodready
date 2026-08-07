@@ -1,30 +1,309 @@
 ﻿import type { NormalizedToolCall } from '@agentforge/ai-provider';
 import type { PluginContribution } from '@agentforge/plugin-framework';
-import type { ToolAdapterResolver,ToolContract,ToolDiagnostic,ToolDiagnostics,ToolErrorCode,ToolEventPublisher,ToolExecutionRequest,ToolFact,ToolStore,ToolTelemetry,ToolValidationResult,NormalizedToolResult } from '../contracts/tool.js';
-import { ExternalToolError,NormalizedToolError } from '../errors/tool-error.js';
+import type {
+  ToolAdapterResolver,
+  ToolContract,
+  ToolDiagnostic,
+  ToolDiagnostics,
+  ToolErrorCode,
+  ToolEventPublisher,
+  ToolExecutionRequest,
+  ToolFact,
+  ToolFactType,
+  ToolStore,
+  ToolTelemetry,
+  ToolValidationResult,
+  NormalizedToolResult,
+} from '../contracts/tool.js';
+import { measureJsonBytes } from '../contracts/tool.js';
+import { ExternalToolError, NormalizedToolError } from '../errors/tool-error.js';
 
-export class ToolRegistry implements ToolStore {readonly #items=new Map<string,ToolContract>();public register(value:ToolContract):void{validateContract(value);if(this.#items.has(value.id))throw new TypeError(`Duplicate tool ${value.id}`);this.#items.set(value.id,deepFreeze(copyContract(value)));}public get(id:string):ToolContract|undefined{return this.#items.get(id);}public forCapability(capability:string):readonly ToolContract[]{return Object.freeze(this.list().filter(item=>item.capability===capability));}public list():readonly ToolContract[]{return Object.freeze([...this.#items.values()].sort((a,b)=>a.id.localeCompare(b.id)));}}
-export class ToolValidator {public validate(request:ToolExecutionRequest,contract:ToolContract):ToolValidationResult{if(request.requestId.trim()===''||request.binding.implementationId!==contract.id||request.binding.capability!==contract.capability||request.node.capability!==contract.capability||request.authorization.decisionId.trim()===''||containsForbidden(request.constraints)||!isJsonValue(request.parameters))throw new NormalizedToolError('TOOL_VALIDATION','Tool request validation failed',false,`tool:${request.requestId}`);const required=Array.isArray(contract.inputSchema.required)?contract.inputSchema.required:[];if(!required.every(key=>typeof key==='string'&&key in request.parameters))throw new NormalizedToolError('TOOL_VALIDATION','Required tool parameters are missing',false,`tool:${request.requestId}`);if(contract.sideEffect!=='read-only'&&contract.idempotency==='non-idempotent'&&(request.idempotencyKey?.trim()??'')==='')throw new NormalizedToolError('TOOL_VALIDATION','Non-idempotent side effects require an idempotency key',false,`tool:${request.requestId}`);return deepFreeze({valid:true,contractId:contract.id,contractVersion:contract.version,checkedFields:Object.freeze(['binding','capability','authorization','parameters','idempotency'])});}}
-
-export class ToolInvocationCoordinator {
- public constructor(private readonly tools:ToolStore,private readonly adapters:ToolAdapterResolver,private readonly validator:ToolValidator,private readonly diagnostics:ToolDiagnostics,private readonly events:ToolEventPublisher,private readonly telemetry:ToolTelemetry){}
- public async invoke(request:ToolExecutionRequest):Promise<NormalizedToolResult>{const started=Date.now();const contract=this.tools.get(request.binding.implementationId);if(contract===undefined)throw new NormalizedToolError('TOOL_VALIDATION','Selected tool contract is not registered',false,`tool:${request.requestId}`);const validation=this.validator.validate(request,contract);const adapter=await this.adapters.resolve(request.binding);const diagnosticId=`tool:${request.requestId}`;try{const result=validateResult(await adapter.invoke(deepFreeze(copyRequest(request))),request,contract,validation,diagnosticId);this.diagnostics.record(deepFreeze({id:diagnosticId,requestId:request.requestId,toolId:contract.id,outcome:'completed'}));await this.#publish('tool.completed',request,contract,diagnosticId);this.telemetry.completed(contract.id,Date.now()-started);return result;}catch(error){const failure=error instanceof ExternalToolError?error:new ExternalToolError('unknown','External tool interaction failed',false);const code=errorCode(failure.kind);const diagnostic:ToolDiagnostic=deepFreeze({id:diagnosticId,requestId:request.requestId,toolId:contract.id,outcome:'failed',errorCode:code});this.diagnostics.record(diagnostic);await this.#publish('tool.failed',request,contract,diagnosticId);this.telemetry.failed(contract.id,code,Date.now()-started);throw new NormalizedToolError(code,failure.message,failure.retryable,diagnosticId);}}
- async #publish(type:ToolFact['type'],request:ToolExecutionRequest,contract:ToolContract,diagnosticId:string):Promise<void>{await this.events.publish(Object.freeze({type,requestId:request.requestId,executionId:request.context.executionId,diagnosticId,sideEffect:contract.sideEffect,idempotency:contract.idempotency}));}
+export class ToolRegistry implements ToolStore {
+  readonly #items = new Map<string, ToolContract>();
+  public register(value: ToolContract): void {
+    validateContract(value);
+    if (this.#items.has(value.id)) throw new TypeError(`Duplicate tool ${value.id}`);
+    this.#items.set(value.id, deepFreeze(copyContract(value)));
+  }
+  public get(id: string): ToolContract | undefined {
+    return this.#items.get(id);
+  }
+  public forCapability(capability: string): readonly ToolContract[] {
+    return Object.freeze(this.list().filter((item) => item.capability === capability));
+  }
+  public list(): readonly ToolContract[] {
+    return Object.freeze([...this.#items.values()].sort((a, b) => a.id.localeCompare(b.id)));
+  }
 }
 
-export class AiToolCallHandoff {public create(call:NormalizedToolCall,base:Omit<ToolExecutionRequest,'requestId'|'parameters'>):ToolExecutionRequest{return deepFreeze({...base,requestId:`${base.context.executionId}:${call.id}`,parameters:{...call.arguments}});}}
-export class PluginToolRegistrationAdapter {public register(pluginId:string,contribution:PluginContribution,registry:ToolStore):void{if(contribution.kind!=='tool')throw new TypeError('Contribution must be a tool');const metadata=contribution.metadata;registry.register({id:contribution.id,capability:requiredString(metadata,'capability'),version:contribution.version,inputSchema:requiredRecord(metadata,'inputSchema'),outputSchema:requiredRecord(metadata,'outputSchema'),sideEffect:requiredEnum(metadata,'sideEffect',['read-only','mutating','external-side-effect']),idempotency:requiredEnum(metadata,'idempotency',['idempotent','non-idempotent']),metadata:Object.freeze({}),pluginId,contributionId:contribution.id});}}
+export class ToolValidator {
+  public validate(request: ToolExecutionRequest, contract: ToolContract): ToolValidationResult {
+    if (
+      request.requestId.trim() === '' ||
+      request.binding.implementationId !== contract.id ||
+      request.binding.capability !== contract.capability ||
+      request.node.capability !== contract.capability ||
+      request.authorization.decisionId.trim() === '' ||
+      containsForbidden(request.constraints) ||
+      !isJsonValue(request.parameters)
+    ) {
+      throw new NormalizedToolError('TOOL_VALIDATION', 'Tool request validation failed', false, `tool:${request.requestId}`);
+    }
+    const required = Array.isArray(contract.inputSchema.required) ? contract.inputSchema.required : [];
+    if (!required.every((key) => typeof key === 'string' && key in request.parameters)) {
+      throw new NormalizedToolError('TOOL_VALIDATION', 'Required tool parameters are missing', false, `tool:${request.requestId}`);
+    }
+    if (
+      contract.sideEffect !== 'read-only' &&
+      contract.idempotency === 'non-idempotent' &&
+      (request.idempotencyKey?.trim() ?? '') === ''
+    ) {
+      throw new NormalizedToolError(
+        'TOOL_VALIDATION',
+        'Non-idempotent side effects require an idempotency key',
+        false,
+        `tool:${request.requestId}`,
+      );
+    }
+    return deepFreeze({
+      valid: true as const,
+      contractId: contract.id,
+      contractVersion: contract.version,
+      checkedFields: Object.freeze(['binding', 'capability', 'authorization', 'parameters', 'idempotency']),
+    });
+  }
 
-function validateContract(value:ToolContract):void{if(value.id.trim()===''||value.capability.trim()===''||value.pluginId.trim()===''||value.contributionId.trim()==='')throw new TypeError('Invalid Tool Contract');}
-function validateResult(result:NormalizedToolResult,request:ToolExecutionRequest,contract:ToolContract,validation:ToolValidationResult,diagnosticId:string):NormalizedToolResult{if(result.requestId!==request.requestId||result.tool.id!==contract.id||result.diagnosticId!==diagnosticId||!isJsonValue(result.data))throw new ExternalToolError('validation','Adapter returned an invalid normalized result',false);return deepFreeze({...result,tool:{id:contract.id,version:contract.version,sideEffect:contract.sideEffect,idempotency:contract.idempotency},execution:{...result.execution},validation,metadata:{...result.metadata}});}
-function errorCode(kind:ExternalToolError['kind']):ToolErrorCode{return({authentication:'TOOL_AUTHENTICATION',authorization:'TOOL_AUTHORIZATION',validation:'TOOL_VALIDATION','rate-limit':'TOOL_RATE_LIMITED',connection:'TOOL_CONNECTION',unavailable:'TOOL_UNAVAILABLE','not-found':'TOOL_NOT_FOUND',conflict:'TOOL_CONFLICT',timeout:'TOOL_TIMEOUT',rejected:'TOOL_REJECTED',unknown:'TOOL_UNKNOWN'} as const)[kind];}
-function copyContract(value:ToolContract):ToolContract{return{...value,inputSchema:{...value.inputSchema},outputSchema:{...value.outputSchema},metadata:{...value.metadata}};}
-function copyRequest(value:ToolExecutionRequest):ToolExecutionRequest{return{...value,parameters:{...value.parameters},authorization:{...value.authorization},metadata:{...value.metadata},validation:{...value.validation},constraints:{...value.constraints}};}
-function containsForbidden(value:unknown):boolean{if(typeof value!=='object'||value===null)return false;return Object.entries(value).some(([key,child])=>/vendor|sdk|connection.?string|credential|api.?key/iu.test(key)||containsForbidden(child));}
-function isJsonValue(value:unknown):boolean{if(value===null||typeof value==='string'||typeof value==='boolean'||(typeof value==='number'&&Number.isFinite(value)))return true;if(Array.isArray(value))return value.every(isJsonValue);if(typeof value==='object')return Object.values(value).every(isJsonValue);return false;}
-function requiredString(value:Readonly<Record<string,unknown>>,key:string):string{const item=value[key];if(typeof item!=='string'||item.trim()==='')throw new TypeError(`Missing ${key}`);return item;}
-function requiredRecord(value:Readonly<Record<string,unknown>>,key:string):Readonly<Record<string,unknown>>{const item=value[key];if(typeof item!=='object'||item===null||Array.isArray(item))throw new TypeError(`Missing ${key}`);return item as Readonly<Record<string,unknown>>;}
-function requiredEnum<T extends string>(value:Readonly<Record<string,unknown>>,key:string,values:readonly T[]):T{const item=value[key];if(typeof item!=='string'||!values.includes(item as T))throw new TypeError(`Invalid ${key}`);return item as T;}
-function deepFreeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!Object.isFrozen(value)){for(const child of Object.values(value))deepFreeze(child);Object.freeze(value);}return value;}
+  public assertArgumentBytes(parameters: unknown, maxBytes: number, requestId: string): void {
+    if (measureJsonBytes(parameters) > maxBytes) {
+      throw new NormalizedToolError('TOOL_VALIDATION', 'Tool arguments exceed configured maximum', false, `tool:${requestId}`);
+    }
+  }
 
+  public assertResultBytes(data: unknown, maxBytes: number, requestId: string): void {
+    if (measureJsonBytes(data) > maxBytes) {
+      throw new NormalizedToolError('TOOL_RESULT_TOO_LARGE', 'Tool result exceeds configured maximum', false, `tool:${requestId}`);
+    }
+  }
+}
 
+export class ToolInvocationCoordinator {
+  public constructor(
+    private readonly tools: ToolStore,
+    private readonly adapters: ToolAdapterResolver,
+    private readonly validator: ToolValidator,
+    private readonly diagnostics: ToolDiagnostics,
+    private readonly events: ToolEventPublisher,
+    private readonly telemetry: ToolTelemetry,
+    private readonly maxResultBytes?: number,
+  ) {}
+
+  public async invoke(request: ToolExecutionRequest): Promise<NormalizedToolResult> {
+    const started = Date.now();
+    if (request.signal?.aborted) {
+      throw new NormalizedToolError('TOOL_CANCELLED', 'Tool execution cancelled', false, `tool:${request.requestId}`);
+    }
+    const contract = this.tools.get(request.binding.implementationId);
+    if (contract === undefined) {
+      throw new NormalizedToolError('TOOL_NOT_FOUND', 'Selected tool contract is not registered', false, `tool:${request.requestId}`);
+    }
+    const validation = this.validator.validate(request, contract);
+    const adapter = await this.adapters.resolve(request.binding);
+    const diagnosticId = `tool:${request.requestId}`;
+    try {
+      if (request.signal?.aborted) {
+        throw new NormalizedToolError('TOOL_CANCELLED', 'Tool execution cancelled', false, diagnosticId);
+      }
+      const raw = await adapter.invoke(deepFreeze(copyRequest(request)));
+      if (this.maxResultBytes !== undefined) {
+        this.validator.assertResultBytes(raw.data, this.maxResultBytes, request.requestId);
+      }
+      const result = validateResult(raw, request, contract, validation, diagnosticId);
+      this.diagnostics.record(deepFreeze({ id: diagnosticId, requestId: request.requestId, toolId: contract.id, outcome: 'completed' }));
+      await this.#publish('tool.completed', request, contract, diagnosticId);
+      this.telemetry.completed(contract.id, Date.now() - started);
+      return result;
+    } catch (error) {
+      if (error instanceof NormalizedToolError) {
+        this.diagnostics.record(
+          deepFreeze({
+            id: diagnosticId,
+            requestId: request.requestId,
+            toolId: contract.id,
+            outcome: 'failed',
+            errorCode: error.code,
+          }),
+        );
+        const factType: ToolFactType =
+          error.code === 'TOOL_CANCELLED' ? 'tool.cancelled' : error.code === 'TOOL_APPROVAL_REQUIRED' ? 'tool.approval-required' : 'tool.failed';
+        await this.#publish(factType, request, contract, diagnosticId);
+        this.telemetry.failed(contract.id, error.code, Date.now() - started);
+        throw error;
+      }
+      const failure = error instanceof ExternalToolError ? error : new ExternalToolError('unknown', 'External tool interaction failed', false);
+      const code = errorCode(failure.kind);
+      const diagnostic: ToolDiagnostic = deepFreeze({
+        id: diagnosticId,
+        requestId: request.requestId,
+        toolId: contract.id,
+        outcome: 'failed',
+        errorCode: code,
+      });
+      this.diagnostics.record(diagnostic);
+      await this.#publish('tool.failed', request, contract, diagnosticId);
+      this.telemetry.failed(contract.id, code, Date.now() - started);
+      throw new NormalizedToolError(code, failure.message, failure.retryable, diagnosticId);
+    }
+  }
+
+  async #publish(type: ToolFactType, request: ToolExecutionRequest, contract: ToolContract, diagnosticId: string): Promise<void> {
+    await this.events.publish(
+      Object.freeze({
+        type,
+        requestId: request.requestId,
+        executionId: request.context.executionId,
+        diagnosticId,
+        sideEffect: contract.sideEffect,
+        idempotency: contract.idempotency,
+        toolId: contract.id,
+      } satisfies ToolFact),
+    );
+  }
+}
+
+export class AiToolCallHandoff {
+  public create(call: NormalizedToolCall, base: Omit<ToolExecutionRequest, 'requestId' | 'parameters'>): ToolExecutionRequest {
+    return deepFreeze({ ...base, requestId: `${base.context.executionId}:${call.id}`, parameters: { ...call.arguments } });
+  }
+}
+
+export class PluginToolRegistrationAdapter {
+  public register(pluginId: string, contribution: PluginContribution, registry: ToolStore): void {
+    if (contribution.kind !== 'tool') throw new TypeError('Contribution must be a tool');
+    const metadata = contribution.metadata;
+    registry.register({
+      id: contribution.id,
+      capability: requiredString(metadata, 'capability'),
+      version: contribution.version,
+      inputSchema: requiredRecord(metadata, 'inputSchema'),
+      outputSchema: requiredRecord(metadata, 'outputSchema'),
+      sideEffect: requiredEnum(metadata, 'sideEffect', ['read-only', 'mutating', 'external-side-effect']),
+      idempotency: requiredEnum(metadata, 'idempotency', ['idempotent', 'non-idempotent']),
+      ...(metadata['approvalRequirement'] === undefined
+        ? {}
+        : { approvalRequirement: requiredEnum(metadata, 'approvalRequirement', ['none', 'required']) }),
+      metadata: Object.freeze({}),
+      pluginId,
+      contributionId: contribution.id,
+    });
+  }
+}
+
+function validateContract(value: ToolContract): void {
+  if (value.id.trim() === '' || value.capability.trim() === '' || value.pluginId.trim() === '' || value.contributionId.trim() === '') {
+    throw new TypeError('Invalid Tool Contract');
+  }
+}
+
+function validateResult(
+  result: NormalizedToolResult,
+  request: ToolExecutionRequest,
+  contract: ToolContract,
+  validation: ToolValidationResult,
+  diagnosticId: string,
+): NormalizedToolResult {
+  if (
+    result.requestId !== request.requestId ||
+    result.tool.id !== contract.id ||
+    result.diagnosticId !== diagnosticId ||
+    !isJsonValue(result.data)
+  ) {
+    throw new ExternalToolError('validation', 'Adapter returned an invalid normalized result', false);
+  }
+  return deepFreeze({
+    ...result,
+    tool: { id: contract.id, version: contract.version, sideEffect: contract.sideEffect, idempotency: contract.idempotency },
+    execution: { ...result.execution },
+    validation,
+    metadata: { ...result.metadata },
+  });
+}
+
+function errorCode(kind: ExternalToolError['kind']): ToolErrorCode {
+  return (
+    {
+      authentication: 'TOOL_AUTHENTICATION',
+      authorization: 'TOOL_AUTHORIZATION',
+      validation: 'TOOL_VALIDATION',
+      'rate-limit': 'TOOL_RATE_LIMITED',
+      connection: 'TOOL_CONNECTION',
+      unavailable: 'TOOL_UNAVAILABLE',
+      'not-found': 'TOOL_NOT_FOUND',
+      conflict: 'TOOL_CONFLICT',
+      timeout: 'TOOL_TIMEOUT',
+      rejected: 'TOOL_REJECTED',
+      unknown: 'TOOL_UNKNOWN',
+    } as const
+  )[kind];
+}
+
+function copyContract(value: ToolContract): ToolContract {
+  return {
+    ...value,
+    inputSchema: { ...value.inputSchema },
+    outputSchema: { ...value.outputSchema },
+    metadata: { ...value.metadata },
+  };
+}
+
+function copyRequest(value: ToolExecutionRequest): ToolExecutionRequest {
+  return {
+    ...value,
+    parameters: { ...value.parameters },
+    authorization: { ...value.authorization },
+    metadata: { ...value.metadata },
+    validation: { ...value.validation },
+    constraints: { ...value.constraints },
+  };
+}
+
+function containsForbidden(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) return false;
+  return Object.entries(value).some(
+    ([key, child]) => /vendor|sdk|connection.?string|credential|api.?key/iu.test(key) || containsForbidden(child),
+  );
+}
+
+function isJsonValue(value: unknown): boolean {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value))) {
+    return true;
+  }
+  if (Array.isArray(value)) return value.every(isJsonValue);
+  if (typeof value === 'object') return Object.values(value).every(isJsonValue);
+  return false;
+}
+
+function requiredString(value: Readonly<Record<string, unknown>>, key: string): string {
+  const item = value[key];
+  if (typeof item !== 'string' || item.trim() === '') throw new TypeError(`Missing ${key}`);
+  return item;
+}
+
+function requiredRecord(value: Readonly<Record<string, unknown>>, key: string): Readonly<Record<string, unknown>> {
+  const item = value[key];
+  if (typeof item !== 'object' || item === null || Array.isArray(item)) throw new TypeError(`Missing ${key}`);
+  return item as Readonly<Record<string, unknown>>;
+}
+
+function requiredEnum<T extends string>(value: Readonly<Record<string, unknown>>, key: string, values: readonly T[]): T {
+  const item = value[key];
+  if (typeof item !== 'string' || !values.includes(item as T)) throw new TypeError(`Invalid ${key}`);
+  return item as T;
+}
+
+function deepFreeze<T>(value: T): T {
+  if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) deepFreeze(child);
+    Object.freeze(value);
+  }
+  return value;
+}

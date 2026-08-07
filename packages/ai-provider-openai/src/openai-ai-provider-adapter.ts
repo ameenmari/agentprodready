@@ -98,24 +98,12 @@ function requireStreamResponse(value: unknown): AsyncIterable<OpenAiChatCompleti
   throw new ProviderAdapterError('invalid-request', 'OpenAI stream call returned a non-stream response', false);
 }
 
-function toSdkMessage(message: OpenAiChatMessage): {
-  role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string;
-  name?: string;
-  tool_call_id?: string;
-} {
+function toSdkMessage(message: OpenAiChatMessage): Record<string, unknown> {
   if (message.role === 'tool') {
     return {
       role: 'tool',
-      content: message.content,
+      content: message.content ?? '',
       tool_call_id: message.tool_call_id ?? '',
-    };
-  }
-  if (message.role === 'system') {
-    return {
-      role: 'system',
-      content: message.content,
-      ...(message.name === undefined ? {} : { name: message.name }),
     };
   }
   if (message.role === 'assistant') {
@@ -123,11 +111,19 @@ function toSdkMessage(message: OpenAiChatMessage): {
       role: 'assistant',
       content: message.content,
       ...(message.name === undefined ? {} : { name: message.name }),
+      ...(message.tool_calls === undefined ? {} : { tool_calls: message.tool_calls }),
+    };
+  }
+  if (message.role === 'system') {
+    return {
+      role: 'system',
+      content: message.content ?? '',
+      ...(message.name === undefined ? {} : { name: message.name }),
     };
   }
   return {
     role: 'user',
-    content: message.content,
+    content: message.content ?? '',
     ...(message.name === undefined ? {} : { name: message.name }),
   };
 }
@@ -165,6 +161,7 @@ function createSdkClient(config: OpenAiProviderConfig): OpenAiChatClient {
                   ? {}
                   : { stop: typeof body.stop === 'string' ? body.stop : Array.from(body.stop) }),
                 ...(body.response_format === undefined ? {} : { response_format: body.response_format }),
+                ...(body.tools === undefined ? {} : { tools: [...body.tools] }),
               },
               options?.signal === undefined ? undefined : { signal: options.signal },
             );
@@ -182,6 +179,7 @@ function createSdkClient(config: OpenAiProviderConfig): OpenAiChatClient {
               ? {}
               : { stop: typeof body.stop === 'string' ? body.stop : Array.from(body.stop) }),
             ...(body.response_format === undefined ? {} : { response_format: body.response_format }),
+            ...(body.tools === undefined ? {} : { tools: [...body.tools] }),
           });
           return {
             id: response.id,
@@ -192,6 +190,24 @@ function createSdkClient(config: OpenAiProviderConfig): OpenAiChatClient {
                 message: Object.freeze({
                   content: choice.message.content,
                   role: choice.message.role,
+                  ...(choice.message.tool_calls === undefined
+                    ? {}
+                    : {
+                        tool_calls: choice.message.tool_calls.map((call) => {
+                          const fn =
+                            'function' in call
+                              ? (call as { function: { name: string; arguments: string } }).function
+                              : { name: '', arguments: '{}' };
+                          return Object.freeze({
+                            id: call.id,
+                            type: call.type,
+                            function: Object.freeze({
+                              name: fn.name,
+                              arguments: fn.arguments,
+                            }),
+                          });
+                        }),
+                      }),
                 }),
               }),
             ),
@@ -229,7 +245,16 @@ async function* mapSdkStream(stream: AsyncIterable<Record<string, unknown>>): As
             ...(item.delta?.content === undefined || item.delta.content === null
               ? {}
               : { content: item.delta.content }),
-            ...(item.delta?.tool_calls === undefined ? {} : { tool_calls: item.delta.tool_calls }),
+            ...(item.delta?.tool_calls === undefined
+              ? {}
+              : {
+                  tool_calls: item.delta.tool_calls as readonly {
+                    readonly index?: number;
+                    readonly id?: string;
+                    readonly type?: string;
+                    readonly function?: { readonly name?: string; readonly arguments?: string };
+                  }[],
+                }),
           }),
         });
       }),

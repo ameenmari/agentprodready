@@ -95,6 +95,9 @@ importers:
       '@agentforge/security':
         specifier: workspace:*
         version: link:../../packages/security
+      '@agentforge/tool-framework':
+        specifier: workspace:*
+        version: link:../../packages/tool-framework
       '@agentforge/vector-store':
         specifier: workspace:*
         version: link:../../packages/vector-store

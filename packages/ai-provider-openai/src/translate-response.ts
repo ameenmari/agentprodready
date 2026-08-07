@@ -1,4 +1,4 @@
-import type { AiExecutionRequest, AiFinishReason, NormalizedAiResult } from '@agentforge/ai-provider';
+import type { AiExecutionRequest, AiFinishReason, NormalizedAiResult, NormalizedToolCall } from '@agentforge/ai-provider';
 import type { OpenAiProviderConfig } from './config.js';
 import { ProviderAdapterError } from '@agentforge/ai-provider';
 
@@ -10,6 +10,11 @@ export interface OpenAiChatCompletionResponse {
     readonly message?: {
       readonly content?: string | null;
       readonly role?: string;
+      readonly tool_calls?: readonly {
+        readonly id?: string;
+        readonly type?: string;
+        readonly function?: { readonly name?: string; readonly arguments?: string };
+      }[];
     };
   }[];
   readonly usage?: {
@@ -31,6 +36,7 @@ export function translateResponse(
 
   const text = choice.message?.content ?? '';
   const finishReason = mapFinishReason(choice.finish_reason);
+  const toolCalls = normalizeToolCalls(choice.message?.tool_calls);
   const inputTokens = response.usage?.prompt_tokens ?? 0;
   const outputTokens = response.usage?.completion_tokens ?? 0;
   const totalTokens = response.usage?.total_tokens ?? inputTokens + outputTokens;
@@ -58,10 +64,46 @@ export function translateResponse(
     }),
     finishReason,
     ...(structuredOutput === undefined ? {} : { structuredOutput }),
-    toolCalls: Object.freeze([]),
+    toolCalls,
     diagnosticId: `ai:${request.requestId}`,
     metadata: Object.freeze({ adapter: 'openai-ai' }),
   });
+}
+
+export function normalizeToolCalls(
+  raw: readonly {
+    readonly id?: string;
+    readonly type?: string;
+    readonly function?: { readonly name?: string; readonly arguments?: string };
+  }[] | undefined,
+): readonly NormalizedToolCall[] {
+  if (raw === undefined || raw.length === 0) return Object.freeze([]);
+  const calls: NormalizedToolCall[] = [];
+  for (const item of raw) {
+    const id = item.id?.trim() ?? '';
+    const name = item.function?.name?.trim() ?? '';
+    const argsText = item.function?.arguments ?? '';
+    if (id === '' || name === '') {
+      throw new ProviderAdapterError('invalid-request', 'OpenAI tool call missing id or name', false);
+    }
+    let parsed: unknown;
+    try {
+      parsed = argsText.trim() === '' ? {} : JSON.parse(argsText);
+    } catch {
+      throw new ProviderAdapterError('invalid-request', 'OpenAI tool call arguments were not valid JSON', false);
+    }
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      throw new ProviderAdapterError('invalid-request', 'OpenAI tool call arguments must be a JSON object', false);
+    }
+    calls.push(
+      Object.freeze({
+        id,
+        name,
+        arguments: Object.freeze({ ...(parsed as Record<string, unknown>) }),
+      }),
+    );
+  }
+  return Object.freeze(calls);
 }
 
 function mapFinishReason(reason: string | null | undefined): AiFinishReason {

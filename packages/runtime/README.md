@@ -16,3 +16,7 @@ See [docs/guides/runtime-recovery.md](../../docs/guides/runtime-recovery.md).
 ## v0.8 Streaming delivery
 
 Additive `RuntimeOrchestrator.executeStream` yields `RuntimeStreamEvent` deltas then exactly one terminal event (`completed` | `failed` | `cancelled`) carrying the final `RuntimeResult` (or failed/cancelled result). Optional `CapabilityInvocationPort.stream` supplies capability deltas. No `ExecutionStage = streaming`. Chunks are not checkpointed; final capability result remains post-invoke. See [Streaming guide](../../docs/guides/streaming.md).
+
+## v0.6 Tool-loop checkpoints (product v0.9)
+
+Additive durable `ExecutionCheckpoint.toolLoop` (Amendment C): normalized `turn` / `maxTurns` / `baseMessages` / `proposedCalls` / `calls[]` with `pre-tool` / `post-tool` stages. No provider SDK types. Capability control exposes `persistToolLoop` / `loadToolLoop`. See [Tool Calling guide](../../docs/guides/tools.md).

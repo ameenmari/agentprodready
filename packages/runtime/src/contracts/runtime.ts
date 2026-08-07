@@ -76,17 +76,68 @@ export type RuntimeStreamUsage = Readonly<{
   totalTokens: number;
 }>;
 
+/** Structural mirror of NormalizedToolCall — provider-neutral; no vendor SDK types. */
+export type CheckpointNormalizedToolCall = Readonly<{
+  id: string;
+  name: string;
+  arguments: Readonly<Record<string, unknown>>;
+}>;
+
+export type ToolLoopCallStage = 'pre-tool' | 'post-tool';
+
+export type ToolLoopCallCheckpoint = Readonly<{
+  turn: number;
+  toolCall: CheckpointNormalizedToolCall;
+  toolId: string;
+  sideEffect: 'read-only' | 'mutating' | 'external-side-effect';
+  idempotency: 'idempotent' | 'non-idempotent';
+  idempotencyKey: string;
+  stage: ToolLoopCallStage;
+  result?: unknown;
+}>;
+
+export type ToolLoopCheckpoint = Readonly<{
+  turn: number;
+  maxTurns: number;
+  baseMessages: unknown;
+  proposedCalls: readonly CheckpointNormalizedToolCall[];
+  calls: readonly ToolLoopCallCheckpoint[];
+}>;
+
 export type CapabilityStreamEvent =
   | Readonly<{ type: 'delta'; sequence: number; payload: Readonly<{ kind: 'text'; text: string }> }>
+  | Readonly<{
+      type: 'delta';
+      sequence: number;
+      payload: Readonly<{
+        kind: 'tool_call' | 'tool_result';
+        toolCallId: string;
+        toolId: string;
+        status: string;
+        errorCode?: string;
+      }>;
+    }>
   | Readonly<{ type: 'usage'; sequence: number; usage: RuntimeStreamUsage }>
   | Readonly<{ type: 'final'; sequence: number; result: unknown }>;
 
+/** Mid-invoke tool-loop persistence owned by Runtime. */
+export interface CapabilityExecutionControl {
+  persistToolLoop(toolLoop: ToolLoopCheckpoint): Promise<void>;
+  loadToolLoop(): Promise<ToolLoopCheckpoint | undefined>;
+}
+
 export interface CapabilityInvocationPort {
-  invoke(work: unknown, context: ExecutionContext, signal: AbortSignal): Promise<unknown>;
+  invoke(
+    work: unknown,
+    context: ExecutionContext,
+    signal: AbortSignal,
+    control?: CapabilityExecutionControl,
+  ): Promise<unknown>;
   stream?(
     work: unknown,
     context: ExecutionContext,
     signal: AbortSignal,
+    control?: CapabilityExecutionControl,
   ): AsyncIterable<CapabilityStreamEvent>;
 }
 
@@ -113,7 +164,17 @@ export type RuntimeStreamEvent<T = unknown> =
       executionId: string;
       correlationId: string;
       occurredAt: string;
-      payload: Readonly<{ kind: 'text'; text: string } | { kind: 'usage'; usage: RuntimeStreamUsage }>;
+      payload: Readonly<
+        | { kind: 'text'; text: string }
+        | { kind: 'usage'; usage: RuntimeStreamUsage }
+        | {
+            kind: 'tool_call' | 'tool_result';
+            toolCallId: string;
+            toolId: string;
+            status: string;
+            errorCode?: string;
+          }
+      >;
     }>
   | Readonly<{
       type: 'completed';
@@ -191,6 +252,8 @@ export interface ExecutionCheckpoint {
   readonly plan?: unknown;
   readonly workflowWork?: unknown;
   readonly capabilityResult?: CapabilityInvocationResult;
+  /** Durable AI↔Tool loop state (Amendment C). Never vendor SDK types. */
+  readonly toolLoop?: ToolLoopCheckpoint;
   readonly recoveryPolicy: RecoveryPolicyBundle;
   readonly terminal: boolean;
   readonly checkpointVersion: 1;

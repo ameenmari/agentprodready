@@ -224,7 +224,7 @@ No blueprint should be implemented without an implementation plan.
 | ----------------------- | ---------------------------------- |
 | Architecture            | Approved — 31 blueprints           |
 | Documentation Hardening | Complete                            |
-| Implementation          | Blueprints 01–31 + v0.1–v0.4 product slices |
+| Implementation          | Blueprints 01–31 + v0.1–v0.9 product slices |
 | Tests                   | Deterministic CI green; OpenAI/Postgres tests opt-in |
 | Local reference product | v0.1 complete (`reference-ai` default) |
 | Real AI provider        | v0.2 OpenAI (`AI_PROVIDER=openai`) |
@@ -304,9 +304,9 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Blueprints 01–31 complete; v0.1–v0.8 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory, Streaming Responses)
+**Implementation:** Blueprints 01–31 complete; v0.1–v0.9 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory, Streaming Responses, Tool Calling & Agent Actions)
 
-**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`
+**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`; tools via `pnpm test:tools`
 
 **AI providers:** `reference-ai` (default) · `openai-ai` (`AI_PROVIDER=openai`, see [docs/guides/ai-providers.md](docs/guides/ai-providers.md))
 
@@ -317,6 +317,10 @@ License information will be added as the project enters public release.
 **Evaluation:** disabled by default; `EVALUATION_ENABLED=true` wires Blueprint 14 in the host (see [docs/guides/evaluation.md](docs/guides/evaluation.md))
 
 **Vector search:** disabled by default; `VECTOR_SEARCH_ENABLED=true` enables semantic/hybrid Memory (see [docs/guides/vector-search.md](docs/guides/vector-search.md))
+
+**Streaming:** `POST .../invoke/stream` (see [docs/guides/streaming.md](docs/guides/streaming.md))
+
+**Tool calling:** disabled by default; `TOOLS_ENABLED=true` (see [docs/guides/tools.md](docs/guides/tools.md))
 
 **Runtime recovery:** disabled by default; see [docs/guides/runtime-recovery.md](docs/guides/runtime-recovery.md)
 

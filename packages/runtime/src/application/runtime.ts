@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { CreateExecutionContextRequest, ExecutionContext } from '@agentforge/foundation';
 import type {
+  CapabilityExecutionControl,
   ExecutionCheckpoint,
   ExecutionStage,
   ExecutionState,
@@ -16,6 +17,7 @@ import type {
   RuntimeResult,
   RuntimeStreamEvent,
   StateTransition,
+  ToolLoopCheckpoint,
 } from '../contracts/runtime.js';
 import { DEFAULT_RECOVERY_POLICY } from '../contracts/runtime.js';
 import { RuntimeError } from '../errors/runtime-error.js';
@@ -379,7 +381,8 @@ export class RuntimeOrchestrator {
 
       let finalResult: unknown;
       let sawFinal = false;
-      const streamIter = streamCapability(prepared.work, context, controller.signal);
+      const control = this.#toolLoopControl(context.executionId);
+      const streamIter = streamCapability(prepared.work, context, controller.signal, control);
 
       for await (const capEvent of streamIter) {
         if (now().getTime() >= deadlineAt.getTime()) {
@@ -392,14 +395,25 @@ export class RuntimeOrchestrator {
 
         switch (capEvent.type) {
           case 'delta': {
-            yield Object.freeze({
-              type: 'delta' as const,
-              sequence: sequence++,
-              executionId: context.executionId,
-              correlationId,
-              occurredAt: occurred(),
-              payload: Object.freeze({ kind: 'text' as const, text: capEvent.payload.text }),
-            });
+            if ('text' in capEvent.payload) {
+              yield Object.freeze({
+                type: 'delta' as const,
+                sequence: sequence++,
+                executionId: context.executionId,
+                correlationId,
+                occurredAt: occurred(),
+                payload: Object.freeze({ kind: 'text' as const, text: capEvent.payload.text }),
+              });
+            } else {
+              yield Object.freeze({
+                type: 'delta' as const,
+                sequence: sequence++,
+                executionId: context.executionId,
+                correlationId,
+                occurredAt: occurred(),
+                payload: Object.freeze({ ...capEvent.payload }),
+              });
+            }
             break;
           }
           case 'usage': {
@@ -1003,10 +1017,12 @@ export class RuntimeOrchestrator {
       );
     }
 
-    const raw = await this.dependencies.capabilities.invoke(work, context, signal);
+    const control = this.#toolLoopControl(context.executionId);
+    const raw = await this.dependencies.capabilities.invoke(work, context, signal, control);
     const capabilityResult = assertCheckpointableValue(raw, 'capabilityResult');
+    const after = (await this.dependencies.checkpoints.load(context.executionId)) ?? current;
     await this.#upsert({
-      ...current,
+      ...after,
       plan,
       workflowWork: work,
       capabilityResult,
@@ -1015,6 +1031,25 @@ export class RuntimeOrchestrator {
       history: state.history,
     });
     return capabilityResult as T;
+  }
+
+  #toolLoopControl(executionId: string): CapabilityExecutionControl {
+    return {
+      persistToolLoop: async (toolLoop) => {
+        const current = await this.dependencies.checkpoints.load(executionId);
+        if (current === undefined) {
+          throw new RuntimeError('RUNTIME_EXECUTION_FAILED', 'Cannot persist toolLoop without checkpoint');
+        }
+        await this.#upsert({
+          ...current,
+          toolLoop: assertCheckpointableValue(toolLoop, 'toolLoop') as ToolLoopCheckpoint,
+        });
+      },
+      loadToolLoop: async () => {
+        const current = await this.dependencies.checkpoints.load(executionId);
+        return current?.toolLoop;
+      },
+    };
   }
 
   async #ensurePlanningState(

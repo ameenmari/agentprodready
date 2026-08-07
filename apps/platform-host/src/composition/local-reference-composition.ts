@@ -16,6 +16,22 @@ import {
 import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentforge/ai-provider';
 import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentforge/ai-provider-openai';
 import { CapabilityResolver, InMemoryResolutionDiagnostics, InMemoryResolutionEvents, NoopResolutionTelemetry } from '@agentforge/capability-resolution';
+import {
+  AiToolCallHandoff,
+  FactoryToolAdapterResolver,
+  InMemoryToolDiagnostics,
+  InMemoryToolEvents,
+  NoopToolTelemetry,
+  ReferenceCounterToolAdapter,
+  ReferenceEchoToolAdapter,
+  REFERENCE_COUNTER_TOOL_ID,
+  REFERENCE_ECHO_TOOL_ID,
+  ToolInvocationCoordinator,
+  ToolRegistry,
+  ToolValidator,
+  referenceCounterContract,
+  referenceEchoContract,
+} from '@agentforge/tool-framework';
 import { CompositionRoot } from '@agentforge/composition';
 import {
   EventBus,
@@ -174,8 +190,6 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   }
   const aiFramework = new AiProviderFramework(aiResolver, new InMemoryAiDiagnostics(), new InMemoryAiEvents(), new NoopAiTelemetry());
 
-  const capabilityExecution = new LocalReferenceCapabilityExecution(capabilityResolver, aiFramework);
-
   const planningEvents = new InMemoryPlanningEventPublisher();
   const planningEngine = new PlanningEngine({
     goals: new ObjectiveGoalAnalyzer(),
@@ -215,6 +229,66 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     new InMemorySecurityEvents(),
     new NoopSecurityTelemetry(),
     new InMemorySecurityAudit(),
+  );
+
+  const toolRegistry = new ToolRegistry();
+  toolRegistry.register(referenceEchoContract());
+  toolRegistry.register(referenceCounterContract());
+  const toolAdapterResolver = new FactoryToolAdapterResolver();
+  const echoAdapter = new ReferenceEchoToolAdapter();
+  const counterAdapter = new ReferenceCounterToolAdapter();
+  toolAdapterResolver.bind(REFERENCE_ECHO_TOOL_ID, async () => echoAdapter);
+  toolAdapterResolver.bind(REFERENCE_COUNTER_TOOL_ID, async () => counterAdapter);
+  const toolEvents = new InMemoryToolEvents();
+  const toolValidator = new ToolValidator();
+  const toolCoordinator = new ToolInvocationCoordinator(
+    toolRegistry,
+    toolAdapterResolver,
+    toolValidator,
+    new InMemoryToolDiagnostics(),
+    toolEvents,
+    new NoopToolTelemetry(),
+    config.toolMaxResultBytes,
+  );
+  const toolLoopDeps = config.toolsEnabled
+    ? Object.freeze({
+        ai: aiFramework,
+        tools: toolRegistry,
+        coordinator: toolCoordinator,
+        validator: toolValidator,
+        adapters: toolAdapterResolver,
+        handoff: new AiToolCallHandoff(),
+        events: toolEvents,
+        security: securityPlatform,
+        resolver: capabilityResolver,
+        principal: localPrincipal(
+          localAuthenticationEvidence({ principalId: LOCAL_USER, tenantId: LOCAL_TENANT }, new Date().toISOString()),
+        ),
+        limits: Object.freeze({
+          enabled: true,
+          maxCallsPerInvocation: config.toolMaxCallsPerInvocation,
+          maxTurns: config.toolMaxTurns,
+          maxArgumentBytes: config.toolMaxArgumentBytes,
+          maxResultBytes: config.toolMaxResultBytes,
+          agentMaxToolInvocations: 8,
+        }),
+        toolDefinitions: () =>
+          Object.freeze(
+            toolRegistry.list().map((contract) =>
+              Object.freeze({
+                name: contract.id,
+                description: contract.metadata['description'] ?? contract.id,
+                inputSchema: contract.inputSchema,
+              }),
+            ),
+          ),
+      })
+    : undefined;
+
+  const capabilityExecution = new LocalReferenceCapabilityExecution(
+    capabilityResolver,
+    aiFramework,
+    toolLoopDeps,
   );
 
   const runtime = new RuntimeOrchestrator({

@@ -49,7 +49,7 @@ export function referenceAgentManifest(): AgentManifest {
     constraints: Object.freeze({
       maximumDurationMs: 30_000,
       maximumCost: 1,
-      maximumToolInvocations: 0,
+      maximumToolInvocations: 8,
       maximumPlanningDepth: 1,
       maximumWorkflowIterations: 1,
       prohibitedOperations: Object.freeze([]),

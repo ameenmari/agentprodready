@@ -1,8 +1,13 @@
 import type { ExecutionContext } from '@agentforge/foundation';
 import type { CapabilityBinding, CapabilityRequest, CapabilityResolver } from '@agentforge/capability-resolution';
-import type { CapabilityInvocationPort, CapabilityStreamEvent } from '@agentforge/runtime';
+import type {
+  CapabilityExecutionControl,
+  CapabilityInvocationPort,
+  CapabilityStreamEvent,
+} from '@agentforge/runtime';
 import type { NodeExecutionContract } from '@agentforge/workflow';
-import type { AiExecutionRequest, AiProviderFramework, NormalizedAiResult } from '@agentforge/ai-provider';
+import type { AiProviderFramework, NormalizedAiResult } from '@agentforge/ai-provider';
+import { runAiToolLoop, streamAiWithOptionalTools, type ToolLoopDeps } from './local-reference-tool-loop.js';
 
 export interface LocalCapabilityExecutionOutput {
   readonly bindings: readonly CapabilityBinding[];
@@ -15,16 +20,28 @@ export class LocalReferenceCapabilityExecution implements CapabilityInvocationPo
   public constructor(
     private readonly resolver: CapabilityResolver,
     private readonly ai: AiProviderFramework,
+    private readonly toolLoop?: ToolLoopDeps,
   ) {}
 
   public async invoke(
     work: unknown,
     context: ExecutionContext,
     signal: AbortSignal,
+    control?: CapabilityExecutionControl,
   ): Promise<LocalCapabilityExecutionOutput> {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const prepared = await this.#prepare(work, context);
-    const aiResult = await this.ai.execute(this.#aiRequest(prepared.binding, context, prepared.objective, signal, false));
+    const aiResult =
+      this.toolLoop === undefined
+        ? await this.ai.execute(plainRequest(prepared.binding, context, prepared.objective, signal, false))
+        : await runAiToolLoop(
+            this.toolLoop,
+            prepared.binding,
+            context,
+            prepared.objective,
+            signal,
+            control,
+          );
     return Object.freeze({
       bindings: prepared.bindings,
       aiResult,
@@ -37,81 +54,23 @@ export class LocalReferenceCapabilityExecution implements CapabilityInvocationPo
     work: unknown,
     context: ExecutionContext,
     signal: AbortSignal,
+    control?: CapabilityExecutionControl,
   ): AsyncIterable<CapabilityStreamEvent> {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const prepared = await this.#prepare(work, context);
-    const request = this.#aiRequest(prepared.binding, context, prepared.objective, signal, true);
-    let sequence = 0;
-    let text = '';
-    let usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
-    let finishReason: NormalizedAiResult['finishReason'] = 'unknown';
-    let diagnosticId = `ai:${request.requestId}`;
-    let sawTerminal = false;
-
-    for await (const event of this.ai.stream(request)) {
-      switch (event.type) {
-        case 'content': {
-          if (event.part.type === 'text') {
-            text += event.part.text;
-            yield {
-              type: 'delta',
-              sequence: sequence++,
-              payload: Object.freeze({ kind: 'text' as const, text: event.part.text }),
-            };
-          }
-          break;
-        }
-        case 'usage': {
-          usage = { ...event.usage };
-          yield { type: 'usage', sequence: sequence++, usage: Object.freeze({ ...event.usage }) };
-          break;
-        }
-        case 'completed': {
-          finishReason = event.finishReason;
-          diagnosticId = event.diagnosticId;
-          sawTerminal = true;
-          break;
-        }
-        case 'failed': {
-          sawTerminal = true;
-          throw Object.assign(new Error(event.message), { code: event.code, retryable: event.retryable });
-        }
-        case 'cancelled': {
-          sawTerminal = true;
-          throw new TypeError('Capability execution aborted');
-        }
-        case 'tool-call': {
-          throw new TypeError('Tool calling is not supported in v0.8 streaming');
-        }
-      }
+    if (this.toolLoop === undefined) {
+      yield* streamPlainAi(this.ai, prepared.binding, context, prepared.objective, signal, prepared.workflowId);
+      return;
     }
-
-    if (!sawTerminal) {
-      throw new TypeError('AI stream ended without terminal event');
-    }
-
-    const aiResult: NormalizedAiResult = Object.freeze({
-      requestId: request.requestId,
-      content: Object.freeze([Object.freeze({ type: 'text' as const, text })]),
-      usage: Object.freeze(usage),
-      model: Object.freeze({
-        id: prepared.binding.implementationId,
-        capabilities: Object.freeze([prepared.binding.capability]),
-      }),
-      finishReason,
-      toolCalls: Object.freeze([]),
-      diagnosticId,
-      metadata: Object.freeze({ source: 'local-reference', mode: 'stream' }),
-    });
-
-    const final: LocalCapabilityExecutionOutput = Object.freeze({
-      bindings: prepared.bindings,
-      aiResult,
-      planId: `plan:${context.executionId}`,
-      workflowId: prepared.workflowId,
-    });
-
-    yield { type: 'final', sequence: sequence++, result: final };
+    yield* streamAiWithOptionalTools(
+      this.toolLoop,
+      prepared.binding,
+      context,
+      prepared.objective,
+      signal,
+      control,
+      prepared.workflowId,
+    );
   }
 
   async #prepare(
@@ -147,33 +106,111 @@ export class LocalReferenceCapabilityExecution implements CapabilityInvocationPo
     const snapshot = extractSnapshot(work);
     return Object.freeze({ bindings, binding, objective, workflowId: snapshot.workflowId });
   }
+}
 
-  #aiRequest(
-    binding: CapabilityBinding,
-    context: ExecutionContext,
-    objective: string,
-    signal: AbortSignal,
-    streaming: boolean,
-  ): AiExecutionRequest {
-    return Object.freeze({
-      requestId: `${context.executionId}:${binding.bindingId}`,
-      binding,
-      context,
-      messages: Object.freeze([
-        Object.freeze({
-          role: 'user' as const,
-          content: Object.freeze([Object.freeze({ type: 'text' as const, text: objective })]),
-        }),
-      ]),
-      generation: Object.freeze({ maximumOutputTokens: 128 }),
-      ...(streaming
-        ? { streaming: Object.freeze({ enabled: true, includeUsage: true }) }
-        : {}),
-      metadata: Object.freeze({ source: 'local-reference' }),
-      constraints: Object.freeze({}),
-      signal,
-    });
+async function* streamPlainAi(
+  ai: AiProviderFramework,
+  binding: CapabilityBinding,
+  context: ExecutionContext,
+  objective: string,
+  signal: AbortSignal,
+  workflowId: string,
+): AsyncIterable<CapabilityStreamEvent> {
+  const request = plainRequest(binding, context, objective, signal, true);
+  let sequence = 0;
+  let text = '';
+  let usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
+  let finishReason: NormalizedAiResult['finishReason'] = 'unknown';
+  let diagnosticId = `ai:${request.requestId}`;
+  let sawTerminal = false;
+
+  for await (const event of ai.stream(request)) {
+    switch (event.type) {
+      case 'content': {
+        if (event.part.type === 'text') {
+          text += event.part.text;
+          yield {
+            type: 'delta',
+            sequence: sequence++,
+            payload: Object.freeze({ kind: 'text' as const, text: event.part.text }),
+          };
+        }
+        break;
+      }
+      case 'usage': {
+        usage = { ...event.usage };
+        yield { type: 'usage', sequence: sequence++, usage: Object.freeze({ ...event.usage }) };
+        break;
+      }
+      case 'completed': {
+        finishReason = event.finishReason;
+        diagnosticId = event.diagnosticId;
+        sawTerminal = true;
+        break;
+      }
+      case 'failed': {
+        sawTerminal = true;
+        throw Object.assign(new Error(event.message), { code: event.code, retryable: event.retryable });
+      }
+      case 'cancelled': {
+        sawTerminal = true;
+        throw new TypeError('Capability execution aborted');
+      }
+      case 'tool-call': {
+        throw new TypeError('Tool calling requires TOOLS_ENABLED=true');
+      }
+    }
   }
+
+  if (!sawTerminal) throw new TypeError('AI stream ended without terminal event');
+
+  yield {
+    type: 'final',
+    sequence: sequence++,
+    result: Object.freeze({
+      bindings: Object.freeze([binding]),
+      aiResult: Object.freeze({
+        requestId: request.requestId,
+        content: Object.freeze([Object.freeze({ type: 'text' as const, text })]),
+        usage: Object.freeze(usage),
+        model: Object.freeze({
+          id: binding.implementationId,
+          capabilities: Object.freeze([binding.capability]),
+        }),
+        finishReason,
+        toolCalls: Object.freeze([]),
+        diagnosticId,
+        metadata: Object.freeze({ source: 'local-reference', mode: 'stream' }),
+      }),
+      planId: `plan:${context.executionId}`,
+      workflowId,
+    }),
+  };
+}
+
+function plainRequest(
+  binding: CapabilityBinding,
+  context: ExecutionContext,
+  objective: string,
+  signal: AbortSignal,
+  streaming: boolean,
+): Parameters<AiProviderFramework['execute']>[0] {
+  return Object.freeze({
+    requestId: `${context.executionId}:${binding.bindingId}`,
+    binding,
+    context,
+    messages: Object.freeze([
+      Object.freeze({
+        role: 'user' as const,
+        content: Object.freeze([Object.freeze({ type: 'text' as const, text: objective })]),
+      }),
+    ]),
+    generation: Object.freeze({ maximumOutputTokens: 128 }),
+    ...(streaming ? { streaming: Object.freeze({ enabled: true, includeUsage: true }) } : {}),
+    metadata: Object.freeze({ source: 'local-reference' }),
+    constraints: Object.freeze({}),
+    signal,
+  });
 }
 
 function extractNodes(work: unknown): readonly NodeExecutionContract[] {

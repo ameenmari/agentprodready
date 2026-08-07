@@ -28,6 +28,8 @@ jobs:
         run: pnpm typecheck
       - name: Test
         run: pnpm test
+      - name: Tool calling tests
+        run: pnpm test:tools
       - name: Build
         run: pnpm build
       - name: Smoke
@@ -50,7 +52,7 @@ jobs:
       - name: Compute tags
         id: meta
         run: |
-          echo "version=0.7.0" >> "$GITHUB_OUTPUT"
+          echo "version=0.9.0" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
@@ -74,7 +76,7 @@ jobs:
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
             -e PERSISTENCE_PROVIDER=in-memory \
-            agentforge/platform-host:0.7.0
+            agentforge/platform-host:0.9.0
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container
