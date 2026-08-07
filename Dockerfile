@@ -19,11 +19,12 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=3000 \
     LOG_LEVEL=info \
-    REFERENCE_AGENT_ENABLED=true
+    REFERENCE_AGENT_ENABLED=true \
+    AGENTFORGE_ALLOW_REFERENCE_AUTH=true
 
 LABEL org.opencontainers.image.title="agentforge-platform-host" \
-      org.opencontainers.image.version="0.1.0" \
-      org.opencontainers.image.description="AgentForge v0.1 Local Reference Product"
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.description="AgentForge v1.0 Local Reference Product"
 
 COPY --from=build --chown=node:node /out /app
 

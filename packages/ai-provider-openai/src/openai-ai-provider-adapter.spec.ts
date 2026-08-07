@@ -335,4 +335,27 @@ describe('loadOpenAiProviderConfig', () => {
       loadOpenAiProviderConfig({ OPENAI_API_KEY: 'sk-test', OPENAI_BASE_URL: 'not-a-url' }),
     ).toThrow(/OPENAI_BASE_URL/);
   });
+
+  it('rejects link-local and metadata hosts when NODE_ENV=production', () => {
+    expect(() =>
+      loadOpenAiProviderConfig({
+        NODE_ENV: 'production',
+        OPENAI_API_KEY: 'sk-test',
+        OPENAI_BASE_URL: 'http://169.254.169.254/latest/meta-data',
+      }),
+    ).toThrow(/not permitted/);
+    expect(() =>
+      loadOpenAiProviderConfig({
+        NODE_ENV: 'production',
+        OPENAI_API_KEY: 'sk-test',
+        OPENAI_BASE_URL: 'http://metadata.google.internal/',
+      }),
+    ).toThrow(/not permitted/);
+    const ok = loadOpenAiProviderConfig({
+      NODE_ENV: 'production',
+      OPENAI_API_KEY: 'sk-test',
+      OPENAI_BASE_URL: 'https://api.openai.com/v1',
+    });
+    expect(ok.baseUrl).toBe('https://api.openai.com/v1');
+  });
 });

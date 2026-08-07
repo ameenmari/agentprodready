@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: agentforge/platform-host:0.7.0
+    image: agentforge/platform-host:1.0.0
     ports:
       - "3000:3000"
     environment:
@@ -19,6 +19,8 @@ services:
       PERSISTENCE_PROVIDER: "in-memory"
       RUNTIME_RECOVERY_ENABLED: "false"
       MEMORY_PROVIDER: "in-memory"
+      AGENTFORGE_ALLOW_REFERENCE_AUTH: "true"
+      AI_ROUTING_MODE: "fixed"
 
   postgres:
     profiles: ["postgres"]

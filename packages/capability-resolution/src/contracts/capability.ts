@@ -7,11 +7,33 @@ export interface ResolutionConstraints {readonly locality?:string;readonly compl
 export interface CapabilityRequest {readonly requestId:string;readonly capability:string;readonly contractVersion?:string;readonly context:ExecutionContext;readonly node:NodeExecutionContract;readonly constraints:ResolutionConstraints;}
 export type PrecedenceSource='tenant'|'workspace'|'project'|'global'|'default';
 export interface CapabilityBinding {readonly bindingId:string;readonly requestId:string;readonly capability:string;readonly capabilityContractVersion:string;readonly implementationId:string;readonly implementationVersion:string;readonly provider:Readonly<{id:string;pluginId:string;contributionId:string}>;readonly source:PrecedenceSource;readonly diagnosticId:string;}
-export interface ResolutionConfiguration {readonly tenant?:Readonly<Record<string,string>>;readonly workspace?:Readonly<Record<string,string>>;readonly project?:Readonly<Record<string,string>>;readonly global?:Readonly<Record<string,string>>;}
+export type ResolutionRoutingMode = 'fixed' | 'fallback';
+/** Ordered failover candidates for a capability (Amendment 07 / v1.0). */
+export interface ResolutionRoutingConfiguration {
+  readonly mode: ResolutionRoutingMode;
+  readonly orderedImplementationIds: readonly string[];
+}
+export interface ResolutionConfiguration {
+  readonly tenant?: Readonly<Record<string, string>>;
+  readonly workspace?: Readonly<Record<string, string>>;
+  readonly project?: Readonly<Record<string, string>>;
+  readonly global?: Readonly<Record<string, string>>;
+  /** Optional per-capability routing. Key = capability id. */
+  readonly routing?: Readonly<Record<string, ResolutionRoutingConfiguration>>;
+}
 export interface ResolutionConfigurationProvider {get(context:ExecutionContext):ResolutionConfiguration|Promise<ResolutionConfiguration>;}
+export interface ResolveNextOptions {
+  readonly excludeImplementationIds: readonly string[];
+}
 export interface CapabilityStore {register(definition:CapabilityDefinition):void;get(id:string):CapabilityDefinition|undefined;list():readonly CapabilityDefinition[];}
 export interface ProviderStore {register(descriptor:ImplementationDescriptor):void;get(id:string):ImplementationDescriptor|undefined;forCapability(id:string):readonly ImplementationDescriptor[];list():readonly ImplementationDescriptor[];}
-export interface PolicyInput {readonly request:CapabilityRequest;readonly capability:CapabilityDefinition;readonly candidates:readonly ImplementationDescriptor[];readonly configuration:ResolutionConfiguration;}
+export interface PolicyInput {
+  readonly request: CapabilityRequest;
+  readonly capability: CapabilityDefinition;
+  readonly candidates: readonly ImplementationDescriptor[];
+  readonly configuration: ResolutionConfiguration;
+  readonly excludeImplementationIds?: readonly string[];
+}
 export interface PolicyDecision {readonly implementation:ImplementationDescriptor;readonly source:PrecedenceSource;readonly rejected:readonly {readonly implementationId:string;readonly reason:string}[];}
 export interface ResolutionPolicy {select(input:PolicyInput):PolicyDecision;}
 export interface ResolutionDiagnostic {readonly id:string;readonly requestId:string;readonly capability:string;readonly outcome:'resolved'|'failed';readonly candidates:readonly string[];readonly selected?:string;readonly source?:PrecedenceSource;readonly rejected:readonly {readonly implementationId:string;readonly reason:string}[];readonly errorCode?:string;}

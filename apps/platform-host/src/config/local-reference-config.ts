@@ -16,6 +16,7 @@ import {
 } from '@agentforge/persistence-postgres';
 
 export type AiProviderSelection = 'reference' | 'openai';
+export type AiRoutingMode = 'fixed' | 'fallback';
 export type MemoryProviderSelection = 'in-memory' | 'persistent';
 export type EvaluationResultStoreSelection = 'in-memory' | 'persistent';
 export type VectorStoreProviderSelection = 'none' | 'pgvector' | 'memory';
@@ -28,6 +29,10 @@ export interface LocalReferenceConfig {
   readonly logLevel: 'debug' | 'info' | 'warn' | 'error';
   readonly referenceAgentEnabled: boolean;
   readonly aiProvider: AiProviderSelection;
+  /** v1.0 multi-provider routing. Default fixed. */
+  readonly aiRoutingMode: AiRoutingMode;
+  /** Ordered fallback selectors (not including primary). */
+  readonly aiFallbackProviders: readonly AiProviderSelection[];
   readonly openAi?: OpenAiProviderConfig;
   readonly persistenceProvider: PersistenceProviderSelection;
   readonly postgres?: PostgresPersistenceConfig;
@@ -56,6 +61,12 @@ export interface LocalReferenceConfig {
   readonly toolMaxTurns: number;
   readonly toolMaxArgumentBytes: number;
   readonly toolMaxResultBytes: number;
+  /** Graceful shutdown drain timeout. Default 30000. */
+  readonly shutdownTimeoutMs: number;
+  /** Max JSON request body bytes. Default 1048576 (1 MiB). */
+  readonly maxJsonBodyBytes: number;
+  /** Allow LocalReference auth when NODE_ENV=production (unsafe demo). */
+  readonly allowReferenceAuth: boolean;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -67,7 +78,14 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.9.0';
+export const PRODUCT_VERSION = '1.0.0';
+export const MAX_TOOL_MAX_CALLS = 64;
+export const MAX_TOOL_MAX_TURNS = 32;
+export const MAX_TOOL_ARGUMENT_BYTES = 1_048_576;
+export const MAX_TOOL_RESULT_BYTES = 4_194_304;
+export const MAX_SHUTDOWN_TIMEOUT_MS = 300_000;
+export const MAX_JSON_BODY_BYTES = 16_777_216;
+export const DEFAULT_JSON_BODY_BYTES = 1_048_576;
 
 const REFERENCE_PROFILE = Object.freeze({
   embeddingProvider: 'reference' as const,
@@ -135,7 +153,9 @@ function assertProfileMatch(
 }
 
 export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): LocalReferenceConfig {
-  const port = Number.parseInt(env['PORT'] ?? '3000', 10);
+  const portRaw = (env['PORT'] ?? '3000').trim();
+  if (!/^\d+$/u.test(portRaw)) throw new Error('PORT must be a valid TCP port');
+  const port = Number.parseInt(portRaw, 10);
   const logLevel = env['LOG_LEVEL'] ?? 'info';
   if (!Number.isFinite(port) || port < 0 || port > 65535) {
     throw new Error('PORT must be a valid TCP port');
@@ -150,7 +170,13 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
   }
   const aiProvider: AiProviderSelection = aiProviderRaw;
 
-  const openAi = aiProvider === 'openai' ? loadOpenAiProviderConfig(env) : undefined;
+  const aiRoutingModeRaw = (env['AI_ROUTING_MODE'] ?? 'fixed').trim().toLowerCase();
+  if (aiRoutingModeRaw !== 'fixed' && aiRoutingModeRaw !== 'fallback') {
+    throw new Error('AI_ROUTING_MODE must be fixed or fallback');
+  }
+  const aiRoutingMode: AiRoutingMode = aiRoutingModeRaw;
+  const aiFallbackProviders = parseFallbackProviders(env['AI_FALLBACK_PROVIDERS'], aiProvider, aiRoutingMode);
+
   const persistenceProvider = loadPersistenceProviderSelection(env);
   const postgres =
     persistenceProvider === 'postgres' ? loadPostgresPersistenceConfig(env) : undefined;
@@ -260,39 +286,65 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
   );
 
   const toolsEnabled = parseBooleanFlag(env['TOOLS_ENABLED'], 'TOOLS_ENABLED', false);
-  const toolMaxCallsPerInvocation = parsePositiveInt(
+  const toolMaxCallsPerInvocation = parseBoundedPositiveInt(
     env['TOOL_MAX_CALLS_PER_INVOCATION'],
     'TOOL_MAX_CALLS_PER_INVOCATION',
     8,
+    MAX_TOOL_MAX_CALLS,
   );
-  const toolMaxTurns = parsePositiveInt(env['TOOL_MAX_TURNS'], 'TOOL_MAX_TURNS', 4);
-  const toolMaxArgumentBytes = parsePositiveInt(
+  const toolMaxTurns = parseBoundedPositiveInt(env['TOOL_MAX_TURNS'], 'TOOL_MAX_TURNS', 4, MAX_TOOL_MAX_TURNS);
+  const toolMaxArgumentBytes = parseBoundedPositiveInt(
     env['TOOL_MAX_ARGUMENT_BYTES'],
     'TOOL_MAX_ARGUMENT_BYTES',
     16_384,
+    MAX_TOOL_ARGUMENT_BYTES,
   );
-  const toolMaxResultBytes = parsePositiveInt(
+  const toolMaxResultBytes = parseBoundedPositiveInt(
     env['TOOL_MAX_RESULT_BYTES'],
     'TOOL_MAX_RESULT_BYTES',
     65_536,
+    MAX_TOOL_RESULT_BYTES,
+  );
+  const shutdownTimeoutMs = parseBoundedPositiveInt(
+    env['SHUTDOWN_TIMEOUT_MS'],
+    'SHUTDOWN_TIMEOUT_MS',
+    30_000,
+    MAX_SHUTDOWN_TIMEOUT_MS,
+  );
+  const maxJsonBodyBytes = parseBoundedPositiveInt(
+    env['MAX_JSON_BODY_BYTES'],
+    'MAX_JSON_BODY_BYTES',
+    DEFAULT_JSON_BODY_BYTES,
+    MAX_JSON_BODY_BYTES,
+  );
+  const allowReferenceAuth = parseBooleanFlag(
+    env['AGENTFORGE_ALLOW_REFERENCE_AUTH'],
+    'AGENTFORGE_ALLOW_REFERENCE_AUTH',
+    false,
   );
 
-  const resolvedOpenAi =
-    openAi ??
-    (vectorSearchEnabled && embeddingProvider === 'openai'
-      ? loadOpenAiProviderConfig(env)
-      : undefined);
+  const needsOpenAiKey =
+    aiProvider === 'openai' ||
+    aiFallbackProviders.includes('openai') ||
+    (vectorSearchEnabled && embeddingProvider === 'openai');
+  const resolvedOpenAi = needsOpenAiKey ? loadOpenAiProviderConfig(env) : undefined;
 
   return Object.freeze({
     host: env['HOST'] ?? '127.0.0.1',
     port,
     logLevel,
-    referenceAgentEnabled: (env['REFERENCE_AGENT_ENABLED'] ?? 'true') !== 'false',
+    referenceAgentEnabled: parseBooleanFlag(env['REFERENCE_AGENT_ENABLED'], 'REFERENCE_AGENT_ENABLED', true),
     aiProvider,
+    aiRoutingMode,
+    aiFallbackProviders,
     ...(resolvedOpenAi === undefined ? {} : { openAi: resolvedOpenAi }),
     persistenceProvider,
     ...(postgres === undefined ? {} : { postgres }),
-    runtimeRecoveryEnabled: (env['RUNTIME_RECOVERY_ENABLED'] ?? 'false') === 'true',
+    runtimeRecoveryEnabled: parseBooleanFlag(
+      env['RUNTIME_RECOVERY_ENABLED'],
+      'RUNTIME_RECOVERY_ENABLED',
+      false,
+    ),
     memoryProvider,
     evaluationEnabled,
     evaluationResultStore,
@@ -309,12 +361,51 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     toolMaxTurns,
     toolMaxArgumentBytes,
     toolMaxResultBytes,
+    shutdownTimeoutMs,
+    maxJsonBodyBytes,
+    allowReferenceAuth,
   });
+}
+
+function parseFallbackProviders(
+  raw: string | undefined,
+  primary: AiProviderSelection,
+  mode: AiRoutingMode,
+): readonly AiProviderSelection[] {
+  const text = (raw ?? '').trim();
+  if (text === '') {
+    if (mode === 'fallback') {
+      throw new Error('AI_FALLBACK_PROVIDERS is required when AI_ROUTING_MODE=fallback');
+    }
+    return Object.freeze([]);
+  }
+  const parts = text.split(',').map((part) => part.trim().toLowerCase()).filter((part) => part !== '');
+  if (parts.length === 0) {
+    throw new Error('AI_FALLBACK_PROVIDERS contains an empty token');
+  }
+  const seen = new Set<string>([primary]);
+  const result: AiProviderSelection[] = [];
+  for (const part of parts) {
+    if (part !== 'reference' && part !== 'openai') {
+      throw new Error('AI_FALLBACK_PROVIDERS entries must be reference or openai');
+    }
+    if (seen.has(part)) {
+      throw new Error(`Duplicate AI provider in routing list: ${part}`);
+    }
+    seen.add(part);
+    result.push(part);
+  }
+  if (mode === 'fallback' && result.length === 0) {
+    throw new Error('AI_FALLBACK_PROVIDERS is required when AI_ROUTING_MODE=fallback');
+  }
+  return Object.freeze(result);
 }
 
 function parseNonNegativeInt(raw: string | undefined, name: string, fallback: number): number {
   if (raw === undefined || raw.trim() === '') return fallback;
-  const value = Number.parseInt(raw, 10);
+  const text = raw.trim();
+  if (!/^\d+$/u.test(text)) throw new Error(`${name} must be a non-negative integer`);
+  const value = Number.parseInt(text, 10);
   if (!Number.isFinite(value) || value < 0) {
     throw new Error(`${name} must be a non-negative integer`);
   }
@@ -323,10 +414,23 @@ function parseNonNegativeInt(raw: string | undefined, name: string, fallback: nu
 
 function parsePositiveInt(raw: string | undefined, name: string, fallback: number): number {
   if (raw === undefined || raw.trim() === '') return fallback;
-  const value = Number.parseInt(raw, 10);
+  const text = raw.trim();
+  if (!/^\d+$/u.test(text)) throw new Error(`${name} must be a positive integer`);
+  const value = Number.parseInt(text, 10);
   if (!Number.isFinite(value) || value < 1) {
     throw new Error(`${name} must be a positive integer`);
   }
+  return value;
+}
+
+function parseBoundedPositiveInt(
+  raw: string | undefined,
+  name: string,
+  fallback: number,
+  max: number,
+): number {
+  const value = parsePositiveInt(raw, name, fallback);
+  if (value > max) throw new Error(`${name} must be <= ${String(max)}`);
   return value;
 }
 
@@ -375,4 +479,38 @@ export function defaultToolsConfigFields(): Pick<
     toolMaxArgumentBytes: 16_384,
     toolMaxResultBytes: 65_536,
   });
+}
+
+export function defaultRoutingConfigFields(): Pick<
+  LocalReferenceConfig,
+  'aiRoutingMode' | 'aiFallbackProviders'
+> {
+  return Object.freeze({
+    aiRoutingMode: 'fixed' as const,
+    aiFallbackProviders: Object.freeze([]),
+  });
+}
+
+export function defaultHardeningConfigFields(): Pick<
+  LocalReferenceConfig,
+  'shutdownTimeoutMs' | 'maxJsonBodyBytes' | 'allowReferenceAuth'
+> {
+  return Object.freeze({
+    shutdownTimeoutMs: 30_000,
+    maxJsonBodyBytes: DEFAULT_JSON_BODY_BYTES,
+    allowReferenceAuth: false,
+  });
+}
+
+export function assertProductionAuthPolicy(config: LocalReferenceConfig, env: NodeJS.ProcessEnv = process.env): void {
+  if ((env['NODE_ENV'] ?? '').trim() !== 'production') return;
+  if (config.allowReferenceAuth) {
+    process.stderr.write(
+      'WARNING: AGENTFORGE_ALLOW_REFERENCE_AUTH=true — LocalReference authentication is NOT production authentication.\n',
+    );
+    return;
+  }
+  throw new Error(
+    'LocalReference authentication is not permitted when NODE_ENV=production. Set AGENTFORGE_ALLOW_REFERENCE_AUTH=true only for explicit demos.',
+  );
 }

@@ -2,7 +2,34 @@
 
 > **A Modular, Provider-Independent AI Agent Framework**
 
-**Version:** 1.0 (Architecture Complete)
+**Version:** 1.0.0 (production-ready local reference product)
+
+---
+
+# Quickstart
+
+Requires **Node 24** and **pnpm** (`packageManager` in root `package.json`).
+
+```bash
+pnpm install
+pnpm verify
+pnpm start
+```
+
+Then:
+
+```bash
+curl http://127.0.0.1:3000/health
+curl http://127.0.0.1:3000/ready
+curl -X POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke \
+  -H "Content-Type: application/json" \
+  -H "Authorization: LocalReference principalId=local-user;tenantId=local-tenant" \
+  -d "{\"objective\":\"hello\"}"
+```
+
+Reference path needs no database and no API key. Opt-in: OpenAI, Postgres, recovery, Memory, vector, Evaluation, streaming, tools, and AI routing — see [docs/guides/configuration.md](docs/guides/configuration.md) and [docs/guides/multi-provider-routing.md](docs/guides/multi-provider-routing.md).
+
+Production notes: [docs/guides/production-deployment.md](docs/guides/production-deployment.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md).
 
 ---
 

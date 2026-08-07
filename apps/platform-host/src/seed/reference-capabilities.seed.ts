@@ -176,12 +176,19 @@ export function seedReferenceCapabilities(): {
 export function referenceResolutionConfiguration(
   implementationId: string = REFERENCE_AI_ID,
   embeddingProvider: EmbeddingProviderSelection = 'none',
+  routing?: Readonly<{
+    mode: 'fixed' | 'fallback';
+    orderedImplementationIds: readonly string[];
+  }>,
 ): StaticResolutionConfiguration {
   const judgeImplementationId = `${implementationId}:evaluation.judge`;
   const embeddingImplementationId =
     embeddingProvider === 'openai'
       ? OPENAI_EMBEDDING_IMPLEMENTATION_ID
       : REFERENCE_EMBEDDING_IMPLEMENTATION_ID;
+  const ordered =
+    routing?.orderedImplementationIds ??
+    Object.freeze([implementationId]);
   return new StaticResolutionConfiguration(
     Object.freeze({
       global: Object.freeze({
@@ -190,6 +197,20 @@ export function referenceResolutionConfiguration(
         embedding: embeddingImplementationId,
         [REFERENCE_ECHO_CAPABILITY]: REFERENCE_ECHO_TOOL_ID,
         [REFERENCE_COUNTER_CAPABILITY]: REFERENCE_COUNTER_TOOL_ID,
+      }),
+      routing: Object.freeze({
+        'text-generation': Object.freeze({
+          mode: routing?.mode ?? 'fixed',
+          orderedImplementationIds: Object.freeze([...ordered]),
+        }),
+        'evaluation.judge': Object.freeze({
+          mode: 'fixed' as const,
+          orderedImplementationIds: Object.freeze([judgeImplementationId]),
+        }),
+        embedding: Object.freeze({
+          mode: 'fixed' as const,
+          orderedImplementationIds: Object.freeze([embeddingImplementationId]),
+        }),
       }),
     }),
   );

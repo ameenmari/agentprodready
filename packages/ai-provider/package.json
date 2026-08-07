@@ -1,1 +1,21 @@
-{"name":"@agentforge/ai-provider","version":"0.4.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"files":["dist","README.md"],"dependencies":{"@agentforge/foundation":"workspace:*","@agentforge/capability-resolution":"workspace:*"}}
+{
+  "name": "@agentforge/ai-provider",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentforge/foundation": "workspace:*",
+    "@agentforge/capability-resolution": "workspace:*"
+  }
+}

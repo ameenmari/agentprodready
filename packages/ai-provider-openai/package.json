@@ -1,6 +1,6 @@
 {
   "name": "@agentforge/ai-provider-openai",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,10 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "@agentforge/ai-provider": "workspace:*",
     "@agentforge/foundation": "workspace:*",

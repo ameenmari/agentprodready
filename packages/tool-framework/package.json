@@ -1,1 +1,24 @@
-{"name":"@agentforge/tool-framework","version":"0.2.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"files":["dist","README.md"],"dependencies":{"@agentforge/ai-provider":"workspace:*","@agentforge/capability-resolution":"workspace:*","@agentforge/foundation":"workspace:*","@agentforge/plugin-framework":"workspace:*","@agentforge/workflow":"workspace:*"}}
+{
+  "name": "@agentforge/tool-framework",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentforge/ai-provider": "workspace:*",
+    "@agentforge/capability-resolution": "workspace:*",
+    "@agentforge/foundation": "workspace:*",
+    "@agentforge/plugin-framework": "workspace:*",
+    "@agentforge/workflow": "workspace:*"
+  }
+}

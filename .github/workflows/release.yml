@@ -1,0 +1,65 @@
+# Validation-only release workflow for tags matching v*.
+# Does NOT publish npm packages, push Docker registry images, or create GitHub Releases
+# unless a future explicit human-approved publish step is added.
+name: Release validate
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  validate:
+    name: Release gates (validate only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.1 --activate
+      - name: Install (frozen)
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Boundaries
+        run: pnpm boundaries
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit / full tests
+        run: pnpm test
+      - name: Specialized suites
+        run: |
+          pnpm test:tools
+          pnpm test:routing
+          pnpm test:tenant-isolation
+          pnpm test:streaming
+      - name: Build
+        run: pnpm build
+      - name: Smoke
+        run: pnpm smoke
+      - name: Dependency audit (informational)
+        run: pnpm audit --prod || true
+      - name: Docker build
+        run: |
+          docker build \
+            -t "agentforge/platform-host:1.0.0" \
+            -t "agentforge/platform-host:${GITHUB_REF_NAME}" \
+            .
+      - name: Docker smoke
+        run: |
+          docker run --rm -d --name agentforge-release \
+            -p 3000:3000 \
+            -e HOST=0.0.0.0 \
+            -e PORT=3000 \
+            -e LOG_LEVEL=error \
+            -e REFERENCE_AGENT_ENABLED=true \
+            -e PERSISTENCE_PROVIDER=in-memory \
+            -e AGENTFORGE_ALLOW_REFERENCE_AUTH=true \
+            agentforge/platform-host:1.0.0
+          node scripts/docker-smoke.mjs http://127.0.0.1:3000
+          docker stop agentforge-release

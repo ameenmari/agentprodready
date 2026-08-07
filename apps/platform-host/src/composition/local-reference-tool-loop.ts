@@ -35,6 +35,11 @@ import {
   LOCAL_TENANT,
   LOCAL_WORKSPACE,
 } from '../config/local-reference-config.js';
+import {
+  executeAiWithRouting,
+  noteToolFallbackPrevented,
+  type AiRoutingDeps,
+} from './local-reference-ai-routing.js';
 
 export interface ToolLoopLimits {
   readonly enabled: boolean;
@@ -67,6 +72,8 @@ export async function runAiToolLoop(
   objective: string,
   signal: AbortSignal,
   control: CapabilityExecutionControl | undefined,
+  routing?: AiRoutingDeps,
+  baseRequest?: CapabilityRequest,
   emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
 ): Promise<NormalizedAiResult> {
   if (!deps.limits.enabled) {
@@ -84,10 +91,37 @@ export async function runAiToolLoop(
   let totalCalls = 0;
   const seenIds = new Set<string>();
   const toolsOffered = deps.toolDefinitions();
+  let activeBinding = binding;
+  let allowProviderFallback = routing !== undefined && baseRequest !== undefined;
 
   while (turn < deps.limits.maxTurns) {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
-    const result = await deps.ai.execute(makeAiRequest(binding, context, signal, false, messages, toolsOffered));
+    let result: NormalizedAiResult;
+    if (allowProviderFallback && routing !== undefined && baseRequest !== undefined && turn === 0) {
+      const routed = await executeAiWithRouting(
+        routing,
+        baseRequest,
+        activeBinding,
+        (next) => makeAiRequest(next, context, signal, false, messages, toolsOffered),
+        { allowFallback: true },
+      );
+      activeBinding = routed.binding;
+      result = routed.result;
+      allowProviderFallback = false;
+    } else {
+      try {
+        result = await deps.ai.execute(makeAiRequest(activeBinding, context, signal, false, messages, toolsOffered));
+      } catch (error) {
+        if (routing !== undefined) {
+          const code =
+            typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string'
+              ? error.code
+              : 'AI_UNKNOWN';
+          noteToolFallbackPrevented(routing, activeBinding.implementationId, code);
+        }
+        throw error;
+      }
+    }
     if (result.finishReason !== 'tool-calls' || result.toolCalls.length === 0) {
       return result;
     }
@@ -152,6 +186,8 @@ export async function* streamAiWithOptionalTools(
   signal: AbortSignal,
   control: CapabilityExecutionControl | undefined,
   workflowId: string,
+  routing?: AiRoutingDeps,
+  baseRequest?: CapabilityRequest,
 ): AsyncIterable<CapabilityStreamEvent> {
   let sequence = 0;
   if (!deps.limits.enabled) {
@@ -183,9 +219,19 @@ export async function* streamAiWithOptionalTools(
 
   // Tool-enabled streaming: execute tool loop (non-stream AI rounds) then stream final continuation text chunks via reference stream semantics
   const lifecycle: CapabilityStreamEvent[] = [];
-  const result = await runAiToolLoop(deps, binding, context, objective, signal, control, async (event) => {
-    lifecycle.push(event);
-  });
+  const result = await runAiToolLoop(
+    deps,
+    binding,
+    context,
+    objective,
+    signal,
+    control,
+    routing,
+    baseRequest,
+    async (event) => {
+      lifecycle.push(event);
+    },
+  );
 
   for (const event of lifecycle) {
     if (event.type === 'delta') {

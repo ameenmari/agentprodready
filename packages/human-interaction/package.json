@@ -1,1 +1,27 @@
-{"name":"@agentforge/human-interaction","version":"0.1.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"files":["dist","README.md"],"dependencies":{"@agentforge/runtime":"workspace:*","@agentforge/workflow":"workspace:*","@agentforge/evaluation":"workspace:*","@agentforge/security":"workspace:*","@agentforge/event-bus":"workspace:*","@agentforge/audit":"workspace:*","@agentforge/agent-framework":"workspace:*","@agentforge/multi-agent":"workspace:*"}}
+{
+  "name": "@agentforge/human-interaction",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentforge/runtime": "workspace:*",
+    "@agentforge/workflow": "workspace:*",
+    "@agentforge/evaluation": "workspace:*",
+    "@agentforge/security": "workspace:*",
+    "@agentforge/event-bus": "workspace:*",
+    "@agentforge/audit": "workspace:*",
+    "@agentforge/agent-framework": "workspace:*",
+    "@agentforge/multi-agent": "workspace:*"
+  }
+}

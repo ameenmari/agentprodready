@@ -27,7 +27,11 @@ export function loadOpenAiProviderConfig(env: NodeJS.ProcessEnv = process.env): 
       if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         throw new Error('invalid protocol');
       }
-    } catch {
+      if ((env['NODE_ENV'] ?? '').trim() === 'production' && isBlockedBaseUrlHost(url.hostname)) {
+        throw new Error('OPENAI_BASE_URL host is not permitted in production');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('not permitted')) throw error;
       throw new Error('OPENAI_BASE_URL must be an absolute http(s) URL when set');
     }
   }
@@ -42,4 +46,16 @@ export function loadOpenAiProviderConfig(env: NodeJS.ProcessEnv = process.env): 
     ...(organization !== undefined && organization !== '' ? { organization } : {}),
     ...(project !== undefined && project !== '' ? { project } : {}),
   });
+}
+
+function isBlockedBaseUrlHost(hostname: string): boolean {
+  const host = hostname.trim().toLowerCase().replace(/^\[|\]$/gu, '');
+  // Production SHOULD reject link-local / cloud-metadata destinations (SSRF hardening).
+  // Do not blanket-block RFC1918 — enterprise OpenAI-compatible endpoints may use private networks.
+  if (host === 'localhost' || host === 'metadata' || host === 'metadata.google.internal') return true;
+  if (host.endsWith('.metadata.google.internal')) return true;
+  if (host === '169.254.169.254' || host.startsWith('169.254.')) return true;
+  if (host === '0.0.0.0' || host === '::1') return true;
+  if (host.startsWith('127.')) return true;
+  return false;
 }

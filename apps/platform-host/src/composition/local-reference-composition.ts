@@ -15,7 +15,13 @@ import {
 } from '@agentforge/audit';
 import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentforge/ai-provider';
 import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentforge/ai-provider-openai';
-import { CapabilityResolver, InMemoryResolutionDiagnostics, InMemoryResolutionEvents, NoopResolutionTelemetry } from '@agentforge/capability-resolution';
+import {
+  CapabilityResolver,
+  InMemoryResolutionDiagnostics,
+  InMemoryResolutionEvents,
+  NoopResolutionTelemetry,
+  validateResolutionRouting,
+} from '@agentforge/capability-resolution';
 import {
   AiToolCallHandoff,
   FactoryToolAdapterResolver,
@@ -158,6 +164,10 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   );
 
   const selectedImplementationId = selectedAiImplementationId(config.aiProvider);
+  const orderedChatIds = Object.freeze([
+    selectedImplementationId,
+    ...config.aiFallbackProviders.map((item) => selectedAiImplementationId(item)),
+  ]);
   const embeddingSelection =
     config.embeddingProvider !== 'none'
       ? config.embeddingProvider
@@ -167,11 +177,16 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   const { capabilities, providers } = seedReferenceCapabilities();
   const resolutionDiagnostics = new InMemoryResolutionDiagnostics();
   const resolutionEvents = new InMemoryResolutionEvents();
+  const chatRouting = Object.freeze({
+    mode: config.aiRoutingMode,
+    orderedImplementationIds: orderedChatIds,
+  });
+  validateResolutionRouting('text-generation', chatRouting, providers);
   const capabilityResolver = new CapabilityResolver(
     capabilities,
     providers,
     new DeterministicResolutionPolicy(),
-    referenceResolutionConfiguration(selectedImplementationId, embeddingSelection),
+    referenceResolutionConfiguration(selectedImplementationId, embeddingSelection, chatRouting),
     resolutionDiagnostics,
     resolutionEvents,
     new NoopResolutionTelemetry(),
@@ -180,9 +195,11 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   const aiResolver = new FactoryAiAdapterResolver();
   aiResolver.bind(REFERENCE_AI_ID, async () => new ReferenceAiProviderAdapter());
   aiResolver.bind(`${REFERENCE_AI_ID}:evaluation.judge`, async () => new ReferenceAiProviderAdapter());
-  if (config.aiProvider === 'openai') {
+  const needsOpenAiAdapter =
+    config.aiProvider === 'openai' || config.aiFallbackProviders.includes('openai');
+  if (needsOpenAiAdapter) {
     if (config.openAi === undefined) {
-      throw new Error('OpenAI configuration is required when AI_PROVIDER=openai');
+      throw new Error('OpenAI configuration is required when OpenAI is in the AI routing list');
     }
     const openAiConfig = config.openAi;
     aiResolver.bind(OPENAI_AI_ID, async () => new OpenAiProviderAdapter(openAiConfig));
@@ -285,10 +302,86 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       })
     : undefined;
 
+  const recordRoutingMetric = (
+    name: string,
+    correlationId: string,
+    labels: Readonly<Record<string, string>>,
+  ): void => {
+    void metrics.record(
+      Object.freeze({
+        id: `metric:${name}:${correlationId}:${crypto.randomUUID()}`,
+        name,
+        kind: 'counter' as const,
+        value: 1,
+        unit: 'count',
+        timestamp: new Date().toISOString(),
+        component: 'ai-routing',
+        correlation: Object.freeze({
+          correlationId,
+          causationId: null,
+          tenantId: LOCAL_TENANT,
+          workspaceId: LOCAL_WORKSPACE,
+        }),
+        labels,
+        aggregatedObservation: true as const,
+      }),
+    );
+  };
+  const routingTelemetry = Object.freeze({
+    selected: (implementationId: string): void => {
+      recordRoutingMetric(
+        'ai.routing.selected',
+        implementationId,
+        Object.freeze({ implementationId }),
+      );
+    },
+    fallbackAttempted: (from: string, to: string, code: string): void => {
+      recordRoutingMetric(
+        'ai.routing.fallback_attempted',
+        from,
+        Object.freeze({ from, to, code }),
+      );
+    },
+    fallbackSucceeded: (from: string, to: string): void => {
+      recordRoutingMetric(
+        'ai.routing.fallback_succeeded',
+        from,
+        Object.freeze({ from, to }),
+      );
+    },
+    fallbackExhausted: (implementationId: string, code: string): void => {
+      recordRoutingMetric(
+        'ai.routing.fallback_exhausted',
+        implementationId,
+        Object.freeze({ implementationId, code }),
+      );
+    },
+    streamFallbackPrevented: (implementationId: string, code: string): void => {
+      recordRoutingMetric(
+        'ai.routing.stream_fallback_prevented',
+        implementationId,
+        Object.freeze({ implementationId, code }),
+      );
+    },
+    toolFallbackPrevented: (implementationId: string, code: string): void => {
+      recordRoutingMetric(
+        'ai.routing.tool_fallback_prevented',
+        implementationId,
+        Object.freeze({ implementationId, code }),
+      );
+    },
+  });
+
   const capabilityExecution = new LocalReferenceCapabilityExecution(
     capabilityResolver,
     aiFramework,
     toolLoopDeps,
+    Object.freeze({
+      resolver: capabilityResolver,
+      ai: aiFramework,
+      mode: config.aiRoutingMode,
+      telemetry: routingTelemetry,
+    }),
   );
 
   const runtime = new RuntimeOrchestrator({

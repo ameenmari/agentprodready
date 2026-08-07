@@ -30,13 +30,31 @@ function jsonResponse(
   });
 }
 
-export async function readJsonBody(request: IncomingMessage): Promise<unknown> {
-  const parts: string[] = [];
-  for await (const chunk of request) {
-    parts.push(typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8'));
+export class RequestBodyTooLargeError extends Error {
+  public readonly code = 'REQUEST_BODY_TOO_LARGE';
+  public constructor(maxBytes: number) {
+    super(`Request body exceeds ${String(maxBytes)} bytes`);
+    this.name = 'RequestBodyTooLargeError';
   }
-  if (parts.length === 0) return {};
-  return JSON.parse(parts.join('')) as unknown;
+}
+
+export async function readJsonBody(
+  request: IncomingMessage,
+  maxBytes: number = 1_048_576,
+): Promise<unknown> {
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for await (const chunk of request) {
+    const buf = typeof chunk === 'string' ? Buffer.from(chunk, 'utf8') : new Uint8Array(chunk);
+    total += buf.byteLength;
+    if (total > maxBytes) {
+      request.destroy();
+      throw new RequestBodyTooLargeError(maxBytes);
+    }
+    chunks.push(buf);
+  }
+  if (chunks.length === 0) return {};
+  return JSON.parse(Buffer.concat(chunks).toString('utf8')) as unknown;
 }
 
 export function createLocalReferenceServer(composition: LocalReferenceComposition): Server {
@@ -82,8 +100,30 @@ async function handleRequest(
       if (request.method === 'POST' && url.pathname === '/v1/agents/reference-agent/invoke') {
         let body: unknown;
         try {
-          body = await readJsonBody(request);
-        } catch {
+          body = await readJsonBody(request, composition.config.maxJsonBodyBytes);
+        } catch (error) {
+          if (error instanceof RequestBodyTooLargeError) {
+            const result = jsonResponse(
+              413,
+              {
+                status: 'failed',
+                correlationId: corr,
+                errors: [
+                  {
+                    code: 'REQUEST_BODY_TOO_LARGE',
+                    message: 'Request body too large',
+                    retryable: false,
+                    details: {},
+                  },
+                ],
+                diagnosticsReference: `local-reference:error:${corr}`,
+              },
+              corr,
+            );
+            response.writeHead(result.status, result.headers);
+            response.end(result.body);
+            return;
+          }
           const result = jsonResponse(
             400,
             {
@@ -131,8 +171,30 @@ async function handleRequest(
       if (request.method === 'POST' && url.pathname === '/v1/agents/reference-agent/invoke/stream') {
         let body: unknown;
         try {
-          body = await readJsonBody(request);
-        } catch {
+          body = await readJsonBody(request, composition.config.maxJsonBodyBytes);
+        } catch (error) {
+          if (error instanceof RequestBodyTooLargeError) {
+            const result = jsonResponse(
+              413,
+              {
+                status: 'failed',
+                correlationId: corr,
+                errors: [
+                  {
+                    code: 'REQUEST_BODY_TOO_LARGE',
+                    message: 'Request body too large',
+                    retryable: false,
+                    details: {},
+                  },
+                ],
+                diagnosticsReference: `local-reference:error:${corr}`,
+              },
+              corr,
+            );
+            response.writeHead(result.status, result.headers);
+            response.end(result.body);
+            return;
+          }
           const result = jsonResponse(
             400,
             {
@@ -199,14 +261,20 @@ async function handleRequest(
           diagnosticsReference: `local-reference:error:${corr}`,
         }),
       );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Internal error';
+    } catch {
       const result = jsonResponse(
         500,
         {
           status: 'failed',
           correlationId: corr,
-          errors: [{ code: 'INTERNAL_ERROR', message, retryable: false, details: {} }],
+          errors: [
+            {
+              code: 'INTERNAL_ERROR',
+              message: 'An internal error occurred',
+              retryable: false,
+              details: {},
+            },
+          ],
           diagnosticsReference: `local-reference:error:${corr}`,
         },
         corr,

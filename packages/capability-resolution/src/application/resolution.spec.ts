@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { ExecutionContext } from '@agentforge/foundation';
 import { describe,expect,it,vi } from 'vitest';
-import { CapabilityRegistry,CapabilityResolver,DeterministicResolutionPolicy,InMemoryResolutionDiagnostics,InMemoryResolutionEvents,ProviderRegistry,ResolutionError,RuntimeCapabilityResolutionAdapter,StaticResolutionConfiguration,type CapabilityRequest,type ImplementationDescriptor } from '../index.js';
+import { CapabilityRegistry,CapabilityResolver,DeterministicResolutionPolicy,InMemoryResolutionDiagnostics,InMemoryResolutionEvents,ProviderRegistry,ResolutionError,RuntimeCapabilityResolutionAdapter,StaticResolutionConfiguration,validateResolutionRouting,type CapabilityRequest,type ImplementationDescriptor } from '../index.js';
 
 const context:ExecutionContext=Object.freeze({executionId:'e1',correlationId:'c1',startedAt:'x',configurationVersion:'v',securityContextId:'s',tenantId:'t',workspaceId:'w',attributes:Object.freeze({})});
 const node=Object.freeze({workflowId:'w1',nodeId:'n1',kind:'capability' as const,capability:'chat'});
@@ -17,4 +17,35 @@ describe('Capability Resolution',()=>{
  it('validates contract compatibility and provider-independent requests',async()=>{const f=fixture();await expect(f.resolver.resolve({...request,contractVersion:'9'})).rejects.toMatchObject({code:'RESOLUTION_INCOMPATIBLE_VERSION'});await expect(f.resolver.resolve({...request,requestId:'r2',constraints:{preferences:{providerId:'x'}}})).rejects.toBeInstanceOf(ResolutionError);});
  it('keeps policy independent and filters execution-scoped constraints',()=>{const policy=new DeterministicResolutionPolicy();const capability={id:'chat',contractVersions:['1'],defaultImplementationId:'default',metadata:{}};expect(()=>policy.select({request:{...request,constraints:{locality:'eu'}},capability,candidates:[implementation('default')],configuration:{}})).toThrowError(ResolutionError);});
  it('lets Runtime consume bindings without activating or executing providers',async()=>{const f=fixture();const adapter=new RuntimeCapabilityResolutionAdapter(f.resolver);const result=await adapter.invoke({eligible:[node]},context,new AbortController().signal);expect(result).toHaveLength(1);expect(result[0]?.implementationId).toBe('default');expect(result[0]).not.toHaveProperty('instance');});
+ it('ordered fallback skips exhausted primary and selects next eligible',async()=>{
+  const f=fixture({
+   routing:{chat:{mode:'fallback',orderedImplementationIds:['tenant','default']}},
+  });
+  f.providers.setHealth('tenant','unhealthy');
+  const binding=await f.resolver.resolve(request);
+  expect(binding.implementationId).toBe('default');
+ });
+ it('resolveNext excludes prior attempts',async()=>{
+  const f=fixture({
+   routing:{chat:{mode:'fallback',orderedImplementationIds:['default','tenant']}},
+  });
+  const first=await f.resolver.resolve(request);
+  expect(first.implementationId).toBe('default');
+  const next=await f.resolver.resolveNext({...request,requestId:'r-next'},{excludeImplementationIds:[first.implementationId]});
+  expect(next.implementationId).toBe('tenant');
+ });
+ it('fixed mode does not walk secondaries when primary is unhealthy',async()=>{
+  const f=fixture({
+   routing:{chat:{mode:'fixed',orderedImplementationIds:['default','tenant']}},
+  });
+  f.providers.setHealth('default','unhealthy');
+  await expect(f.resolver.resolve(request)).rejects.toMatchObject({code:'RESOLUTION_CONFIGURED_IMPLEMENTATION_INVALID'});
+ });
+ it('validateResolutionRouting rejects unknown duplicates and fallback without secondary',()=>{
+  const f=fixture();
+  expect(()=>{ validateResolutionRouting('chat',{mode:'fallback',orderedImplementationIds:['default']},f.providers); }).toThrow(/fallback/);
+  expect(()=>{ validateResolutionRouting('chat',{mode:'fallback',orderedImplementationIds:['default','missing']},f.providers); }).toThrow(/Unknown/);
+  expect(()=>{ validateResolutionRouting('chat',{mode:'fallback',orderedImplementationIds:['default','default']},f.providers); }).toThrow(/Duplicate/);
+  expect(()=>{ validateResolutionRouting('chat',{mode:'fallback',orderedImplementationIds:['default','tenant']},f.providers); }).not.toThrow();
+ });
 });
