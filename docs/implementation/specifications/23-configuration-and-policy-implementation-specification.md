@@ -16,7 +16,7 @@ Administration and protected resolution consume exact active Security outcomes. 
 
 ## Package
 
-- `@agentforge/configuration`
+- `@agentprodready/configuration`
 - `src/index.ts`: public contracts, builders, validators, service, deterministic resolution, and errors.
 - `src/reference.ts`: in-memory stores and reference event/audit/diagnostic providers.
 - `src/configuration.spec.ts`: acceptance, contract, and integration tests.

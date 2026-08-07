@@ -1,18 +1,18 @@
-import type { AgentAuthorizationOutcome, AgentEvents, AgentFact, AgentFramework, AgentInvocationAcceptance, AgentInvocationRequest, InMemoryAgentRegistry } from '@agentforge/agent-framework';
-import type { AuditIngestionRequest, AuditPlatform } from '@agentforge/audit';
-import type { HealthContributor, HealthService, ReadinessService } from '@agentforge/foundation';
-import type { CreatePlatformEvent, EventBus } from '@agentforge/event-bus';
-import type { MemoryEngine, MemorySearchProvider, MemoryStorageProvider } from '@agentforge/memory';
+import type { AgentAuthorizationOutcome, AgentEvents, AgentFact, AgentFramework, AgentInvocationAcceptance, AgentInvocationRequest, InMemoryAgentRegistry } from '@agentprodready/agent-framework';
+import type { AuditIngestionRequest, AuditPlatform } from '@agentprodready/audit';
+import type { HealthContributor, HealthService, ReadinessService } from '@agentprodready/foundation';
+import type { CreatePlatformEvent, EventBus } from '@agentprodready/event-bus';
+import type { MemoryEngine, MemorySearchProvider, MemoryStorageProvider } from '@agentprodready/memory';
 import type {
   InMemoryLoggingProvider,
   InMemoryMetricsProvider,
   InMemoryTracingProvider,
   LoggingProvider,
   OperationalLog,
-} from '@agentforge/observability';
-import type { PersistenceProvider } from '@agentforge/persistence';
-import type { RuntimeOrchestrator, RuntimeStreamEvent } from '@agentforge/runtime';
-import type { SecurityContext, SecurityPlatform } from '@agentforge/security';
+} from '@agentprodready/observability';
+import type { PersistenceProvider } from '@agentprodready/persistence';
+import type { RuntimeOrchestrator, RuntimeStreamEvent } from '@agentprodready/runtime';
+import type { SecurityContext, SecurityPlatform } from '@agentprodready/security';
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
 import type { LocalCapabilityExecutionOutput } from './local-reference-capability-execution.js';
 import type { LocalReferenceRuntimePort, StoredExecutionResult } from './local-reference-runtime-port.js';
@@ -307,7 +307,7 @@ export async function writeOperationalLog(
       workspaceId: LOCAL_WORKSPACE,
     }),
     classification: 'internal',
-    attributes: Object.freeze({ service: 'agentforge-local-reference', version: PRODUCT_VERSION, ...attributes }),
+    attributes: Object.freeze({ service: 'agentprodready-local-reference', version: PRODUCT_VERSION, ...attributes }),
     operationalOnly: true,
     systemOfRecord: false,
     auditRecord: false,

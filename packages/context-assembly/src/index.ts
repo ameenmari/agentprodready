@@ -1,8 +1,8 @@
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { KnowledgeRetrievalResult } from '@agentforge/knowledge';
-import type { MemoryRetrievalResult } from '@agentforge/memory';
-import type { ExecutionPlan } from '@agentforge/planning';
-import type { NodeExecutionContract, WorkflowSnapshot } from '@agentforge/workflow';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { KnowledgeRetrievalResult } from '@agentprodready/knowledge';
+import type { MemoryRetrievalResult } from '@agentprodready/memory';
+import type { ExecutionPlan } from '@agentprodready/planning';
+import type { NodeExecutionContract, WorkflowSnapshot } from '@agentprodready/workflow';
 
 export type ContextSource = 'execution'|'plan'|'workflow'|'knowledge'|'memory'|'runtime';
 export type ContextOrdering = 'priority'|'source'|'source-then-priority';

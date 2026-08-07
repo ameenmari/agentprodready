@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge uses Platform Events to communicate significant occurrences between architectural components.
+AgentProdReady uses Platform Events to communicate significant occurrences between architectural components.
 
 Without a clear definition of what an event represents, events can gradually become requests, commands, workflow instructions, or tightly coupled remote procedure calls. This blurs architectural boundaries, introduces hidden dependencies, and weakens the Event Bus as a transport mechanism.
 

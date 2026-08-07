@@ -1,6 +1,6 @@
-# @agentforge/vector-store-pgvector
+# @agentprodready/vector-store-pgvector
 
-pgvector adapter for `@agentforge/vector-store` (AgentForge v0.7 Memory semantic search).
+pgvector adapter for `@agentprodready/vector-store` (AgentProdReady v0.7 Memory semantic search).
 
 **Package version:** `0.1.0`
 
@@ -26,12 +26,12 @@ VECTOR_INDEX_PROFILE=reference-32 pnpm db:migrate:vector
 VECTOR_INDEX_PROFILE=reference-32 pnpm db:status:vector
 ```
 
-Requires `DATABASE_URL` (same shape as `@agentforge/persistence-postgres`). Not applied by default `pnpm db:migrate`.
+Requires `DATABASE_URL` (same shape as `@agentprodready/persistence-postgres`). Not applied by default `pnpm db:migrate`.
 
 ## Runtime
 
 ```ts
-import { PgvectorVectorStore } from '@agentforge/vector-store-pgvector';
+import { PgvectorVectorStore } from '@agentprodready/vector-store-pgvector';
 
 const store = new PgvectorVectorStore({
   config,

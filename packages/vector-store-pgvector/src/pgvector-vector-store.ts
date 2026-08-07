@@ -6,7 +6,7 @@ import {
   type VectorQueryRequest,
   type VectorStorePort,
   type VectorUpsertRequest,
-} from '@agentforge/vector-store';
+} from '@agentprodready/vector-store';
 import type { VectorPostgresConfig } from './config.js';
 import { translatePgvectorError, withPgvectorErrors } from './pgvector-error-translation.js';
 import { closePostgresPool, createPostgresPool, type PostgresPool } from './pool.js';

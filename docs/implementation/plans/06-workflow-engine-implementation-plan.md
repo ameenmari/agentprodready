@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/workflow` as the structural engine that validates immutable workflow graphs, centrally manages mutable execution state, and exposes eligible node contracts to Runtime without scheduling or performing business work.
+Implement `@agentprodready/workflow` as the structural engine that validates immutable workflow graphs, centrally manages mutable execution state, and exposes eligible node contracts to Runtime without scheduling or performing business work.
 
 ## Work
 

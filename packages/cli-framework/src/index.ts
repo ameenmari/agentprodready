@@ -1,11 +1,11 @@
-import type { StreamFrame } from '@agentforge/api-framework';
+import type { StreamFrame } from '@agentprodready/api-framework';
 import {
   SdkError,
   type CreateJobResult,
   type HealthResult,
   type OperationResult,
   type SdkCancellationSignal,
-} from '@agentforge/sdk-framework';
+} from '@agentprodready/sdk-framework';
 
 export type OutputFormat = 'text' | 'json' | 'compact' | 'table';
 export type CliErrorCode =

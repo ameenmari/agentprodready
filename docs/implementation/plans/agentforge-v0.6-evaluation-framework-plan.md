@@ -1,4 +1,4 @@
-# AgentForge v0.6 Evaluation Framework — Implementation Plan
+# AgentProdReady v0.6 Evaluation Framework — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.6.0  
@@ -11,7 +11,7 @@
 
 # Objective
 
-Productize the **already-Approved Blueprint 14** Evaluation Framework into the local reference host so AgentForge can measure AI/artifact quality through Composition-wired evaluation, without amending Evaluation or Runtime public contracts, without AI SDKs in Evaluation, and without making evaluation mandatory for default CI/smoke.
+Productize the **already-Approved Blueprint 14** Evaluation Framework into the local reference host so AgentProdReady can measure AI/artifact quality through Composition-wired evaluation, without amending Evaluation or Runtime public contracts, without AI SDKs in Evaluation, and without making evaluation mandatory for default CI/smoke.
 
 ---
 
@@ -36,7 +36,7 @@ Productize the **already-Approved Blueprint 14** Evaluation Framework into the l
 
 # Recommended Approach
 
-**Selected: Host Composition productization of existing `@agentforge/evaluation` (no package rewrite, no Runtime contract amendment).**
+**Selected: Host Composition productization of existing `@agentprodready/evaluation` (no package rewrite, no Runtime contract amendment).**
 
 ```text
 EvaluationFramework.evaluate(EvaluationRequest)
@@ -52,7 +52,7 @@ EvaluationFramework.evaluate(EvaluationRequest)
 | B. Re-implement Evaluation inside host | Rejected — duplicates Blueprint 14 |
 | C. Amend Runtime with mandatory `evaluation` ExecutionStage | Rejected for v0.6 — Runtime public contract change / stop condition |
 | D. Put AI SDK calls inside Evaluation package | Forbidden by Blueprint 14 / ADR-004 |
-| E. New `@agentforge/evaluation-postgres` with SQL | Rejected — use Blueprint 24 repository rows like Memory/Runtime |
+| E. New `@agentprodready/evaluation-postgres` with SQL | Rejected — use Blueprint 24 repository rows like Memory/Runtime |
 
 ---
 
@@ -60,7 +60,7 @@ EvaluationFramework.evaluate(EvaluationRequest)
 
 ### Status: **Cleared — no public contract amendment required**
 
-| Surface | Already present in `@agentforge/evaluation` |
+| Surface | Already present in `@agentprodready/evaluation` |
 |---|---|
 | `EvaluationRequest` / `EvaluationTarget` / criteria / policy | Yes |
 | `Evaluator` + five `EvaluatorCategory` values | Yes |
@@ -103,7 +103,7 @@ EvaluationFramework.evaluate(EvaluationRequest)
 
 ## Out of Scope
 
-- Rewriting `@agentforge/evaluation` core
+- Rewriting `@agentprodready/evaluation` core
 - Mandatory evaluation on every `/invoke`
 - Runtime recovery redesign for human suspension (semantic `waiting` only; operational suspend deferred)
 - Production human review UI
@@ -171,14 +171,14 @@ NormalizedAiAssistedEvaluator
        → NormalizedAiAssessment (output + three provenance references)
 ```
 
-No OpenAI SDK import in `@agentforge/evaluation`.
+No OpenAI SDK import in `@agentprodready/evaluation`.
 
 ## 8. Human review
 
 - Semantic outcome `waiting` owned by Evaluation.
 - Resume via `HumanEvaluationControl.resume`.
 - Runtime suspension/timeout/cancel for long-lived human review is **not** productized in v0.6 (document limitation).
-- Optional later bridge to `@agentforge/human-interaction` type `evaluation` without Evaluation owning UI.
+- Optional later bridge to `@agentprodready/human-interaction` type `evaluation` without Evaluation owning UI.
 
 ## 9. Persistence integration
 
@@ -247,8 +247,8 @@ When `EVALUATION_ENABLED=true`, contribute Evaluation health. If result store is
 
 | Package | Expected |
 |---|---|
-| `@agentforge/platform-host` | `0.6.0` |
-| `@agentforge/evaluation` | Remain `0.1.0` unless production code inside the package must change; prefer host-only changes |
+| `@agentprodready/platform-host` | `0.6.0` |
+| `@agentprodready/evaluation` | Remain `0.1.0` unless production code inside the package must change; prefer host-only changes |
 | Unrelated framework packages | Do not bump |
 
 ---

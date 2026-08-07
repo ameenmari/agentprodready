@@ -1,4 +1,4 @@
-import { PersistenceError, freeze, type PersistedEntity, type PersistenceScope } from '@agentforge/persistence';
+import { PersistenceError, freeze, type PersistedEntity, type PersistenceScope } from '@agentprodready/persistence';
 
 /** Portable uniqueness key. Uses U+001F (not NUL) because PostgreSQL TEXT forbids 0x00. */
 export function scopeKey(scope: PersistenceScope): string {

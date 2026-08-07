@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manual durability proof for AgentForge v0.3 PostgreSQL persistence.
+ * Manual durability proof for AgentProdReady v0.3 PostgreSQL persistence.
  * Requires: pnpm build && pnpm db:migrate && DATABASE_URL=...
  * Does not exercise Runtime recovery.
  */

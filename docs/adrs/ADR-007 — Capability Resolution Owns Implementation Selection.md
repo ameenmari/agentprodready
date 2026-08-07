@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge supports multiple interchangeable implementations for the same architectural capability.
+AgentProdReady supports multiple interchangeable implementations for the same architectural capability.
 
 Examples include AI providers, tool providers, knowledge providers, memory providers, storage providers, and future plugin implementations.
 
@@ -161,6 +161,6 @@ Execution
 
 # Final Statement
 
-Implementation selection is a distinct architectural responsibility within AgentForge.
+Implementation selection is a distinct architectural responsibility within AgentProdReady.
 
 By separating selection from instantiation and execution, the platform maintains clear ownership boundaries, centralized decision-making, and provider independence. Capability Resolution determines **what** should be used, the Composition Framework creates it, and the Runtime governs its execution.

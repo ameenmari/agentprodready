@@ -1,4 +1,4 @@
-import { ProviderAdapterError } from '@agentforge/ai-provider';
+import { ProviderAdapterError } from '@agentprodready/ai-provider';
 
 export interface OpenAiErrorLike {
   readonly status?: number;

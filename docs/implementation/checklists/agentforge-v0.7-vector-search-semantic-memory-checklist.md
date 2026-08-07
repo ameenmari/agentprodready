@@ -1,4 +1,4 @@
-# AgentForge v0.7 Vector Search & Semantic Memory — Checklist
+# AgentProdReady v0.7 Vector Search & Semantic Memory — Checklist
 
 **Product Version:** 0.7.0  
 **Implementation Mode:** Autonomous  
@@ -22,8 +22,8 @@
 
 ## Vector store
 
-- [x] `@agentforge/vector-store@0.1.0` + InMemory
-- [x] `@agentforge/vector-store-pgvector@0.1.0`
+- [x] `@agentprodready/vector-store@0.1.0` + InMemory
+- [x] `@agentprodready/vector-store-pgvector@0.1.0`
 - [x] Profiles `reference-32` / `openai-1536-small`
 - [x] `pnpm db:migrate:vector` / no runtime DDL
 - [x] Tenant-scoped NN + cosine score normalization

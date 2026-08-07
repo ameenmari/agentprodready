@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge coordinates numerous architectural frameworks that process protected operations, including workflow execution, AI interactions, tool invocation, memory retrieval, knowledge retrieval, event publication, audit access, and administrative operations.
+AgentProdReady coordinates numerous architectural frameworks that process protected operations, including workflow execution, AI interactions, tool invocation, memory retrieval, knowledge retrieval, event publication, audit access, and administrative operations.
 
 Many of these frameworks require authorization before performing work.
 
@@ -154,6 +154,6 @@ Authorized Operation
 
 # Final Statement
 
-Security within AgentForge is governed through a single authoritative authorization model.
+Security within AgentProdReady is governed through a single authoritative authorization model.
 
 By separating authorization decisions from business execution, the platform maintains consistent access control, simplifies governance, strengthens auditability, and prevents individual frameworks from introducing conflicting or unauthorized security behavior.

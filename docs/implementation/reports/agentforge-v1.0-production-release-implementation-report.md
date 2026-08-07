@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Release — Implementation Report
+# AgentProdReady v1.0 Production Release — Implementation Report
 
 **Product Version:** 1.0.0  
 **Status:** Implemented — gates green (tag/publish deferred to human)  
@@ -16,37 +16,37 @@
 | Prior release tag | `v0.9.0` (present in repo) |
 | Prior product slice | v0.9 Tool Calling & Agent Actions |
 | v1.0 scope | Multi-provider AI routing + production readiness / release hardening |
-| Explicit non-goals retained | No `@agentforge/ai-router`; no Amendment D HITL wait; no third paid-provider SDK; no npm publish |
+| Explicit non-goals retained | No `@agentprodready/ai-router`; no Amendment D HITL wait; no third paid-provider SDK; no npm publish |
 
 ---
 
 ## 2. Final package versions
 
-All shipped `@agentforge/*` packages and `platform-host` are at **1.0.0**. Git tag **`v1.0.0` was not created**.
+All shipped `@agentprodready/*` packages and `platform-host` are at **1.0.0**. Git tag **`v1.0.0` was not created**.
 
 | Package | Version |
 |---|---|
-| `@agentforge/platform-host` | 1.0.0 |
-| `@agentforge/foundation` | 1.0.0 |
-| `@agentforge/plugin-framework` | 1.0.0 |
-| `@agentforge/composition` | 1.0.0 |
-| `@agentforge/runtime` | 1.0.0 |
-| `@agentforge/capability-resolution` | 1.0.0 |
-| `@agentforge/ai-provider` | 1.0.0 |
-| `@agentforge/ai-provider-openai` | 1.0.0 |
-| `@agentforge/tool-framework` | 1.0.0 |
-| `@agentforge/memory` | 1.0.0 |
-| `@agentforge/evaluation` | 1.0.0 |
-| `@agentforge/security` | 1.0.0 |
-| `@agentforge/event-bus` | 1.0.0 |
-| `@agentforge/audit` | 1.0.0 |
-| `@agentforge/observability` | 1.0.0 |
-| `@agentforge/persistence` | 1.0.0 |
-| `@agentforge/persistence-postgres` | 1.0.0 |
-| `@agentforge/vector-store` | 1.0.0 |
-| `@agentforge/vector-store-pgvector` | 1.0.0 |
-| `@agentforge/agent-framework` | 1.0.0 |
-| Remaining `@agentforge/*` workspace packages | 1.0.0 |
+| `@agentprodready/platform-host` | 1.0.0 |
+| `@agentprodready/foundation` | 1.0.0 |
+| `@agentprodready/plugin-framework` | 1.0.0 |
+| `@agentprodready/composition` | 1.0.0 |
+| `@agentprodready/runtime` | 1.0.0 |
+| `@agentprodready/capability-resolution` | 1.0.0 |
+| `@agentprodready/ai-provider` | 1.0.0 |
+| `@agentprodready/ai-provider-openai` | 1.0.0 |
+| `@agentprodready/tool-framework` | 1.0.0 |
+| `@agentprodready/memory` | 1.0.0 |
+| `@agentprodready/evaluation` | 1.0.0 |
+| `@agentprodready/security` | 1.0.0 |
+| `@agentprodready/event-bus` | 1.0.0 |
+| `@agentprodready/audit` | 1.0.0 |
+| `@agentprodready/observability` | 1.0.0 |
+| `@agentprodready/persistence` | 1.0.0 |
+| `@agentprodready/persistence-postgres` | 1.0.0 |
+| `@agentprodready/vector-store` | 1.0.0 |
+| `@agentprodready/vector-store-pgvector` | 1.0.0 |
+| `@agentprodready/agent-framework` | 1.0.0 |
+| Remaining `@agentprodready/*` workspace packages | 1.0.0 |
 
 ---
 
@@ -69,7 +69,7 @@ All shipped `@agentforge/*` packages and `platform-host` are at **1.0.0**. Git t
 
 ### Amendment B (attempt ledger) — PASS
 
-- Runtime `ProviderAttemptLedger` + `isFallbackEligibleAiError(code, retryable)` in `@agentforge/runtime`
+- Runtime `ProviderAttemptLedger` + `isFallbackEligibleAiError(code, retryable)` in `@agentprodready/runtime`
 - Ledger distinguishes provider attempts from `runtimeRetriesForCurrentProvider`
 - OpenAI adapter retains `maxRetries: 0` (no adapter retry loop)
 - Host must not add a third retry layer (wiring uses Cap Resolution + ledger only)
@@ -154,7 +154,7 @@ Proven in `provider-failover.spec.ts` and routing proofs #2–#4 (transient → 
 ## 11. Production auth fail-closed — PASS
 
 - `NODE_ENV=production` + LocalReference as sole auth → startup fail via `assertProductionAuthPolicy`
-- Escape hatch: `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (documented unsafe demo only; warns on stderr)
+- Escape hatch: `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (documented unsafe demo only; warns on stderr)
 - Covered by `production-hardening.spec.ts`
 
 ---
@@ -230,7 +230,7 @@ Host emits (no prompts/keys/raw content):
 ## 19. Docker — PASS
 
 - `Dockerfile` LABEL `org.opencontainers.image.version="1.0.0"`
-- Demo image sets `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (unsafe demo / local reference auth escape hatch)
+- Demo image sets `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (unsafe demo / local reference auth escape hatch)
 - Compose remains local-dev (not production orchestrator)
 
 ---

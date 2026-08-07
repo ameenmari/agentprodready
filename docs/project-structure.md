@@ -1,4 +1,4 @@
-# AgentForge Project Structure
+# AgentProdReady Project Structure
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This document defines the physical repository structure of AgentForge.
+This document defines the physical repository structure of AgentProdReady.
 
 The repository structure mirrors the constitutional architecture defined by the Engineering Blueprints.
 
@@ -36,7 +36,7 @@ The repository follows these principles:
 The Platform Kernel is a logical composition of foundational packages, not a separate domain framework. If implementation requires a physical bootstrap package, it must contain only Application Host, composition-root, and startup wiring and must not own business or cross-cutting semantics.
 
 ```text
-AgentForge/
+AgentProdReady/
 │
 ├── apps/
 ├── packages/
@@ -60,16 +60,16 @@ AgentForge/
 
 # apps/
 
-Applications built using AgentForge.
+Applications built using AgentProdReady.
 
 Examples:
 
 ```text
 apps/
 
-agentforge-server/
+agentprodready-server/
 
-agentforge-cli/
+agentprodready-cli/
 
 playground/
 
@@ -572,7 +572,7 @@ If ownership is unclear, stop and review the relevant blueprint before continuin
 
 # Final Principle
 
-The repository structure is a direct reflection of the AgentForge architecture.
+The repository structure is a direct reflection of the AgentProdReady architecture.
 
 Folders exist because architectural responsibilities exist.
 

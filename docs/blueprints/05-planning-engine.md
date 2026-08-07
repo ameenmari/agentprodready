@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 05
 Planning Engine
 
@@ -556,7 +556,7 @@ Planning contributes logs, metrics, traces, and lifecycle events.
 The Runtime consumes validated Execution Plans through a well-defined contract.
 24. Chief Architect's Notes
 
-The Planning Engine is the reasoning layer of AgentForge. Its purpose is to convert user intent into a structured, executable representation while remaining completely independent of execution mechanics. By producing an immutable Execution Plan, the Planning Engine establishes a clear boundary between decision-making and execution, allowing both concerns to evolve independently.
+The Planning Engine is the reasoning layer of AgentProdReady. Its purpose is to convert user intent into a structured, executable representation while remaining completely independent of execution mechanics. By producing an immutable Execution Plan, the Planning Engine establishes a clear boundary between decision-making and execution, allowing both concerns to evolve independently.
 
 One of the defining architectural decisions is that plans remain capability-driven rather than provider-driven. This enables the same plan to execute across different deployments, tenants, or provider configurations without modification. Provider selection, resilience policies, and execution behavior remain the responsibility of later platform components, preserving modularity and reducing coupling.
 

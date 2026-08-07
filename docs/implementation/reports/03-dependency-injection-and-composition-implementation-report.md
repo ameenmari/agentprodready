@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 03 is implemented and fully verified in `@agentforge/composition`. The package supplies the platform's single Composition Root, module and plugin registration, graph validation, lazy service resolution, exactly three service lifetimes, execution-scope creation, decorators, immutable diagnostics, and deterministic disposal.
+Blueprint 03 is implemented and fully verified in `@agentprodready/composition`. The package supplies the platform's single Composition Root, module and plugin registration, graph validation, lazy service resolution, exactly three service lifetimes, execution-scope creation, decorators, immutable diagnostics, and deterministic disposal.
 
 ## Related Artifacts
 

@@ -1,4 +1,4 @@
-# AgentForge Blueprint Dependency Graph
+# AgentProdReady Blueprint Dependency Graph
 
 **Version:** 2.0
 

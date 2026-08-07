@@ -1,4 +1,4 @@
-# AgentForge Engineering Principles
+# AgentProdReady Engineering Principles
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This document defines the enduring engineering principles that guide the design, implementation, and evolution of AgentForge.
+This document defines the enduring engineering principles that guide the design, implementation, and evolution of AgentProdReady.
 
 Unlike coding standards or implementation guidelines, these principles are intended to remain stable across multiple platform versions.
 
@@ -100,7 +100,7 @@ Implementations should never redefine public contracts.
 
 External technologies are replaceable.
 
-AgentForge contracts are not.
+AgentProdReady contracts are not.
 
 Every provider should be replaceable without changing:
 
@@ -238,7 +238,7 @@ Large "manager" or "utility" classes often indicate unclear responsibilities.
 
 # Principle 14 — Documentation Is Part of the Product
 
-Architecture, contracts, and engineering decisions are part of AgentForge.
+Architecture, contracts, and engineering decisions are part of AgentProdReady.
 
 Documentation should evolve alongside implementation.
 
@@ -309,7 +309,7 @@ Every engineer should be able to understand a component without extensive explan
 
 # Principle 20 — Build for the Long Term
 
-AgentForge is intended to evolve over many years.
+AgentProdReady is intended to evolve over many years.
 
 Engineering decisions should prioritize:
 
@@ -344,7 +344,7 @@ If any answer is uncertain, pause implementation and resolve the architectural q
 
 # Engineering Oath
 
-Every engineer contributing to AgentForge should strive to:
+Every engineer contributing to AgentProdReady should strive to:
 
 * Preserve architectural integrity.
 * Respect explicit ownership.
@@ -359,7 +359,7 @@ Every engineer contributing to AgentForge should strive to:
 
 # Final Principle
 
-**AgentForge is architecture-driven.**
+**AgentProdReady is architecture-driven.**
 
 The architecture defines the platform.
 

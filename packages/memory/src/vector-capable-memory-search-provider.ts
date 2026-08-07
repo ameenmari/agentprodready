@@ -1,12 +1,12 @@
 import type {
   AiEmbeddingAdapterResolver,
   AiEmbeddingRequest,
-} from '@agentforge/ai-provider';
-import { ProviderAdapterError } from '@agentforge/ai-provider';
-import type { CapabilityResolver } from '@agentforge/capability-resolution';
-import type { HealthResult } from '@agentforge/foundation';
-import type { VectorMatch, VectorStorePort } from '@agentforge/vector-store';
-import { VectorStoreError } from '@agentforge/vector-store';
+} from '@agentprodready/ai-provider';
+import { ProviderAdapterError } from '@agentprodready/ai-provider';
+import type { CapabilityResolver } from '@agentprodready/capability-resolution';
+import type { HealthResult } from '@agentprodready/foundation';
+import type { VectorMatch, VectorStorePort } from '@agentprodready/vector-store';
+import { VectorStoreError } from '@agentprodready/vector-store';
 import { fuseHybridCandidates } from './hybrid-rrf.js';
 import type {
   MemoryCandidate,

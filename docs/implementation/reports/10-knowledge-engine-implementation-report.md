@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 10 is implemented and verified in `@agentforge/knowledge`. It provides provider-neutral connector acquisition, normalization, deterministic chunking, enrichment coordination, versioned indexing, retrieval strategies, mandatory security trimming, deduplication, deterministic ranking, citation-ready immutable results, errors, diagnostics, events, telemetry, and health.
+Blueprint 10 is implemented and verified in `@agentprodready/knowledge`. It provides provider-neutral connector acquisition, normalization, deterministic chunking, enrichment coordination, versioned indexing, retrieval strategies, mandatory security trimming, deduplication, deterministic ranking, citation-ready immutable results, errors, diagnostics, events, telemetry, and health.
 
 ## Related Artifacts
 

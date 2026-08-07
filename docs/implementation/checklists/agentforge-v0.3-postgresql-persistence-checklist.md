@@ -1,4 +1,4 @@
-# AgentForge v0.3 Durable PostgreSQL Persistence — Checklist
+# AgentProdReady v0.3 Durable PostgreSQL Persistence — Checklist
 
 **Document Version:** 1.0  
 **Product Version:** 0.3.0  
@@ -9,16 +9,16 @@
 
 ## Required Artifacts
 
-- [x] **Documentation Verification:** [Product](../../product/agentforge-v0.3-postgresql-persistence.md)
-- [x] **Documentation Verification:** [Plan](../plans/agentforge-v0.3-postgresql-persistence-plan.md)
-- [x] **Documentation Verification:** [Specification](../specifications/agentforge-v0.3-postgresql-persistence-specification.md)
+- [x] **Documentation Verification:** [Product](../../product/agentprodready-v0.3-postgresql-persistence.md)
+- [x] **Documentation Verification:** [Plan](../plans/agentprodready-v0.3-postgresql-persistence-plan.md)
+- [x] **Documentation Verification:** [Specification](../specifications/agentprodready-v0.3-postgresql-persistence-specification.md)
 - [x] **Documentation Verification:** [Async I/O amendment](../amendments/24-persistence-async-io-contract-amendment.md) already implemented
-- [x] **Documentation Verification:** [Implementation report](../reports/agentforge-v0.3-postgresql-persistence-implementation-report.md)
+- [x] **Documentation Verification:** [Implementation report](../reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md)
 - [x] **Documentation Verification:** [Persistence guide](../../guides/persistence.md)
 
 ## Provider Package
 
-- [x] `@agentforge/persistence-postgres` created with exact `pg@8.22.0` pin
+- [x] `@agentprodready/persistence-postgres` created with exact `pg@8.22.0` pin
 - [x] No ORM introduced
 - [x] Host does not import `pg`
 - [x] No `pg` Pool/Client/Result types exported publicly

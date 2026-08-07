@@ -18,7 +18,7 @@ Registry, integrity, compatibility, dependency, trust, events, audit, diagnostic
 
 ## Package
 
-- `@agentforge/plugin-marketplace`
+- `@agentprodready/plugin-marketplace`
 - `src/index.ts`: public contracts, package builder, installation/discovery/version/lifecycle service, and errors.
 - `src/reference.ts`: deterministic validators and in-memory/reference adapters.
 - `src/plugin-marketplace.spec.ts`: acceptance, contract, and integration tests.

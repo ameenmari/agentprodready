@@ -1,5 +1,5 @@
-﻿import type { ExecutionContext } from '@agentforge/foundation';
-import type { PlanningPort } from '@agentforge/runtime';
+﻿import type { ExecutionContext } from '@agentprodready/foundation';
+import type { PlanningPort } from '@agentprodready/runtime';
 import type { ExecutionPlan, PlanningDependencies, PlanningDiagnostics, PlanningFact, PlanningRequest } from '../contracts/planning.js';
 import { PlanningError } from '../errors/planning-error.js';
 

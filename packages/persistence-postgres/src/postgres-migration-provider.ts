@@ -4,7 +4,7 @@ import {
   type MigrationPlan,
   type MigrationProvider,
   type MigrationResult,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { withPostgresErrors } from './postgres-error-translation.js';
 import type { PostgresPool } from './pool.js';
 import { PERSISTENCE_POSTGRES_BOUNDARY_ID } from './config.js';

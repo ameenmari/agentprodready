@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 16 is implemented as the provider-independent `@agentforge/event-bus` package. It transports immutable facts through separate publication, routing, Security-outcome enforcement, delivery, retry, replay, dead-letter, retention, diagnostics, and outbox-transfer boundaries without taking ownership of business execution or domain transactions.
+Blueprint 16 is implemented as the provider-independent `@agentprodready/event-bus` package. It transports immutable facts through separate publication, routing, Security-outcome enforcement, delivery, retry, replay, dead-letter, retention, diagnostics, and outbox-transfer boundaries without taking ownership of business execution or domain transactions.
 
 ## Delivered Artifacts
 

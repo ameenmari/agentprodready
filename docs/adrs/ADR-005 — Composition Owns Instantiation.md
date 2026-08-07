@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is designed as a modular platform composed of interchangeable implementations, providers, plugins, and framework components.
+AgentProdReady is designed as a modular platform composed of interchangeable implementations, providers, plugins, and framework components.
 
 As the platform grows, implementations may vary based on configuration, capabilities, deployment environment, licensing, or future extensibility requirements.
 
@@ -141,6 +141,6 @@ Consuming Framework
 
 # Final Statement
 
-Separating implementation instantiation from implementation selection and execution preserves the modular architecture of AgentForge.
+Separating implementation instantiation from implementation selection and execution preserves the modular architecture of AgentProdReady.
 
 Capability Resolution determines the appropriate implementation, the Composition Framework creates and manages it, and architectural frameworks focus solely on their own responsibilities. This separation maintains replaceability, simplifies testing, and prevents hidden coupling throughout the platform.

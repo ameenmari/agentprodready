@@ -1,5 +1,5 @@
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { CapabilityBinding, CapabilityResolver, CapabilityRequest } from '@agentforge/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { CapabilityBinding, CapabilityResolver, CapabilityRequest } from '@agentprodready/capability-resolution';
 import type {
   AiExecutionRequest,
   AiMessage,
@@ -8,15 +8,15 @@ import type {
   AiToolContinuationResult,
   NormalizedAiResult,
   NormalizedToolCall,
-} from '@agentforge/ai-provider';
-import { buildToolContinuationMessages } from '@agentforge/ai-provider';
+} from '@agentprodready/ai-provider';
+import { buildToolContinuationMessages } from '@agentprodready/ai-provider';
 import type {
   CapabilityExecutionControl,
   CapabilityStreamEvent,
   CheckpointNormalizedToolCall,
   ToolLoopCallCheckpoint,
   ToolLoopCheckpoint,
-} from '@agentforge/runtime';
+} from '@agentprodready/runtime';
 import type {
   AiToolCallHandoff,
   NormalizedToolResult,
@@ -25,10 +25,10 @@ import type {
   ToolInvocationCoordinator,
   ToolRegistry,
   ToolValidator,
-} from '@agentforge/tool-framework';
-import { NormalizedToolError } from '@agentforge/tool-framework';
-import type { AuthorizationDecision, AuthorizationRequest, Principal, SecurityPlatform } from '@agentforge/security';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+} from '@agentprodready/tool-framework';
+import { NormalizedToolError } from '@agentprodready/tool-framework';
+import type { AuthorizationDecision, AuthorizationRequest, Principal, SecurityPlatform } from '@agentprodready/security';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 import {
   LOCAL_POLICY_VERSION,
   LOCAL_PROJECT,

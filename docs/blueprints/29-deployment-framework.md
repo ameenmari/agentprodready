@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 29
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Deployment Framework defines how AgentForge is packaged, deployed, configured, scaled, upgraded, and operated across different infrastructure environments.
+The Deployment Framework defines how AgentProdReady is packaged, deployed, configured, scaled, upgraded, and operated across different infrastructure environments.
 
 It establishes a provider-independent deployment architecture.
 
@@ -144,7 +144,7 @@ Business semantics remain unchanged.
 
 # 8. Service Topology
 
-AgentForge components may be deployed:
+AgentProdReady components may be deployed:
 
 * Monolith
 * Modular Monolith
@@ -379,7 +379,7 @@ Owns:
 
 # 21. Chief Architect's Notes
 
-The Deployment Framework ensures AgentForge can run consistently across any supported infrastructure without changing architectural behavior.
+The Deployment Framework ensures AgentProdReady can run consistently across any supported infrastructure without changing architectural behavior.
 
 The constitutional flow is:
 
@@ -404,11 +404,11 @@ Health Verification
 
 The framework answers:
 
-> **"Where and how is AgentForge deployed?"**
+> **"Where and how is AgentProdReady deployed?"**
 
 It does **not** answer:
 
-> **"How does AgentForge execute platform logic?"**
+> **"How does AgentProdReady execute platform logic?"**
 
 Execution remains the responsibility of the Runtime and the platform's core engines.
 

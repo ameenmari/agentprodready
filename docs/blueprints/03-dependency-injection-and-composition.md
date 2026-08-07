@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 03
 Dependency Injection & Composition Framework
 
@@ -16,9 +16,9 @@ Plugin Developers
 Cursor AI
 1. Purpose
 
-The Dependency Injection & Composition Framework defines how every component within AgentForge is created, composed, configured, and managed throughout its lifecycle.
+The Dependency Injection & Composition Framework defines how every component within AgentProdReady is created, composed, configured, and managed throughout its lifecycle.
 
-Rather than treating Dependency Injection as merely a mechanism for resolving services, AgentForge considers composition to be a fundamental architectural capability that governs the construction of the entire platform.
+Rather than treating Dependency Injection as merely a mechanism for resolving services, AgentProdReady considers composition to be a fundamental architectural capability that governs the construction of the entire platform.
 
 Every service, engine, provider, plugin, workflow component, and infrastructure module is composed through this framework.
 
@@ -53,11 +53,11 @@ Blueprint 03 depends upon:
 Blueprint 01 — Engineering Constitution & Platform Foundation
 Blueprint 02 — Plugin & Extension Framework
 
-Future blueprints depending upon Blueprint 03 include every functional subsystem of AgentForge.
+Future blueprints depending upon Blueprint 03 include every functional subsystem of AgentProdReady.
 
 5. Composition Philosophy
 
-AgentForge follows five core composition principles.
+AgentProdReady follows five core composition principles.
 
 Explicit Dependencies
 
@@ -124,7 +124,7 @@ The Runtime owns execution.
 7. Composition Root
 7.1 Purpose
 
-AgentForge defines a single Composition Root.
+AgentProdReady defines a single Composition Root.
 
 The Composition Root is the exclusive location where platform services are registered and the dependency graph is assembled.
 
@@ -205,7 +205,7 @@ Each category remains isolated within its own module.
 
 9. Service Lifetimes
 
-AgentForge defines exactly three service lifetimes.
+AgentProdReady defines exactly three service lifetimes.
 
 Singleton
 
@@ -708,7 +708,7 @@ Diagnostics expose registrations, lifetimes, factories, and dependency graphs.
 Composition failures prevent platform startup.
 23. Chief Architect's Notes
 
-The Dependency Injection & Composition Framework defines how AgentForge is assembled, not how it behaves. By separating composition from execution, the platform achieves deterministic startup, explicit dependencies, and strong module isolation.
+The Dependency Injection & Composition Framework defines how AgentProdReady is assembled, not how it behaves. By separating composition from execution, the platform achieves deterministic startup, explicit dependencies, and strong module isolation.
 
 The Composition Root serves as the single authority for constructing the application, while execution scopes ensure that each request or workflow operates within an isolated dependency graph rooted in a single immutable ExecutionContext. This approach prevents hidden dependencies, lifetime violations, and service locator anti-patterns.
 

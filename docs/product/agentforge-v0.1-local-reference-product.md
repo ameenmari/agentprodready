@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Reference Product
+# AgentProdReady v0.1 Local Reference Product
 
 **Version:** 0.1.0  
 **Status:** Implemented — Complete  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.1 Local Reference Product is the smallest useful locally runnable AgentForge application. It composes the already implemented Blueprint 01–31 framework packages into one deterministic, in-memory, database-free product that proves the constitutional execution chain end-to-end.
+AgentProdReady v0.1 Local Reference Product is the smallest useful locally runnable AgentProdReady application. It composes the already implemented Blueprint 01–31 framework packages into one deterministic, in-memory, database-free product that proves the constitutional execution chain end-to-end.
 
 This product is **not** production software. It is a local reference surface for architecture validation, developer onboarding, and smoke verification.
 
@@ -20,8 +20,8 @@ This product is **not** production software. It is a local reference surface for
 | Document | Role |
 |---|---|
 | [Local-Runnability Assessment](../implementation/reviews/local-runnability-assessment.md) | Gap analysis and provider inventory |
-| [Implementation Plan](../implementation/plans/agentforge-v0.1-local-reference-product-plan.md) | Approved implementation approach |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.1-local-reference-product-specification.md) | Exact local contracts before code |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.1-local-reference-product-plan.md) | Approved implementation approach |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.1-local-reference-product-specification.md) | Exact local contracts before code |
 
 Framework blueprints, ADRs, and existing public framework contracts remain authoritative and unchanged.
 
@@ -164,4 +164,4 @@ Defaults allow first run with **no `.env` file**:
 
 ## Next Step
 
-Review and approve the [implementation plan](../implementation/plans/agentforge-v0.1-local-reference-product-plan.md) and [implementation specification](../implementation/specifications/agentforge-v0.1-local-reference-product-specification.md) before Autonomous implementation begins.
+Review and approve the [implementation plan](../implementation/plans/agentprodready-v0.1-local-reference-product-plan.md) and [implementation specification](../implementation/specifications/agentprodready-v0.1-local-reference-product-specification.md) before Autonomous implementation begins.

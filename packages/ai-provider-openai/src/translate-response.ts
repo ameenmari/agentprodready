@@ -1,6 +1,6 @@
-import type { AiExecutionRequest, AiFinishReason, NormalizedAiResult, NormalizedToolCall } from '@agentforge/ai-provider';
+import type { AiExecutionRequest, AiFinishReason, NormalizedAiResult, NormalizedToolCall } from '@agentprodready/ai-provider';
 import type { OpenAiProviderConfig } from './config.js';
-import { ProviderAdapterError } from '@agentforge/ai-provider';
+import { ProviderAdapterError } from '@agentprodready/ai-provider';
 
 export interface OpenAiChatCompletionResponse {
   readonly id?: string;

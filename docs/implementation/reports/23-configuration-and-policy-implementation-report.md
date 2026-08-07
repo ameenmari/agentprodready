@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 23 is implemented as `@agentforge/configuration`: the centralized provider-neutral framework for immutable configuration and declarative policy definitions, explicit validation, semantic version history, deterministic hierarchy resolution, compatibility, locked-key conflict detection, effective artifacts, per-value provenance, events, diagnostics, and audit facts. It does not execute policies, authorize operations, load environment variables/files/external services, resolve secret values, select providers/capabilities, schedule Runtime work, progress Workflows, or alter Agent lifecycle.
+Blueprint 23 is implemented as `@agentprodready/configuration`: the centralized provider-neutral framework for immutable configuration and declarative policy definitions, explicit validation, semantic version history, deterministic hierarchy resolution, compatibility, locked-key conflict detection, effective artifacts, per-value provenance, events, diagnostics, and audit facts. It does not execute policies, authorize operations, load environment variables/files/external services, resolve secret values, select providers/capabilities, schedule Runtime work, progress Workflows, or alter Agent lifecycle.
 
 ## Delivered Artifacts
 

@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-AgentForge’s supported stable release line is **1.x** once `1.0.0` is the current stable product release.
+AgentProdReady’s supported stable release line is **1.x** once `1.0.0` is the current stable product release.
 
 | Version | Supported |
 |---|---|
@@ -16,7 +16,7 @@ Pre-1.0 local reference slices were architecture and product milestones, not a l
 
 **LocalReference HTTP authentication is not production authentication.** It exists for local development and demos only.
 
-When `NODE_ENV=production`, the reference host refuses to start with LocalReference as sole auth unless `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (explicit unsafe demo escape hatch). Production deployments must supply a real authentication adapter. See `docs/guides/security.md`.
+When `NODE_ENV=production`, the reference host refuses to start with LocalReference as sole auth unless `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (explicit unsafe demo escape hatch). Production deployments must supply a real authentication adapter. See `docs/guides/security.md`.
 
 ## Reporting a vulnerability
 

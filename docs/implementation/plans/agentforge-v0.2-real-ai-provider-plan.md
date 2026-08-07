@@ -1,4 +1,4 @@
-# AgentForge v0.2 Real AI Provider — Implementation Plan
+# AgentProdReady v0.2 Real AI Provider — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.2.0  
@@ -28,8 +28,8 @@ This is a **provider integration** task, not a framework redesign.
 | docs/implementation/implementation-modes.md | Yes |
 | docs/project-structure.md | Yes |
 | docs/architecture/dependency-graph.md | Yes |
-| docs/product/agentforge-v0.1-local-reference-product.md | Yes |
-| docs/product/agentforge-v0.2-real-ai-provider.md | Yes (companion) |
+| docs/product/agentprodready-v0.1-local-reference-product.md | Yes |
+| docs/product/agentprodready-v0.2-real-ai-provider.md | Yes (companion) |
 | Blueprint 08 — AI Provider Framework | Yes |
 | Blueprint 15 — Security | Yes |
 | Blueprint 16 — Event Bus | Yes |
@@ -39,8 +39,8 @@ This is a **provider integration** task, not a framework redesign.
 | Blueprints 03, 04, 07 (Composition, Runtime, Capability Resolution) | Yes |
 | ADR-004, ADR-005, ADR-006, ADR-008, ADR-011, ADR-012 | Yes |
 | 08-ai-provider-framework implementation plan/spec/report | Yes |
-| agentforge-v0.1-local-reference-product plan/spec/report | Yes |
-| agentforge-v0.1-container-ci plan/spec/report | Yes |
+| agentprodready-v0.1-local-reference-product plan/spec/report | Yes |
+| agentprodready-v0.1-container-ci plan/spec/report | Yes |
 | packages/ai-provider current contracts and reference adapter | Yes |
 | apps/platform-host composition, seed, config | Yes |
 
@@ -50,7 +50,7 @@ This is a **provider integration** task, not a framework redesign.
 
 ## In Scope
 
-- New package `@agentforge/ai-provider-openai` implementing `AiProviderAdapter`
+- New package `@agentprodready/ai-provider-openai` implementing `AiProviderAdapter`
 - OpenAI SDK encapsulation (chat completions / responses path for text generation)
 - Request, response, usage, model metadata, and error normalization
 - Adapter-internal authentication and model configuration
@@ -65,7 +65,7 @@ This is a **provider integration** task, not a framework redesign.
 ## Out of Scope
 
 - Changes to approved ADRs or Engineering Blueprints
-- Changes to public framework contracts in `@agentforge/ai-provider`
+- Changes to public framework contracts in `@agentprodready/ai-provider`
 - Modifications to `ReferenceAiProviderAdapter` or existing deterministic tests’ required secrets/network
 - Streaming product/HTTP surface
 - Tool-calling product loops and Tool Framework orchestration changes
@@ -94,7 +94,7 @@ This is a **provider integration** task, not a framework redesign.
 
 ## Decision
 
-Create a **separate workspace package** so the OpenAI SDK never becomes a dependency of `@agentforge/ai-provider`.
+Create a **separate workspace package** so the OpenAI SDK never becomes a dependency of `@agentprodready/ai-provider`.
 
 ```text
 packages/
@@ -105,7 +105,7 @@ packages/
       reference/
       errors/
   ai-provider-openai/          ← NEW production provider package
-    package.json               ← @agentforge/ai-provider-openai
+    package.json               ← @agentprodready/ai-provider-openai
     src/
       index.ts
       openai-ai-provider-adapter.ts
@@ -134,14 +134,14 @@ packages/
 
 | Blueprint / Package | Role |
 |---|---|
-| 08 `@agentforge/ai-provider` | Contracts, framework, error types (unchanged) |
-| 07 `@agentforge/capability-resolution` | Implementation selection via binding |
+| 08 `@agentprodready/ai-provider` | Contracts, framework, error types (unchanged) |
+| 07 `@agentprodready/capability-resolution` | Implementation selection via binding |
 | 03 Composition (host wiring) | Instantiates adapter via `FactoryAiAdapterResolver` |
 | 04 Runtime | Owns retry/timeout/cancellation around invoke |
 | 15 Security | Unchanged authorization path |
 | 16/17/22 | Existing facts/audit/diagnostics path unchanged |
-| `openai@7.4.0` npm SDK | Internal only to `@agentforge/ai-provider-openai`; exact version pin |
-| `@agentforge/platform-host` | Config + seed + Composition binding only |
+| `openai@7.4.0` npm SDK | Internal only to `@agentprodready/ai-provider-openai`; exact version pin |
+| `@agentprodready/platform-host` | Config + seed + Composition binding only |
 
 ---
 
@@ -164,14 +164,14 @@ packages/ai-provider-openai/
   src/live/openai.live.spec.ts
 
 docs/guides/ai-providers.md
-docs/implementation/reports/agentforge-v0.2-real-ai-provider-implementation-report.md   (post-impl)
-docs/implementation/checklists/agentforge-v0.2-real-ai-provider-checklist.md           (post-impl)
+docs/implementation/reports/agentprodready-v0.2-real-ai-provider-implementation-report.md   (post-impl)
+docs/implementation/checklists/agentprodready-v0.2-real-ai-provider-checklist.md           (post-impl)
 ```
 
 ## Modify
 
 ```text
-apps/platform-host/package.json                          # depend on @agentforge/ai-provider-openai
+apps/platform-host/package.json                          # depend on @agentprodready/ai-provider-openai
 apps/platform-host/src/config/local-reference-config.ts  # AI_PROVIDER + OpenAI config load/validate
 apps/platform-host/src/composition/local-reference-composition.ts
 apps/platform-host/src/seed/reference-capabilities.seed.ts
@@ -208,7 +208,7 @@ Public Runtime / Planning / Workflow / Capability Resolution contracts
 
 Future multi-model selection within a single provider (for example routing `gpt-5` vs a smaller OpenAI model by capability attributes or Resolution configuration) remains adapter- and Composition/Resolution-config concern and must not require Runtime, Planning, or Workflow changes.
 
-**SDK pin:** `@agentforge/ai-provider-openai` depends on exact `openai@7.4.0` (no `^` / `~` range).
+**SDK pin:** `@agentprodready/ai-provider-openai` depends on exact `openai@7.4.0` (no `^` / `~` range).
 
 **Explicitly excluded:** `OPENAI_MAX_RETRIES`, `OPENAI_TIMEOUT` as adapter execution policy. SDK retries must be disabled (`maxRetries: 0`). Runtime owns operational timeout/retry/cancellation.
 
@@ -266,7 +266,7 @@ No layer may be bypassed. Host must not call OpenAI SDK directly.
 | Layer | Location | CI |
 |---|---|---|
 | Unit (translation/error mapping) | `packages/ai-provider-openai` with mocked SDK | Yes |
-| Framework contract regression | Existing `@agentforge/ai-provider` tests | Yes (unchanged) |
+| Framework contract regression | Existing `@agentprodready/ai-provider` tests | Yes (unchanged) |
 | Host default path | Existing e2e/smoke with `reference-ai` | Yes |
 | Host OpenAI composition (mocked) | New host unit/integration with fake adapter or mocked SDK | Yes if no network |
 | Live OpenAI | `AI_LIVE_TESTS=1` + real key | **No** — opt-in only |
@@ -323,8 +323,8 @@ No layer may be bypassed. Host must not call OpenAI SDK directly.
 
 # Completion Artifacts (Post-Implementation)
 
-- `docs/implementation/reports/agentforge-v0.2-real-ai-provider-implementation-report.md`
-- `docs/implementation/checklists/agentforge-v0.2-real-ai-provider-checklist.md`
+- `docs/implementation/reports/agentprodready-v0.2-real-ai-provider-implementation-report.md`
+- `docs/implementation/checklists/agentprodready-v0.2-real-ai-provider-checklist.md`
 
 ---
 
@@ -336,7 +336,7 @@ No layer may be bypassed. Host must not call OpenAI SDK directly.
 
 ## Package structure
 
-`packages/ai-provider-openai` (`@agentforge/ai-provider-openai`), separate from `@agentforge/ai-provider`
+`packages/ai-provider-openai` (`@agentprodready/ai-provider-openai`), separate from `@agentprodready/ai-provider`
 
 ## Files to create
 
@@ -368,7 +368,7 @@ Mocked unit + deterministic host tests in CI; live OpenAI opt-in only.
 
 ## Stop conditions
 
-1. Implementation requires changing ADRs, blueprints, or public `@agentforge/ai-provider` contracts.
+1. Implementation requires changing ADRs, blueprints, or public `@agentprodready/ai-provider` contracts.
 2. OpenAI SDK types would need to cross the Blueprint 08 boundary.
 3. Adapter would need to own retry/timeout/failover to function.
 4. Default CI cannot stay green without secrets or network AI calls.
@@ -398,5 +398,5 @@ Mocked unit + deterministic host tests in CI; live OpenAI opt-in only.
 
 Await an explicit `Implementation Mode: Autonomous` proceed instruction before production code.
 
-**Companion specification:** [agentforge-v0.2-real-ai-provider-specification.md](../specifications/agentforge-v0.2-real-ai-provider-specification.md)  
-**Companion product doc:** [agentforge-v0.2-real-ai-provider.md](../../product/agentforge-v0.2-real-ai-provider.md)
+**Companion specification:** [agentprodready-v0.2-real-ai-provider-specification.md](../specifications/agentprodready-v0.2-real-ai-provider-specification.md)  
+**Companion product doc:** [agentprodready-v0.2-real-ai-provider.md](../../product/agentprodready-v0.2-real-ai-provider.md)

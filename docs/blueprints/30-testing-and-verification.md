@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 30
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Testing & Verification Framework defines how AgentForge components are verified for correctness, compatibility, reliability, and architectural compliance.
+The Testing & Verification Framework defines how AgentProdReady components are verified for correctness, compatibility, reliability, and architectural compliance.
 
 It establishes a standardized testing architecture that validates platform behavior without becoming part of the Runtime or business execution.
 
@@ -200,7 +200,7 @@ Verification does not certify business correctness.
 
 # 11. Compliance
 
-Compliance verifies alignment with AgentForge architecture.
+Compliance verifies alignment with AgentProdReady architecture.
 
 Examples include:
 

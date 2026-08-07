@@ -1,7 +1,7 @@
-﻿import type { ExecutionContext } from '@agentforge/foundation';
-import type { PluginContribution } from '@agentforge/plugin-framework';
-import type { CapabilityInvocationPort } from '@agentforge/runtime';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+﻿import type { ExecutionContext } from '@agentprodready/foundation';
+import type { PluginContribution } from '@agentprodready/plugin-framework';
+import type { CapabilityInvocationPort } from '@agentprodready/runtime';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 import type {
   CapabilityBinding,
   CapabilityDefinition,

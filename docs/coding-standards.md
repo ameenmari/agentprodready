@@ -1,4 +1,4 @@
-# AgentForge Coding Standards
+# AgentProdReady Coding Standards
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This document defines the engineering standards for implementing AgentForge.
+This document defines the engineering standards for implementing AgentProdReady.
 
 These standards ensure:
 
@@ -16,7 +16,7 @@ These standards ensure:
 * Testability
 * Architectural integrity
 
-These standards apply to every package, provider, plugin, application, and tool within the AgentForge repository.
+These standards apply to every package, provider, plugin, application, and tool within the AgentProdReady repository.
 
 ---
 
@@ -393,7 +393,7 @@ Behavioral changes require blueprint updates or ADRs where applicable.
 
 # Final Engineering Principle
 
-AgentForge values **architectural consistency over clever implementation**.
+AgentProdReady values **architectural consistency over clever implementation**.
 
 Readable, maintainable, well-tested code that faithfully implements the blueprints is preferred over highly optimized or overly abstract code that obscures architectural intent.
 

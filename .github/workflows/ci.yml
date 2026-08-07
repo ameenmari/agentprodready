@@ -61,7 +61,7 @@ jobs:
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
-          IMAGE=agentforge/platform-host
+          IMAGE=agentprodready/platform-host
           VERSION=${{ steps.meta.outputs.version }}
           SHA=${{ steps.meta.outputs.short_sha }}
           docker build \
@@ -75,20 +75,20 @@ jobs:
           fi
       - name: Run container
         run: |
-          docker run --rm -d --name agentforge-ci \
+          docker run --rm -d --name agentprodready-ci \
             -p 3000:3000 \
             -e HOST=0.0.0.0 \
             -e PORT=3000 \
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
             -e PERSISTENCE_PROVIDER=in-memory \
-            -e AGENTFORGE_ALLOW_REFERENCE_AUTH=true \
-            "agentforge/platform-host:${{ steps.meta.outputs.version }}"
+            -e AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true \
+            "agentprodready/platform-host:${{ steps.meta.outputs.version }}"
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container
         if: always()
-        run: docker stop agentforge-ci || true
+        run: docker stop agentprodready-ci || true
 
   persistence-postgres:
     name: Persistence PostgreSQL
@@ -99,18 +99,18 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: agentforge_ci
-          POSTGRES_PASSWORD: agentforge_ci
-          POSTGRES_DB: agentforge_ci
+          POSTGRES_USER: agentprodready_ci
+          POSTGRES_PASSWORD: agentprodready_ci
+          POSTGRES_DB: agentprodready_ci
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      DATABASE_URL: postgres://agentprodready_ci:agentprodready_ci@127.0.0.1:5432/agentprodready_ci
       RUN_POSTGRES_TESTS: "1"
       PERSISTENCE_ALLOW_RESET: "1"
     steps:
@@ -140,18 +140,18 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: agentforge_ci
-          POSTGRES_PASSWORD: agentforge_ci
-          POSTGRES_DB: agentforge_ci
+          POSTGRES_USER: agentprodready_ci
+          POSTGRES_PASSWORD: agentprodready_ci
+          POSTGRES_DB: agentprodready_ci
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      DATABASE_URL: postgres://agentprodready_ci:agentprodready_ci@127.0.0.1:5432/agentprodready_ci
       RUN_POSTGRES_TESTS: "1"
       PERSISTENCE_PROVIDER: postgres
     steps:
@@ -181,18 +181,18 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: agentforge_ci
-          POSTGRES_PASSWORD: agentforge_ci
-          POSTGRES_DB: agentforge_ci
+          POSTGRES_USER: agentprodready_ci
+          POSTGRES_PASSWORD: agentprodready_ci
+          POSTGRES_DB: agentprodready_ci
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      DATABASE_URL: postgres://agentprodready_ci:agentprodready_ci@127.0.0.1:5432/agentprodready_ci
       RUN_POSTGRES_TESTS: "1"
       PERSISTENCE_PROVIDER: postgres
       MEMORY_PROVIDER: persistent
@@ -223,18 +223,18 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: agentforge_ci
-          POSTGRES_PASSWORD: agentforge_ci
-          POSTGRES_DB: agentforge_ci
+          POSTGRES_USER: agentprodready_ci
+          POSTGRES_PASSWORD: agentprodready_ci
+          POSTGRES_DB: agentprodready_ci
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      DATABASE_URL: postgres://agentprodready_ci:agentprodready_ci@127.0.0.1:5432/agentprodready_ci
       RUN_POSTGRES_TESTS: "1"
       PERSISTENCE_PROVIDER: postgres
       EVALUATION_ENABLED: "true"
@@ -266,18 +266,18 @@ jobs:
       postgres:
         image: pgvector/pgvector:pg16
         env:
-          POSTGRES_USER: agentforge_ci
-          POSTGRES_PASSWORD: agentforge_ci
-          POSTGRES_DB: agentforge_ci
+          POSTGRES_USER: agentprodready_ci
+          POSTGRES_PASSWORD: agentprodready_ci
+          POSTGRES_DB: agentprodready_ci
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+          --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://agentforge_ci:agentforge_ci@127.0.0.1:5432/agentforge_ci
+      DATABASE_URL: postgres://agentprodready_ci:agentprodready_ci@127.0.0.1:5432/agentprodready_ci
       RUN_POSTGRES_TESTS: "1"
       VECTOR_INDEX_PROFILE: reference-32
       VECTOR_SEARCH_ENABLED: "true"

@@ -7,7 +7,7 @@
 
 ## Objective
 
-Implement the single architecture-neutral Composition Root that registers, validates, constructs, scopes, decorates, diagnoses, and disposes AgentForge services. Adopt Blueprint 02's `ImplementationActivator` while preserving Runtime ownership of execution and Observability ownership of telemetry.
+Implement the single architecture-neutral Composition Root that registers, validates, constructs, scopes, decorates, diagnoses, and disposes AgentProdReady services. Adopt Blueprint 02's `ImplementationActivator` while preserving Runtime ownership of execution and Observability ownership of telemetry.
 
 ## Documents and Dependencies
 
@@ -15,7 +15,7 @@ Blueprints 01 and 02, their specifications/reports, Blueprint 03, Blueprint 31, 
 
 ## Scope
 
-- `@agentforge/composition` package with no NestJS dependency;
+- `@agentprodready/composition` package with no NestJS dependency;
 - one mutable-before-build, immutable-after-build Composition Root;
 - module, infrastructure, plugin, factory, and implementation registration through one pipeline;
 - exactly `singleton`, `scoped`, and `transient` lifetimes;

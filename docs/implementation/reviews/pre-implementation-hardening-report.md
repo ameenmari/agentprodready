@@ -1,4 +1,4 @@
-# AgentForge Pre-Implementation Hardening Report
+# AgentProdReady Pre-Implementation Hardening Report
 
 **Version:** 1.0  
 **Review Date:** 2026-08-06  
@@ -14,7 +14,7 @@ This result does not claim unattended readiness for Blueprints 01–31. Each lat
 
 | Area | Files |
 |---|---|
-| Repository governance | `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, `.cursor/rules/agentforge-implementation.mdc`, `.gitignore` |
+| Repository governance | `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, `.cursor/rules/agentprodready-implementation.mdc`, `.gitignore` |
 | Navigation and implementation guidance | `docs/README.md`, `docs/architecture-index.md`, `docs/cursor-start-here.md`, `docs/glossary.md`, `docs/project-structure.md`, `docs/implementation-guidelines.md`, `docs/implementation-roadmap.md`, `docs/implementation/autonomous-implementation-workflow.md` |
 | Canonical modes | `docs/implementation/implementation-modes.md` |
 | Dependency model | `docs/architecture/dependency-graph.md` |

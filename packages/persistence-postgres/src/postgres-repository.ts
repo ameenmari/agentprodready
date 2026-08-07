@@ -7,7 +7,7 @@ import {
   type QueryResult,
   type Repository,
   type RepositoryQuery,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { withPostgresErrors } from './postgres-error-translation.js';
 import type { PostgresPool, PostgresPoolClient } from './pool.js';
 import { mapEntityRow, scopeKey } from './serialize.js';

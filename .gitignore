@@ -10,6 +10,8 @@ out/
 coverage/
 .nyc_output/
 typedoc/
+.npm-pack/
+*.tgz
 
 # Logs and caches
 *.log

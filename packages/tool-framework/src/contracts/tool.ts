@@ -1,6 +1,6 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext, HealthResult } from '@agentforge/foundation';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext, HealthResult } from '@agentprodready/foundation';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 
 export type ToolSideEffect = 'read-only' | 'mutating' | 'external-side-effect';
 export type ToolIdempotency = 'idempotent' | 'non-idempotent';

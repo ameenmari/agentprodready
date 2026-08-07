@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe, expect, it, vi } from 'vitest';
 import {
   AiProviderFramework,
@@ -73,20 +73,20 @@ async function collect(stream: AsyncIterable<NormalizedAiStreamEvent>): Promise<
 
 describe('referenceStreamChunks', () => {
   it('splits whitespace-preserving chunks', () => {
-    expect(referenceStreamChunks('hello agentforge')).toEqual(['hello', ' ', 'agentforge']);
+    expect(referenceStreamChunks('hello agentprodready')).toEqual(['hello', ' ', 'agentprodready']);
   });
 });
 
 describe('AI streaming terminals', () => {
   it('emits ordered reference chunks and one completed terminal', async () => {
-    const events = await collect(fixture().framework.stream(baseRequest('hello agentforge')));
+    const events = await collect(fixture().framework.stream(baseRequest('hello agentprodready')));
     expect(events.map((e) => e.type)).toEqual(['content', 'content', 'content', 'usage', 'completed']);
     expect(
       events.flatMap((e) => (e.type === 'content' ? [e.part] : [])),
     ).toEqual([
       { type: 'text', text: 'hello' },
       { type: 'text', text: ' ' },
-      { type: 'text', text: 'agentforge' },
+      { type: 'text', text: 'agentprodready' },
     ]);
     expect(events.at(-1)?.type).toBe('completed');
     expect(events.filter((e) => e.type === 'completed' || e.type === 'failed' || e.type === 'cancelled')).toHaveLength(1);
@@ -96,7 +96,7 @@ describe('AI streaming terminals', () => {
     const controller = new AbortController();
     controller.abort();
     const f = fixture();
-    const events = await collect(f.framework.stream(baseRequest('hello agentforge', controller.signal)));
+    const events = await collect(f.framework.stream(baseRequest('hello agentprodready', controller.signal)));
     expect(events.map((e) => e.type)).toEqual(['cancelled']);
     expect(f.events.facts.some((fact) => fact.type === 'ai.stream.cancelled')).toBe(true);
   });

@@ -1,4 +1,4 @@
-import { VectorStoreError, type VectorStoreErrorCode } from '@agentforge/vector-store';
+import { VectorStoreError, type VectorStoreErrorCode } from '@agentprodready/vector-store';
 
 interface PgLikeError {
   readonly code?: string;

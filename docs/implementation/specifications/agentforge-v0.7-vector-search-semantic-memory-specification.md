@@ -1,4 +1,4 @@
-# AgentForge v0.7 Vector Search & Semantic Memory — Implementation Specification
+# AgentProdReady v0.7 Vector Search & Semantic Memory — Implementation Specification
 
 **Document Type:** Product Implementation Specification  
 **Product Version:** 0.7.0  
@@ -23,9 +23,9 @@ Architectural authority order remains Foundation → ADRs → Blueprints 08/11/1
 
 # 2. Premises
 
-1. `@agentforge/memory` already exposes `MemorySearchStrategy` including `semantic` / `hybrid` and `MemorySearchProvider.search → { candidates, partialReasons }`.
+1. `@agentprodready/memory` already exposes `MemorySearchStrategy` including `semantic` / `hybrid` and `MemorySearchProvider.search → { candidates, partialReasons }`.
 2. v0.5 durable Memory degrades `semantic`/`hybrid` to keyword with `partialReasons: ['semantic-unavailable']` (persistent provider).
-3. `@agentforge/ai-provider` is **chat-only** today; BP08 already lists Embedding Generation as a capability category.
+3. `@agentprodready/ai-provider` is **chat-only** today; BP08 already lists Embedding Generation as a capability category.
 4. No approved Vector Store contracts exist in code.
 5. Knowledge Engine owns corpus/knowledge retrieval separately; v0.7 does **not** implement Knowledge vectors.
 6. Default local/CI remains vector-disabled, secret-free, and deterministic.
@@ -37,7 +37,7 @@ Architectural authority order remains Foundation → ADRs → Blueprints 08/11/1
 | Concern | Approved typed contract today? | v0.7 disposition |
 |---|---|---|
 | Embedding generation | **No** | **Amendment** to AI Provider implementation contracts |
-| Vector representation / store | **No** | **New** `@agentforge/vector-store` package contracts |
+| Vector representation / store | **No** | **New** `@agentprodready/vector-store` package contracts |
 | Vector indexing for Memory | Lifecycle `index` state only | **Additive** `MemoryIndexProvider` + engine coordination |
 | Semantic / hybrid query tags | **Yes** | Keep; implement honestly when enabled |
 | `MemorySearchProvider` | **Yes** | Sufficient — **no second search API** |
@@ -71,7 +71,7 @@ Create:
 
 `docs/implementation/amendments/08-ai-provider-embedding-contract-amendment.md`
 
-**Affects:** `@agentforge/ai-provider` implementation contracts (not Blueprint 08 rewrite).  
+**Affects:** `@agentprodready/ai-provider` implementation contracts (not Blueprint 08 rewrite).  
 **Blueprint amendment required?** No — Embedding Generation already listed.  
 **ADR required?** No.
 
@@ -250,7 +250,7 @@ Qdrant / Pinecone / Weaviate / Milvus / alternate Postgres vector impl implement
 
 ---
 
-# 7. Vector Store Contracts (`@agentforge/vector-store@0.1.0`)
+# 7. Vector Store Contracts (`@agentprodready/vector-store@0.1.0`)
 
 ```ts
 export type VectorDistanceMetric = 'cosine' | 'inner-product' | 'l2';
@@ -320,10 +320,10 @@ Also ship `InMemoryVectorStore` reference implementation for unit tests (same co
 
 ## 8.1 Package
 
-`@agentforge/vector-store-pgvector@0.1.0`
+`@agentprodready/vector-store-pgvector@0.1.0`
 
-Depends on: `@agentforge/vector-store`, `pg` (or shared pool factory).  
-Does **not** belong inside `@agentforge/persistence-postgres` as a Persistence feature.
+Depends on: `@agentprodready/vector-store`, `pg` (or shared pool factory).  
+Does **not** belong inside `@agentprodready/persistence-postgres` as a Persistence feature.
 
 May reuse connection env loading patterns (`DATABASE_URL`) but owns its own migrator entrypoint.
 
@@ -461,7 +461,7 @@ CI vector job runs both.
 
 ## 9.1 Deterministic reference (required for CI)
 
-`ReferenceEmbeddingAdapter` in `@agentforge/ai-provider`:
+`ReferenceEmbeddingAdapter` in `@agentprodready/ai-provider`:
 
 - Fixed dimensions: **32** (test-only; not claimed semantic quality)
 - Pure function of input text + model id (stable hash → floats in a bounded range, L2-normalized)
@@ -471,7 +471,7 @@ CI vector job runs both.
 
 ## 9.2 OpenAI (optional live)
 
-`OpenAiEmbeddingAdapter` in `@agentforge/ai-provider-openai`:
+`OpenAiEmbeddingAdapter` in `@agentprodready/ai-provider-openai`:
 
 | Item | Decision |
 |---|---|
@@ -489,7 +489,7 @@ Host config when OpenAI embeddings selected reuses `OPENAI_API_KEY` / existing O
 
 ## 9.3 Memory must not depend on OpenAI package
 
-`@agentforge/memory` may depend on `@agentforge/ai-provider` embedding **contracts** / resolver types only.  
+`@agentprodready/memory` may depend on `@agentprodready/ai-provider` embedding **contracts** / resolver types only.  
 OpenAI package is wired only in Composition / host.
 
 ---
@@ -587,8 +587,8 @@ MemoryEngine (action=index)
   → publish memory.indexed
 ```
 
-Memory may depend only on provider-neutral `@agentforge/ai-provider` embedding contracts / resolver types.  
-Memory must **not** import `@agentforge/ai-provider-openai`, OpenAI SDK, or provider-specific embedding types.  
+Memory may depend only on provider-neutral `@agentprodready/ai-provider` embedding contracts / resolver types.  
+Memory must **not** import `@agentprodready/ai-provider-openai`, OpenAI SDK, or provider-specific embedding types.  
 Chat `AiProviderAdapter` unchanged.
 
 Embeddable text rules:
@@ -791,15 +791,15 @@ v0.6 Evaluation remains unaffected. No Evaluation dependency from vector retriev
 
 | Package | Change |
 |---|---|
-| `@agentforge/ai-provider` | Embedding contracts + reference embed adapter; version bump |
-| `@agentforge/ai-provider-openai` | Embeddings adapter; chat unchanged; version bump |
-| `@agentforge/vector-store` | **New** `0.1.0` |
-| `@agentforge/vector-store-pgvector` | **New** `0.1.0` |
-| `@agentforge/memory` | Index provider + vector-capable search + engine hook; version bump |
-| `@agentforge/platform-host` | Config/composition/seed; `0.7.0` |
-| `@agentforge/persistence-postgres` | Image/docs only if needed; **no** vector ranking ownership |
+| `@agentprodready/ai-provider` | Embedding contracts + reference embed adapter; version bump |
+| `@agentprodready/ai-provider-openai` | Embeddings adapter; chat unchanged; version bump |
+| `@agentprodready/vector-store` | **New** `0.1.0` |
+| `@agentprodready/vector-store-pgvector` | **New** `0.1.0` |
+| `@agentprodready/memory` | Index provider + vector-capable search + engine hook; version bump |
+| `@agentprodready/platform-host` | Config/composition/seed; `0.7.0` |
+| `@agentprodready/persistence-postgres` | Image/docs only if needed; **no** vector ranking ownership |
 
-Memory package dependencies: may add `@agentforge/vector-store` and use `@agentforge/ai-provider` embedding types. Must **not** depend on `vector-store-pgvector` or `ai-provider-openai`.
+Memory package dependencies: may add `@agentprodready/vector-store` and use `@agentprodready/ai-provider` embedding types. Must **not** depend on `vector-store-pgvector` or `ai-provider-openai`.
 
 ---
 
@@ -808,7 +808,7 @@ Memory package dependencies: may add `@agentforge/vector-store` and use `@agentf
 | Item | Decision |
 |---|---|
 | Postgres image | Switch profile image to pgvector-enabled PG16 |
-| Default agentforge service | Vector env off |
+| Default agentprodready service | Vector env off |
 | Existing durability | Continues against same Postgres service |
 | Data volume | Existing volume may need recreate locally if image family changes — document in guide |
 

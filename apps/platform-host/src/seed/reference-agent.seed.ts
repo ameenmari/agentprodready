@@ -1,5 +1,5 @@
-import type { AgentManifest, ValidationCatalog } from '@agentforge/agent-framework';
-import { freeze } from '@agentforge/agent-framework';
+import type { AgentManifest, ValidationCatalog } from '@agentprodready/agent-framework';
+import { freeze } from '@agentprodready/agent-framework';
 import {
   LOCAL_AGENT_PRINCIPAL,
   LOCAL_PROJECT,
@@ -17,7 +17,7 @@ export function referenceAgentManifest(): AgentManifest {
     version: REFERENCE_AGENT_VERSION,
     name: 'Reference Agent',
     description: 'Deterministic local reference agent',
-    purpose: 'Echo objectives through the full AgentForge execution chain',
+    purpose: 'Echo objectives through the full AgentProdReady execution chain',
     type: 'task',
     principalReference: LOCAL_AGENT_PRINCIPAL,
     scope: Object.freeze({
@@ -64,12 +64,12 @@ export function referenceAgentManifest(): AgentManifest {
       contractVersions: Object.freeze({ runtime: '1' }),
     }),
     governance: Object.freeze({
-      owner: 'agentforge-local',
+      owner: 'agentprodready-local',
       reviewStatus: 'approved' as const,
       classification: 'internal' as const,
       policyVersion: 'local-1',
     }),
-    publisherReference: 'publisher:agentforge-local',
+    publisherReference: 'publisher:agentprodready-local',
     sourceConfigurationVersions: Object.freeze(['config:local:1']),
     createdAt: '2026-08-07T00:00:00.000Z',
     createdBy: 'local-seed',

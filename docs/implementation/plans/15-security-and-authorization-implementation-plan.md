@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/security` as AgentForge’s centralized, fail-closed, provider-independent identity normalization, authorization policy, delegation, revocation, authority-validity, decision-cache, and Security Context boundary.
+Implement `@agentprodready/security` as AgentProdReady’s centralized, fail-closed, provider-independent identity normalization, authorization policy, delegation, revocation, authority-validity, decision-cache, and Security Context boundary.
 
 ## Work
 

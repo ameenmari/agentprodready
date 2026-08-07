@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 15
 
@@ -24,7 +24,7 @@
 
 # 1. Purpose
 
-The Security & Authorization Platform defines the standardized architecture through which AgentForge authenticates identities, evaluates access policies, authorizes operations, protects sensitive resources, and propagates authoritative security outcomes throughout platform execution.
+The Security & Authorization Platform defines the standardized architecture through which AgentProdReady authenticates identities, evaluates access policies, authorizes operations, protects sensitive resources, and propagates authoritative security outcomes throughout platform execution.
 
 Its purpose is to centralize security decisions so that individual engines, providers, plugins, tools, and integrations do not create independent authorization models.
 
@@ -36,7 +36,7 @@ Other platform components consume and enforce those decisions.
 
 They must not replace, reinterpret, weaken, or bypass them.
 
-The Security & Authorization Platform is AgentForge’s **central identity, policy-decision, and access-governance layer**.
+The Security & Authorization Platform is AgentProdReady’s **central identity, policy-decision, and access-governance layer**.
 
 ---
 
@@ -269,7 +269,7 @@ A successfully authenticated identity may still be denied authorization.
 
 A Principal is the normalized identity of the actor participating in a platform operation.
 
-The remainder of AgentForge must not depend directly on identity-provider-specific claim objects or authentication SDK models.
+The remainder of AgentProdReady must not depend directly on identity-provider-specific claim objects or authentication SDK models.
 
 ---
 
@@ -715,7 +715,7 @@ Possible approaches include:
 * Mandatory-policy precedence
 * Compliance-policy precedence
 
-AgentForge must not resolve conflicting security policies through undocumented behavior.
+AgentProdReady must not resolve conflicting security policies through undocumented behavior.
 
 Applied conflict-resolution policy and versions must appear in decision diagnostics.
 
@@ -786,7 +786,7 @@ A tool possessing credentials for an external system does not imply that the inv
 
 Tool credentials enable authentication to the external system.
 
-The Security Platform determines whether AgentForge may use those credentials for the requested operation.
+The Security Platform determines whether AgentProdReady may use those credentials for the requested operation.
 
 ---
 
@@ -1012,7 +1012,7 @@ A security failure must never fail open.
 
 # Chief Architect’s Notes
 
-The Security & Authorization Platform establishes a single authoritative decision point for access control across AgentForge.
+The Security & Authorization Platform establishes a single authoritative decision point for access control across AgentProdReady.
 
 The constitutional distinction is:
 
@@ -2033,7 +2033,7 @@ Blueprint 15 is considered complete when:
 
 # 53. Chief Architect’s Notes
 
-The Security & Authorization Platform creates a single authoritative access-control model for AgentForge.
+The Security & Authorization Platform creates a single authoritative access-control model for AgentProdReady.
 
 Every protected operation follows the same constitutional sequence:
 
@@ -2079,7 +2079,7 @@ The resulting model is:
 
 > **Security decides. Runtime coordinates. Domain frameworks enforce. Audit records.**
 
-This boundary must remain stable across all future AgentForge blueprints and implementations.
+This boundary must remain stable across all future AgentProdReady blueprints and implementations.
 
 ---
 
@@ -2454,13 +2454,13 @@ Final Authorization where required
 Runtime Execution
 ```
 
-This lifecycle is the canonical security flow for AgentForge.
+This lifecycle is the canonical security flow for AgentProdReady.
 
 ---
 
 ## 54.10 Final Architectural Rule
 
-The following statement is constitutional and must remain stable across all future AgentForge blueprints:
+The following statement is constitutional and must remain stable across all future AgentProdReady blueprints:
 
 > **Security decides. Runtime coordinates. Domain frameworks enforce. Audit records.**
 

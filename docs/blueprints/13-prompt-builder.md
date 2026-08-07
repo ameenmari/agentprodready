@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 13
 Prompt Builder
 
@@ -10,7 +10,7 @@ Classification: Core Platform Blueprint
 
 1. Purpose
 
-The Prompt Builder defines the standardized architecture through which AgentForge transforms an Execution Context Package into a structured, consumer-ready Prompt Package.
+The Prompt Builder defines the standardized architecture through which AgentProdReady transforms an Execution Context Package into a structured, consumer-ready Prompt Package.
 
 Its purpose is to organize execution context into a presentation suitable for downstream AI consumers while remaining independent of AI providers, model APIs, transport protocols, and provider-specific message formats.
 
@@ -105,7 +105,7 @@ The Prompt Package is the only public output of the Prompt Builder.
 
 Architectural Rationale
 
-Blueprint 13 introduces one of the final major separations in the AgentForge architecture: Context answers what information is relevant; Prompt answers how that information should be presented.
+Blueprint 13 introduces one of the final major separations in the AgentProdReady architecture: Context answers what information is relevant; Prompt answers how that information should be presented.
 
 This distinction prevents prompt templates, provider-specific message formats, and model limitations from leaking backward into the Context Assembly Engine, Knowledge Engine, or Memory Engine.
 
@@ -115,7 +115,7 @@ Instead, the Prompt Builder acts as a pure presentation layer that transforms an
 
 Architectural Consequences
 
-This blueprint continues a pattern that is now becoming one of AgentForge's defining characteristics:
+This blueprint continues a pattern that is now becoming one of AgentProdReady's defining characteristics:
 
 Planning Engine
         │
@@ -893,7 +893,7 @@ The Prompt Builder determines **how execution context should be represented**, w
 
 A critical architectural decision is the introduction of the **Prompt Package** as the platform's canonical prompt representation. This allows downstream consumers to adapt prompts for different providers, model families, or future execution environments without requiring changes to the Prompt Builder itself.
 
-Equally important is the separation between **Prompt Composition** and **Provider Translation**. The Prompt Builder owns logical presentation; the AI Provider Framework owns provider-specific translation. This boundary prevents provider APIs, message formats, and SDK models from influencing prompt construction and preserves the provider-independent architecture established throughout AgentForge.
+Equally important is the separation between **Prompt Composition** and **Provider Translation**. The Prompt Builder owns logical presentation; the AI Provider Framework owns provider-specific translation. This boundary prevents provider APIs, message formats, and SDK models from influencing prompt construction and preserves the provider-independent architecture established throughout AgentProdReady.
 
 ---
 

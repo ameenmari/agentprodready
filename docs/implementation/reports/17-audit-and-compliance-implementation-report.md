@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 17 is implemented as `@agentforge/audit`. The package transforms authoritative facts into immutable, idempotent Audit Records and governs their integrity, retention, Legal Hold, query/redaction, archival, reconstruction, evidence, export, and deletion lifecycle without taking Security, Runtime, Event Bus, provider, or legal-interpretation ownership.
+Blueprint 17 is implemented as `@agentprodready/audit`. The package transforms authoritative facts into immutable, idempotent Audit Records and governs their integrity, retention, Legal Hold, query/redaction, archival, reconstruction, evidence, export, and deletion lifecycle without taking Security, Runtime, Event Bus, provider, or legal-interpretation ownership.
 
 ## Delivered Artifacts
 

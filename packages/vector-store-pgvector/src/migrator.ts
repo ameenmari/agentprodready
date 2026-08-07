@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VectorStoreError } from '@agentforge/vector-store';
+import { VectorStoreError } from '@agentprodready/vector-store';
 import {
   loadVectorIndexProfile,
   loadVectorPostgresConfig,

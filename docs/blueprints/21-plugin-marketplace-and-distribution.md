@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 21
 
@@ -14,7 +14,7 @@
 
 The Plugin Marketplace & Distribution Framework defines how plugins, packages, adapters, and platform extensions are published, discovered, distributed, verified, installed, updated, and retired.
 
-It establishes a provider-independent software distribution layer for AgentForge.
+It establishes a provider-independent software distribution layer for AgentProdReady.
 
 This blueprint governs software distribution.
 
@@ -432,7 +432,7 @@ Owns:
 
 # 21. Chief Architect's Notes
 
-Blueprint 21 establishes a software distribution ecosystem for AgentForge without becoming an execution framework.
+Blueprint 21 establishes a software distribution ecosystem for AgentProdReady without becoming an execution framework.
 
 The constitutional flow is:
 

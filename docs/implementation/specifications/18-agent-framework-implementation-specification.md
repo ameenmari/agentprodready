@@ -22,7 +22,7 @@ Packages are inspected/hashed via replaceable providers; installation is indepen
 
 ## Package
 
-- `@agentforge/agent-framework`
+- `@agentprodready/agent-framework`
 - `src/index.ts`: contracts and coordinators.
 - `src/reference.ts`: deterministic/in-memory replaceable providers.
 - `src/agent-framework.spec.ts`: contract/unit/integration verification.

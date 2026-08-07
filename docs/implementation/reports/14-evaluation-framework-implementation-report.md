@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 14 is implemented and fully verified. `@agentforge/evaluation` evaluates immutable normalized platform artifacts through explicit versioned requests and criteria, replaceable evaluator contracts, a Runtime-owned execution boundary, normalized evidence and scores, compatibility-safe transparent aggregation, human waiting/resumption, comparative evaluation, immutable descriptive results, normalized errors, and replaceable lifecycle integrations.
+Blueprint 14 is implemented and fully verified. `@agentprodready/evaluation` evaluates immutable normalized platform artifacts through explicit versioned requests and criteria, replaceable evaluator contracts, a Runtime-owned execution boundary, normalized evidence and scores, compatibility-safe transparent aggregation, human waiting/resumption, comparative evaluation, immutable descriptive results, normalized errors, and replaceable lifecycle integrations.
 
 The framework does not create or modify artifacts, schedule evaluator work, retrieve Knowledge or Memory, assemble Context, construct production prompts, resolve capabilities internally, call AI providers directly, execute tools, authorize access, remediate failures, change workflows, select production implementations, or deploy changes.
 

@@ -18,7 +18,7 @@ Runtime and Workflow integration ports receive descriptive results and return ac
 
 ## Package
 
-- `@agentforge/human-interaction`
+- `@agentprodready/human-interaction`
 - `src/index.ts`: public contracts, builder, validation, coordinator, lifecycle, and errors.
 - `src/reference.ts`: deterministic policies and in-memory/reference adapters.
 - `src/human-interaction.spec.ts`: acceptance, contract, and integration tests.

@@ -8,7 +8,7 @@ import {
   type PersistenceAuthorization,
   type PersistenceScope,
   type TransactionRequest,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { loadPostgresPersistenceConfig, PERSISTENCE_POSTGRES_BOUNDARY_ID } from './config.js';
 import { applyMigrations, resetTestDatabase } from './migrator.js';
 import { PostgresMigrationProvider } from './postgres-migration-provider.js';

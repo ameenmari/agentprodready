@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Review-Gated  
-**Affects:** `@agentforge/tool-framework` implementation contracts (not Blueprint 09 constitutional rewrite)  
-**Related:** [v0.9 Tool Calling specification](../specifications/agentforge-v0.9-tool-calling-agent-actions-specification.md)
+**Affects:** `@agentprodready/tool-framework` implementation contracts (not Blueprint 09 constitutional rewrite)  
+**Related:** [v0.9 Tool Calling specification](../specifications/agentprodready-v0.9-tool-calling-agent-actions-specification.md)
 
 ---
 

@@ -1,4 +1,4 @@
-import type { CreateExecutionContextRequest, ExecutionContext } from '@agentforge/foundation';
+import type { CreateExecutionContextRequest, ExecutionContext } from '@agentprodready/foundation';
 
 declare const serviceType: unique symbol;
 export interface ServiceToken<T> {
@@ -80,4 +80,4 @@ export interface CompositionDiagnostics {
 
 export interface DisposableService { dispose(): void | Promise<void>; }
 
-export const EXECUTION_CONTEXT = createServiceToken<ExecutionContext>('agentforge.execution-context');
+export const EXECUTION_CONTEXT = createServiceToken<ExecutionContext>('agentprodready.execution-context');

@@ -4,24 +4,24 @@ import {
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   loadOpenAiProviderConfig,
   type OpenAiProviderConfig,
-} from '@agentforge/ai-provider-openai';
+} from '@agentprodready/ai-provider-openai';
 import {
   REFERENCE_EMBEDDING_DIMENSIONS,
   REFERENCE_EMBEDDING_MODEL_ID,
-} from '@agentforge/ai-provider';
+} from '@agentprodready/ai-provider';
 import {
   loadPersistenceProviderSelection,
   loadPostgresPersistenceConfig,
   type PersistenceProviderSelection,
   type PostgresPersistenceConfig,
-} from '@agentforge/persistence-postgres';
+} from '@agentprodready/persistence-postgres';
 
 const requirePackageJson = createRequire(import.meta.url);
 const hostPackageJson = requirePackageJson('../../package.json') as { readonly version?: unknown };
 const hostPackageVersion =
   typeof hostPackageJson.version === 'string' ? hostPackageJson.version : '';
 if (hostPackageVersion.trim() === '') {
-  throw new Error('@agentforge/platform-host package.json is missing version');
+  throw new Error('@agentprodready/platform-host package.json is missing version');
 }
 
 export type AiProviderSelection = 'reference' | 'openai';
@@ -328,8 +328,8 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     MAX_JSON_BODY_BYTES,
   );
   const allowReferenceAuth = parseBooleanFlag(
-    env['AGENTFORGE_ALLOW_REFERENCE_AUTH'],
-    'AGENTFORGE_ALLOW_REFERENCE_AUTH',
+    env['AGENTPRODREADY_ALLOW_REFERENCE_AUTH'],
+    'AGENTPRODREADY_ALLOW_REFERENCE_AUTH',
     false,
   );
 
@@ -516,11 +516,11 @@ export function assertProductionAuthPolicy(config: LocalReferenceConfig, env: No
   if ((env['NODE_ENV'] ?? '').trim() !== 'production') return;
   if (config.allowReferenceAuth) {
     process.stderr.write(
-      'WARNING: AGENTFORGE_ALLOW_REFERENCE_AUTH=true — LocalReference authentication is NOT production authentication.\n',
+      'WARNING: AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true — LocalReference authentication is NOT production authentication.\n',
     );
     return;
   }
   throw new Error(
-    'LocalReference authentication is not permitted when NODE_ENV=production. Set AGENTFORGE_ALLOW_REFERENCE_AUTH=true only for explicit demos.',
+    'LocalReference authentication is not permitted when NODE_ENV=production. Set AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true only for explicit demos.',
   );
 }

@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is a configurable platform supporting multiple providers, deployment environments, execution policies, feature flags, security settings, runtime options, and operational parameters.
+AgentProdReady is a configurable platform supporting multiple providers, deployment environments, execution policies, feature flags, security settings, runtime options, and operational parameters.
 
 Without centralized configuration management, architectural frameworks may independently load environment variables, parse configuration files, or maintain their own configuration state, resulting in inconsistent behavior, duplicated logic, configuration drift, and reduced observability.
 
@@ -155,4 +155,4 @@ Architectural Frameworks
 
 Configuration is an infrastructure concern, not a framework responsibility.
 
-By centralizing configuration resolution, AgentForge ensures consistent behavior across all architectural frameworks while maintaining provider independence, deployment flexibility, and a single authoritative source for platform configuration.
+By centralizing configuration resolution, AgentProdReady ensures consistent behavior across all architectural frameworks while maintaining provider independence, deployment flexibility, and a single authoritative source for platform configuration.

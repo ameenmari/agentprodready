@@ -1,14 +1,14 @@
-# Default: single-service AgentForge (in-memory persistence).
+# Default: single-service AgentProdReady (in-memory persistence).
 # Optional PostgreSQL: docker compose --profile postgres up -d
 #   then: pnpm db:migrate
-#   then: PERSISTENCE_PROVIDER=postgres DATABASE_URL=postgres://agentforge:agentforge@127.0.0.1:5432/agentforge pnpm start
+#   then: PERSISTENCE_PROVIDER=postgres DATABASE_URL=postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready pnpm start
 
 services:
-  agentforge:
+  agentprodready:
     build:
       context: .
       dockerfile: Dockerfile
-    image: agentforge/platform-host:1.0.0
+    image: agentprodready/platform-host:1.0.0
     ports:
       - "3000:3000"
     environment:
@@ -19,7 +19,7 @@ services:
       PERSISTENCE_PROVIDER: "in-memory"
       RUNTIME_RECOVERY_ENABLED: "false"
       MEMORY_PROVIDER: "in-memory"
-      AGENTFORGE_ALLOW_REFERENCE_AUTH: "true"
+      AGENTPRODREADY_ALLOW_REFERENCE_AUTH: "true"
       AI_ROUTING_MODE: "fixed"
 
   postgres:
@@ -27,18 +27,18 @@ services:
     # pgvector-enabled Postgres 16 (serves persistence + vector migrations)
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: agentforge
-      POSTGRES_PASSWORD: agentforge
-      POSTGRES_DB: agentforge
+      POSTGRES_USER: agentprodready
+      POSTGRES_PASSWORD: agentprodready
+      POSTGRES_DB: agentprodready
     ports:
       - "5432:5432"
     volumes:
-      - agentforge_pg:/var/lib/postgresql/data
+      - agentprodready_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U agentforge -d agentforge"]
+      test: ["CMD-SHELL", "pg_isready -U agentprodready -d agentprodready"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  agentforge_pg:
+  agentprodready_pg:

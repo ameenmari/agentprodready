@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is designed as a provider-independent, modular platform where architectural frameworks collaborate through well-defined contracts rather than concrete implementations.
+AgentProdReady is designed as a provider-independent, modular platform where architectural frameworks collaborate through well-defined contracts rather than concrete implementations.
 
 Without stable public contracts, implementations become tightly coupled, providers become difficult to replace, and architectural boundaries gradually erode.
 
@@ -39,7 +39,7 @@ Defining public contracts first provides several long-term benefits:
 * Improved maintainability.
 * Clear framework collaboration.
 
-By separating contracts from implementations, AgentForge remains adaptable to new providers and technologies without changing its architectural foundation.
+By separating contracts from implementations, AgentProdReady remains adaptable to new providers and technologies without changing its architectural foundation.
 
 ---
 
@@ -117,7 +117,7 @@ Concrete implementations remain internal and replaceable.
 
 # Constitutional Rule
 
-> **Public contracts define the AgentForge platform.**
+> **Public contracts define the AgentProdReady platform.**
 >
 > Implementations realize those contracts but must never redefine architectural behavior, ownership, or public interfaces outside the approved governance process.
 
@@ -127,4 +127,4 @@ Concrete implementations remain internal and replaceable.
 
 Public contracts are the architectural foundation upon which all implementations are built.
 
-By defining stable contracts before implementation, AgentForge ensures that frameworks remain independently evolvable, provider implementations remain replaceable, and architectural boundaries remain consistent regardless of the underlying technologies used to realize the platform.
+By defining stable contracts before implementation, AgentProdReady ensures that frameworks remain independently evolvable, provider implementations remain replaceable, and architectural boundaries remain consistent regardless of the underlying technologies used to realize the platform.

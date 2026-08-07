@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 30 is implemented as `@agentforge/testing-verification`: standardized immutable test/suite contracts, deterministic local execution, contract and compliance verification, isolated fixtures, replaceable mock providers, normalized reports, events, governance audit references, and operational diagnostics. It remains outside production Runtime and business execution.
+Blueprint 30 is implemented as `@agentprodready/testing-verification`: standardized immutable test/suite contracts, deterministic local execution, contract and compliance verification, isolated fixtures, replaceable mock providers, normalized reports, events, governance audit references, and operational diagnostics. It remains outside production Runtime and business execution.
 
 ## Delivered Artifacts
 

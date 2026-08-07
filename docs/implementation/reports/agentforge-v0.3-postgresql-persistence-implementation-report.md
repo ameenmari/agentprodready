@@ -1,4 +1,4 @@
-# AgentForge v0.3 Durable PostgreSQL Persistence — Implementation Report
+# AgentProdReady v0.3 Durable PostgreSQL Persistence — Implementation Report
 
 **Document Version:** 1.0  
 **Product Version:** 0.3.0  
@@ -17,12 +17,12 @@ Additive PostgreSQL Persistence Provider implementing Promise-based Blueprint 24
 
 ## Related Artifacts
 
-- [Product](../../product/agentforge-v0.3-postgresql-persistence.md)
-- [Plan](../plans/agentforge-v0.3-postgresql-persistence-plan.md)
-- [Specification](../specifications/agentforge-v0.3-postgresql-persistence-specification.md)
+- [Product](../../product/agentprodready-v0.3-postgresql-persistence.md)
+- [Plan](../plans/agentprodready-v0.3-postgresql-persistence-plan.md)
+- [Specification](../specifications/agentprodready-v0.3-postgresql-persistence-specification.md)
 - [Async I/O amendment](../amendments/24-persistence-async-io-contract-amendment.md)
 - [Guide](../../guides/persistence.md)
-- [Checklist](../checklists/agentforge-v0.3-postgresql-persistence-checklist.md)
+- [Checklist](../checklists/agentprodready-v0.3-postgresql-persistence-checklist.md)
 
 ---
 
@@ -30,7 +30,7 @@ Additive PostgreSQL Persistence Provider implementing Promise-based Blueprint 24
 
 ```text
 packages/persistence-postgres/
-  package.json                         # @agentforge/persistence-postgres@0.3.0
+  package.json                         # @agentprodready/persistence-postgres@0.3.0
   tsconfig.json
   README.md
   migrations/001_init.sql
@@ -53,8 +53,8 @@ docs/guides/persistence.md
 scripts/run-postgres-tests.mjs
 scripts/persistence-durability-probe.mjs
 vitest.postgres.config.ts
-docs/implementation/reports/agentforge-v0.3-postgresql-persistence-implementation-report.md
-docs/implementation/checklists/agentforge-v0.3-postgresql-persistence-checklist.md
+docs/implementation/reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md
+docs/implementation/checklists/agentprodready-v0.3-postgresql-persistence-checklist.md
 ```
 
 ## Files Modified
@@ -80,9 +80,9 @@ vitest.config.ts
 scripts/docker-smoke.mjs
 .github/workflows/ci.yml
 packages/persistence/README.md
-docs/product/agentforge-v0.3-postgresql-persistence.md
-docs/implementation/plans/agentforge-v0.3-postgresql-persistence-plan.md
-docs/implementation/specifications/agentforge-v0.3-postgresql-persistence-specification.md
+docs/product/agentprodready-v0.3-postgresql-persistence.md
+docs/implementation/plans/agentprodready-v0.3-postgresql-persistence-plan.md
+docs/implementation/specifications/agentprodready-v0.3-postgresql-persistence-specification.md
 docs/README.md
 ```
 
@@ -168,7 +168,7 @@ Credentials are never logged (`redactConnectionString`).
 
 ```text
 persistence-postgres (needs: verify)
-  service: postgres:16-alpine (agentforge_ci / agentforge_ci)
+  service: postgres:16-alpine (agentprodready_ci / agentprodready_ci)
   steps: checkout → Node 24 → pnpm 10.15.1 → install → build → db:migrate → test:postgres
 ```
 

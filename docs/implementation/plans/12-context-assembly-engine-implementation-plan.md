@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/context-assembly` as a pure, deterministic, provider-independent composition boundary that turns normalized execution, planning, workflow, Knowledge, Memory, Runtime metadata, policy, and supplied security constraints into one immutable Execution Context Package.
+Implement `@agentprodready/context-assembly` as a pure, deterministic, provider-independent composition boundary that turns normalized execution, planning, workflow, Knowledge, Memory, Runtime metadata, policy, and supplied security constraints into one immutable Execution Context Package.
 
 ## Work
 

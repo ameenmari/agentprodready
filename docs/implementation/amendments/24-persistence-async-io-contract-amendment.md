@@ -4,20 +4,20 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous (code migration)  
-**Affects:** `@agentforge/persistence` implementation contracts (not Blueprint 24 constitutional text)  
-**Related:** [v0.3 PostgreSQL design](../specifications/agentforge-v0.3-postgresql-persistence-specification.md)
+**Affects:** `@agentprodready/persistence` implementation contracts (not Blueprint 24 constitutional text)  
+**Related:** [v0.3 PostgreSQL design](../specifications/agentprodready-v0.3-postgresql-persistence-specification.md)
 
 ---
 
 ## 1. Problem
 
-The approved AgentForge v0.3 PostgreSQL design identified a hard stop condition:
+The approved AgentProdReady v0.3 PostgreSQL design identified a hard stop condition:
 
-- Current `@agentforge/persistence` `Repository` read/query methods and `SnapshotStore.save/get` are **synchronous**.
+- Current `@agentprodready/persistence` `Repository` read/query methods and `SnapshotStore.save/get` are **synchronous**.
 - Honest PostgreSQL access in Node.js via `pg` is **asynchronous**.
 - Dual `AsyncRepository` APIs, or fake-sync bridges (`deasync`, worker blocking, Atomics waits), are rejected.
 
-AgentForge needs one canonical persistence I/O surface that both in-memory and durable providers can implement.
+AgentProdReady needs one canonical persistence I/O surface that both in-memory and durable providers can implement.
 
 ---
 
@@ -179,13 +179,13 @@ Must `await` repository query and snapshot store save.
 
 | Symbol | Package | Note |
 |---|---|---|
-| `SnapshotStore<T>` / `Repository<T>` | `@agentforge/foundation` | **Already Promise-based**; different contracts |
-| `WorkflowSnapshotStore` | `@agentforge/workflow` | Already async; unrelated |
-| `ExecutionSnapshotPort` | `@agentforge/runtime` | Already async; unrelated |
+| `SnapshotStore<T>` / `Repository<T>` | `@agentprodready/foundation` | **Already Promise-based**; different contracts |
+| `WorkflowSnapshotStore` | `@agentprodready/workflow` | Already async; unrelated |
+| `ExecutionSnapshotPort` | `@agentprodready/runtime` | Already async; unrelated |
 
 ### External ecosystem
 
-No published npm consumers outside this monorepo are known. AgentForge is pre-1.0. **No compatibility shim.**
+No published npm consumers outside this monorepo are known. AgentProdReady is pre-1.0. **No compatibility shim.**
 
 ---
 
@@ -194,7 +194,7 @@ No published npm consumers outside this monorepo are known. AgentForge is pre-1.
 | Dimension | Classification |
 |---|---|
 | Change type | **Breaking public contract amendment** |
-| Package | `@agentforge/persistence` |
+| Package | `@agentprodready/persistence` |
 | Suggested package version bump | `0.1.0` → `0.2.0` (semver minor/major discretionary pre-1.0; treat as breaking) |
 | Product version | Does not by itself ship product v0.3; clears blocker for v0.3 PostgreSQL |
 | Shim / deprecated sync aliases | **None** |
@@ -229,7 +229,7 @@ public async find(id: string, scope: PersistenceScope): Promise<PersistedEntity<
 
 | Concern | Owner after amendment |
 |---|---|
-| Persistence contracts / normalization | Blueprint 24 / `@agentforge/persistence` |
+| Persistence contracts / normalization | Blueprint 24 / `@agentprodready/persistence` |
 | Provider instantiation | Composition |
 | Operational retry/timeout/recovery | Runtime |
 | Authorization decisions | Security |
@@ -280,17 +280,17 @@ Regression must prove:
 
 If the code migration must be reverted before release:
 
-- Restore sync signatures in `@agentforge/persistence@0.1.x`.  
+- Restore sync signatures in `@agentprodready/persistence@0.1.x`.  
 - PostgreSQL provider remains blocked.  
 - This amendment document remains historical record of the stop condition.
 
-After publication of Promise-based `@agentforge/persistence@0.2.0`, rollback would be another breaking change; prefer forward-only pre-1.0.
+After publication of Promise-based `@agentprodready/persistence@0.2.0`, rollback would be another breaking change; prefer forward-only pre-1.0.
 
 ---
 
 ## 14. PostgreSQL Readiness Gate
 
-Code migration is complete (`@agentforge/persistence@0.2.0`). Evidence: [migration report](../reports/24-persistence-async-io-contract-migration-report.md).
+Code migration is complete (`@agentprodready/persistence@0.2.0`). Evidence: [migration report](../reports/24-persistence-async-io-contract-migration-report.md).
 
 | Check | Result |
 |---|---|
@@ -316,4 +316,4 @@ Next approved step: Autonomous PostgreSQL v0.3 implementation (**separate** cycl
 | Also convert `begin` / `framework.snapshot`? | **Yes** (provider I/O) |
 | Keep `stage` sync? | **Yes** (buffer only) |
 | Production code in documentation step? | **No** (docs only) |
-| Production code in Autonomous migration? | **Yes** — `@agentforge/persistence@0.2.0` |
+| Production code in Autonomous migration? | **Yes** — `@agentprodready/persistence@0.2.0` |

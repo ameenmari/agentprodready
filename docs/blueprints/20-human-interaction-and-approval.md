@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 20
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Human Interaction & Approval Framework defines how AgentForge requests, receives, validates, and records structured human participation during platform execution.
+The Human Interaction & Approval Framework defines how AgentProdReady requests, receives, validates, and records structured human participation during platform execution.
 
 It supports:
 
@@ -29,7 +29,7 @@ It supports:
 
 The framework does not own user interfaces, Runtime scheduling, Workflow progression, authentication, notification delivery, or business execution.
 
-It defines the normalized contracts and lifecycle semantics through which human participation enters an AgentForge execution.
+It defines the normalized contracts and lifecycle semantics through which human participation enters an AgentProdReady execution.
 
 ---
 

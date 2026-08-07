@@ -2,7 +2,7 @@
 
 **Version:** 0.7.0
 
-AgentForge v0.7 adds provider-neutral semantic and hybrid Memory retrieval behind `MemorySearchProvider`. Default product behavior keeps vector search **disabled**.
+AgentProdReady v0.7 adds provider-neutral semantic and hybrid Memory retrieval behind `MemorySearchProvider`. Default product behavior keeps vector search **disabled**.
 
 ## Ownership
 

@@ -1,6 +1,6 @@
 # Runtime Restart & Recovery (v0.4)
 
-AgentForge Runtime owns restart detection and resume/fail decisions (ADR-006). Persistence stores opaque `ExecutionCheckpoint` rows; it never decides whether an execution resumes.
+AgentProdReady Runtime owns restart detection and resume/fail decisions (ADR-006). Persistence stores opaque `ExecutionCheckpoint` rows; it never decides whether an execution resumes.
 
 ## Defaults
 

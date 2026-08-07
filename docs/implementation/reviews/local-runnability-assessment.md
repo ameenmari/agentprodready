@@ -1,13 +1,13 @@
-# AgentForge Local-Runnability Assessment
+# AgentProdReady Local-Runnability Assessment
 
 **Assessment Date:** 2026-08-07  
 **Implementation Mode:** Review-Gated  
 **Scope:** Read-only implementation assessment; this report is the only file added.  
-**Decision:** Framework repository is buildable and its bootstrap is executable, but no locally usable AgentForge reference product exists yet.
+**Decision:** Framework repository is buildable and its bootstrap is executable, but no locally usable AgentProdReady reference product exists yet.
 
 ## Executive Summary
 
-AgentForge currently contains a runnable **bootstrap smoke host**, not a runnable application product. The host creates a Nest application context, resolves an empty Foundation `ApplicationHost`, starts it, immediately stops it, and closes the context. It does not listen on a port, expose health/readiness endpoints, compose Blueprints 02–31, or accept an Agent invocation.
+AgentProdReady currently contains a runnable **bootstrap smoke host**, not a runnable application product. The host creates a Nest application context, resolves an empty Foundation `ApplicationHost`, starts it, immediately stops it, and closes the context. It does not listen on a port, expose health/readiness endpoints, compose Blueprints 02–31, or accept an Agent invocation.
 
 The framework implementations and deterministic reference providers are sufficient to build a database-free local reference product. The missing work is product composition: a long-running host, explicit local configuration, provider registration, an Agent-to-Runtime execution pipeline, and a callable surface.
 
@@ -16,12 +16,12 @@ The framework implementations and deterministic reference providers are sufficie
 **Partial.** `npm run start` executes successfully, so an application entry-point module exists. However, it is only a one-shot lifecycle/bootstrap verification:
 
 1. Create a Nest application context.
-2. Resolve `AGENTFORGE_APPLICATION_HOST`.
+2. Resolve `AGENTPRODREADY_APPLICATION_HOST`.
 3. Start the host.
 4. Stop the host immediately.
 5. Close the Nest context and exit.
 
-`FoundationModule` constructs `ApplicationHost([])`, so zero lifecycle components are started. This is not a persistent API, worker, CLI product, or interactive AgentForge process.
+`FoundationModule` constructs `ApplicationHost([])`, so zero lifecycle components are started. This is not a persistent API, worker, CLI product, or interactive AgentProdReady process.
 
 **Runnability verdict:**
 
@@ -34,7 +34,7 @@ Evidence: `apps/platform-host/src/main.ts`, `packages/foundation/src/foundation.
 
 ## 2. Application Entry Point
 
-The application package is `@agentforge/platform-host` under `apps/platform-host`.
+The application package is `@agentprodready/platform-host` under `apps/platform-host`.
 
 The source entry point is:
 
@@ -48,7 +48,7 @@ The built entry point is:
 apps/platform-host/dist/main.js
 ```
 
-The root `start` script imports the built module and invokes its exported `bootstrap()` function explicitly. The workspace package's own `start` script runs `node dist/main.js`, but that module invokes `bootstrap()` only when `AGENTFORGE_RUN_HOST=1`. Without that environment variable, the workspace script imports the module and exits without bootstrapping.
+The root `start` script imports the built module and invokes its exported `bootstrap()` function explicitly. The workspace package's own `start` script runs `node dist/main.js`, but that module invokes `bootstrap()` only when `AGENTPRODREADY_RUN_HOST=1`. Without that environment variable, the workspace script imports the module and exits without bootstrapping.
 
 ## 3. Root and Workspace Scripts
 
@@ -78,14 +78,14 @@ Individual npm gates (`build`, `start`, `typecheck`, `test`, `boundaries`) do no
 The root package does not declare npm `workspaces`; the repository is a pnpm workspace. Therefore this command does **not** work:
 
 ```powershell
-npm --workspace @agentforge/platform-host run start
+npm --workspace @agentprodready/platform-host run start
 ```
 
 Direct alternatives are:
 
 ```powershell
 npm --prefix apps/platform-host run build
-$env:AGENTFORGE_RUN_HOST='1'; npm --prefix apps/platform-host run start
+$env:AGENTPRODREADY_RUN_HOST='1'; npm --prefix apps/platform-host run start
 ```
 
 or simply the root command:
@@ -253,7 +253,7 @@ Required additions in a later approved implementation cycle:
 
 ## Exact Commands That Work Now
 
-From `C:\Users\AHLp\Desktop\Nodejs\AgentForge`:
+From `C:\Users\AHLp\Desktop\Nodejs\AgentProdReady`:
 
 ```powershell
 node --version
@@ -341,4 +341,4 @@ No API key, database URL, broker URL, cloud credential, or secret is required fo
 
 ## Final Assessment
 
-AgentForge is a comprehensive, passing framework implementation with adequate deterministic providers for a local reference product. It is **not yet locally runnable as an Agent platform** because the application composition and callable product surface are missing. Docker and a database are unnecessary for closing that first product gap.
+AgentProdReady is a comprehensive, passing framework implementation with adequate deterministic providers for a local reference product. It is **not yet locally runnable as an Agent platform** because the application composition and callable product surface are missing. Docker and a database are unnecessary for closing that first product gap.

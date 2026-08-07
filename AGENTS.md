@@ -1,4 +1,4 @@
-# AgentForge Agent Instructions
+# AgentProdReady Agent Instructions
 
 Before changing code or implementation documentation, read [docs/cursor-start-here.md](docs/cursor-start-here.md).
 

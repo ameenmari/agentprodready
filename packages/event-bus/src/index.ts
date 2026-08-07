@@ -1,6 +1,6 @@
-﻿import type { EventPublisher as FoundationEventPublisher, PlatformEvent as FoundationPlatformEvent } from '@agentforge/foundation';
+﻿import type { EventPublisher as FoundationEventPublisher, PlatformEvent as FoundationPlatformEvent } from '@agentprodready/foundation';
 
-import type { AuthorityState } from '@agentforge/security';
+import type { AuthorityState } from '@agentprodready/security';
 
 export type DeliveryGuarantee='best-effort'|'at-most-once'|'at-least-once'|'exactly-once-capable';
 export type OrderingMode='unordered'|'ordering-key';

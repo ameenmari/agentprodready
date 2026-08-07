@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 23
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Configuration & Policy Framework defines how AgentForge stores, validates, resolves, versions, and applies platform configuration and policies.
+The Configuration & Policy Framework defines how AgentProdReady stores, validates, resolves, versions, and applies platform configuration and policies.
 
 It provides a single, normalized configuration model across the platform while ensuring deterministic policy resolution.
 
@@ -343,7 +343,7 @@ Owns:
 
 # 19. Chief Architect's Notes
 
-Blueprint 23 establishes a single source of truth for configuration and policy across AgentForge.
+Blueprint 23 establishes a single source of truth for configuration and policy across AgentProdReady.
 
 The constitutional flow is:
 

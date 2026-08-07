@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 20 is implemented as `@agentforge/human-interaction`: an immutable provider-neutral framework for governed human requests, explicit responses and approvals, participant resolution, lifecycle, response validation, delivery identity/retries, deterministic multi-responder policies, expiration, escalation, cancellation, redaction, descriptive results, events, diagnostics, and audit facts. It does not implement a UI, notification network, authentication or authorization engine, Runtime scheduler, Workflow continuation, Agent execution, Evaluation scoring, event transport, or audit persistence.
+Blueprint 20 is implemented as `@agentprodready/human-interaction`: an immutable provider-neutral framework for governed human requests, explicit responses and approvals, participant resolution, lifecycle, response validation, delivery identity/retries, deterministic multi-responder policies, expiration, escalation, cancellation, redaction, descriptive results, events, diagnostics, and audit facts. It does not implement a UI, notification network, authentication or authorization engine, Runtime scheduler, Workflow continuation, Agent execution, Evaluation scoring, event transport, or audit persistence.
 
 ## Delivered Artifacts
 

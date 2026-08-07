@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/knowledge` as the provider-independent acquisition, normalization, chunking, indexing, retrieval, security-trimming, ranking, and citation boundary.
+Implement `@agentprodready/knowledge` as the provider-independent acquisition, normalization, chunking, indexing, retrieval, security-trimming, ranking, and citation boundary.
 
 ## Work
 

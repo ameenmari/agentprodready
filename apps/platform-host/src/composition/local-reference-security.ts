@@ -1,4 +1,4 @@
-import type { AuthenticationEvidence, AuthorizationRequest, Principal, SecurityPolicy } from '@agentforge/security';
+import type { AuthenticationEvidence, AuthorizationRequest, Principal, SecurityPolicy } from '@agentprodready/security';
 import {
   LOCAL_POLICY_VERSION,
   LOCAL_PROJECT,

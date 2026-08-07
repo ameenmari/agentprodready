@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge performs numerous operations that may have legal, regulatory, security, governance, or operational significance.
+AgentProdReady performs numerous operations that may have legal, regulatory, security, governance, or operational significance.
 
 These operations include authorization decisions, administrative actions, configuration changes, workflow execution, provider interactions, data access, evidence generation, exports, and other platform activities.
 
@@ -139,6 +139,6 @@ Each component serves a distinct architectural purpose.
 
 # Final Statement
 
-The Audit Platform serves as AgentForge's authoritative historical accountability system.
+The Audit Platform serves as AgentProdReady's authoritative historical accountability system.
 
 By separating durable audit history from execution, event transport, observability, and business operations, the platform preserves trustworthy historical records while allowing each architectural framework to remain focused on its own responsibility.

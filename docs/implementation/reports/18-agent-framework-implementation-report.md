@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 18 is implemented as `@agentforge/agent-framework`: a declarative Agent control plane for immutable definitions, validation, registration, discovery, lifecycle, version resolution, effective-definition narrowing, packaging, certification/migration artifacts, and accepted Runtime handoff. It does not execute Agent objectives or duplicate upstream framework ownership.
+Blueprint 18 is implemented as `@agentprodready/agent-framework`: a declarative Agent control plane for immutable definitions, validation, registration, discovery, lifecycle, version resolution, effective-definition narrowing, packaging, certification/migration artifacts, and accepted Runtime handoff. It does not execute Agent objectives or duplicate upstream framework ownership.
 
 ## Delivered Artifacts
 

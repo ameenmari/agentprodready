@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 06 is implemented and verified in `@agentforge/workflow`. It interprets plan-derived immutable graphs, owns logical workflow/node state, reports eligible work to Runtime, and never schedules or performs business execution.
+Blueprint 06 is implemented and verified in `@agentprodready/workflow`. It interprets plan-derived immutable graphs, owns logical workflow/node state, reports eligible work to Runtime, and never schedules or performs business execution.
 
 ## Acceptance Traceability
 

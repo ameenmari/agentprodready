@@ -39,16 +39,16 @@ describe('v1.0 production hardening', () => {
 
   it('rejects production LocalReference auth without escape hatch', () => {
     const config = loadLocalReferenceConfig({
-      AGENTFORGE_ALLOW_REFERENCE_AUTH: 'false',
+      AGENTPRODREADY_ALLOW_REFERENCE_AUTH: 'false',
     });
     expect(() => {
       assertProductionAuthPolicy(config, { NODE_ENV: 'production' });
     }).toThrow(/LocalReference authentication is not permitted/);
   });
 
-  it('allows production demo auth only with AGENTFORGE_ALLOW_REFERENCE_AUTH=true', () => {
+  it('allows production demo auth only with AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true', () => {
     const config = loadLocalReferenceConfig({
-      AGENTFORGE_ALLOW_REFERENCE_AUTH: 'true',
+      AGENTPRODREADY_ALLOW_REFERENCE_AUTH: 'true',
     });
     expect(() => {
       assertProductionAuthPolicy(config, { NODE_ENV: 'production' });

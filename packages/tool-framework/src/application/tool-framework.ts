@@ -1,5 +1,5 @@
-﻿import type { NormalizedToolCall } from '@agentforge/ai-provider';
-import type { PluginContribution } from '@agentforge/plugin-framework';
+﻿import type { NormalizedToolCall } from '@agentprodready/ai-provider';
+import type { PluginContribution } from '@agentprodready/plugin-framework';
 import type {
   ToolAdapterResolver,
   ToolContract,

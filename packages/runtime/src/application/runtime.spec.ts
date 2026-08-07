@@ -1,6 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-member-access */
 import { describe, expect, it, vi } from 'vitest';
-import { CompositionRoot } from '@agentforge/composition';
+import { CompositionRoot } from '@agentprodready/composition';
 import {
   assertCheckpointableValue,
   DEFAULT_RECOVERY_POLICY,

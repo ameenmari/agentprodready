@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/evaluation` as the provider-independent quality-assessment boundary for immutable normalized platform artifacts, with explicit criteria, replaceable evaluator contracts, normalized evidence and scores, transparent aggregation, human waiting/resumption, comparative evaluation, diagnostics, events, telemetry, audit, persistence, and health ports.
+Implement `@agentprodready/evaluation` as the provider-independent quality-assessment boundary for immutable normalized platform artifacts, with explicit criteria, replaceable evaluator contracts, normalized evidence and scores, transparent aggregation, human waiting/resumption, comparative evaluation, diagnostics, events, telemetry, audit, persistence, and health ports.
 
 ## Work
 

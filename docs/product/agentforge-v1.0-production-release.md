@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Release
+# AgentProdReady v1.0 Production Release
 
 **Document Version:** 1.0  
 **Product Version:** 1.0.0 (target)  
@@ -17,7 +17,7 @@ Exactly two major objectives:
 1. **Multi-provider AI routing** — prove portable provider selection/failover using existing Capability Resolution ownership  
 2. **Production readiness / release hardening** — make the existing platform suitable for a first stable, production-oriented public release
 
-After v1.0, AgentForge should be honestly labeled **stable for operator-deployed production use** with documented limitations — not a hosted SaaS platform.
+After v1.0, AgentProdReady should be honestly labeled **stable for operator-deployed production use** with documented limitations — not a hosted SaaS platform.
 
 ---
 
@@ -114,6 +114,6 @@ Follow `AGENTS.md`, `docs/cursor-start-here.md`, ADRs, blueprints, and dependenc
 
 ## Related artifacts
 
-- Plan: `docs/implementation/plans/agentforge-v1.0-production-release-plan.md`  
-- Specification: `docs/implementation/specifications/agentforge-v1.0-production-release-specification.md`  
-- Readiness review: `docs/implementation/reviews/agentforge-v1.0-production-readiness-review.md`
+- Plan: `docs/implementation/plans/agentprodready-v1.0-production-release-plan.md`  
+- Specification: `docs/implementation/specifications/agentprodready-v1.0-production-release-specification.md`  
+- Readiness review: `docs/implementation/reviews/agentprodready-v1.0-production-readiness-review.md`

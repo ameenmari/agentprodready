@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/human-interaction",
+  "name": "@agentprodready/human-interaction",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,16 +12,32 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/runtime": "workspace:*",
-    "@agentforge/workflow": "workspace:*",
-    "@agentforge/evaluation": "workspace:*",
-    "@agentforge/security": "workspace:*",
-    "@agentforge/event-bus": "workspace:*",
-    "@agentforge/audit": "workspace:*",
-    "@agentforge/agent-framework": "workspace:*",
-    "@agentforge/multi-agent": "workspace:*"
+    "@agentprodready/runtime": "workspace:*",
+    "@agentprodready/workflow": "workspace:*",
+    "@agentprodready/evaluation": "workspace:*",
+    "@agentprodready/security": "workspace:*",
+    "@agentprodready/event-bus": "workspace:*",
+    "@agentprodready/audit": "workspace:*",
+    "@agentprodready/agent-framework": "workspace:*",
+    "@agentprodready/multi-agent": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

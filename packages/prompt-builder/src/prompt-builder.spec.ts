@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContextPackage } from '@agentforge/context-assembly';
+import type { ExecutionContextPackage } from '@agentprodready/context-assembly';
 import { describe,expect,it,vi } from 'vitest';
 import { DefaultPromptPolicyEvaluator,ExternalPromptError,InMemoryPromptDiagnostics,InMemoryPromptEvents,PromptBuilder,StableCanonicalPromptFormatter,type CanonicalPromptFormatter,type ConsumerProfile,type PromptBuildRequest,type PromptPolicy,type PromptPolicyEvaluator,type PromptTelemetry } from './index.js';
 

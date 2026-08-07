@@ -9,7 +9,7 @@
 ## Package
 
 ```text
-Package name: @agentforge/foundation
+Package name: @agentprodready/foundation
 Package path: packages/foundation
 Public entry point: src/index.ts
 ```
@@ -128,7 +128,7 @@ Classes provide `ApplicationHost`, `ExecutionContextFactory`, `ConfigurationSnap
 
 ## Dependency-Injection Tokens and Lifetimes
 
-All tokens are exported `symbol` values prefixed `AGENTFORGE_`. Registries, host infrastructure, configuration, telemetry, health, and readiness are Singleton. `ExecutionContext` is created per execution and is never stored by a Singleton. Stateless validators and factories are Singleton-safe.
+All tokens are exported `symbol` values prefixed `AGENTPRODREADY_`. Registries, host infrastructure, configuration, telemetry, health, and readiness are Singleton. `ExecutionContext` is created per execution and is never stored by a Singleton. Stateless validators and factories are Singleton-safe.
 
 ## Validation and Errors
 

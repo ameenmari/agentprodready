@@ -38,145 +38,145 @@ importers:
 
   apps/platform-host:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../../packages/agent-framework
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../../packages/ai-provider
-      '@agentforge/ai-provider-openai':
+      '@agentprodready/ai-provider-openai':
         specifier: workspace:*
         version: link:../../packages/ai-provider-openai
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../../packages/audit
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../../packages/capability-resolution
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../../packages/composition
-      '@agentforge/context-assembly':
+      '@agentprodready/context-assembly':
         specifier: workspace:*
         version: link:../../packages/context-assembly
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../../packages/evaluation
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../../packages/event-bus
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../../packages/foundation
-      '@agentforge/knowledge':
+      '@agentprodready/knowledge':
         specifier: workspace:*
         version: link:../../packages/knowledge
-      '@agentforge/memory':
+      '@agentprodready/memory':
         specifier: workspace:*
         version: link:../../packages/memory
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../../packages/persistence
-      '@agentforge/persistence-postgres':
+      '@agentprodready/persistence-postgres':
         specifier: workspace:*
         version: link:../../packages/persistence-postgres
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../../packages/planning
-      '@agentforge/prompt-builder':
+      '@agentprodready/prompt-builder':
         specifier: workspace:*
         version: link:../../packages/prompt-builder
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../../packages/security
-      '@agentforge/tool-framework':
+      '@agentprodready/tool-framework':
         specifier: workspace:*
         version: link:../../packages/tool-framework
-      '@agentforge/vector-store':
+      '@agentprodready/vector-store':
         specifier: workspace:*
         version: link:../../packages/vector-store
-      '@agentforge/vector-store-pgvector':
+      '@agentprodready/vector-store-pgvector':
         specifier: workspace:*
         version: link:../../packages/vector-store-pgvector
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../../packages/workflow
 
   packages/agent-framework:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/context-assembly':
+      '@agentprodready/context-assembly':
         specifier: workspace:*
         version: link:../context-assembly
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../evaluation
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/knowledge':
+      '@agentprodready/knowledge':
         specifier: workspace:*
         version: link:../knowledge
-      '@agentforge/memory':
+      '@agentprodready/memory':
         specifier: workspace:*
         version: link:../memory
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/prompt-builder':
+      '@agentprodready/prompt-builder':
         specifier: workspace:*
         version: link:../prompt-builder
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
-      '@agentforge/tool-framework':
+      '@agentprodready/tool-framework':
         specifier: workspace:*
         version: link:../tool-framework
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/ai-provider:
     dependencies:
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
 
   packages/ai-provider-openai:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
       openai:
@@ -185,163 +185,163 @@ importers:
 
   packages/api-framework:
     dependencies:
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/scheduler':
+      '@agentprodready/scheduler':
         specifier: workspace:*
         version: link:../scheduler
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/audit:
     dependencies:
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/capability-resolution:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/cli-framework:
     dependencies:
-      '@agentforge/api-framework':
+      '@agentprodready/api-framework':
         specifier: workspace:*
         version: link:../api-framework
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/plugin-marketplace':
+      '@agentprodready/plugin-marketplace':
         specifier: workspace:*
         version: link:../plugin-marketplace
-      '@agentforge/sdk-framework':
+      '@agentprodready/sdk-framework':
         specifier: workspace:*
         version: link:../sdk-framework
 
   packages/composition:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
 
   packages/configuration:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/context-assembly:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/knowledge':
+      '@agentprodready/knowledge':
         specifier: workspace:*
         version: link:../knowledge
-      '@agentforge/memory':
+      '@agentprodready/memory':
         specifier: workspace:*
         version: link:../memory
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/deployment-framework:
     dependencies:
-      '@agentforge/api-framework':
+      '@agentprodready/api-framework':
         specifier: workspace:*
         version: link:../api-framework
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/scheduler':
+      '@agentprodready/scheduler':
         specifier: workspace:*
         version: link:../scheduler
 
   packages/evaluation:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/prompt-builder':
+      '@agentprodready/prompt-builder':
         specifier: workspace:*
         version: link:../prompt-builder
 
   packages/event-bus:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
@@ -362,146 +362,146 @@ importers:
 
   packages/human-interaction:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../evaluation
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/multi-agent':
+      '@agentprodready/multi-agent':
         specifier: workspace:*
         version: link:../multi-agent
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/knowledge:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/memory:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/vector-store':
+      '@agentprodready/vector-store':
         specifier: workspace:*
         version: link:../vector-store
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
     devDependencies:
-      '@agentforge/persistence-postgres':
+      '@agentprodready/persistence-postgres':
         specifier: workspace:*
         version: link:../persistence-postgres
 
   packages/multi-agent:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../evaluation
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/observability:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/persistence:
     dependencies:
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/persistence-postgres:
     dependencies:
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
       pg:
@@ -514,109 +514,109 @@ importers:
 
   packages/planning:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
 
   packages/platform-governance:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/api-framework':
+      '@agentprodready/api-framework':
         specifier: workspace:*
         version: link:../api-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/cli-framework':
+      '@agentprodready/cli-framework':
         specifier: workspace:*
         version: link:../cli-framework
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/context-assembly':
+      '@agentprodready/context-assembly':
         specifier: workspace:*
         version: link:../context-assembly
-      '@agentforge/deployment-framework':
+      '@agentprodready/deployment-framework':
         specifier: workspace:*
         version: link:../deployment-framework
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../evaluation
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/human-interaction':
+      '@agentprodready/human-interaction':
         specifier: workspace:*
         version: link:../human-interaction
-      '@agentforge/knowledge':
+      '@agentprodready/knowledge':
         specifier: workspace:*
         version: link:../knowledge
-      '@agentforge/memory':
+      '@agentprodready/memory':
         specifier: workspace:*
         version: link:../memory
-      '@agentforge/multi-agent':
+      '@agentprodready/multi-agent':
         specifier: workspace:*
         version: link:../multi-agent
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/plugin-marketplace':
+      '@agentprodready/plugin-marketplace':
         specifier: workspace:*
         version: link:../plugin-marketplace
-      '@agentforge/prompt-builder':
+      '@agentprodready/prompt-builder':
         specifier: workspace:*
         version: link:../prompt-builder
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/scheduler':
+      '@agentprodready/scheduler':
         specifier: workspace:*
         version: link:../scheduler
-      '@agentforge/sdk-framework':
+      '@agentprodready/sdk-framework':
         specifier: workspace:*
         version: link:../sdk-framework
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
-      '@agentforge/testing-verification':
+      '@agentprodready/testing-verification':
         specifier: workspace:*
         version: link:../testing-verification
-      '@agentforge/tool-framework':
+      '@agentprodready/tool-framework':
         specifier: workspace:*
         version: link:../tool-framework
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/plugin-framework:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
       '@nestjs/common':
@@ -625,145 +625,145 @@ importers:
 
   packages/plugin-marketplace:
     dependencies:
-      '@agentforge/agent-framework':
+      '@agentprodready/agent-framework':
         specifier: workspace:*
         version: link:../agent-framework
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/prompt-builder:
     dependencies:
-      '@agentforge/context-assembly':
+      '@agentprodready/context-assembly':
         specifier: workspace:*
         version: link:../context-assembly
 
   packages/runtime:
     dependencies:
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
 
   packages/scheduler:
     dependencies:
-      '@agentforge/audit':
+      '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/event-bus':
+      '@agentprodready/event-bus':
         specifier: workspace:*
         version: link:../event-bus
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
-      '@agentforge/security':
+      '@agentprodready/security':
         specifier: workspace:*
         version: link:../security
 
   packages/sdk-framework:
     dependencies:
-      '@agentforge/api-framework':
+      '@agentprodready/api-framework':
         specifier: workspace:*
         version: link:../api-framework
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
 
   packages/security:
     dependencies:
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/composition':
+      '@agentprodready/composition':
         specifier: workspace:*
         version: link:../composition
-      '@agentforge/evaluation':
+      '@agentprodready/evaluation':
         specifier: workspace:*
         version: link:../evaluation
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
 
   packages/testing-verification:
     dependencies:
-      '@agentforge/api-framework':
+      '@agentprodready/api-framework':
         specifier: workspace:*
         version: link:../api-framework
-      '@agentforge/configuration':
+      '@agentprodready/configuration':
         specifier: workspace:*
         version: link:../configuration
-      '@agentforge/deployment-framework':
+      '@agentprodready/deployment-framework':
         specifier: workspace:*
         version: link:../deployment-framework
-      '@agentforge/observability':
+      '@agentprodready/observability':
         specifier: workspace:*
         version: link:../observability
-      '@agentforge/persistence':
+      '@agentprodready/persistence':
         specifier: workspace:*
         version: link:../persistence
-      '@agentforge/sdk-framework':
+      '@agentprodready/sdk-framework':
         specifier: workspace:*
         version: link:../sdk-framework
 
   packages/tool-framework:
     dependencies:
-      '@agentforge/ai-provider':
+      '@agentprodready/ai-provider':
         specifier: workspace:*
         version: link:../ai-provider
-      '@agentforge/capability-resolution':
+      '@agentprodready/capability-resolution':
         specifier: workspace:*
         version: link:../capability-resolution
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/plugin-framework':
+      '@agentprodready/plugin-framework':
         specifier: workspace:*
         version: link:../plugin-framework
-      '@agentforge/workflow':
+      '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
 
   packages/vector-store:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
 
   packages/vector-store-pgvector:
     dependencies:
-      '@agentforge/vector-store':
+      '@agentprodready/vector-store':
         specifier: workspace:*
         version: link:../vector-store
       pg:
@@ -776,13 +776,13 @@ importers:
 
   packages/workflow:
     dependencies:
-      '@agentforge/foundation':
+      '@agentprodready/foundation':
         specifier: workspace:*
         version: link:../foundation
-      '@agentforge/planning':
+      '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
-      '@agentforge/runtime':
+      '@agentprodready/runtime':
         specifier: workspace:*
         version: link:../runtime
 

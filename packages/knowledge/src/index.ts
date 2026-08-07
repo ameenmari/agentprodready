@@ -1,6 +1,6 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext,HealthResult } from '@agentforge/foundation';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext,HealthResult } from '@agentprodready/foundation';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 
 export interface KnowledgeSource {readonly id:string;readonly category:string;readonly tenantId:string;readonly workspaceId?:string;readonly connectorId:string;readonly metadata:Readonly<Record<string,string>>;}
 export interface KnowledgeAuthorization {readonly authorized:true;readonly decisionId:string;readonly allowedLabels:readonly string[];}

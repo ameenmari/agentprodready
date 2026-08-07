@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { StreamFrame } from '@agentforge/api-framework';
-import { SdkError } from '@agentforge/sdk-framework';
+import type { StreamFrame } from '@agentprodready/api-framework';
+import { SdkError } from '@agentprodready/sdk-framework';
 import {
   CliError,
   CliFramework,

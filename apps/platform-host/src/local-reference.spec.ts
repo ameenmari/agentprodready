@@ -69,7 +69,7 @@ describe('local reference composition', () => {
     const postgres = loadLocalReferenceConfig({
       PORT: '3000',
       PERSISTENCE_PROVIDER: 'postgres',
-      DATABASE_URL: 'postgres://agentforge:agentforge@127.0.0.1:5432/agentforge',
+      DATABASE_URL: 'postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready',
     });
     expect(postgres.persistenceProvider).toBe('postgres');
     expect(postgres.postgres?.poolMax).toBe(10);

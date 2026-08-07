@@ -1,4 +1,4 @@
-# AgentForge v0.8 Streaming Responses
+# AgentProdReady v0.8 Streaming Responses
 
 **Version:** 0.8.0  
 **Status:** Implemented  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.8 introduces **provider-independent streaming AI responses** so incremental output can flow:
+AgentProdReady v0.8 introduces **provider-independent streaming AI responses** so incremental output can flow:
 
 ```text
 Security
@@ -42,8 +42,8 @@ v0.8 is **not** tool calling, WebSockets, Runtime redesign, or stream replay.
 | [Blueprint 18 — Agent Framework](../blueprints/18-agent-framework.md) | Invocation acceptance / Runtime handoff |
 | [Blueprint 26 — API Framework](../blueprints/26-api-framework.md) | Transport-independent streaming contracts (SSE option) |
 | ADR-002 / 004 / 005 / 006 / 008 / 010 / 011 | Ownership, providers, Composition, Runtime, Security, facts, normalize |
-| [Plan](../implementation/plans/agentforge-v0.8-streaming-responses-plan.md) | Approach (pending review) |
-| [Specification](../implementation/specifications/agentforge-v0.8-streaming-responses-specification.md) | Exact decisions (pending review) |
+| [Plan](../implementation/plans/agentprodready-v0.8-streaming-responses-plan.md) | Approach (pending review) |
+| [Specification](../implementation/specifications/agentprodready-v0.8-streaming-responses-specification.md) | Exact decisions (pending review) |
 
 ---
 
@@ -173,4 +173,4 @@ Blueprint 18 / ADR constitutional rewrite: **No**.
 
 ## Completion
 
-Implemented under Autonomous mode after Review-Gated approval. See [implementation report](../implementation/reports/agentforge-v0.8-streaming-responses-implementation-report.md) and [checklist](../implementation/checklists/agentforge-v0.8-streaming-responses-checklist.md).
+Implemented under Autonomous mode after Review-Gated approval. See [implementation report](../implementation/reports/agentprodready-v0.8-streaming-responses-implementation-report.md) and [checklist](../implementation/checklists/agentprodready-v0.8-streaming-responses-checklist.md).

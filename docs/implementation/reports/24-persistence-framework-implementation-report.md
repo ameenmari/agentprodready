@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 24 is implemented as `@agentforge/persistence`: a provider-independent framework for standardized repositories, explicit units of work and transactions, atomic same-boundary commits, rollback, declared isolation/durability, optimistic concurrency, immutable snapshots, normalized queries, explicit migrations, events, governance audit references, diagnostics, and normalized provider failures. It does not implement domain logic, Runtime/Workflow behavior, authorization, Audit storage, Event transport, business retries, Memory/Knowledge lifecycle, or vendor database APIs.
+Blueprint 24 is implemented as `@agentprodready/persistence`: a provider-independent framework for standardized repositories, explicit units of work and transactions, atomic same-boundary commits, rollback, declared isolation/durability, optimistic concurrency, immutable snapshots, normalized queries, explicit migrations, events, governance audit references, diagnostics, and normalized provider failures. It does not implement domain logic, Runtime/Workflow behavior, authorization, Audit storage, Event transport, business retries, Memory/Knowledge lifecycle, or vendor database APIs.
 
 ## Delivered Artifacts
 

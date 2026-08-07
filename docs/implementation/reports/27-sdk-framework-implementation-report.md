@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 27 is implemented as `@agentforge/sdk-framework`: a provider-independent SDK core and TypeScript reference client matching Blueprint 26's approved health, job, operation, and streaming resources. It standardizes client configuration, ephemeral authentication integration, serialization, response parsing, version compatibility, transport-only retry, streaming/cancellation, normalized errors, and local diagnostics without implementing server-side behavior.
+Blueprint 27 is implemented as `@agentprodready/sdk-framework`: a provider-independent SDK core and TypeScript reference client matching Blueprint 26's approved health, job, operation, and streaming resources. It standardizes client configuration, ephemeral authentication integration, serialization, response parsing, version compatibility, transport-only retry, streaming/cancellation, normalized errors, and local diagnostics without implementing server-side behavior.
 
 ## Delivered Artifacts
 

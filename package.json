@@ -1,5 +1,5 @@
 {
-  "name": "agentforge",
+  "name": "agentprodready",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,8 +9,8 @@
   },
   "scripts": {
     "dev": "tsc -b --watch --preserveWatchOutput",
-    "start": "pnpm --filter @agentforge/platform-host start",
-    "smoke": "pnpm --filter @agentforge/platform-host smoke",
+    "start": "pnpm --filter @agentprodready/platform-host start",
+    "smoke": "pnpm --filter @agentprodready/platform-host smoke",
     "lint": "eslint . --max-warnings 0 && pnpm boundaries",
     "boundaries": "node scripts/verify-boundaries.mjs",
     "typecheck": "tsc --noEmit --project tsconfig.eslint.json --pretty false && tsc -b --pretty false",
@@ -20,11 +20,11 @@
     "format:check": "prettier --check .",
     "db:up": "docker compose --profile postgres up -d postgres",
     "db:down": "docker compose --profile postgres down",
-    "db:migrate": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js migrate",
-    "db:status": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js status",
-    "db:reset:test": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js reset",
-    "db:migrate:vector": "pnpm --filter @agentforge/vector-store-pgvector exec node dist/cli.js migrate",
-    "db:status:vector": "pnpm --filter @agentforge/vector-store-pgvector exec node dist/cli.js status",
+    "db:migrate": "pnpm --filter @agentprodready/persistence-postgres exec node dist/cli.js migrate",
+    "db:status": "pnpm --filter @agentprodready/persistence-postgres exec node dist/cli.js status",
+    "db:reset:test": "pnpm --filter @agentprodready/persistence-postgres exec node dist/cli.js reset",
+    "db:migrate:vector": "pnpm --filter @agentprodready/vector-store-pgvector exec node dist/cli.js migrate",
+    "db:status:vector": "pnpm --filter @agentprodready/vector-store-pgvector exec node dist/cli.js status",
     "test:postgres": "node scripts/run-postgres-tests.mjs",
     "test:vector-pgvector": "node scripts/run-vector-pgvector-tests.mjs",
     "test:vector-search": "node scripts/run-vector-search-tests.mjs",
@@ -35,7 +35,10 @@
     "test:tools": "node scripts/run-tools-tests.mjs",
     "test:routing": "node scripts/run-routing-tests.mjs",
     "test:tenant-isolation": "pnpm exec vitest run apps/platform-host/src/tenant-isolation.spec.ts",
-    "production-baseline": "node scripts/production-baseline.mjs"
+    "production-baseline": "node scripts/production-baseline.mjs",
+    "npm:audit": "node scripts/npm-publish-audit.mjs",
+    "npm:pack:dry": "node scripts/npm-publish.mjs --dry-run",
+    "npm:publish": "node scripts/npm-publish.mjs --publish"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

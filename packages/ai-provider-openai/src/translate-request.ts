@@ -1,4 +1,4 @@
-import { ProviderAdapterError, type AiExecutionRequest, type AiMessage, type NormalizedToolCall } from '@agentforge/ai-provider';
+import { ProviderAdapterError, type AiExecutionRequest, type AiMessage, type NormalizedToolCall } from '@agentprodready/ai-provider';
 import type { OpenAiProviderConfig } from './config.js';
 
 export interface OpenAiChatMessage {

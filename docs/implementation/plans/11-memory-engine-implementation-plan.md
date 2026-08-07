@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/memory` as the provider-independent execution-experience capture, lifecycle, storage, retrieval, ranking, consolidation, retention, diagnostics, and observability boundary.
+Implement `@agentprodready/memory` as the provider-independent execution-experience capture, lifecycle, storage, retrieval, ranking, consolidation, retention, diagnostics, and observability boundary.
 
 ## Work
 

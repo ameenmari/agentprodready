@@ -1,5 +1,5 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext, HealthResult } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext, HealthResult } from '@agentprodready/foundation';
 
 export type AiRole = 'system' | 'user' | 'assistant' | 'tool';
 export type AiContentPart =

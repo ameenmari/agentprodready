@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { InMemoryEventPublisher, NoopTelemetry } from '@agentforge/foundation';
+import { InMemoryEventPublisher, NoopTelemetry } from '@agentprodready/foundation';
 import type { ImplementationActivator, PluginCandidate, PluginContributionRegistry, PluginHookResolver, PluginPermissionAuthorizer } from '../contracts/plugin.js';
 import { PluginError } from '../errors/plugin-error.js';
 import { PluginDependencyGraph } from './dependency-graph.js';

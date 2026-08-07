@@ -1,4 +1,4 @@
-# AgentForge v0.9 Tool Calling & Agent Actions
+# AgentProdReady v0.9 Tool Calling & Agent Actions
 
 **Version:** 0.9.0  
 **Status:** Implemented  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.9 productizes **safe, provider-independent Tool Calling**: the model may *propose* an action; AgentForge alone decides whether it is allowed, how it executes, whether it may be retried, how side effects are classified, and how outcomes are recorded.
+AgentProdReady v0.9 productizes **safe, provider-independent Tool Calling**: the model may *propose* an action; AgentProdReady alone decides whether it is allowed, how it executes, whether it may be retried, how side effects are classified, and how outcomes are recorded.
 
 ```text
 AI → NormalizedToolCall
@@ -27,7 +27,7 @@ v0.9 is **not** multi-provider routing, a plugin marketplace, unrestricted shell
 
 ## Critical finding: Tool Framework already exists
 
-Blueprint 09 is implemented as `@agentforge/tool-framework@0.1.0` with:
+Blueprint 09 is implemented as `@agentprodready/tool-framework@0.1.0` with:
 
 - `ToolContract` (descriptor + sideEffect + idempotency + schemas)
 - `ToolExecutionRequest` (requires `AuthorizationFact { authorized: true }`)
@@ -63,7 +63,7 @@ Blueprint 09 is implemented as `@agentforge/tool-framework@0.1.0` with:
 | Human Interaction durable wait mid-loop | **Partial** — package exists; Runtime wait/resume for tool approval needs explicit design/amendment or fail-closed |
 | Persistence new `tool_calls` table | **Not required** if Runtime checkpoint + Audit suffice |
 
-**Do not invent `@agentforge/tools`.** Extend Blueprint 09 package + host/Runtime/AI wiring.
+**Do not invent `@agentprodready/tools`.** Extend Blueprint 09 package + host/Runtime/AI wiring.
 
 ---
 
@@ -89,7 +89,7 @@ Blueprint 09 is implemented as `@agentforge/tool-framework@0.1.0` with:
 
 | Decision | Choice |
 |---|---|
-| Package | Reuse `@agentforge/tool-framework`; host seed reference tools |
+| Package | Reuse `@agentprodready/tool-framework`; host seed reference tools |
 | Default | `TOOLS_ENABLED=false` — non-tool behavior unchanged |
 | Loop | Bounded sequential tool turns (max calls / max turns) |
 | Side effects | Reuse `read-only` \| `mutating` \| `external-side-effect` + `idempotent` \| `non-idempotent` |
@@ -138,8 +138,8 @@ Blueprint/ADR constitutional rewrite: **No** (implementation-contract amendments
 | Blueprint 09 — Tool Framework | Tool semantics owner |
 | Blueprint 04 / 07 / 08 / 15 / 18 / 26 | Runtime, Cap, AI, Security, Agent, API |
 | ADR-002 / 004 / 005 / 006 / 007 / 008 / 010 / 011 / 013 | Ownership, providers, Composition, Runtime, Cap, Security, facts, normalize, Audit |
-| [Plan](../implementation/plans/agentforge-v0.9-tool-calling-agent-actions-plan.md) | Approach |
-| [Specification](../implementation/specifications/agentforge-v0.9-tool-calling-agent-actions-specification.md) | Exact decisions |
+| [Plan](../implementation/plans/agentprodready-v0.9-tool-calling-agent-actions-plan.md) | Approach |
+| [Specification](../implementation/specifications/agentprodready-v0.9-tool-calling-agent-actions-specification.md) | Exact decisions |
 
 ---
 

@@ -1,4 +1,4 @@
-# AgentForge v0.9 Tool Calling & Agent Actions — Checklist
+# AgentProdReady v0.9 Tool Calling & Agent Actions — Checklist
 
 **Product Version:** 0.9.0  
 **Status:** Complete  
@@ -18,7 +18,7 @@
 
 ## Implementation
 
-- [x] Reuse `@agentforge/tool-framework` (no `@agentforge/tools`)
+- [x] Reuse `@agentprodready/tool-framework` (no `@agentprodready/tools`)
 - [x] Amendment A contracts, codes, facts, signal, approvalRequirement
 - [x] Reference tools `reference.echo` / `reference.counter`
 - [x] Amendment B continuation builder + reference AI triggers

@@ -1,4 +1,4 @@
-# AgentForge v0.2 Real AI Provider — Checklist
+# AgentProdReady v0.2 Real AI Provider — Checklist
 
 **Product Version:** 0.2.0  
 **Implementation Mode:** Autonomous  
@@ -8,7 +8,7 @@
 
 ## Scope
 
-- [x] Additive OpenAI provider package `@agentforge/ai-provider-openai`
+- [x] Additive OpenAI provider package `@agentprodready/ai-provider-openai`
 - [x] Exact SDK pin `openai@7.4.0`
 - [x] Default model `gpt-5`
 - [x] Host `AI_PROVIDER` selection (`reference` default)

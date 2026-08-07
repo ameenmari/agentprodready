@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 26
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The API Framework defines the standardized external interface through which users, applications, services, SDKs, and external platforms communicate with AgentForge.
+The API Framework defines the standardized external interface through which users, applications, services, SDKs, and external platforms communicate with AgentProdReady.
 
 It provides a transport-independent API architecture supporting multiple protocols while exposing a single normalized platform contract.
 
@@ -405,7 +405,7 @@ Owns:
 
 # 21. Chief Architect's Notes
 
-The API Framework is the external gateway to AgentForge.
+The API Framework is the external gateway to AgentProdReady.
 
 The constitutional flow is:
 
@@ -436,11 +436,11 @@ Client
 
 The framework answers:
 
-> **"How does the outside world communicate with AgentForge?"**
+> **"How does the outside world communicate with AgentProdReady?"**
 
 It does **not** answer:
 
-> **"How does AgentForge execute requests internally?"**
+> **"How does AgentProdReady execute requests internally?"**
 
 That responsibility remains with the Runtime and domain frameworks.
 

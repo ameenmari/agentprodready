@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { loadOpenAiProviderConfig } from '../config.js';
 import { OpenAiProviderAdapter } from '../openai-ai-provider-adapter.js';
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { AiExecutionRequest } from '@agentforge/ai-provider';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { AiExecutionRequest } from '@agentprodready/ai-provider';
 
 const live = process.env['AI_LIVE_TESTS'] === '1';
 

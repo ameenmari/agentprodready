@@ -1,4 +1,4 @@
-import type { ContextElement,ContextSource,ExecutionContextPackage } from '@agentforge/context-assembly';
+import type { ContextElement,ContextSource,ExecutionContextPackage } from '@agentprodready/context-assembly';
 
 export type PromptSectionKind='instructions'|'execution'|'objective'|'workflow'|'knowledge'|'memory'|'operational'|'supporting';
 export type PromptOrdering='instruction-first'|'objective-first'|'context-first'|'policy';

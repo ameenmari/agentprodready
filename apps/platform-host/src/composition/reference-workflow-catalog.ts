@@ -1,4 +1,4 @@
-import type { PlannedTask, WorkflowCatalog, WorkflowDefinition } from '@agentforge/planning';
+import type { PlannedTask, WorkflowCatalog, WorkflowDefinition } from '@agentprodready/planning';
 
 /** Returns the catalog workflow for the reference agent single-step plan. */
 export class ReferenceWorkflowCatalog implements WorkflowCatalog {

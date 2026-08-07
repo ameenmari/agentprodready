@@ -15,7 +15,7 @@ Blueprint 01 is implemented and verified. Bootstrap ports are permitted for Comp
 
 ## Scope
 
-- `@agentforge/plugin-framework` package;
+- `@agentprodready/plugin-framework` package;
 - normalized manifests and candidates;
 - deterministic discovery across replaceable sources;
 - manifest, permission, dependency, and platform compatibility validation;

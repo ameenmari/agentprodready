@@ -9,10 +9,10 @@
 
 | Command                                    | Arguments/options                                   | SDK delegation                            | Default output |
 | ------------------------------------------ | --------------------------------------------------- | ----------------------------------------- | -------------- |
-| `agentforge health`                        | `--format text                                      | json                                      | compact        | table` | `health()` | text |
-| `agentforge jobs create <job-reference>`   | optional positional in interactive mode; `--format` | `createJob({ jobDefinitionReference })`   | text           |
-| `agentforge operations get <operation-id>` | required positional; `--format`                     | `getOperation(operationId)`               | text           |
-| `agentforge operations stream <stream-id>` | required positional; `--format`                     | `streamOperation(streamId, cancellation)` | compact        |
+| `agentprodready health`                        | `--format text                                      | json                                      | compact        | table` | `health()` | text |
+| `agentprodready jobs create <job-reference>`   | optional positional in interactive mode; `--format` | `createJob({ jobDefinitionReference })`   | text           |
+| `agentprodready operations get <operation-id>` | required positional; `--format`                     | `getOperation(operationId)`               | text           |
+| `agentprodready operations stream <stream-id>` | required positional; `--format`                     | `streamOperation(streamId, cancellation)` | compact        |
 
 Global options are `--format`, `--non-interactive`, `--profile`, and `--help`. In non-interactive mode missing input fails without prompting. Unknown commands/options, duplicate singleton options, and invalid formats fail before SDK delegation.
 

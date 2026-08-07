@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { VectorRecord } from '@agentforge/vector-store';
+import type { VectorRecord } from '@agentprodready/vector-store';
 import {
   applyMigrations,
   loadVectorPostgresConfig,

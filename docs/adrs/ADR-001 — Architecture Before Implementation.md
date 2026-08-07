@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is intended to be a long-lived, provider-independent AI platform composed of independently evolving architectural frameworks.
+AgentProdReady is intended to be a long-lived, provider-independent AI platform composed of independently evolving architectural frameworks.
 
 Without a clear architectural foundation, implementation decisions can gradually redefine platform behavior, introduce inconsistent ownership, and create tight coupling between components.
 
@@ -18,7 +18,7 @@ The platform therefore requires a governing principle that architecture is the p
 
 # Decision
 
-The AgentForge architecture shall be defined before implementation begins.
+The AgentProdReady architecture shall be defined before implementation begins.
 
 Engineering Blueprints establish the constitutional responsibilities, ownership boundaries, public contracts, and dependency relationships of the platform.
 
@@ -91,7 +91,7 @@ The following practices are prohibited:
 
 # Final Statement
 
-**AgentForge is an architecture-driven platform.**
+**AgentProdReady is an architecture-driven platform.**
 
 The architecture defines the platform.
 

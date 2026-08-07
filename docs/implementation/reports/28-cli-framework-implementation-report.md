@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 28 is implemented as `@agentforge/cli-framework`: an immutable command model, parser, registry/plugin boundary, optional interactive input, automation-safe execution, replaceable output, stable errors/exit codes, and local diagnostics. Its four reference commands map directly to Blueprint 27 SDK methods and contain no platform execution logic.
+Blueprint 28 is implemented as `@agentprodready/cli-framework`: an immutable command model, parser, registry/plugin boundary, optional interactive input, automation-safe execution, replaceable output, stable errors/exit codes, and local diagnostics. Its four reference commands map directly to Blueprint 27 SDK methods and contain no platform execution logic.
 
 ## Delivered Artifacts
 

@@ -1,12 +1,12 @@
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { CapabilityBinding, CapabilityRequest, CapabilityResolver } from '@agentforge/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { CapabilityBinding, CapabilityRequest, CapabilityResolver } from '@agentprodready/capability-resolution';
 import type {
   CapabilityExecutionControl,
   CapabilityInvocationPort,
   CapabilityStreamEvent,
-} from '@agentforge/runtime';
-import type { NodeExecutionContract } from '@agentforge/workflow';
-import type { AiProviderFramework, NormalizedAiResult } from '@agentforge/ai-provider';
+} from '@agentprodready/runtime';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
+import type { AiProviderFramework, NormalizedAiResult } from '@agentprodready/ai-provider';
 import { runAiToolLoop, streamAiWithOptionalTools, type ToolLoopDeps } from './local-reference-tool-loop.js';
 import {
   executeAiWithRouting,

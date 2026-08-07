@@ -1,4 +1,4 @@
-import type { AuthorizationDecision, PlatformEvent } from '@agentforge/foundation';
+import type { AuthorizationDecision, PlatformEvent } from '@agentprodready/foundation';
 
 export type ContributionKind = 'capability' | 'provider' | 'tool' | 'workflow-node' | 'configuration' | 'event-subscription';
 export interface PluginDependency { readonly pluginId: string; readonly optional: boolean; readonly versions: readonly string[]; }

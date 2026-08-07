@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 12 is implemented and fully verified. `@agentforge/context-assembly` is a pure, deterministic composition service over normalized Foundation, Planning, Workflow, Knowledge, and Memory contracts. It produces one immutable, provider-independent `ExecutionContextPackage` with source traceability, supplied-security enforcement, configurable versioned filtering/prioritization/budgeting/ordering, explicit empty/partial states, safe diagnostics, facts, telemetry, and normalized errors.
+Blueprint 12 is implemented and fully verified. `@agentprodready/context-assembly` is a pure, deterministic composition service over normalized Foundation, Planning, Workflow, Knowledge, and Memory contracts. It produces one immutable, provider-independent `ExecutionContextPackage` with source traceability, supplied-security enforcement, configurable versioned filtering/prioritization/budgeting/ordering, explicit empty/partial states, safe diagnostics, facts, telemetry, and normalized errors.
 
 Production code contains no Knowledge or Memory retrieval, prompt/message construction, AI-provider interaction, tool execution, Runtime scheduling, workflow interpretation, authorization decisions, or persistence.
 

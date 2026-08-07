@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { CapabilityRegistry,CapabilityResolver,DeterministicResolutionPolicy,InMemoryResolutionDiagnostics,InMemoryResolutionEvents,ProviderRegistry,ResolutionError,RuntimeCapabilityResolutionAdapter,StaticResolutionConfiguration,validateResolutionRouting,type CapabilityRequest,type ImplementationDescriptor } from '../index.js';
 

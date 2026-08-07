@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Containerization and CI Baseline — Checklist
+# AgentProdReady v0.1 Local Containerization and CI Baseline — Checklist
 
 **Product Version:** 0.1.0  
 **Implementation Mode:** Autonomous  
@@ -8,9 +8,9 @@
 
 ## Scope
 
-- [x] Dockerfile for `@agentforge/platform-host` product image
+- [x] Dockerfile for `@agentprodready/platform-host` product image
 - [x] `.dockerignore`
-- [x] `compose.yaml` with only AgentForge
+- [x] `compose.yaml` with only AgentProdReady
 - [x] `.env.example` (non-secret defaults + Docker `HOST` note)
 - [x] `.github/workflows/ci.yml` (`verify` + `docker`)
 - [x] `scripts/docker-smoke.mjs`
@@ -45,10 +45,10 @@
 
 - [x] `pnpm verify`
 - [x] `pnpm smoke`
-- [x] `docker build -t agentforge/platform-host:0.1.0 .`
-- [x] `docker run ... agentforge/platform-host:0.1.0`
+- [x] `docker build -t agentprodready/platform-host:0.1.0 .`
+- [x] `docker run ... agentprodready/platform-host:0.1.0`
 - [x] `node scripts/docker-smoke.mjs http://127.0.0.1:3000`
-- [x] `docker stop agentforge-v01`
+- [x] `docker stop agentprodready-v01`
 - [x] `docker compose up --build -d`
 - [x] Compose docker-smoke
 - [x] `docker compose down`

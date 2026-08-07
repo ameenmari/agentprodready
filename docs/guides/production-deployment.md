@@ -1,6 +1,6 @@
 # Production Deployment (v1.0)
 
-AgentForge v1.0 is intended for **operator-deployed** production use with documented limitations — not a hosted SaaS platform.
+AgentProdReady v1.0 is intended for **operator-deployed** production use with documented limitations — not a hosted SaaS platform.
 
 ## Suitable baseline
 
@@ -53,7 +53,7 @@ MEMORY_PROVIDER=persistent
 RUNTIME_RECOVERY_ENABLED=true
 MAX_JSON_BODY_BYTES=1048576
 SHUTDOWN_TIMEOUT_MS=30000
-# Do NOT set AGENTFORGE_ALLOW_REFERENCE_AUTH unless an explicit unsafe demo
+# Do NOT set AGENTPRODREADY_ALLOW_REFERENCE_AUTH unless an explicit unsafe demo
 ```
 
 Supply a real auth adapter before exposing HTTP beyond trusted networks. See [security.md](./security.md).

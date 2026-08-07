@@ -1,6 +1,6 @@
-﻿import type { ExecutionContext } from '@agentforge/foundation';
-import type { ExecutionPlan } from '@agentforge/planning';
-import type { WorkflowPort } from '@agentforge/runtime';
+﻿import type { ExecutionContext } from '@agentprodready/foundation';
+import type { ExecutionPlan } from '@agentprodready/planning';
+import type { WorkflowPort } from '@agentprodready/runtime';
 
 export type WorkflowStatus='created'|'initialized'|'running'|'waiting'|'resumed'|'completing'|'completed'|'failed'|'cancelled';
 export type NodeStatus='pending'|'ready'|'executing'|'waiting'|'completed'|'failed'|'cancelled';

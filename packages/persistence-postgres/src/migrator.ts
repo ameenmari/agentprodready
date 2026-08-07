@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PersistenceError } from '@agentforge/persistence';
+import { PersistenceError } from '@agentprodready/persistence';
 import type { PostgresPersistenceConfig } from './config.js';
 import { loadPostgresPersistenceConfig, redactConnectionString } from './config.js';
 import { translatePostgresError } from './postgres-error-translation.js';

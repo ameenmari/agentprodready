@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 10
 Knowledge Engine
 
@@ -10,7 +10,7 @@ Classification: Core Platform Blueprint
 
 1. Purpose
 
-The Knowledge Engine defines the standardized architecture through which AgentForge acquires, processes, indexes, organizes, and retrieves knowledge from external and internal sources.
+The Knowledge Engine defines the standardized architecture through which AgentProdReady acquires, processes, indexes, organizes, and retrieves knowledge from external and internal sources.
 
 Its purpose is to provide provider-independent access to organizational and external knowledge while remaining isolated from storage technologies, indexing strategies, retrieval mechanisms, and AI providers.
 
@@ -127,7 +127,7 @@ Knowledge itself remains independent of AI providers and prompt construction.
 
 ## 8.1 Purpose
 
-A Knowledge Source represents an external or internal location from which AgentForge can acquire information.
+A Knowledge Source represents an external or internal location from which AgentProdReady can acquire information.
 
 The Knowledge Source abstraction prevents the Knowledge Engine from depending directly on source-specific technologies, APIs, storage formats, or authentication mechanisms.
 
@@ -2025,7 +2025,7 @@ Blueprint 10 is considered complete when:
 
 The Knowledge Engine is intentionally broader than Retrieval-Augmented Generation.
 
-Its purpose is to provide a stable, secure, provider-independent knowledge capability for the entire AgentForge platform. RAG is one consumer of that capability, but search applications, deterministic workflows, evaluation systems, reporting tools, and future modules may use the same Knowledge Engine without involving prompt construction or AI generation.
+Its purpose is to provide a stable, secure, provider-independent knowledge capability for the entire AgentProdReady platform. RAG is one consumer of that capability, but search applications, deterministic workflows, evaluation systems, reporting tools, and future modules may use the same Knowledge Engine without involving prompt construction or AI generation.
 
 The engine has two complementary responsibilities:
 
@@ -2048,7 +2048,7 @@ A critical architectural decision is that the Knowledge Engine does not build pr
 
 Another critical boundary is security. The Security Platform decides access. The Knowledge Engine applies the resulting constraints throughout ingestion, indexing, caching, retrieval, ranking, and result production. No unauthorized content may appear in public results, diagnostics, events, or telemetry.
 
-The final public retrieval artifact is the immutable `Knowledge Retrieval Result`. It protects the rest of AgentForge from vector-store schemas, search-engine hits, graph query results, connector records, and vendor-specific APIs.
+The final public retrieval artifact is the immutable `Knowledge Retrieval Result`. It protects the rest of AgentProdReady from vector-store schemas, search-engine hits, graph query results, connector records, and vendor-specific APIs.
 
 ---
 
@@ -2078,7 +2078,7 @@ This prohibition includes:
 
 These responsibilities remain under the Runtime and applicable platform policy frameworks.
 
-External SDKs, database clients, search clients, vector-store clients, and connector libraries that provide built-in retry, timeout, failover, or recovery behavior must be configured so that they do not conflict with AgentForge’s centralized execution policies.
+External SDKs, database clients, search clients, vector-store clients, and connector libraries that provide built-in retry, timeout, failover, or recovery behavior must be configured so that they do not conflict with AgentProdReady’s centralized execution policies.
 
 The Knowledge Engine may describe which operation failed and return a normalized Knowledge Error. It must not independently decide whether the operation should be retried, redirected, recovered, or repeated.
 

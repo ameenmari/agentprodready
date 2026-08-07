@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/unbound-method */
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import {
   CapabilityRegistry,
   CapabilityResolver,
@@ -12,7 +12,7 @@ import {
   type CapabilityBinding,
   type CapabilityRequest,
   type ImplementationDescriptor,
-} from '@agentforge/capability-resolution';
+} from '@agentprodready/capability-resolution';
 import {
   AiProviderFramework,
   FactoryAiAdapterResolver,
@@ -23,7 +23,7 @@ import {
   type AiProviderAdapter,
   type NormalizedAiResult,
   type NormalizedAiStreamEvent,
-} from '@agentforge/ai-provider';
+} from '@agentprodready/ai-provider';
 import { describe, expect, it, vi } from 'vitest';
 import {
   executeAiWithRouting,

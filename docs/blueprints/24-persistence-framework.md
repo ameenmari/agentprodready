@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 24
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Persistence Framework defines the provider-independent persistence architecture for AgentForge.
+The Persistence Framework defines the provider-independent persistence architecture for AgentProdReady.
 
 It establishes standardized contracts for storing and retrieving platform data while keeping every storage technology replaceable.
 
@@ -451,7 +451,7 @@ Owns:
 
 # 22. Chief Architect's Notes
 
-The Persistence Framework provides a technology-independent storage layer for AgentForge.
+The Persistence Framework provides a technology-independent storage layer for AgentProdReady.
 
 The constitutional flow is:
 

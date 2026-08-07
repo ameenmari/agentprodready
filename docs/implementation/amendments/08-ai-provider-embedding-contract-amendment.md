@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous  
-**Affects:** `@agentforge/ai-provider` implementation contracts (not Blueprint 08 constitutional rewrite)  
-**Related:** [v0.7 Vector Search & Semantic Memory specification](../specifications/agentforge-v0.7-vector-search-semantic-memory-specification.md)
+**Affects:** `@agentprodready/ai-provider` implementation contracts (not Blueprint 08 constitutional rewrite)  
+**Related:** [v0.7 Vector Search & Semantic Memory specification](../specifications/agentprodready-v0.7-vector-search-semantic-memory-specification.md)
 
 ---
 
@@ -13,7 +13,7 @@
 
 Blueprint 08 lists **Embedding Generation** as an AI capability category, and Blueprint 11 requires Memory enrichment/indexing embeddings via Capability Resolution → AI Provider → normalized result.
 
-Current `@agentforge/ai-provider` exposes only chat-shaped:
+Current `@agentprodready/ai-provider` exposes only chat-shaped:
 
 - `AiProviderAdapter.execute(AiExecutionRequest) → NormalizedAiResult` (`content` parts)
 
@@ -112,7 +112,7 @@ Memory (or other consumer)
 Forbidden:
 
 ```text
-Memory → OpenAI SDK / @agentforge/ai-provider-openai imports
+Memory → OpenAI SDK / @agentprodready/ai-provider-openai imports
 ```
 
 ---
@@ -121,8 +121,8 @@ Memory → OpenAI SDK / @agentforge/ai-provider-openai imports
 
 | Adapter | Package | Notes |
 |---|---|---|
-| `ReferenceEmbeddingAdapter` | `@agentforge/ai-provider` | Deterministic 32-d; CI/test; no network |
-| `OpenAiEmbeddingAdapter` | `@agentforge/ai-provider-openai` | `embeddings.create`; opt-in live; chat path unchanged |
+| `ReferenceEmbeddingAdapter` | `@agentprodready/ai-provider` | Deterministic 32-d; CI/test; no network |
+| `OpenAiEmbeddingAdapter` | `@agentprodready/ai-provider-openai` | `embeddings.create`; opt-in live; chat path unchanged |
 
 ---
 
@@ -136,4 +136,4 @@ Memory → OpenAI SDK / @agentforge/ai-provider-openai imports
 
 ## 8. Status
 
-**Implemented** with `@agentforge/ai-provider@0.2.0` and `@agentforge/ai-provider-openai@0.3.0` under AgentForge v0.7.
+**Implemented** with `@agentprodready/ai-provider@0.2.0` and `@agentprodready/ai-provider-openai@0.3.0` under AgentProdReady v0.7.

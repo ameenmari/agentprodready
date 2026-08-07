@@ -18,7 +18,7 @@ Logging, metric, tracing, health, diagnostics, events, governance-audit, configu
 
 ## Package
 
-- `@agentforge/observability`
+- `@agentprodready/observability`
 - `src/index.ts`: normalized contracts, service, correlation, health aggregation, querying, and errors.
 - `src/reference.ts`: in-memory/console/basic reference providers.
 - `src/observability.spec.ts`: acceptance, contract, and integration tests.

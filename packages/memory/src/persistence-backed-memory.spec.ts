@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContext } from '@agentforge/foundation';
-import { InMemoryPersistenceProvider } from '@agentforge/persistence';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import { InMemoryPersistenceProvider } from '@agentprodready/persistence';
 import { describe, expect, it, vi } from 'vitest';
 import {
   InMemoryMemoryDiagnostics,

@@ -1,4 +1,4 @@
-# AgentForge Architecture Index
+# AgentProdReady Architecture Index
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This document provides the master architectural map of AgentForge.
+This document provides the master architectural map of AgentProdReady.
 
 It describes:
 
@@ -28,7 +28,7 @@ The Platform Kernel is the logical composition of foundational packages. It is n
 
 # Architectural Layers
 
-The AgentForge architecture is organized into six major layers.
+The AgentProdReady architecture is organized into six major layers.
 
 ```text
 Constitution Layer
@@ -161,7 +161,7 @@ Each blueprint belongs to exactly one primary architectural layer.
 
 **Purpose**
 
-Defines the constitutional architecture of AgentForge.
+Defines the constitutional architecture of AgentProdReady.
 
 **Layer**
 
@@ -740,7 +740,7 @@ Existing source code is **not** considered authoritative when it conflicts with 
 
 # Final Principle
 
-The Architecture Index is the master catalog and ownership navigation document for AgentForge. The dependency graph is authoritative for implementation ordering.
+The Architecture Index is the master catalog and ownership navigation document for AgentProdReady. The dependency graph is authoritative for implementation ordering.
 
 It exists to help engineers understand **where a framework belongs**, **what it owns**, **what it depends on**, and **how it fits into the complete platform**.
 

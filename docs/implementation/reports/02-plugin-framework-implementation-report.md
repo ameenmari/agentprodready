@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 02 is implemented and verified in `@agentforge/plugin-framework`. It provides deterministic metadata-only discovery; manifest, compatibility, permission, and dependency validation; dependency ordering; atomic contribution registration and rollback; plugin lifecycle management; lifecycle facts; telemetry and health participation; and Composition-delegated lazy implementation activation.
+Blueprint 02 is implemented and verified in `@agentprodready/plugin-framework`. It provides deterministic metadata-only discovery; manifest, compatibility, permission, and dependency validation; dependency ordering; atomic contribution registration and rollback; plugin lifecycle management; lifecycle facts; telemetry and health participation; and Composition-delegated lazy implementation activation.
 
 ## Related Artifacts
 

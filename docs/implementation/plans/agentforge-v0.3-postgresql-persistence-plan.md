@@ -1,4 +1,4 @@
-# AgentForge v0.3 Durable PostgreSQL Persistence — Implementation Plan
+# AgentProdReady v0.3 Durable PostgreSQL Persistence — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.3.0  
@@ -33,7 +33,7 @@ This is a **provider integration** task with a **conservative schema**. It is no
 | packages/persistence contracts + InMemory provider | Yes |
 | apps/platform-host composition + smoke | Yes |
 | compose.yaml, Dockerfile, CI, .env.example | Yes |
-| agentforge-v0.2 OpenAI product/plan/spec pattern | Yes |
+| agentprodready-v0.2 OpenAI product/plan/spec pattern | Yes |
 
 ---
 
@@ -57,7 +57,7 @@ Rationale: Blueprint 24 already defines repositories, UoW, transactions, snapsho
 
 ## In Scope
 
-- Package `@agentforge/persistence-postgres`
+- Package `@agentprodready/persistence-postgres`
 - PostgreSQL implementation of `PersistenceProvider`, `SnapshotStore`, `MigrationProvider`
 - Minimal schema for generic entities, snapshots, and migration records
 - Versioned SQL migrations + explicit migrate/status commands
@@ -93,7 +93,7 @@ PostgreSQL implementation proceeded only after Promise-based I/O migration was g
 
 ```text
 packages/persistence-postgres/
-  package.json                 # @agentforge/persistence-postgres
+  package.json                 # @agentprodready/persistence-postgres
   tsconfig.json
   README.md
   src/
@@ -126,8 +126,8 @@ packages/persistence-postgres/
 ```text
 packages/persistence-postgres/** (as above)
 docs/guides/persistence.md
-docs/implementation/reports/agentforge-v0.3-postgresql-persistence-implementation-report.md   (post-impl)
-docs/implementation/checklists/agentforge-v0.3-postgresql-persistence-checklist.md           (post-impl)
+docs/implementation/reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md   (post-impl)
+docs/implementation/checklists/agentprodready-v0.3-postgresql-persistence-checklist.md           (post-impl)
 ```
 
 ## Modify (after stop condition cleared)
@@ -145,7 +145,7 @@ package.json scripts (db:up, db:migrate, db:status, db:down, test:postgres)
 .github/workflows/ci.yml                # additive postgres job
 pnpm-lock.yaml
 tsconfig.json / tsconfig.eslint.json
-@agentforge/persistence                 # ONLY if async contract amendment approved
+@agentprodready/persistence                 # ONLY if async contract amendment approved
 ```
 
 ## Do Not Modify
@@ -195,9 +195,9 @@ Forbidden as provider execution policy: adapter-owned retry loops / application 
 
 **Recommend Option B — Compose profile `postgres`.**
 
-- Default `docker compose up` remains single-service AgentForge (reference / in-memory).
+- Default `docker compose up` remains single-service AgentProdReady (reference / in-memory).
 - `docker compose --profile postgres up` starts PostgreSQL with healthcheck + named volume.
-- AgentForge service can optionally depend_on postgres when profile enabled and `PERSISTENCE_PROVIDER=postgres`.
+- AgentProdReady service can optionally depend_on postgres when profile enabled and `PERSISTENCE_PROVIDER=postgres`.
 
 ---
 
@@ -260,7 +260,7 @@ Next milestone can load durable Blueprint 24 entities/snapshots into a recovery 
 
 # Review Decision
 
-**Status:** Implemented — see [implementation report](../reports/agentforge-v0.3-postgresql-persistence-implementation-report.md).
+**Status:** Implemented — see [implementation report](../reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md).
 
-**Companion specification:** [agentforge-v0.3-postgresql-persistence-specification.md](../specifications/agentforge-v0.3-postgresql-persistence-specification.md)  
-**Companion product doc:** [agentforge-v0.3-postgresql-persistence.md](../../product/agentforge-v0.3-postgresql-persistence.md)
+**Companion specification:** [agentprodready-v0.3-postgresql-persistence-specification.md](../specifications/agentprodready-v0.3-postgresql-persistence-specification.md)  
+**Companion product doc:** [agentprodready-v0.3-postgresql-persistence.md](../../product/agentprodready-v0.3-postgresql-persistence.md)

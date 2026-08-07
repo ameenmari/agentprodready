@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import type {EvaluationResult} from '@agentforge/evaluation';
-import type {AuthorizationDecision,AuthorityState} from '@agentforge/security';
+import type {EvaluationResult} from '@agentprodready/evaluation';
+import type {AuthorizationDecision,AuthorityState} from '@agentprodready/security';
 
 export type InteractionType='approval'|'review'|'clarification'|'decision'|'correction'|'confirmation'|'escalation'|'evaluation';
 export type ResponseType='approve'|'reject'|'conditional-approval'|'defer'|'input'|'correction'|'confirm'|'evaluation'|'escalate';

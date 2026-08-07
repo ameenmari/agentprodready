@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 18
 
@@ -24,7 +24,7 @@
 
 # 1. Purpose
 
-The Agent Framework defines the standardized architecture through which AgentForge represents, registers, configures, validates, governs, versions, and activates autonomous or semi-autonomous agents.
+The Agent Framework defines the standardized architecture through which AgentProdReady represents, registers, configures, validates, governs, versions, and activates autonomous or semi-autonomous agents.
 
 Its purpose is to establish an Agent as a first-class declarative platform entity without creating a second execution, planning, workflow, or orchestration engine.
 
@@ -54,7 +54,7 @@ The Capability Resolution Framework selects suitable implementations.
 
 The Agent Framework defines **what the Agent is and under which boundaries it may operate**.
 
-The Agent Framework is AgentForge’s **agent-definition, configuration, registration, and lifecycle-governance layer**.
+The Agent Framework is AgentProdReady’s **agent-definition, configuration, registration, and lifecycle-governance layer**.
 
 ---
 
@@ -215,7 +215,7 @@ It does not perform the Agent’s operational execution.
 
 # 7. Agent Philosophy
 
-An Agent is a governed platform definition that describes an autonomous or semi-autonomous participant capable of pursuing objectives through existing AgentForge capabilities.
+An Agent is a governed platform definition that describes an autonomous or semi-autonomous participant capable of pursuing objectives through existing AgentProdReady capabilities.
 
 An Agent is not:
 
@@ -878,7 +878,7 @@ Activation remains a separate governed lifecycle operation.
 
 # 25. Agent Compatibility
 
-Agent Compatibility determines whether an Agent Definition can operate within a specific AgentForge platform version and environment.
+Agent Compatibility determines whether an Agent Definition can operate within a specific AgentProdReady platform version and environment.
 
 Compatibility may consider:
 
@@ -1609,7 +1609,7 @@ The Security Platform determines:
 
 > Whether the Agent may perform the requested operation.
 
-This separation prevents AgentForge from developing multiple competing execution engines and preserves the constitutional architecture established by Blueprints 01–17.
+This separation prevents AgentProdReady from developing multiple competing execution engines and preserves the constitutional architecture established by Blueprints 01–17.
 
 
 
@@ -2196,7 +2196,7 @@ The Runtime owns `ExecutionContext`.
 
 ## 62.1 Purpose
 
-AgentForge must distinguish Agent lifecycle state, Agent configuration, Memory, and Runtime execution state.
+AgentProdReady must distinguish Agent lifecycle state, Agent configuration, Memory, and Runtime execution state.
 
 ---
 
@@ -4646,7 +4646,7 @@ That is its most important architectural achievement.
 
 An Agent is not a new execution engine wrapped around an AI model.
 
-It is an immutable, versioned, governed declaration that existing AgentForge engines can operate on behalf of.
+It is an immutable, versioned, governed declaration that existing AgentProdReady engines can operate on behalf of.
 
 The final distinction is:
 

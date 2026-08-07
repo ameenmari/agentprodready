@@ -30,7 +30,7 @@ Evidence packages preserve source IDs/schema versions, query criteria, redaction
 
 ## Package and Providers
 
-- `@agentforge/audit`
+- `@agentprodready/audit`
 - `src/index.ts`: public contracts and coordinators.
 - `src/reference.ts`: deterministic replaceable reference providers.
 - `src/audit.spec.ts`: acceptance traceability tests.

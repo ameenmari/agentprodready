@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { HealthResult } from '@agentforge/foundation';
+import type { HealthResult } from '@agentprodready/foundation';
 import type {
   PersistenceAuthorization,
   PersistenceProvider,
   PersistenceScope,
   PersistedEntity,
-} from '@agentforge/persistence';
-import { PersistenceError } from '@agentforge/persistence';
+} from '@agentprodready/persistence';
+import { PersistenceError } from '@agentprodready/persistence';
 import { ExternalMemoryError } from './memory-errors.js';
 import type {
   MemoryCandidate,

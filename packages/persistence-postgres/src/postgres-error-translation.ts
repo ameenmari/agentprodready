@@ -1,4 +1,4 @@
-import { PersistenceError, type PersistenceErrorCode } from '@agentforge/persistence';
+import { PersistenceError, type PersistenceErrorCode } from '@agentprodready/persistence';
 
 interface PgLikeError {
   readonly code?: string;

@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 04 is implemented and verified in `@agentforge/runtime`. Runtime is the single operational execution coordinator and delegates all specialized work through explicit future-owned ports.
+Blueprint 04 is implemented and verified in `@agentprodready/runtime`. Runtime is the single operational execution coordinator and delegates all specialized work through explicit future-owned ports.
 
 ## Artifacts
 

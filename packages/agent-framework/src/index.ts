@@ -1,4 +1,4 @@
-import type {AuthorityState} from '@agentforge/security';
+import type {AuthorityState} from '@agentprodready/security';
 
 export interface AgentScope{readonly tenantId:string;readonly workspaceId?:string;readonly projectId?:string;}
 export type AgentType='task'|'conversational'|'workflow'|'specialist'|'supervisory'|'reactive'|'human-assisted'|'long-running'|'composite';

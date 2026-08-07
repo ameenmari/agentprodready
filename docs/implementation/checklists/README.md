@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 
-This directory contains one blueprint-specific Definition of Done checklist for every approved AgentForge Blueprint 01–31.
+This directory contains one blueprint-specific Definition of Done checklist for every approved AgentProdReady Blueprint 01–31.
 
 Each `NN-<slug>-checklist.md` file includes:
 

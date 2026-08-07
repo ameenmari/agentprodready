@@ -1,4 +1,4 @@
-# AgentForge v0.7 Vector Search & Semantic Memory — Implementation Plan
+# AgentProdReady v0.7 Vector Search & Semantic Memory — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.7.0  
@@ -24,10 +24,10 @@ Add provider-independent semantic and hybrid Memory retrieval using a Vector Sto
 | docs/architecture/dependency-graph.md (BP08, 10, 11, 12, 24) | Yes |
 | Blueprint 08, 10, 11, 12, 15–17, 22–24 | Yes |
 | ADR-002, 003, 004, 005, 006, 007, 008, 009, 011, 012 | Yes |
-| `@agentforge/memory` contracts + PersistenceBackedMemoryProvider | Yes |
-| `@agentforge/ai-provider` + `@agentforge/ai-provider-openai` | Yes |
-| `@agentforge/knowledge` retrieval contracts (parallel domain) | Yes |
-| `@agentforge/persistence-postgres` migrations / compose / CI | Yes |
+| `@agentprodready/memory` contracts + PersistenceBackedMemoryProvider | Yes |
+| `@agentprodready/ai-provider` + `@agentprodready/ai-provider-openai` | Yes |
+| `@agentprodready/knowledge` retrieval contracts (parallel domain) | Yes |
+| `@agentprodready/persistence-postgres` migrations / compose / CI | Yes |
 | v0.5 product/plan/spec/report (future vector path §21) | Yes |
 | v0.2 / v0.3 / v0.6 reports (AI chat-only; no pgvector) | Yes |
 | Host `local-reference-config` conventions | Yes |
@@ -74,7 +74,7 @@ Composition swaps `VectorStorePort` implementations. Distance/vendor types norma
 | `MemorySearchProvider.search` | Sufficient | Implement vector-capable provider; **no second search API** |
 | AI embedding execution | **Missing** | Create amendment `08-ai-provider-embedding-contract-amendment.md` before code |
 | Memory index coordination | **Missing side effect** | Additive `MemoryIndexProvider` + engine hook; **INDEX = vector then Memory; REMOVE = Memory then vector** |
-| Vector Store contracts | Missing (greenfield) | New `@agentforge/vector-store` package — authorized by this approved design |
+| Vector Store contracts | Missing (greenfield) | New `@agentprodready/vector-store` package — authorized by this approved design |
 | Context Assembly | Sufficient | Unchanged consumers of `MemoryRetrievalResult` |
 | Persistence public contracts | Sufficient | Do not put NN search into generic Persistence repositories |
 | Knowledge public contracts | Out of scope | Do not implement Knowledge vector path in v0.7 |
@@ -91,8 +91,8 @@ If Autonomous implementation discovers a forced Blueprint/ADR rewrite or Context
 ## In Scope
 
 1. AI Provider embedding implementation-contract amendment + reference deterministic embedding adapter + OpenAI embeddings adapter.
-2. New `@agentforge/vector-store` contracts (`VectorStorePort`, normalized query/write types, errors, health).
-3. New `@agentforge/vector-store-pgvector` (extension, table, HNSW/exact strategy, migrator).
+2. New `@agentprodready/vector-store` contracts (`VectorStorePort`, normalized query/write types, errors, health).
+3. New `@agentprodready/vector-store-pgvector` (extension, table, HNSW/exact strategy, migrator).
 4. Additive Memory `MemoryIndexProvider` + `MemoryEngine` coordination on index/delete/expire/archive transitions.
 5. Vector-capable `MemorySearchProvider` (semantic + hybrid fusion) composing keyword provider + vector store.
 6. Host config / Composition / capability seed (`embedding` capability).
@@ -138,11 +138,11 @@ Forbidden:
 
 | Role | First implementation | Package |
 |---|---|---|
-| Vector store | **pgvector** on existing Postgres infrastructure | `@agentforge/vector-store-pgvector` |
-| Embedding (tests/CI) | **Deterministic reference** fixed-dimension vectors | `@agentforge/ai-provider` reference adapter |
-| Embedding (optional live) | **OpenAI** `embeddings.create` | `@agentforge/ai-provider-openai` |
+| Vector store | **pgvector** on existing Postgres infrastructure | `@agentprodready/vector-store-pgvector` |
+| Embedding (tests/CI) | **Deterministic reference** fixed-dimension vectors | `@agentprodready/ai-provider` reference adapter |
+| Embedding (optional live) | **OpenAI** `embeddings.create` | `@agentprodready/ai-provider-openai` |
 
-pgvector does **not** live inside `@agentforge/persistence-postgres` as a Persistence semantic feature. Persistence remains generic entity/snapshot I/O. Vector schema/migrations are owned by the vector-store-pgvector package (may share `DATABASE_URL`).
+pgvector does **not** live inside `@agentprodready/persistence-postgres` as a Persistence semantic feature. Persistence remains generic entity/snapshot I/O. Vector schema/migrations are owned by the vector-store-pgvector package (may share `DATABASE_URL`).
 
 ---
 
@@ -157,7 +157,7 @@ pgvector does **not** live inside `@agentforge/persistence-postgres` as a Persis
 ### Stage 1 — Contracts & reference adapters
 
 1. Implement embedding contracts + deterministic embed adapter.  
-2. Implement `@agentforge/vector-store` + in-memory reference store.  
+2. Implement `@agentprodready/vector-store` + in-memory reference store.  
 3. Wire MemoryIndexProvider + MemoryEngine hooks.  
 4. Unit tests (no network, no Postgres).
 
@@ -287,12 +287,12 @@ Manual: `scripts/vector-search-probe.mjs` (safe ids/scores only).
 | Artifact | Version |
 |---|---|
 | Product | **0.7.0** |
-| `@agentforge/memory` | bump (index provider + search impl) |
-| `@agentforge/ai-provider` | bump (embedding contracts) |
-| `@agentforge/ai-provider-openai` | bump (embeddings adapter) |
-| `@agentforge/vector-store` | **0.1.0** (new) |
-| `@agentforge/vector-store-pgvector` | **0.1.0** (new) |
-| `@agentforge/platform-host` | **0.7.0** |
+| `@agentprodready/memory` | bump (index provider + search impl) |
+| `@agentprodready/ai-provider` | bump (embedding contracts) |
+| `@agentprodready/ai-provider-openai` | bump (embeddings adapter) |
+| `@agentprodready/vector-store` | **0.1.0** (new) |
+| `@agentprodready/vector-store-pgvector` | **0.1.0** (new) |
+| `@agentprodready/platform-host` | **0.7.0** |
 | Unrelated packages | **no bump** |
 
 ---
@@ -353,4 +353,4 @@ After approval of:
 2. AI Provider embedding amendment (`08-…`, Status: In Review — not Implemented)  
 3. Memory index-provider amendment (`11-…`, Status: In Review — not Implemented)
 
-Autonomous mode may implement Stages 0–5 without redesigning ownership. No Blueprint/ADR amendment. No contracts beyond the two named amendments + greenfield `@agentforge/vector-store`.
+Autonomous mode may implement Stages 0–5 without redesigning ownership. No Blueprint/ADR amendment. No contracts beyond the two named amendments + greenfield `@agentprodready/vector-store`.

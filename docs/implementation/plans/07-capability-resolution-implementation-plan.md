@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/capability-resolution` as the exclusive provider-independent selection authority between Runtime node contracts and Composition-owned implementation activation.
+Implement `@agentprodready/capability-resolution` as the exclusive provider-independent selection authority between Runtime node contracts and Composition-owned implementation activation.
 
 ## Work
 

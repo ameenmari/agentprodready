@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is intended to be a long-lived engineering platform that evolves through multiple implementations, providers, contributors, and architectural revisions.
+AgentProdReady is intended to be a long-lived engineering platform that evolves through multiple implementations, providers, contributors, and architectural revisions.
 
 Architecture that exists only in source code becomes difficult to understand, review, govern, and evolve over time.
 
@@ -88,7 +88,7 @@ The following practices are prohibited:
 
 > **Architecture documentation is part of the platform.**
 >
-> Approved architectural documentation and implementation must remain synchronized throughout the lifetime of AgentForge.
+> Approved architectural documentation and implementation must remain synchronized throughout the lifetime of AgentProdReady.
 
 ---
 
@@ -96,4 +96,4 @@ The following practices are prohibited:
 
 Architecture is preserved through both implementation and documentation.
 
-Maintaining accurate architectural documentation ensures that AgentForge remains understandable, governable, and evolvable long after individual implementations have changed.
+Maintaining accurate architectural documentation ensures that AgentProdReady remains understandable, governable, and evolvable long after individual implementations have changed.

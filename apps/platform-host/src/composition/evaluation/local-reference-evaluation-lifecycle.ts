@@ -4,10 +4,10 @@ import type {
   EvaluationFact,
   EvaluationResult,
   EvaluationTelemetry,
-} from '@agentforge/evaluation';
-import type { EventBus } from '@agentforge/event-bus';
-import { createPlatformEvent } from '@agentforge/event-bus';
-import type { InMemoryMetricsProvider } from '@agentforge/observability';
+} from '@agentprodready/evaluation';
+import type { EventBus } from '@agentprodready/event-bus';
+import { createPlatformEvent } from '@agentprodready/event-bus';
+import type { InMemoryMetricsProvider } from '@agentprodready/observability';
 import {
   LOCAL_POLICY_VERSION,
   LOCAL_PROJECT,

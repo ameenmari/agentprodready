@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manual Evaluation probe for AgentForge v0.6.
+ * Manual Evaluation probe for AgentProdReady v0.6.
  * Requires: pnpm build
  * Optional durable: PERSISTENCE_PROVIDER=postgres + DATABASE_URL + EVALUATION_RESULT_STORE=persistent
  */

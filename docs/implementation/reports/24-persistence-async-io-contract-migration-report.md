@@ -1,7 +1,7 @@
 # Blueprint 24 Persistence Async I/O Contract Migration — Implementation Report
 
 **Document Version:** 1.0  
-**Package Version:** `@agentforge/persistence@0.2.0`  
+**Package Version:** `@agentprodready/persistence@0.2.0`  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
 **Status:** Complete  
@@ -115,10 +115,10 @@ Semantics preserved: provider independence, normalized errors, transactions, cap
 
 | Step | Result |
 |---|---|
-| `docker build -t agentforge/platform-host:async-persistence .` | Passed |
-| `docker run ... agentforge-async-test` | Passed |
+| `docker build -t agentprodready/platform-host:async-persistence .` | Passed |
+| `docker run ... agentprodready-async-test` | Passed |
 | `node scripts/docker-smoke.mjs http://127.0.0.1:3000` | Passed — `docker-smoke: ok` |
-| `docker stop agentforge-async-test` | Passed |
+| `docker stop agentprodready-async-test` | Passed |
 
 ---
 

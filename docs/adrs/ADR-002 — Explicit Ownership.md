@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is composed of multiple architectural frameworks, each responsible for a distinct aspect of the platform.
+AgentProdReady is composed of multiple architectural frameworks, each responsible for a distinct aspect of the platform.
 
 Without clearly defined ownership boundaries, responsibilities naturally drift between frameworks over time, leading to duplicated behavior, conflicting implementations, hidden dependencies, and unclear system behavior.
 
@@ -18,7 +18,7 @@ To maintain a modular and evolvable architecture, every architectural concern mu
 
 # Decision
 
-Every architectural responsibility within AgentForge shall have exactly one authoritative owner.
+Every architectural responsibility within AgentProdReady shall have exactly one authoritative owner.
 
 Frameworks may collaborate through public contracts, but ownership of an architectural concern must never be shared or assumed implicitly.
 
@@ -119,7 +119,7 @@ These ownership boundaries are constitutional and should remain consistent acros
 
 # Final Statement
 
-**Every architectural concern within AgentForge has exactly one authoritative owner.**
+**Every architectural concern within AgentProdReady has exactly one authoritative owner.**
 
 Frameworks collaborate through well-defined public contracts, but ownership remains explicit, exclusive, and governed by the approved architecture.
 

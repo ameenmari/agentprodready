@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manual probe for AgentForge v0.7 vector search.
+ * Manual probe for AgentProdReady v0.7 vector search.
  *
  * Requires: pnpm build && pnpm db:up && pnpm db:migrate
  *   && VECTOR_INDEX_PROFILE=reference-32 pnpm db:migrate:vector
@@ -84,7 +84,7 @@ function seedResolver() {
     Object.freeze({
       id: EMBEDDING_IMPL,
       capabilityId: 'embedding',
-      providerId: 'agentforge-local',
+      providerId: 'agentprodready-local',
       pluginId: 'local-reference',
       contributionId: 'contribution:reference-embedding',
       contractVersions: Object.freeze(['1']),

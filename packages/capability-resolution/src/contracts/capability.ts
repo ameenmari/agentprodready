@@ -1,5 +1,5 @@
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 
 export interface CapabilityDefinition {readonly id:string;readonly contractVersions:readonly string[];readonly defaultImplementationId:string;readonly metadata:Readonly<Record<string,string>>;}
 export interface ImplementationDescriptor {readonly id:string;readonly capabilityId:string;readonly providerId:string;readonly pluginId:string;readonly contributionId:string;readonly contractVersions:readonly string[];readonly implementationVersion:string;readonly enabled:boolean;readonly health:'healthy'|'degraded'|'unhealthy';readonly priority:number;readonly attributes:Readonly<Record<string,string>>;}

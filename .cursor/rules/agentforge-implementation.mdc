@@ -1,5 +1,5 @@
 ---
-description: Always apply the AgentForge architectural implementation workflow.
+description: Always apply the AgentProdReady architectural implementation workflow.
 alwaysApply: true
 ---
 

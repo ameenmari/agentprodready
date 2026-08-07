@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/persistence",
+  "name": "@agentprodready/persistence",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,14 +12,30 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/composition": "workspace:*",
-    "@agentforge/security": "workspace:*",
-    "@agentforge/event-bus": "workspace:*",
-    "@agentforge/audit": "workspace:*",
-    "@agentforge/observability": "workspace:*",
-    "@agentforge/configuration": "workspace:*"
+    "@agentprodready/composition": "workspace:*",
+    "@agentprodready/security": "workspace:*",
+    "@agentprodready/event-bus": "workspace:*",
+    "@agentprodready/audit": "workspace:*",
+    "@agentprodready/observability": "workspace:*",
+    "@agentprodready/configuration": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

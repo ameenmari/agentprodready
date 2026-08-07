@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge consists of multiple architectural frameworks that define platform behavior, including AI Providers, Tool Framework, Memory Engine, Knowledge Engine, Event Bus, Audit Platform, Security Platform, and others.
+AgentProdReady consists of multiple architectural frameworks that define platform behavior, including AI Providers, Tool Framework, Memory Engine, Knowledge Engine, Event Bus, Audit Platform, Security Platform, and others.
 
 Many of these frameworks perform operations that may require retry, timeout, cancellation, scheduling, concurrency management, recovery, or resource coordination.
 
@@ -162,6 +162,6 @@ Result
 
 # Final Statement
 
-Operational consistency is fundamental to AgentForge's architecture.
+Operational consistency is fundamental to AgentProdReady's architecture.
 
 By centralizing execution within the Runtime, every framework behaves predictably, shares the same operational policies, and remains focused on its own architectural responsibility. This separation prevents fragmented execution models, eliminates conflicting operational behavior, and establishes a single, authoritative execution model for the entire platform.

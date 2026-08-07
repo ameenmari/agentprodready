@@ -67,7 +67,7 @@ for (const name of requiredChecks) {
 const health = await fetchJson('/health');
 assert(health.status === 200, `Health status ${String(health.status)}`);
 assert(health.body.status === 'ok', 'health.status must be ok');
-assert(health.body.service === 'agentforge-local-reference', 'unexpected health.service');
+assert(health.body.service === 'agentprodready-local-reference', 'unexpected health.service');
 assert(
   health.body.version === expectedVersion,
   `unexpected health.version: got ${String(health.body.version)}, expected ${expectedVersion}`,

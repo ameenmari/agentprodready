@@ -1,11 +1,11 @@
-# AgentForge v0.9 Tool Calling & Agent Actions — Implementation Plan
+# AgentProdReady v0.9 Tool Calling & Agent Actions — Implementation Plan
 
 **Version:** 0.9.0  
 **Status:** Implemented  
 **Implementation Mode:** Review-Gated  
 **Date:** 2026-08-07  
-**Product:** [agentforge-v0.9-tool-calling-agent-actions.md](../../product/agentforge-v0.9-tool-calling-agent-actions.md)  
-**Specification:** [agentforge-v0.9-tool-calling-agent-actions-specification.md](../specifications/agentforge-v0.9-tool-calling-agent-actions-specification.md)
+**Product:** [agentprodready-v0.9-tool-calling-agent-actions.md](../../product/agentprodready-v0.9-tool-calling-agent-actions.md)  
+**Specification:** [agentprodready-v0.9-tool-calling-agent-actions-specification.md](../specifications/agentprodready-v0.9-tool-calling-agent-actions-specification.md)
 
 ---
 
@@ -43,7 +43,7 @@ Constitution → ADRs → Blueprints 02/03/04/07/08/09/15/16/17/18/20/22/23/24/2
 
 | Surface | Status | Action |
 |---|---|---|
-| `@agentforge/tool-framework` | **Exists** | Reuse; small amendment |
+| `@agentprodready/tool-framework` | **Exists** | Reuse; small amendment |
 | `ToolContract` / sideEffect / idempotency | Exists | Reuse taxonomy |
 | `AiToolCallHandoff` | Exists | Reuse |
 | `NormalizedToolCall` / `AiToolDefinition` | Exists | Reuse; OpenAI implement |
@@ -51,7 +51,7 @@ Constitution → ADRs → Blueprints 02/03/04/07/08/09/15/16/17/18/20/22/23/24/2
 | Host AI↔Tool loop | Missing | Productize |
 | Runtime toolCall checkpoints | Missing | Amend |
 | Human Interaction | Exists unwired | Fail-closed approval unless wait amendment approved |
-| New tool package | Not needed | Do not create `@agentforge/tools` |
+| New tool package | Not needed | Do not create `@agentprodready/tools` |
 
 ---
 

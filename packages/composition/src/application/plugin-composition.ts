@@ -1,4 +1,4 @@
-import type { ImplementationActivator } from '@agentforge/plugin-framework';
+import type { ImplementationActivator } from '@agentprodready/plugin-framework';
 import type { ServiceRegistration, ServiceToken } from '../contracts/composition.js';
 import { CompositionError } from '../errors/composition-error.js';
 import type { CompositionRoot } from './composition-root.js';

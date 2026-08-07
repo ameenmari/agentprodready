@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 25
 
@@ -13,7 +13,7 @@
 
 # 1. Purpose
 
-The Scheduler & Background Jobs Framework defines how AgentForge schedules and manages work that executes outside the immediate request lifecycle.
+The Scheduler & Background Jobs Framework defines how AgentProdReady schedules and manages work that executes outside the immediate request lifecycle.
 
 It standardizes:
 

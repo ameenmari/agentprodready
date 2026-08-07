@@ -1,4 +1,4 @@
-﻿import type { HealthResult } from '@agentforge/foundation';
+﻿import type { HealthResult } from '@agentprodready/foundation';
 import type {
   AiAdapterResolver,
   AiDiagnostics,

@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 13 is implemented and fully verified. `@agentforge/prompt-builder` deterministically transforms an immutable `ExecutionContextPackage`, normalized instructions, a configurable versioned policy, and a provider-neutral consumer profile into one immutable canonical `PromptPackage`.
+Blueprint 13 is implemented and fully verified. `@agentprodready/prompt-builder` deterministically transforms an immutable `ExecutionContextPackage`, normalized instructions, a configurable versioned policy, and a provider-neutral consumer profile into one immutable canonical `PromptPackage`.
 
 The builder owns presentation only. It preserves exact copied semantic values, provenance, security labels, execution identity, deterministic section ordering, logical presentation budgets, diagnostics, events, telemetry, and normalized errors. Production code contains no retrieval, Context Assembly, provider/model selection, provider request/message type, SDK, authentication, transport, provider tokenization, tool execution, Runtime scheduling, workflow interpretation, authorization decision, or persistence implementation.
 

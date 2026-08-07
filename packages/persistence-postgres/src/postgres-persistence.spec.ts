@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PersistenceError } from '@agentforge/persistence';
+import { PersistenceError } from '@agentprodready/persistence';
 import {
   loadPersistenceProviderSelection,
   loadPostgresPersistenceConfig,
@@ -29,10 +29,10 @@ describe('postgres persistence config', () => {
 
   it('loads DATABASE_URL with pool and SSL defaults', () => {
     const config = loadPostgresPersistenceConfig({
-      DATABASE_URL: 'postgres://agentforge:secret@127.0.0.1:5432/agentforge',
+      DATABASE_URL: 'postgres://agentprodready:secret@127.0.0.1:5432/agentprodready',
     });
     expect(config).toMatchObject({
-      connectionString: 'postgres://agentforge:secret@127.0.0.1:5432/agentforge',
+      connectionString: 'postgres://agentprodready:secret@127.0.0.1:5432/agentprodready',
       ssl: false,
       poolMin: 0,
       poolMax: 10,
@@ -73,10 +73,10 @@ describe('postgres persistence config', () => {
   });
 
   it('redacts credentials from connection strings', () => {
-    expect(redactConnectionString('postgres://agentforge:secret@127.0.0.1:5432/agentforge')).toContain(
+    expect(redactConnectionString('postgres://agentprodready:secret@127.0.0.1:5432/agentprodready')).toContain(
       '***',
     );
-    expect(redactConnectionString('postgres://agentforge:secret@127.0.0.1:5432/agentforge')).not.toContain(
+    expect(redactConnectionString('postgres://agentprodready:secret@127.0.0.1:5432/agentprodready')).not.toContain(
       'secret',
     );
   });

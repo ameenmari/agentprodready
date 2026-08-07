@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { CreateExecutionContextRequest, ExecutionContext } from '@agentforge/foundation';
+import type { CreateExecutionContextRequest, ExecutionContext } from '@agentprodready/foundation';
 import type {
   CapabilityExecutionControl,
   ExecutionCheckpoint,

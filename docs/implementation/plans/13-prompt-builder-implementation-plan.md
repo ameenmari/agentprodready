@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/prompt-builder` as a deterministic, provider-independent presentation service that transforms one immutable `ExecutionContextPackage` plus normalized instructions, a versioned prompt policy, and a provider-neutral consumer profile into one immutable canonical `PromptPackage`.
+Implement `@agentprodready/prompt-builder` as a deterministic, provider-independent presentation service that transforms one immutable `ExecutionContextPackage` plus normalized instructions, a versioned prompt policy, and a provider-neutral consumer profile into one immutable canonical `PromptPackage`.
 
 ## Work
 

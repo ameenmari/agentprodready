@@ -40,7 +40,7 @@ function percentile(values, p) {
 async function main() {
   const child = spawn(
     process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-    ['--filter', '@agentforge/platform-host', 'exec', 'node', 'dist/bootstrap-local.js'],
+    ['--filter', '@agentprodready/platform-host', 'exec', 'node', 'dist/bootstrap-local.js'],
     {
       env: {
         ...process.env,

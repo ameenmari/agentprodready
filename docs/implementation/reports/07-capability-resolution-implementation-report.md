@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 07 is implemented and verified in `@agentforge/capability-resolution`. It is the exclusive provider-independent selection authority and produces immutable capability bindings without instantiating or executing implementations.
+Blueprint 07 is implemented and verified in `@agentprodready/capability-resolution`. It is the exclusive provider-independent selection authority and produces immutable capability bindings without instantiating or executing implementations.
 
 ## Related Artifacts
 

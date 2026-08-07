@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 31
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Platform Governance, Versioning & Evolution Framework establishes the constitutional rules that govern how AgentForge evolves over time.
+The Platform Governance, Versioning & Evolution Framework establishes the constitutional rules that govern how AgentProdReady evolves over time.
 
 It defines:
 
@@ -66,7 +66,7 @@ Every blueprint must comply with the governance rules defined here.
 
 # 4. Governance Principles
 
-AgentForge evolution must preserve:
+AgentProdReady evolution must preserve:
 
 * Architectural consistency
 * Clear ownership
@@ -463,7 +463,7 @@ The platform evolves through governed, versioned, and reviewable changes.
 
 # 25. Chief Architect's Notes
 
-Blueprint 31 concludes the constitutional architecture of AgentForge.
+Blueprint 31 concludes the constitutional architecture of AgentProdReady.
 
 The constitutional governance flow is:
 
@@ -491,7 +491,7 @@ Compliance Verification
 
 This blueprint answers:
 
-> **"How does AgentForge evolve without compromising its architecture?"**
+> **"How does AgentProdReady evolve without compromising its architecture?"**
 
 It does **not** answer:
 
@@ -503,7 +503,7 @@ Implementation remains the responsibility of the engineering codebase governed b
 
 # 26. Architecture Completion Statement
 
-With Blueprint 31, the **AgentForge Architecture v1.0** is considered constitutionally complete.
+With Blueprint 31, the **AgentProdReady Architecture v1.0** is considered constitutionally complete.
 
 The architecture now defines:
 

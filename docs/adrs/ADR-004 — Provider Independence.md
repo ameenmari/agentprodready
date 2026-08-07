@@ -8,13 +8,13 @@
 
 # Context
 
-AgentForge integrates with numerous external technologies, including AI providers, databases, vector stores, messaging systems, identity providers, storage systems, and external tools.
+AgentProdReady integrates with numerous external technologies, including AI providers, databases, vector stores, messaging systems, identity providers, storage systems, and external tools.
 
 These technologies will evolve over time. New providers will emerge, existing providers may become obsolete, and deployment environments may require different implementations.
 
 If business logic or architectural frameworks depend directly on provider-specific technologies, replacing those providers becomes costly and risks introducing architectural coupling throughout the platform.
 
-AgentForge therefore requires provider independence as a core architectural principle.
+AgentProdReady therefore requires provider independence as a core architectural principle.
 
 ---
 
@@ -42,7 +42,7 @@ Provider independence provides:
 * Long-term maintainability.
 * Easier adoption of future technologies.
 
-This approach allows AgentForge to evolve independently of the technologies used to implement its capabilities.
+This approach allows AgentProdReady to evolve independently of the technologies used to implement its capabilities.
 
 ---
 
@@ -120,12 +120,12 @@ Each provider implements the same normalized platform contract while hiding tech
 
 > **External technologies are replaceable implementation details.**
 >
-> AgentForge architectural frameworks depend only on normalized public contracts, while provider implementations encapsulate all technology-specific behavior.
+> AgentProdReady architectural frameworks depend only on normalized public contracts, while provider implementations encapsulate all technology-specific behavior.
 
 ---
 
 # Final Statement
 
-Provider independence ensures that AgentForge evolves according to its own architecture rather than the capabilities or limitations of any particular vendor or technology.
+Provider independence ensures that AgentProdReady evolves according to its own architecture rather than the capabilities or limitations of any particular vendor or technology.
 
 By isolating provider-specific concerns behind stable public contracts, the platform remains portable, maintainable, and adaptable to future technological change without compromising its architectural integrity.

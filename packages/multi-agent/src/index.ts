@@ -1,5 +1,5 @@
-﻿import type {AgentLifecycleState} from '@agentforge/agent-framework';
-import type {AuthorityState} from '@agentforge/security';
+﻿import type {AgentLifecycleState} from '@agentprodready/agent-framework';
+import type {AuthorityState} from '@agentprodready/security';
 
 export interface CollaborationScope{readonly tenantId:string;readonly workspaceId?:string;readonly projectId?:string;}
 export type CollaborationRole='coordinator'|'planner'|'specialist'|'executor'|'reviewer'|'evaluator'|'approver'|'observer';

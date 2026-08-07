@@ -1,4 +1,4 @@
-# Contributing to AgentForge
+# Contributing to AgentProdReady
 
 ## Prerequisites
 

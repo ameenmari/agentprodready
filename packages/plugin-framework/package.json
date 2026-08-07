@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/plugin-framework",
+  "name": "@agentprodready/plugin-framework",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -15,7 +15,27 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@agentforge/foundation": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
     "@nestjs/common": "^11.1.6"
-  }
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
+  ]
 }

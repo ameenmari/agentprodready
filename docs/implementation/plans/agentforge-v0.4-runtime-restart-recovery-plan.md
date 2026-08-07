@@ -1,4 +1,4 @@
-# AgentForge v0.4 Runtime Restart & Recovery — Implementation Plan
+# AgentProdReady v0.4 Runtime Restart & Recovery — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.4.0  
@@ -11,7 +11,7 @@
 
 # Objective
 
-Add deterministic **process-restart recovery** to `@agentforge/runtime`, storing Runtime-owned checkpoints through existing Blueprint 24 persistence repositories (in-memory by default; PostgreSQL for durable proof), without transferring recovery ownership to Persistence, Workflow, Agent, or Composition.
+Add deterministic **process-restart recovery** to `@agentprodready/runtime`, storing Runtime-owned checkpoints through existing Blueprint 24 persistence repositories (in-memory by default; PostgreSQL for durable proof), without transferring recovery ownership to Persistence, Workflow, Agent, or Composition.
 
 ---
 
@@ -113,8 +113,8 @@ Pattern: same governance style as `24-persistence-async-io` — document amendme
 ```text
 docs/guides/runtime-recovery.md
 docs/implementation/amendments/04-runtime-execution-checkpoint-amendment.md
-docs/implementation/reports/agentforge-v0.4-runtime-restart-recovery-implementation-report.md
-docs/implementation/checklists/agentforge-v0.4-runtime-restart-recovery-checklist.md
+docs/implementation/reports/agentprodready-v0.4-runtime-restart-recovery-implementation-report.md
+docs/implementation/checklists/agentprodready-v0.4-runtime-restart-recovery-checklist.md
 packages/runtime/... checkpoint types + recover path + tests
 apps/platform-host/... composition wiring + optional boot recover
 scripts/runtime-recovery-probe.mjs (manual durability/restart proof)
@@ -137,8 +137,8 @@ README.md / docs/README.md / .env.example (recovery flags)
 ```text
 docs/adrs/**
 docs/blueprints/**
-@agentforge/persistence public contracts
-@agentforge/persistence-postgres schema (no new tables in v0.4)
+@agentprodready/persistence public contracts
+@agentprodready/persistence-postgres schema (no new tables in v0.4)
 OpenAI provider architecture
 Default deterministic AI path
 ```
@@ -205,5 +205,5 @@ Default for local reference durable mode: `ResumeIfSafe` + `FailIfExpired` + `Fa
 
 **Status:** Awaiting approval of companion specification.
 
-**Companion specification:** [agentforge-v0.4-runtime-restart-recovery-specification.md](../specifications/agentforge-v0.4-runtime-restart-recovery-specification.md)  
-**Companion product doc:** [agentforge-v0.4-runtime-restart-recovery.md](../../product/agentforge-v0.4-runtime-restart-recovery.md)
+**Companion specification:** [agentprodready-v0.4-runtime-restart-recovery-specification.md](../specifications/agentprodready-v0.4-runtime-restart-recovery-specification.md)  
+**Companion product doc:** [agentprodready-v0.4-runtime-restart-recovery.md](../../product/agentprodready-v0.4-runtime-restart-recovery.md)

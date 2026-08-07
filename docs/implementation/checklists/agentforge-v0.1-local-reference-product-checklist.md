@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Reference Product — Checklist
+# AgentProdReady v0.1 Local Reference Product — Checklist
 
 **Product Version:** 0.1.0  
 **Implementation Mode:** Autonomous  
@@ -32,20 +32,20 @@
 
 ## Framework Wiring
 
-- [x] `@agentforge/foundation` HealthService / ReadinessService
-- [x] `@agentforge/security` SecurityPlatform + static permit policy
-- [x] `@agentforge/agent-framework` AgentFramework + registry/lifecycle
-- [x] `@agentforge/runtime` RuntimeOrchestrator
-- [x] `@agentforge/planning` PlanningEngine + ReferenceAgentTaskDecomposer
-- [x] `@agentforge/workflow` RuntimeWorkflowAdapter
-- [x] `@agentforge/capability-resolution` CapabilityResolver
-- [x] `@agentforge/ai-provider` ReferenceAiProviderAdapter
-- [x] `@agentforge/composition` CompositionRoot execution scopes
-- [x] `@agentforge/event-bus` EventBus + InProcessEventTransport
-- [x] `@agentforge/audit` AuditPlatform ingestion
-- [x] `@agentforge/observability` InMemoryLoggingProvider + ConsoleLoggingProvider + in-memory metrics/traces
-- [x] `@agentforge/persistence` InMemoryPersistenceProvider
-- [x] `@agentforge/memory` InMemoryMemoryProvider
+- [x] `@agentprodready/foundation` HealthService / ReadinessService
+- [x] `@agentprodready/security` SecurityPlatform + static permit policy
+- [x] `@agentprodready/agent-framework` AgentFramework + registry/lifecycle
+- [x] `@agentprodready/runtime` RuntimeOrchestrator
+- [x] `@agentprodready/planning` PlanningEngine + ReferenceAgentTaskDecomposer
+- [x] `@agentprodready/workflow` RuntimeWorkflowAdapter
+- [x] `@agentprodready/capability-resolution` CapabilityResolver
+- [x] `@agentprodready/ai-provider` ReferenceAiProviderAdapter
+- [x] `@agentprodready/composition` CompositionRoot execution scopes
+- [x] `@agentprodready/event-bus` EventBus + InProcessEventTransport
+- [x] `@agentprodready/audit` AuditPlatform ingestion
+- [x] `@agentprodready/observability` InMemoryLoggingProvider + ConsoleLoggingProvider + in-memory metrics/traces
+- [x] `@agentprodready/persistence` InMemoryPersistenceProvider
+- [x] `@agentprodready/memory` InMemoryMemoryProvider
 
 ---
 
@@ -53,7 +53,7 @@
 
 - [x] `InProcessEventTransport` in `packages/event-bus/src/reference/`
 - [x] Delegates to `EventBus.publish` (no recursion)
-- [x] Exported from `@agentforge/event-bus` reference module
+- [x] Exported from `@agentprodready/event-bus` reference module
 
 ---
 
@@ -106,7 +106,7 @@
 
 - [x] `GET http://127.0.0.1:3000/health` → 200
 - [x] `GET http://127.0.0.1:3000/ready` → 200, `ready: true`
-- [x] `POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke` with local auth → echo `hello agentforge`, `adapterId: reference-ai`
+- [x] `POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke` with local auth → echo `hello agentprodready`, `adapterId: reference-ai`
 
 ---
 

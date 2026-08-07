@@ -1,5 +1,5 @@
-﻿import type { ExecutionContext,HealthResult } from '@agentforge/foundation';
-import type { NodeExecutionContract } from '@agentforge/workflow';
+﻿import type { ExecutionContext,HealthResult } from '@agentprodready/foundation';
+import type { NodeExecutionContract } from '@agentprodready/workflow';
 import { ExternalMemoryError, NormalizedMemoryError, type MemoryErrorCode } from './memory-errors.js';
 import { isCanonicalMemoryIdSegment } from './memory-id.js';
 import { NoopMemoryIndexProvider, type MemoryIndexProvider } from './memory-index-provider.js';

@@ -18,7 +18,7 @@ Queue, state, dead-letter, worker, Runtime handoff, events, audit, diagnostics, 
 
 ## Package
 
-- `@agentforge/scheduler`
+- `@agentprodready/scheduler`
 - `src/index.ts`: public contracts, builder/validator, scheduler, dispatcher, lifecycle, and errors.
 - `src/reference.ts`: in-memory queues/stores, local handoff worker, and reference providers.
 - `src/scheduler.spec.ts`: acceptance, contract, and integration tests.

@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge records numerous forms of historical information, including Platform Events, Memory Records, Audit Records, Evidence Packages, Evaluation Results, and other execution-derived artifacts.
+AgentProdReady records numerous forms of historical information, including Platform Events, Memory Records, Audit Records, Evidence Packages, Evaluation Results, and other execution-derived artifacts.
 
 These records represent facts that occurred at a specific point in time.
 
@@ -20,7 +20,7 @@ The platform therefore requires a clear distinction between immutable historical
 
 # Decision
 
-Historical facts within AgentForge are immutable once created.
+Historical facts within AgentProdReady are immutable once created.
 
 Changes in governance, classification, retention, legal hold, integrity verification, export, archival, or other lifecycle activities shall be represented as new governed facts rather than modifications to the original historical record.
 
@@ -143,6 +143,6 @@ New Historical Fact
 
 # Final Statement
 
-AgentForge preserves history as it occurred.
+AgentProdReady preserves history as it occurred.
 
 Historical records provide a trustworthy account of platform activity, while governance and lifecycle operations are represented as additional historical facts. This distinction protects auditability, reproducibility, evidence integrity, and long-term architectural consistency without preventing the platform from evolving its governance over time.

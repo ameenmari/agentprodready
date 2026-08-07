@@ -1,4 +1,4 @@
-# AgentForge v0.9 Tool Calling & Agent Actions — Implementation Report
+# AgentProdReady v0.9 Tool Calling & Agent Actions — Implementation Report
 
 **Product Version:** 0.9.0  
 **Status:** Implemented  
@@ -11,11 +11,11 @@
 
 | Package | Version |
 |---|---|
-| `@agentforge/platform-host` | 0.9.0 |
-| `@agentforge/tool-framework` | 0.2.0 |
-| `@agentforge/ai-provider` | 0.4.0 |
-| `@agentforge/ai-provider-openai` | 0.5.0 |
-| `@agentforge/runtime` | 0.6.0 |
+| `@agentprodready/platform-host` | 0.9.0 |
+| `@agentprodready/tool-framework` | 0.2.0 |
+| `@agentprodready/ai-provider` | 0.4.0 |
+| `@agentprodready/ai-provider-openai` | 0.5.0 |
+| `@agentprodready/runtime` | 0.6.0 |
 
 Agent Framework / Memory / Vector / Evaluation / Persistence: unchanged (no bump).
 
@@ -34,7 +34,7 @@ Agent Framework / Memory / Vector / Evaluation / Persistence: unchanged (no bump
 
 ## Tool Framework reuse proof
 
-- Reused `@agentforge/tool-framework` (Blueprint 09). **No** `@agentforge/tools` package.
+- Reused `@agentprodready/tool-framework` (Blueprint 09). **No** `@agentprodready/tools` package.
 - Extended only via Amendment A: `approvalRequirement`, `signal`, error codes, facts, reference tools.
 - Adapters remain behind Tool Framework; Runtime owns the bounded loop.
 
@@ -127,7 +127,7 @@ E2E + unit: one proposal, one authorize, one pre-tool, one adapter invoke, one p
 
 ## Architecture boundaries
 
-- `tool-framework` does not import `openai` / `@agentforge/ai-provider-openai`
+- `tool-framework` does not import `openai` / `@agentprodready/ai-provider-openai`
 - Runtime checkpoint contracts contain no OpenAI types
 - Security authorizes; does not execute adapters
 - Host does not call OpenAI SDK tool APIs directly

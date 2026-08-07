@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 28
 
@@ -13,7 +13,7 @@
 
 # 1. Purpose
 
-The CLI Framework defines the standardized command-line interface for developing, managing, deploying, and operating AgentForge.
+The CLI Framework defines the standardized command-line interface for developing, managing, deploying, and operating AgentProdReady.
 
 The CLI is a thin client over the platform APIs.
 
@@ -386,7 +386,7 @@ SDK
 API Framework
    │
    ▼
-AgentForge Platform
+AgentProdReady Platform
    │
    ▼
 CLI Output
@@ -394,11 +394,11 @@ CLI Output
 
 The CLI answers:
 
-> **"How do developers and operators interact with AgentForge from the command line?"**
+> **"How do developers and operators interact with AgentProdReady from the command line?"**
 
 It does **not** answer:
 
-> **"How does AgentForge execute platform logic?"**
+> **"How does AgentProdReady execute platform logic?"**
 
 That responsibility remains with the server-side architecture.
 

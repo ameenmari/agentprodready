@@ -68,7 +68,7 @@ export async function bootstrap(): Promise<void> {
   process.on('SIGINT', () => void shutdown('SIGINT'));
   process.on('SIGTERM', () => void shutdown('SIGTERM'));
   process.stderr.write(
-    `AgentForge local reference listening on http://${host.composition.config.host}:${String(host.composition.config.port)}\n`,
+    `AgentProdReady local reference listening on http://${host.composition.config.host}:${String(host.composition.config.port)}\n`,
   );
 }
 

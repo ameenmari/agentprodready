@@ -1,4 +1,4 @@
-# AgentForge Glossary
+# AgentProdReady Glossary
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This glossary defines the canonical meaning of architectural terms used throughout the AgentForge Engineering Blueprints.
+This glossary defines the canonical meaning of architectural terms used throughout the AgentProdReady Engineering Blueprints.
 
 Every term has exactly one authoritative meaning.
 
@@ -281,7 +281,7 @@ Used by:
 
 ## Platform Kernel
 
-The logical composition of AgentForge's foundational packages.
+The logical composition of AgentProdReady's foundational packages.
 
 The Platform Kernel is assembled by the Application Host and Composition Framework. It has no independent domain ownership. A physical bootstrap package, if required, remains thin and contains composition and startup wiring only.
 
@@ -360,7 +360,7 @@ Providers are technology-specific.
 
 ## Provider Adapter
 
-A provider-specific implementation that translates between AgentForge contracts and an external technology.
+A provider-specific implementation that translates between AgentProdReady contracts and an external technology.
 
 Adapters normalize:
 

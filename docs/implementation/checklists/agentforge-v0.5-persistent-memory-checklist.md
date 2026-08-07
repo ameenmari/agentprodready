@@ -1,4 +1,4 @@
-# AgentForge v0.5 Persistent Memory — Checklist
+# AgentProdReady v0.5 Persistent Memory — Checklist
 
 **Product Version:** 0.5.0  
 **Implementation Mode:** Autonomous  
@@ -6,8 +6,8 @@
 
 ## Contracts / architecture
 
-- [x] `PersistenceBackedMemoryProvider` in `@agentforge/memory`
-- [x] No `@agentforge/memory-postgres`
+- [x] `PersistenceBackedMemoryProvider` in `@agentprodready/memory`
+- [x] No `@agentprodready/memory-postgres`
 - [x] No `pg` / SQL import in Memory package
 - [x] Repository `memory-records`; entity id = `MemoryRecord.id`
 - [x] Persistence scope tenant-only `{ tenantId }`

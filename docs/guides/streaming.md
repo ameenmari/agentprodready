@@ -1,6 +1,6 @@
 # Streaming Responses (v0.8)
 
-AgentForge streams incremental AI output over **SSE** while Runtime remains the owner of cancellation, timeout, and terminal execution state.
+AgentProdReady streams incremental AI output over **SSE** while Runtime remains the owner of cancellation, timeout, and terminal execution state.
 
 ## Endpoint
 
@@ -58,7 +58,7 @@ curl -N -X POST "http://127.0.0.1:3000/v1/agents/reference-agent/invoke/stream" 
   -H "Authorization: LocalReference principalId=local-user;tenantId=local-tenant" \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
-  -d "{\"objective\":\"hello agentforge\"}"
+  -d "{\"objective\":\"hello agentprodready\"}"
 ```
 
 ## Configuration
@@ -90,7 +90,7 @@ Chunks are **not** checkpointed. Final capability result may be checkpointed at 
 ## Reference vs OpenAI
 
 - Reference AI: deterministic whitespace-preserving chunks; secret-free CI
-- OpenAI: opt-in streaming in `@agentforge/ai-provider-openai`; live calls not required in PR CI
+- OpenAI: opt-in streaming in `@agentprodready/ai-provider-openai`; live calls not required in PR CI
 
 ## Non-goals (v0.8)
 

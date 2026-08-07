@@ -6,7 +6,7 @@
 
 ## Package and Ownership
 
-`@agentforge/runtime` depends only on Foundation and Composition. Runtime owns operational lifecycle, state transitions, scheduling, concurrency, retry, timeout, cancellation, recovery, scope disposal, and coordination. It never implements planning, workflow, capability selection, provider/tool behavior, authorization decisions, observability processing, policy definition, or persistence strategy.
+`@agentprodready/runtime` depends only on Foundation and Composition. Runtime owns operational lifecycle, state transitions, scheduling, concurrency, retry, timeout, cancellation, recovery, scope disposal, and coordination. It never implements planning, workflow, capability selection, provider/tool behavior, authorization decisions, observability processing, policy definition, or persistence strategy.
 
 ## Public Model
 

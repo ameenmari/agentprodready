@@ -1,4 +1,4 @@
-# AgentForge v0.8 Streaming Responses — Implementation Report
+# AgentProdReady v0.8 Streaming Responses — Implementation Report
 
 **Product Version:** 0.8.0  
 **Status:** Implemented  
@@ -11,11 +11,11 @@
 
 | Package | Version |
 |---|---|
-| `@agentforge/platform-host` | 0.8.0 |
-| `@agentforge/ai-provider` | 0.3.0 |
-| `@agentforge/ai-provider-openai` | 0.4.0 |
-| `@agentforge/runtime` | 0.5.0 |
-| `@agentforge/agent-framework` | 0.2.0 |
+| `@agentprodready/platform-host` | 0.8.0 |
+| `@agentprodready/ai-provider` | 0.3.0 |
+| `@agentprodready/ai-provider-openai` | 0.4.0 |
+| `@agentprodready/runtime` | 0.5.0 |
+| `@agentprodready/agent-framework` | 0.2.0 |
 
 Memory / Vector / Evaluation / Persistence / API Framework: unchanged (no bump).
 
@@ -56,8 +56,8 @@ Streaming probe / e2e assert:
 - `AiExecutionRequest.signal?: AbortSignal`
 - Terminal events: `failed`, `cancelled` (plus existing `content` / `tool-call` / `usage` / `completed`)
 - Single-terminal rule enforced by `AiProviderFramework.stream`
-- Reference whitespace-preserving chunks (`hello` / ` ` / `agentforge`)
-- OpenAI streaming inside `@agentforge/ai-provider-openai` (SDK types not exported)
+- Reference whitespace-preserving chunks (`hello` / ` ` / `agentprodready`)
+- OpenAI streaming inside `@agentprodready/ai-provider-openai` (SDK types not exported)
 
 ---
 

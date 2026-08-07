@@ -1,16 +1,28 @@
-# Validation-only release workflow for tags matching v*.
-# Does NOT publish npm packages, push Docker registry images, or create GitHub Releases
-# unless a future explicit human-approved publish step is added.
-name: Release validate
+# Release workflow for tags matching v*.
+# Validation always runs.
+# npm publish is OPTIONAL and requires:
+#   - repository secret NPM_TOKEN
+#   - workflow_dispatch input publish_npm=true  OR  repository variable PUBLISH_NPM=true
+name: Release
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: 'Publish @agentprodready/* packages to npm (public)'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 jobs:
   validate:
-    name: Release gates (validate only)
+    name: Release gates (validate)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -18,6 +30,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
       - name: Enable pnpm
         run: |
           corepack enable
@@ -42,6 +55,8 @@ jobs:
         run: pnpm build
       - name: Smoke
         run: pnpm smoke
+      - name: npm publish audit
+        run: pnpm npm:audit
       - name: Dependency audit (informational)
         run: pnpm audit --prod || true
       - name: Docker build
@@ -50,19 +65,61 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           docker build \
             --build-arg PRODUCT_VERSION="$VERSION" \
-            -t "agentforge/platform-host:$VERSION" \
-            -t "agentforge/platform-host:${GITHUB_REF_NAME}" \
+            -t "agentprodready/platform-host:$VERSION" \
+            -t "agentprodready/platform-host:${GITHUB_REF_NAME}" \
             .
       - name: Docker smoke
         run: |
-          docker run --rm -d --name agentforge-release \
+          docker run --rm -d --name agentprodready-release \
             -p 3000:3000 \
             -e HOST=0.0.0.0 \
             -e PORT=3000 \
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
             -e PERSISTENCE_PROVIDER=in-memory \
-            -e AGENTFORGE_ALLOW_REFERENCE_AUTH=true \
-            "agentforge/platform-host:${VERSION}"
+            -e AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true \
+            "agentprodready/platform-host:${VERSION}"
           node scripts/docker-smoke.mjs http://127.0.0.1:3000
-          docker stop agentforge-release
+          docker stop agentprodready-release
+
+  publish-npm:
+    name: Publish npm packages (gated)
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # secrets cannot be safely tested in `if`; gate on explicit human intent only.
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_npm == 'true') ||
+      (github.event_name == 'push' && vars.PUBLISH_NPM == 'true')
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@agentprodready'
+      - name: Require NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "NPM_TOKEN secret is missing. Add a granular npm token with write access to @agentprodready."
+            exit 1
+          fi
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.1 --activate
+      - name: Install (frozen)
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm build
+      - name: Audit
+        run: pnpm npm:audit
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm npm:publish

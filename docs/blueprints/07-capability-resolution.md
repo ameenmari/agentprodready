@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 07
 Capability Resolution Framework
 
@@ -91,7 +91,7 @@ Instead it asks:
 
 The framework determines which implementation satisfies that capability according to platform configuration and resolution policy.
 
-This separation is a constitutional architectural principle of AgentForge.
+This separation is a constitutional architectural principle of AgentProdReady.
 
 7. Capability Model
 
@@ -487,7 +487,7 @@ The Runtime consumes Capability Bindings without knowledge of provider selection
 Resolution participates fully in logging, metrics, tracing, and diagnostics.
 23. Chief Architect's Notes
 
-The Capability Resolution Framework is one of the most strategically important components in AgentForge because it isolates intent from implementation. Every other subsystem asks for what it needs in terms of capabilities, never who should provide them. This abstraction allows providers to change, plugins to extend the platform, and tenants to customize behavior without requiring changes to Runtime, Workflow, or Planning.
+The Capability Resolution Framework is one of the most strategically important components in AgentProdReady because it isolates intent from implementation. Every other subsystem asks for what it needs in terms of capabilities, never who should provide them. This abstraction allows providers to change, plugins to extend the platform, and tenants to customize behavior without requiring changes to Runtime, Workflow, or Planning.
 
 Another deliberate decision is the separation of the Capability Registry, Provider Registry, Resolution Policy Engine, and Capability Resolver. Although these components collaborate closely, each has a single responsibility. Registries store information, the policy engine decides according to deterministic rules, and the resolver coordinates the process. This prevents the framework from becoming a monolithic service and keeps the architecture maintainable as new capabilities and providers are introduced.
 
@@ -654,8 +654,8 @@ This preserves the separation between Runtime orchestration and capability resol
 
 Chief Architect Amendment
 
-Blueprint 07 establishes one of AgentForge's most important architectural boundaries: resolution is not execution.
+Blueprint 07 establishes one of AgentProdReady's most important architectural boundaries: resolution is not execution.
 
 The Capability Resolution Framework determines who is capable of performing work, the Dependency Injection Platform determines how implementations are instantiated, and the Runtime determines when and under what execution policies that work is performed.
 
-Maintaining this separation is fundamental to AgentForge's provider-independent, plugin-first architecture. Future blueprints and implementations must preserve these boundaries and treat the Capability Resolver as the exclusive gateway between platform orchestration and specialized implementations.
+Maintaining this separation is fundamental to AgentProdReady's provider-independent, plugin-first architecture. Future blueprints and implementations must preserve these boundaries and treat the Capability Resolver as the exclusive gateway between platform orchestration and specialized implementations.

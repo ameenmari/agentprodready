@@ -3,7 +3,7 @@ import {
   DeterministicComparativeEvaluator,
   ExternalEvaluationError,
   WeightedCompositeEvaluator,
-} from '@agentforge/evaluation';
+} from '@agentprodready/evaluation';
 import { buildLocalReferenceComposition } from '../local-reference-composition.js';
 import { loadLocalReferenceConfig } from '../../config/local-reference-config.js';
 import {

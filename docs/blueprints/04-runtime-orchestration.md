@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 04
 Runtime Orchestration Engine
 
@@ -16,13 +16,13 @@ Runtime Engineers
 Cursor AI
 1. Purpose
 
-The Runtime Orchestration Engine is the central execution engine of AgentForge.
+The Runtime Orchestration Engine is the central execution engine of AgentProdReady.
 
 It owns the complete lifecycle of every platform execution, transforming an incoming request into a coordinated sequence of planning, workflow orchestration, capability resolution, provider execution, and result generation.
 
 The Runtime does not perform business logic itself. Instead, it coordinates the collaboration of specialized platform components while enforcing architectural policies such as execution scope, resilience, concurrency, cancellation, observability, and security.
 
-Every execution within AgentForge passes through the Runtime.
+Every execution within AgentProdReady passes through the Runtime.
 
 2. Responsibilities
 
@@ -499,7 +499,7 @@ Execution transitions to the appropriate terminal state.
 16. Asynchronous Execution
 16.1 Purpose
 
-AgentForge is designed as an asynchronous platform.
+AgentProdReady is designed as an asynchronous platform.
 
 The Runtime coordinates asynchronous operations while maintaining deterministic execution behavior.
 
@@ -645,8 +645,8 @@ Observability data is produced for every execution.
 The Runtime delegates work to specialized platform components without implementing their business logic.
 22. Chief Architect's Notes
 
-The Runtime Orchestration Engine is the operational center of AgentForge. Its purpose is not to perform business work, but to ensure that every execution proceeds through a controlled, deterministic, observable, and resilient lifecycle.
+The Runtime Orchestration Engine is the operational center of AgentProdReady. Its purpose is not to perform business work, but to ensure that every execution proceeds through a controlled, deterministic, observable, and resilient lifecycle.
 
 A deliberate architectural decision is to keep the Runtime focused on coordination rather than implementation. Planning determines what should happen, the Workflow Engine determines how work is organized, the Capability Resolver determines who performs the work, and Providers, Tools, Knowledge, and Memory perform the specialized tasks. The Runtime binds these independent systems into a single execution while remaining free of business-specific logic.
 
-By centralizing scheduling, concurrency, resilience, cancellation, and telemetry within the Runtime, AgentForge avoids duplicating execution behavior across subsystems. This produces a platform that is easier to maintain, easier to observe, and easier to evolve as new capabilities are introduced.
+By centralizing scheduling, concurrency, resilience, cancellation, and telemetry within the Runtime, AgentProdReady avoids duplicating execution behavior across subsystems. This produces a platform that is easier to maintain, easier to observe, and easier to evolve as new capabilities are introduced.

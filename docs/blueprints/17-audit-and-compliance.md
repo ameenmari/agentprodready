@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 17
 
@@ -25,7 +25,7 @@
 
 # 1. Purpose
 
-The Audit & Compliance Platform defines the standardized architecture through which AgentForge captures, preserves, queries, verifies, exports, and governs audit-relevant platform activity.
+The Audit & Compliance Platform defines the standardized architecture through which AgentProdReady captures, preserves, queries, verifies, exports, and governs audit-relevant platform activity.
 
 Its purpose is to transform authoritative platform facts into durable, traceable, tamper-evident Audit Records suitable for:
 
@@ -46,7 +46,7 @@ It does not make authorization decisions.
 
 It does not replace observability or general application logging.
 
-The Audit & Compliance Platform is AgentForge’s **durable accountability and compliance-evidence layer**.
+The Audit & Compliance Platform is AgentProdReady’s **durable accountability and compliance-evidence layer**.
 
 ---
 
@@ -3176,7 +3176,7 @@ Compliance or Legal Authority
 
 # 85. Chief Architect’s Final Notes
 
-Blueprint 17 establishes accountability as a first-class AgentForge platform capability.
+Blueprint 17 establishes accountability as a first-class AgentProdReady platform capability.
 
 The Audit Platform is not a copy of the Event Bus.
 

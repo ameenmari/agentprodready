@@ -1,4 +1,4 @@
-# AgentForge v0.9 Tool Calling & Agent Actions — Implementation Specification
+# AgentProdReady v0.9 Tool Calling & Agent Actions — Implementation Specification
 
 **Document Type:** Product Implementation Specification  
 **Product Version:** 0.9.0  
@@ -6,8 +6,8 @@
 **Status:** Implemented  
 **Implementation Mode:** Review-Gated  
 **Date:** 2026-08-07  
-**Product:** [agentforge-v0.9-tool-calling-agent-actions.md](../../product/agentforge-v0.9-tool-calling-agent-actions.md)  
-**Plan:** [agentforge-v0.9-tool-calling-agent-actions-plan.md](../plans/agentforge-v0.9-tool-calling-agent-actions-plan.md)
+**Product:** [agentprodready-v0.9-tool-calling-agent-actions.md](../../product/agentprodready-v0.9-tool-calling-agent-actions.md)  
+**Plan:** [agentprodready-v0.9-tool-calling-agent-actions-plan.md](../plans/agentprodready-v0.9-tool-calling-agent-actions-plan.md)
 
 ---
 
@@ -26,13 +26,13 @@ Authority: Constitution → ADRs → Blueprints 02/03/04/07/08/09/15/16/17/18/20
 # 2. Premises
 
 1. Blueprints 01–31 implemented; v0.1–v0.8 shipped.  
-2. `@agentforge/tool-framework@0.1.0` implements Blueprint 09 contracts (registry, validator, coordinator, plugin registration, reference adapter, `AiToolCallHandoff`).  
+2. `@agentprodready/tool-framework@0.1.0` implements Blueprint 09 contracts (registry, validator, coordinator, plugin registration, reference adapter, `AiToolCallHandoff`).  
 3. AI contracts already include `AiToolDefinition`, `NormalizedToolCall`, stream `tool-call`, finishReason `tool-calls`.  
 4. OpenAI adapter **rejects** tools; streaming fails closed on tool-calls finish.  
 5. Host capability path is AI chat (+ streaming) only; reference agent `maximumToolInvocations: 0`.  
 6. Runtime has `execute` / `executeStream`, AbortSignal, timeout, checkpoints (`pre-invoke` / `post-invoke` / `capabilityResult`), not a multi-toolCall loop.  
 7. Security owns authorization; `SecurityCondition` includes `allowed-tools` and `human-approval`.  
-8. `@agentforge/human-interaction` exists with `RuntimeInteractionPort.awaiting/completed`; not wired into AI tool loop.  
+8. `@agentprodready/human-interaction` exists with `RuntimeInteractionPort.awaiting/completed`; not wired into AI tool loop.  
 9. Audit category `tool-side-effect` already exists.  
 10. Default CI must remain secret-free.
 
@@ -70,7 +70,7 @@ Authority: Constitution → ADRs → Blueprints 02/03/04/07/08/09/15/16/17/18/20
 
 ## 4.1 Tool Framework — mostly sufficient
 
-Reuse `@agentforge/tool-framework`. Do **not** create `@agentforge/tools`.
+Reuse `@agentprodready/tool-framework`. Do **not** create `@agentprodready/tools`.
 
 ### Amendment A — Tool Framework (smallest)
 
@@ -99,7 +99,7 @@ Path: `docs/implementation/amendments/08-ai-provider-tool-calling-amendment.md`
 - OpenAI: send normalized tools; translate tool calls; continuation via Amendment B builder  
 - Streaming: assemble fragments by provider tool_call id → emit complete `NormalizedToolCall` only  
 - Incomplete JSON never crosses execution boundary  
-- SDK types remain inside `@agentforge/ai-provider-openai`  
+- SDK types remain inside `@agentprodready/ai-provider-openai`  
 - Chat execute without tools unchanged when `tools` absent  
 
 **Public contract additions (required — cannot hide in host):**
@@ -208,7 +208,7 @@ If **not** approved with v0.9 core: tools with `approvalRequirement: 'required'`
 
 # 5. Tool Ownership
 
-Constitutional owner: **Blueprint 09 / `@agentforge/tool-framework`**.
+Constitutional owner: **Blueprint 09 / `@agentprodready/tool-framework`**.
 
 Owns: descriptors, validation, normalized invoke/result/errors, side-effect/idempotency metadata, plugin registration surface, diagnostics/telemetry facts for tool interaction.
 
@@ -761,14 +761,14 @@ Tools contributed via existing `kind: 'tool'` contributions. Host may seed refer
 
 | Package | Role |
 |---|---|
-| `@agentforge/tool-framework` | Amend + reference tools |
-| `@agentforge/ai-provider` | Tool continuation helpers if needed |
-| `@agentforge/ai-provider-openai` | Tools + stream assembly |
-| `@agentforge/runtime` | Tool loop + checkpoints |
-| `@agentforge/platform-host` | Wire Cap/Security/loop/SSE/config/seed |
-| `@agentforge/human-interaction` | Unchanged unless Amendment D |
+| `@agentprodready/tool-framework` | Amend + reference tools |
+| `@agentprodready/ai-provider` | Tool continuation helpers if needed |
+| `@agentprodready/ai-provider-openai` | Tools + stream assembly |
+| `@agentprodready/runtime` | Tool loop + checkpoints |
+| `@agentprodready/platform-host` | Wire Cap/Security/loop/SSE/config/seed |
+| `@agentprodready/human-interaction` | Unchanged unless Amendment D |
 
-**Do not create** `@agentforge/tools` or `@agentforge/tool-provider-reference` unless packaging clarity demands a tiny reference split — prefer keep reference adapters in tool-framework (already has `ReferenceToolAdapter`).
+**Do not create** `@agentprodready/tools` or `@agentprodready/tool-provider-reference` unless packaging clarity demands a tiny reference split — prefer keep reference adapters in tool-framework (already has `ReferenceToolAdapter`).
 
 ---
 
@@ -852,7 +852,7 @@ New stop conditions: **Yes** — forbid per-call `pre-tool` before Security auth
 
 | Topic | Decision |
 |---|---|
-| Tool Framework exists? | **Yes** — `@agentforge/tool-framework` |
+| Tool Framework exists? | **Yes** — `@agentprodready/tool-framework` |
 | New tool package? | **No** |
 | Amendments | A Tool, B AI/OpenAI (+ continuation), C Runtime durable tool-turn (+ optional D) |
 | Descriptor | Existing `ToolContract` + `approvalRequirement` |

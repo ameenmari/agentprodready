@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 12
 Context Assembly Engine
 
@@ -10,7 +10,7 @@ Classification: Core Platform Blueprint
 
 1. Purpose
 
-The Context Assembly Engine defines the standardized architecture through which AgentForge composes execution-ready context from multiple platform information sources.
+The Context Assembly Engine defines the standardized architecture through which AgentProdReady composes execution-ready context from multiple platform information sources.
 
 Its purpose is to transform normalized platform information into a coherent Execution Context Package suitable for downstream consumers while remaining independent of prompt construction, AI providers, storage technologies, and retrieval implementations.
 
@@ -910,7 +910,7 @@ Blueprint 12 is complete when:
 
 # Chief Architect's Notes
 
-Blueprint 12 establishes one of AgentForge's most important architectural principles:
+Blueprint 12 establishes one of AgentProdReady's most important architectural principles:
 
 **Context is a first-class platform contract, not an AI artifact.**
 

@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/runtime` as the sole operational execution coordinator, using Foundation contexts and Composition scopes while keeping all specialized work behind future-owned ports.
+Implement `@agentprodready/runtime` as the sole operational execution coordinator, using Foundation contexts and Composition scopes while keeping all specialized work behind future-owned ports.
 
 ## Scope
 

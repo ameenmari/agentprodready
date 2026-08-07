@@ -1,4 +1,4 @@
-# AgentForge v0.6 Evaluation Framework — Implementation Specification
+# AgentProdReady v0.6 Evaluation Framework — Implementation Specification
 
 **Document Type:** Product Implementation Specification  
 **Product Version:** 0.6.0  
@@ -11,7 +11,7 @@
 
 # 1. Premises
 
-1. Blueprint 14 is **package-complete** (`@agentforge/evaluation@0.1.0`, Approved report/checklist).
+1. Blueprint 14 is **package-complete** (`@agentprodready/evaluation@0.1.0`, Approved report/checklist).
 2. v0.6 productizes Evaluation in `apps/platform-host` and lifecycle adapters.
 3. Evaluation Results are immutable descriptive facts (`descriptive: true`).
 4. No Evaluation, Runtime, Persistence, or Security public contract amendments are authorized.
@@ -175,7 +175,7 @@ Use existing `InMemoryHumanEvaluator`:
 3. Do not implement review UI.  
 4. Do not implement Runtime suspension checkpoints for human wait in v0.6 (known limitation).
 
-Optional bridge note: `@agentforge/human-interaction` already references evaluation types; full delivery integration is later.
+Optional bridge note: `@agentprodready/human-interaction` already references evaluation types; full delivery integration is later.
 
 ---
 
@@ -338,8 +338,8 @@ Map into `EvaluationError` / `ExternalEvaluationError` kinds already defined.
 | Docker/CI image tags | `0.6.0` |
 | Default verify/docker | evaluation disabled or in-memory only |
 | Additive postgres job | Optional for durable result store; not required if store tests use InMemoryPersistenceProvider in default verify |
-| `@agentforge/evaluation` version | Keep `0.1.0` if package source unchanged |
-| Host dependency | Add `@agentforge/evaluation` (and Prompt Builder if AI adapter needs it and not already present) |
+| `@agentprodready/evaluation` version | Keep `0.1.0` if package source unchanged |
+| Host dependency | Add `@agentprodready/evaluation` (and Prompt Builder if AI adapter needs it and not already present) |
 
 ---
 
@@ -350,7 +350,7 @@ Create/update after Autonomous approval:
 - `docs/guides/evaluation.md`
 - README / docs/README / `.env.example`
 - `packages/evaluation/README.md` (host wiring pointer)
-- Implementation report + checklist under `docs/implementation/{reports,checklists}/agentforge-v0.6-evaluation-framework-*`
+- Implementation report + checklist under `docs/implementation/{reports,checklists}/agentprodready-v0.6-evaluation-framework-*`
 
 Do not rewrite Blueprint 14 or ADRs.
 

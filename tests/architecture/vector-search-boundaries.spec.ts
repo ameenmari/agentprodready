@@ -21,15 +21,15 @@ describe('Vector search package import boundaries', () => {
     const sources = walk(memoryRoot).map((path) => readFileSync(path, 'utf8'));
     const joined = sources.join('\n');
     expect(joined).not.toMatch(/from ['"]openai['"]/u);
-    expect(joined).not.toMatch(/@agentforge\/ai-provider-openai/u);
+    expect(joined).not.toMatch(/@agentprodready\/ai-provider-openai/u);
     expect(joined).not.toMatch(/from ['"]pg['"]/u);
-    expect(joined).not.toMatch(/@agentforge\/vector-store-pgvector/u);
+    expect(joined).not.toMatch(/@agentprodready\/vector-store-pgvector/u);
   });
 
   it('context-assembly must not import vector-store, vector-store-pgvector, or pg', () => {
     const sources = walk(contextRoot).map((path) => readFileSync(path, 'utf8'));
     const joined = sources.join('\n');
-    expect(joined).not.toMatch(/@agentforge\/vector-store(?:-pgvector)?/u);
+    expect(joined).not.toMatch(/@agentprodready\/vector-store(?:-pgvector)?/u);
     expect(joined).not.toMatch(/from ['"]pg['"]/u);
   });
 });

@@ -1,4 +1,4 @@
-import type { EventPublisher, HealthResult, Telemetry } from '@agentforge/foundation';
+import type { EventPublisher, HealthResult, Telemetry } from '@agentprodready/foundation';
 import type { ImplementationActivator, PluginCandidate, PluginHookResolver, PluginLifecycleEvent, PluginPermissionAuthorizer, PluginRecord } from '../contracts/plugin.js';
 import { PluginError } from '../errors/plugin-error.js';
 import type { PluginDependencyGraph } from './dependency-graph.js';
@@ -58,7 +58,7 @@ export class PluginManager {
   public health(pluginId: string): HealthResult { const record = this.#required(pluginId); return Object.freeze({ name: `plugin:${pluginId}`, status: record.state === 'active' ? 'healthy' : record.state === 'failed' ? 'unhealthy' : 'degraded', details: { state: record.state } }); }
   #required(id: string): PluginRecord { const record = this.#records.get(id); if (record === undefined) throw new PluginError('PLUGIN_NOT_FOUND', `Plugin ${id} not found`); return record; }
   async #fact(candidate: PluginCandidate, type: string, state: PluginRecord['state']): Promise<void> {
-    this.telemetry.log(type, { pluginId: candidate.manifest.id }); this.telemetry.record('agentforge.plugin.lifecycle', 1);
+    this.telemetry.log(type, { pluginId: candidate.manifest.id }); this.telemetry.record('agentprodready.plugin.lifecycle', 1);
     const event: PluginLifecycleEvent = { eventId: `${type}:${candidate.manifest.id}:${candidate.manifest.version}`, type, version: 1, occurredAt: new Date().toISOString(), correlationId: `plugin:${candidate.manifest.id}`, payload: { pluginId: candidate.manifest.id, pluginVersion: candidate.manifest.version, state } };
     await this.events.publish(event);
   }

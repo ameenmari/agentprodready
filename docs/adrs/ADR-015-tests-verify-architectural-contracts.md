@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge is built around stable architectural contracts that separate frameworks, providers, and implementations.
+AgentProdReady is built around stable architectural contracts that separate frameworks, providers, and implementations.
 
 Testing implementation details alone does not guarantee architectural correctness.
 
@@ -18,7 +18,7 @@ The platform therefore requires testing to verify that implementations satisfy t
 
 # Decision
 
-Testing within AgentForge shall primarily verify architectural contracts and observable behavior rather than internal implementation details.
+Testing within AgentProdReady shall primarily verify architectural contracts and observable behavior rather than internal implementation details.
 
 Public contracts, ownership boundaries, normalized interfaces, and framework interactions should be validated through appropriate testing.
 
@@ -100,6 +100,6 @@ The following practices are prohibited:
 
 # Final Statement
 
-Testing is the mechanism through which AgentForge proves its architectural promises.
+Testing is the mechanism through which AgentProdReady proves its architectural promises.
 
 By focusing on public contracts and observable behavior, the platform supports safe refactoring, provider replacement, and long-term evolution without weakening the guarantees established by its blueprints and ADRs.

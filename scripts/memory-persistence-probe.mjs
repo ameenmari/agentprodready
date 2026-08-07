@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manual durability probe for AgentForge v0.5 Persistent Memory.
+ * Manual durability probe for AgentProdReady v0.5 Persistent Memory.
  *
  * Requires: pnpm build && pnpm db:up && pnpm db:migrate
  * Env: DATABASE_URL (optional if local defaults apply)

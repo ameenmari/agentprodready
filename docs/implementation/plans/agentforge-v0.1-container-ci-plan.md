@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Containerization and CI Baseline — Implementation Plan
+# AgentProdReady v0.1 Local Containerization and CI Baseline — Implementation Plan
 
 **Document Type:** Product Infrastructure Plan  
 **Product Version:** 0.1.0  
@@ -11,9 +11,9 @@
 
 # Objective
 
-Add the smallest Docker packaging and GitHub Actions CI baseline for the already verified AgentForge v0.1 Local Reference Product (`@agentforge/platform-host`), without changing blueprints, ADRs, public contracts, or application behavior.
+Add the smallest Docker packaging and GitHub Actions CI baseline for the already verified AgentProdReady v0.1 Local Reference Product (`@agentprodready/platform-host`), without changing blueprints, ADRs, public contracts, or application behavior.
 
-**Prerequisite (met):** Local product report/checklist are Complete; invoke response with `adapterId: reference-ai` verified; host deps include `@agentforge/memory`.
+**Prerequisite (met):** Local product report/checklist are Complete; invoke response with `adapterId: reference-ai` verified; host deps include `@agentprodready/memory`.
 
 The container must run the same product that currently passes `pnpm start` and `pnpm smoke`. CI must verify Node.js 24 LTS quality gates and a Docker health/readiness/invoke smoke against a running container.
 
@@ -35,9 +35,9 @@ This is an **infrastructure packaging** task, not a framework or product-feature
 | docs/blueprints/29-deployment-framework.md | Yes |
 | ADR-001 through ADR-015 | Yes |
 | docs/implementation/reviews/local-runnability-assessment.md | Yes |
-| docs/implementation/reports/agentforge-v0.1-local-reference-product-implementation-report.md | Yes |
-| docs/implementation/checklists/agentforge-v0.1-local-reference-product-checklist.md | Yes |
-| docs/implementation/specifications/agentforge-v0.1-local-reference-product-specification.md | Yes |
+| docs/implementation/reports/agentprodready-v0.1-local-reference-product-implementation-report.md | Yes |
+| docs/implementation/checklists/agentprodready-v0.1-local-reference-product-checklist.md | Yes |
+| docs/implementation/specifications/agentprodready-v0.1-local-reference-product-specification.md | Yes |
 | apps/platform-host/src/config/local-reference-config.ts | Yes |
 | apps/platform-host/src/smoke/smoke.ts | Yes |
 | apps/platform-host/src/bootstrap-local.ts | Yes |
@@ -49,9 +49,9 @@ This is an **infrastructure packaging** task, not a framework or product-feature
 
 ## In Scope
 
-1. Root `Dockerfile` that builds and runs `@agentforge/platform-host`
+1. Root `Dockerfile` that builds and runs `@agentprodready/platform-host`
 2. Root `.dockerignore`
-3. Optional root `compose.yaml` containing only AgentForge itself
+3. Optional root `compose.yaml` containing only AgentProdReady itself
 4. GitHub Actions workflow under `.github/workflows/`
 5. Environment/configuration strategy for the current defaults-only product
 6. Docker container smoke verification (health, readiness, invoke)
@@ -103,7 +103,7 @@ Place a single root `Dockerfile` at the repository root so the monorepo build co
 
 Exact copy strategy is specified in the companion specification. Preferred order:
 
-1. Attempt portable `pnpm deploy --filter=@agentforge/platform-host --prod` into a deploy directory after build.
+1. Attempt portable `pnpm deploy --filter=@agentprodready/platform-host --prod` into a deploy directory after build.
 2. If deploy cannot preserve workspace package resolution for `node apps/platform-host/dist/bootstrap-local.js`, fall back to copying the built monorepo runtime subset (`package.json` files, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `node_modules`, `apps/*/dist`, `packages/*/dist`, and required package metadata) without shipping TypeScript sources or tests.
 
 Both paths must run the same entrypoint as `pnpm start`.
@@ -120,7 +120,7 @@ Do **not** change `loadLocalReferenceConfig` defaults.
 
 ## D4 — compose.yaml
 
-Include a thin optional `compose.yaml` with a single `agentforge` service. Useful for local Docker UX and documenting ports/env. Not required for correctness; CI may `docker build` / `docker run` directly.
+Include a thin optional `compose.yaml` with a single `agentprodready` service. Useful for local Docker UX and documenting ports/env. Not required for correctness; CI may `docker build` / `docker run` directly.
 
 ## D5 — `.env.example`
 
@@ -137,10 +137,10 @@ One workflow file, two jobs:
 
 | Tag | When |
 |---|---|
-| `agentforge/platform-host:0.1.0` | Product version from root/`platform-host` `0.1.0` |
-| `agentforge/platform-host:0.1.0-<shortsha>` | Every CI build |
-| `agentforge/platform-host:sha-<shortsha>` | Immutable commit tag |
-| `agentforge/platform-host:latest` | Optional; only on default branch after successful `docker` job |
+| `agentprodready/platform-host:0.1.0` | Product version from root/`platform-host` `0.1.0` |
+| `agentprodready/platform-host:0.1.0-<shortsha>` | Every CI build |
+| `agentprodready/platform-host:sha-<shortsha>` | Immutable commit tag |
+| `agentprodready/platform-host:latest` | Optional; only on default branch after successful `docker` job |
 
 No registry push is required for v0.1 baseline approval.
 
@@ -166,15 +166,15 @@ compose.yaml
 .env.example
 .github/workflows/ci.yml
 scripts/docker-smoke.mjs
-docs/implementation/reports/agentforge-v0.1-container-ci-implementation-report.md
-docs/implementation/checklists/agentforge-v0.1-container-ci-checklist.md
+docs/implementation/reports/agentprodready-v0.1-container-ci-implementation-report.md
+docs/implementation/checklists/agentprodready-v0.1-container-ci-checklist.md
 ```
 
 ## Modify (after approval only, documentation-safe)
 
 ```text
 README.md                          ← optional: document Docker/CI commands (status tables may also be corrected)
-docs/product/agentforge-v0.1-local-reference-product.md  ← optional: link container/CI docs
+docs/product/agentprodready-v0.1-local-reference-product.md  ← optional: link container/CI docs
 ```
 
 ## Do Not Modify
@@ -223,16 +223,16 @@ Run exact Docker build/run/smoke commands and CI-equivalent local gates; produce
 
 ```powershell
 # Build
-docker build -t agentforge/platform-host:0.1.0 -t agentforge/platform-host:latest .
+docker build -t agentprodready/platform-host:0.1.0 -t agentprodready/platform-host:latest .
 
 # Run (HOST must be 0.0.0.0 for published-port access)
-docker run --rm -d --name agentforge-v01 `
+docker run --rm -d --name agentprodready-v01 `
   -p 3000:3000 `
   -e HOST=0.0.0.0 `
   -e PORT=3000 `
   -e LOG_LEVEL=info `
   -e REFERENCE_AGENT_ENABLED=true `
-  agentforge/platform-host:0.1.0
+  agentprodready/platform-host:0.1.0
 
 # Smoke against container (or: node scripts/docker-smoke.mjs http://127.0.0.1:3000)
 curl.exe -s http://127.0.0.1:3000/health
@@ -243,7 +243,7 @@ curl.exe -s -X POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke `
   -d "{\"objective\":\"docker-smoke\"}"
 
 # Stop
-docker stop agentforge-v01
+docker stop agentprodready-v01
 ```
 
 Compose equivalent:
@@ -337,7 +337,7 @@ No additional configuration framework wiring. No `.env` required for defaults-on
 |---|---|
 | Dockerfile for platform-host product | Image builds and starts bootstrap-local |
 | `.dockerignore` present | Build context excludes junk/secrets/`node_modules`/`dist`; keeps all TypeScript sources needed for `pnpm build` (including `*.spec.ts` and smoke sources) |
-| Optional compose only AgentForge | Single service; no DB/AI sidecars |
+| Optional compose only AgentProdReady | Single service; no DB/AI sidecars |
 | GitHub Actions CI | Workflow runs listed gates |
 | Env strategy documented | Spec + `.env.example` |
 | Docker smoke | Health/ready/invoke against container |
@@ -349,8 +349,8 @@ No additional configuration framework wiring. No `.env` required for defaults-on
 
 # Completion Artifacts (Post-Implementation)
 
-- `docs/implementation/reports/agentforge-v0.1-container-ci-implementation-report.md`
-- `docs/implementation/checklists/agentforge-v0.1-container-ci-checklist.md`
+- `docs/implementation/reports/agentprodready-v0.1-container-ci-implementation-report.md`
+- `docs/implementation/checklists/agentprodready-v0.1-container-ci-checklist.md`
 
 ---
 
@@ -396,4 +396,4 @@ Stop implementation and report if:
 
 **Status:** In Review — do not create infrastructure files until approved.
 
-**Companion specification:** [agentforge-v0.1-container-ci-specification.md](../specifications/agentforge-v0.1-container-ci-specification.md)
+**Companion specification:** [agentprodready-v0.1-container-ci-specification.md](../specifications/agentprodready-v0.1-container-ci-specification.md)

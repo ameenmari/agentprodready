@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous  
-**Affects:** `@agentforge/ai-provider` implementation contracts (not Blueprint 08 constitutional rewrite)  
-**Related:** [v0.8 Streaming Responses specification](../specifications/agentforge-v0.8-streaming-responses-specification.md)
+**Affects:** `@agentprodready/ai-provider` implementation contracts (not Blueprint 08 constitutional rewrite)  
+**Related:** [v0.8 Streaming Responses specification](../specifications/agentprodready-v0.8-streaming-responses-specification.md)
 
 ---
 

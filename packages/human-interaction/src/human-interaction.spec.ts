@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import type {AuthorizationDecision} from '@agentforge/security';
+import type {AuthorizationDecision} from '@agentprodready/security';
 import {AllApproversPolicy,buildHumanInteractionRequest,DeterministicResponseValidator,FirstValidResponsePolicy,HumanInteractionError,HumanInteractionFramework,InMemoryHumanInteractionAudit,InMemoryHumanInteractionDiagnostics,InMemoryHumanInteractionEvents,InMemoryInteractionStore,RecordingRuntimeInteractionPort,RecordingWorkflowInteractionPort,redactedView,ReferenceDeliveryAdapter,StaticParticipantResolver,type HumanInteractionRequest,type HumanResponse,type ResolvedParticipant} from './index.js';
 
 const created='2026-08-06T00:00:00.000Z',expires='2026-08-07T00:00:00.000Z',scope={tenantId:'tenant-1',workspaceId:'workspace-1',classification:'restricted' as const};

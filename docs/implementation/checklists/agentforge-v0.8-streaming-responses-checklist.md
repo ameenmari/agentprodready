@@ -1,4 +1,4 @@
-# AgentForge v0.8 Streaming Responses — Checklist
+# AgentProdReady v0.8 Streaming Responses — Checklist
 
 **Product Version:** 0.8.0  
 **Status:** Complete  

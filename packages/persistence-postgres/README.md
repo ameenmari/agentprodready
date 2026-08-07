@@ -1,4 +1,4 @@
-# @agentforge/persistence-postgres
+# @agentprodready/persistence-postgres
 
 PostgreSQL provider for Blueprint 24 persistence contracts (`pg@8.22.0`, no ORM).
 
@@ -19,7 +19,7 @@ Does **not** persist agents, audit, events, memory, knowledge, workflow engine s
 
 ```bash
 PERSISTENCE_PROVIDER=postgres
-DATABASE_URL=postgres://agentforge:agentforge@127.0.0.1:5432/agentforge
+DATABASE_URL=postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready
 ```
 
 Default product path remains `PERSISTENCE_PROVIDER=in-memory` (no database required).
@@ -38,7 +38,7 @@ Destructive local/test reset requires `PERSISTENCE_ALLOW_RESET=1`.
 
 ## Ownership
 
-- Persistence contracts: `@agentforge/persistence`
+- Persistence contracts: `@agentprodready/persistence`
 - Instantiation: Composition / platform-host
 - Operational retry/timeout/recovery: Runtime (not this package)
 - `pg` types never leave this package

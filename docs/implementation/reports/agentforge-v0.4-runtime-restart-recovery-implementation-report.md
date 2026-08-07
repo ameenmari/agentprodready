@@ -1,8 +1,8 @@
-# AgentForge v0.4 Runtime Restart & Recovery — Implementation Report
+# AgentProdReady v0.4 Runtime Restart & Recovery — Implementation Report
 
 **Product Version:** 0.4.0  
-**Runtime Package Version:** `@agentforge/runtime@0.4.0`  
-**Platform Host Version:** `@agentforge/platform-host@0.4.0`  
+**Runtime Package Version:** `@agentprodready/runtime@0.4.0`  
+**Platform Host Version:** `@agentprodready/platform-host@0.4.0`  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
 **Status:** Complete
@@ -42,7 +42,7 @@ v0.4 replaces write-only `ExecutionSnapshotPort` with canonical `ExecutionCheckp
 
 | Consumer | Update |
 |---|---|
-| `@agentforge/runtime` reference adapters | `InMemoryExecutionCheckpointPort` |
+| `@agentprodready/runtime` reference adapters | `InMemoryExecutionCheckpointPort` |
 | `apps/platform-host` composition | `PersistenceExecutionCheckpointStore`, boot recovery, config |
 | Runtime unit tests | Full lifecycle + recovery A–J |
 | CI | Additive job `runtime-recovery-postgres` |

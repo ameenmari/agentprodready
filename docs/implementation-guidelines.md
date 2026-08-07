@@ -1,10 +1,10 @@
-# AgentForge Implementation Guidelines
+# AgentProdReady Implementation Guidelines
 
 **Version:** 2.0
 
 ## 1. Purpose
 
-This document defines how engineering agents, including Cursor, must read and implement the AgentForge Engineering Blueprints.
+This document defines how engineering agents, including Cursor, must read and implement the AgentProdReady Engineering Blueprints.
 
 The blueprints are architectural contracts.
 
@@ -690,7 +690,7 @@ Write implementation report
 Proceed to the next blueprint
 ```
 
-This process is mandatory for maintaining architectural consistency throughout AgentForge.
+This process is mandatory for maintaining architectural consistency throughout AgentProdReady.
 
 
 # Implementation Execution Modes
@@ -1267,6 +1267,6 @@ They are not architectural ownership.
 
 # Final Statement
 
-AgentForge is implemented incrementally but architected holistically.
+AgentProdReady is implemented incrementally but architected holistically.
 
 Bootstrapping exists to enable early platform initialization without transferring architectural ownership from the frameworks that ultimately define and govern each cross-cutting concern.

@@ -1,6 +1,6 @@
 import { setTimeout as delay } from 'node:timers/promises';
-import { InMemoryMemoryProvider } from '@agentforge/memory';
-import { InMemoryPersistenceProvider } from '@agentforge/persistence';
+import { InMemoryMemoryProvider } from '@agentprodready/memory';
+import { InMemoryPersistenceProvider } from '@agentprodready/persistence';
 import { bootstrapLocalReferenceHost } from '../bootstrap-local.js';
 
 const authHeader = 'LocalReference principalId=local-user;tenantId=local-tenant';

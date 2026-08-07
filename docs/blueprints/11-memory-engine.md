@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 11
 Memory Engine
 
@@ -10,7 +10,7 @@ Classification: Core Platform Blueprint
 
 1. Purpose
 
-The Memory Engine defines the standardized architecture through which AgentForge captures, organizes, retrieves, and manages execution-derived information.
+The Memory Engine defines the standardized architecture through which AgentProdReady captures, organizes, retrieves, and manages execution-derived information.
 
 Its purpose is to provide a provider-independent memory capability that preserves relevant execution history, observations, interactions, and learned information while remaining independent of storage technologies, AI providers, and retrieval implementations.
 
@@ -168,7 +168,7 @@ The concrete storage implementation is intentionally left open.
 
 Chief Architect Notes
 
-The most important architectural decision in Blueprint 11 is that Memory is not conversation history. Conversation history is merely one producer of memories. By treating memory as execution-derived experience rather than chat transcripts, AgentForge can support long-running workflows, autonomous agents, human approvals, tool interactions, and future learning capabilities through a single architectural framework. This also preserves the clear constitutional boundary established in Blueprint 10: Knowledge represents what the platform knows from external sources; Memory represents what the platform has experienced through execution.
+The most important architectural decision in Blueprint 11 is that Memory is not conversation history. Conversation history is merely one producer of memories. By treating memory as execution-derived experience rather than chat transcripts, AgentProdReady can support long-running workflows, autonomous agents, human approvals, tool interactions, and future learning capabilities through a single architectural framework. This also preserves the clear constitutional boundary established in Blueprint 10: Knowledge represents what the platform knows from external sources; Memory represents what the platform has experienced through execution.
 
 
 ## Part II — Memory Capture, Organization & Lifecycle Architecture
@@ -656,7 +656,7 @@ The Memory Engine must not:
 
 Part II establishes the Memory Engine as a **lifecycle manager of experience**, not merely a persistence layer. A significant architectural decision is the introduction of **Memory Consolidation** as a first-class responsibility. Rather than allowing every subsystem to summarize, compress, or merge execution history independently, the platform centralizes these concerns within the Memory Engine. This ensures that long-term experience evolves consistently while preserving clear boundaries with the AI Provider Framework, Runtime, and Knowledge Engine.
 
-Equally important is the distinction between **capturing** an experience and **remembering** it. Capture is immediate and immutable; organization, classification, consolidation, indexing, and retention are subsequent lifecycle stages. This separation enables AgentForge to support future capabilities such as adaptive memory policies, compliance-driven retention, and long-term learning without changing the public contracts established by this blueprint.
+Equally important is the distinction between **capturing** an experience and **remembering** it. Capture is immediate and immutable; organization, classification, consolidation, indexing, and retention are subsequent lifecycle stages. This separation enables AgentProdReady to support future capabilities such as adaptive memory policies, compliance-driven retention, and long-term learning without changing the public contracts established by this blueprint.
 
 
 
@@ -1024,7 +1024,7 @@ Blueprint 11 is complete when:
 
 # Chief Architect's Notes
 
-Blueprint 11 completes AgentForge's memory architecture by separating **memory storage** from **memory recall**. The Memory Engine does not merely persist execution history—it transforms experience into a structured, searchable, and recallable platform capability. This distinction allows the platform to evolve retrieval strategies independently of storage technologies while maintaining stable public contracts.
+Blueprint 11 completes AgentProdReady's memory architecture by separating **memory storage** from **memory recall**. The Memory Engine does not merely persist execution history—it transforms experience into a structured, searchable, and recallable platform capability. This distinction allows the platform to evolve retrieval strategies independently of storage technologies while maintaining stable public contracts.
 
 The Memory Engine is intentionally complementary to the Knowledge Engine:
 
@@ -1099,7 +1099,7 @@ Memory creation and memory management are intentionally separate architectural c
 
 Capturing an experience produces an immutable Memory Record. Managing that memory over time—including classification, indexing, consolidation, retention, archival, and deletion—is a subsequent lifecycle responsibility governed by the Memory Engine but operationally executed under Runtime control.
 
-This distinction prevents the Memory Engine from evolving into an independent execution scheduler and preserves the Runtime as the sole authority for operational orchestration across the AgentForge platform.
+This distinction prevents the Memory Engine from evolving into an independent execution scheduler and preserves the Runtime as the sole authority for operational orchestration across the AgentProdReady platform.
 
 
 
@@ -1130,7 +1130,7 @@ This prohibition includes:
 
 These responsibilities remain exclusively under the Runtime and applicable platform policy frameworks.
 
-External databases, storage SDKs, search engines, vector stores, caches, and other infrastructure libraries that expose built-in retry, timeout, failover, recovery, or replay behavior must be configured so that they do not conflict with AgentForge's centralized execution policies.
+External databases, storage SDKs, search engines, vector stores, caches, and other infrastructure libraries that expose built-in retry, timeout, failover, recovery, or replay behavior must be configured so that they do not conflict with AgentProdReady's centralized execution policies.
 
 The Memory Engine may report the outcome of a memory operation through normalized contracts, but it must never independently determine whether an operation should be retried, recovered, redirected, or repeated.
 

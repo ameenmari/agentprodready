@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous (design was Review-Gated; implementation authorized)  
-**Affects:** `@agentforge/runtime` implementation contracts (not Blueprint 04 constitutional text)  
-**Related:** [v0.4 Runtime Restart & Recovery specification](../specifications/agentforge-v0.4-runtime-restart-recovery-specification.md)
+**Affects:** `@agentprodready/runtime` implementation contracts (not Blueprint 04 constitutional text)  
+**Related:** [v0.4 Runtime Restart & Recovery specification](../specifications/agentprodready-v0.4-runtime-restart-recovery-specification.md)
 
 ---
 
@@ -137,7 +137,7 @@ When `stage === 'post-invoke'`:
 `ResumeImmediately` at `pre-invoke` is an **explicitly unsafe / operator-selected** policy:
 
 - duplicate external side effects may occur;
-- AgentForge does **not** claim exactly-once external effects;
+- AgentProdReady does **not** claim exactly-once external effects;
 - Runtime still guarantees at-most-once **terminalization** via OCC.
 
 ---
@@ -173,7 +173,7 @@ Also cover malformed `post-invoke` (missing result) → fail/defer, no re-invoke
 | Dimension | Classification |
 |---|---|
 | Change type | Breaking pre-1.0 Runtime implementation-contract amendment |
-| Package | `@agentforge/runtime` (+ host checkpoint adapter) |
+| Package | `@agentprodready/runtime` (+ host checkpoint adapter) |
 | Persistence / Postgres schema | Unchanged |
 | Dual ports | None |
 

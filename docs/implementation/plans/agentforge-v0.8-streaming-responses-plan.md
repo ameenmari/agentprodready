@@ -1,11 +1,11 @@
-# AgentForge v0.8 Streaming Responses — Implementation Plan
+# AgentProdReady v0.8 Streaming Responses — Implementation Plan
 
 **Version:** 0.8.0  
 **Status:** Implemented  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
-**Product:** [agentforge-v0.8-streaming-responses.md](../../product/agentforge-v0.8-streaming-responses.md)  
-**Specification:** [agentforge-v0.8-streaming-responses-specification.md](../specifications/agentforge-v0.8-streaming-responses-specification.md)
+**Product:** [agentprodready-v0.8-streaming-responses.md](../../product/agentprodready-v0.8-streaming-responses.md)  
+**Specification:** [agentprodready-v0.8-streaming-responses-specification.md](../specifications/agentprodready-v0.8-streaming-responses-specification.md)
 
 ---
 
@@ -126,12 +126,12 @@ If `failed`/`cancelled` are emitted as `NormalizedAiStreamEvent` terminals: adap
 | WP | Scope | Packages |
 |---|---|---|
 | WP0 | Three amendment docs (AI, Runtime, **Agent handoff**) | docs |
-| WP1 | AI Provider stream hardening + single-terminal rule | `@agentforge/ai-provider` |
-| WP2 | Reference deterministic streaming | `@agentforge/ai-provider` |
-| WP3 | OpenAI streaming adapter | `@agentforge/ai-provider-openai` |
-| WP4 | Runtime `executeStream` + capability `stream` | `@agentforge/runtime` |
-| WP5 | Agent `invokeStream` + `AgentRuntimePort.acceptStream` | `@agentforge/agent-framework` |
-| WP6 | Host `acceptStream` + capability stream + SSE | `@agentforge/platform-host` |
+| WP1 | AI Provider stream hardening + single-terminal rule | `@agentprodready/ai-provider` |
+| WP2 | Reference deterministic streaming | `@agentprodready/ai-provider` |
+| WP3 | OpenAI streaming adapter | `@agentprodready/ai-provider-openai` |
+| WP4 | Runtime `executeStream` + capability `stream` | `@agentprodready/runtime` |
+| WP5 | Agent `invokeStream` + `AgentRuntimePort.acceptStream` | `@agentprodready/agent-framework` |
+| WP6 | Host `acceptStream` + capability stream + SSE | `@agentprodready/platform-host` |
 | WP7 | Tests including **single-execution** / duplicate-fact guards | packages + host |
 | WP8 | CI `test:streaming`, probe, docs, versions | root + docs |
 
@@ -164,11 +164,11 @@ API Framework: no mandatory rewrite.
 
 Expected bumps:
 
-- `@agentforge/ai-provider`  
-- `@agentforge/ai-provider-openai`  
-- `@agentforge/runtime`  
-- `@agentforge/agent-framework` ← **yes** (additive handoff)  
-- `@agentforge/platform-host` → product `0.8.0`
+- `@agentprodready/ai-provider`  
+- `@agentprodready/ai-provider-openai`  
+- `@agentprodready/runtime`  
+- `@agentprodready/agent-framework` ← **yes** (additive handoff)  
+- `@agentprodready/platform-host` → product `0.8.0`
 
 ---
 

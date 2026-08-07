@@ -1,6 +1,6 @@
 # Tool Calling & Agent Actions (v0.9)
 
-The model may **propose** a tool action. AgentForge alone decides whether it is allowed, how it executes, whether it may be retried, how side effects are classified, and how outcomes are recorded.
+The model may **propose** a tool action. AgentProdReady alone decides whether it is allowed, how it executes, whether it may be retried, how side effects are classified, and how outcomes are recorded.
 
 ```text
 AI → NormalizedToolCall
@@ -28,7 +28,7 @@ TOOL_MAX_RESULT_BYTES=65536
 
 | Concern | Owner |
 |---|---|
-| Descriptors, validation, normalize | `@agentforge/tool-framework` (Blueprint 09) |
+| Descriptors, validation, normalize | `@agentprodready/tool-framework` (Blueprint 09) |
 | Authorization | Security |
 | Selection / instantiation | Capability Resolution / Composition |
 | Loop, timeout, cancel, retry, recovery, checkpoints | Runtime |
@@ -93,4 +93,4 @@ pnpm test:tools
 
 ## OpenAI
 
-Native tool definitions and streamed tool-call assembly live in `@agentforge/ai-provider-openai`. Host never builds OpenAI `role=tool` messages — use `buildToolContinuationMessages`.
+Native tool definitions and streamed tool-call assembly live in `@agentprodready/ai-provider-openai`. Host never builds OpenAI `role=tool` messages — use `buildToolContinuationMessages`.

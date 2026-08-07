@@ -1,4 +1,4 @@
-# @agentforge/memory
+# @agentprodready/memory
 
 Blueprint 11 execution-derived memory capture, lifecycle, storage, retrieval, recall, and security boundary.
 
@@ -7,7 +7,7 @@ Blueprint 11 execution-derived memory capture, lifecycle, storage, retrieval, re
 | Provider | Role |
 |---|---|
 | `InMemoryMemoryProvider` | Process-local storage + search (default host) |
-| `PersistenceBackedMemoryProvider` | Storage + search over `@agentforge/persistence` repository `memory-records` |
+| `PersistenceBackedMemoryProvider` | Storage + search over `@agentprodready/persistence` repository `memory-records` |
 
 `PersistenceBackedMemoryProvider` does **not** import `pg` or SQL. Host selects Persistence separately (`PERSISTENCE_PROVIDER`).
 

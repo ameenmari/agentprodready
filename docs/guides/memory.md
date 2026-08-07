@@ -2,7 +2,7 @@
 
 **Version:** 0.7.0
 
-AgentForge Memory (Blueprint 11) owns capture, lifecycle, retrieval ranking, visibility, and security-label filtering. Storage is provider-independent.
+AgentProdReady Memory (Blueprint 11) owns capture, lifecycle, retrieval ranking, visibility, and security-label filtering. Storage is provider-independent.
 
 ## Ownership
 
@@ -40,7 +40,7 @@ pnpm db:migrate
 # Windows PowerShell
 $env:MEMORY_PROVIDER='persistent'
 $env:PERSISTENCE_PROVIDER='postgres'
-$env:DATABASE_URL='postgres://agentforge:agentforge@127.0.0.1:5432/agentforge'
+$env:DATABASE_URL='postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready'
 pnpm start
 ```
 
@@ -113,5 +113,5 @@ Operational logs/diagnostics use ids, counts, error codes, and operation names �
 
 ## Packages
 
-- `@agentforge/memory` — MemoryEngine, `InMemoryMemoryProvider`, `PersistenceBackedMemoryProvider`
-- `@agentforge/persistence` / `@agentforge/persistence-postgres` — storage only
+- `@agentprodready/memory` — MemoryEngine, `InMemoryMemoryProvider`, `PersistenceBackedMemoryProvider`
+- `@agentprodready/persistence` / `@agentprodready/persistence-postgres` — storage only

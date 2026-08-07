@@ -40,7 +40,7 @@ Normalized policies cover retention, payload size/reference, delivery guarantees
 
 ## Package Shape
 
-- `@agentforge/event-bus`
+- `@agentprodready/event-bus`
 - `src/index.ts`: public contracts, factories, facade, normalized errors.
 - `src/reference.ts`: replaceable in-memory stores, deterministic router, delivery engine, outbox transfer, telemetry/diagnostics/health helpers.
 - `src/event-bus.spec.ts`: contract, unit, and integration verification.

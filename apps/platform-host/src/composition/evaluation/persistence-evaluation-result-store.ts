@@ -1,11 +1,11 @@
-import type { EvaluationResult, EvaluationResultStore } from '@agentforge/evaluation';
-import { ExternalEvaluationError } from '@agentforge/evaluation';
+import type { EvaluationResult, EvaluationResultStore } from '@agentprodready/evaluation';
+import { ExternalEvaluationError } from '@agentprodready/evaluation';
 import type {
   PersistenceAuthorization,
   PersistenceProvider,
   PersistenceScope,
-} from '@agentforge/persistence';
-import { PersistenceError } from '@agentforge/persistence';
+} from '@agentprodready/persistence';
+import { PersistenceError } from '@agentprodready/persistence';
 
 const REPOSITORY = 'evaluation-results';
 

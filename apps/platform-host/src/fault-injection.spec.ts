@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { NormalizedAiError } from '@agentforge/ai-provider';
-import { isFallbackEligibleAiError } from '@agentforge/runtime';
+import { NormalizedAiError } from '@agentprodready/ai-provider';
+import { isFallbackEligibleAiError } from '@agentprodready/runtime';
 import { loadLocalReferenceConfig } from './config/local-reference-config.js';
 
 /**

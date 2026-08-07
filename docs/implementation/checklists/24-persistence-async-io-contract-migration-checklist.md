@@ -2,7 +2,7 @@
 
 **Document Version:** 1.0  
 **Amendment ID:** `24-persistence-async-io`  
-**Package Version:** `@agentforge/persistence@0.2.0`  
+**Package Version:** `@agentprodready/persistence@0.2.0`  
 **Implementation Mode:** Autonomous  
 **Reviewer:** Autonomous verification  
 **Review Date:** 2026-08-07  
@@ -61,7 +61,7 @@
 - [x] `pnpm build` passed.
 - [x] `pnpm smoke` passed.
 - [x] `pnpm verify` passed.
-- [x] Docker image `agentforge/platform-host:async-persistence` built.
+- [x] Docker image `agentprodready/platform-host:async-persistence` built.
 - [x] `node scripts/docker-smoke.mjs http://127.0.0.1:3000` passed.
 - [x] Container stopped cleanly.
 

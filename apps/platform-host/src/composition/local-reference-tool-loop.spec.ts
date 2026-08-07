@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
 import {
   CapabilityResolver,
   DeterministicResolutionPolicy,
   InMemoryResolutionDiagnostics,
   InMemoryResolutionEvents,
   NoopResolutionTelemetry,
-} from '@agentforge/capability-resolution';
+} from '@agentprodready/capability-resolution';
 import {
   AiProviderFramework,
   FactoryAiAdapterResolver,
@@ -18,9 +18,9 @@ import {
   type AiExecutionRequest,
   type AiProviderAdapter,
   type NormalizedAiResult,
-} from '@agentforge/ai-provider';
-import type { CapabilityExecutionControl, ToolLoopCheckpoint } from '@agentforge/runtime';
-import type { AuthorizationDecision, AuthorizationRequest, SecurityPlatform } from '@agentforge/security';
+} from '@agentprodready/ai-provider';
+import type { CapabilityExecutionControl, ToolLoopCheckpoint } from '@agentprodready/runtime';
+import type { AuthorizationDecision, AuthorizationRequest, SecurityPlatform } from '@agentprodready/security';
 import {
   AiToolCallHandoff,
   FactoryToolAdapterResolver,
@@ -39,8 +39,8 @@ import {
   referenceEchoContract,
   type ToolAdapter,
   type ToolContract,
-} from '@agentforge/tool-framework';
-import type { ExecutionContext } from '@agentforge/foundation';
+} from '@agentprodready/tool-framework';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { seedReferenceCapabilities, referenceResolutionConfiguration } from '../seed/reference-capabilities.seed.js';
 import { localAuthenticationEvidence, localPrincipal } from './local-reference-security.js';
 import { LOCAL_TENANT, LOCAL_USER, REFERENCE_AI_ID } from '../config/local-reference-config.js';
@@ -62,7 +62,7 @@ const aiBinding: CapabilityBinding = Object.freeze({
   capabilityContractVersion: '1',
   implementationId: REFERENCE_AI_ID,
   implementationVersion: '1.0.0',
-  provider: Object.freeze({ id: 'agentforge-local', pluginId: 'local-reference', contributionId: 'contribution:reference-ai' }),
+  provider: Object.freeze({ id: 'agentprodready-local', pluginId: 'local-reference', contributionId: 'contribution:reference-ai' }),
   source: 'default',
   diagnosticId: 'd-ai',
 });
@@ -534,7 +534,7 @@ describe('architecture boundaries (v0.9 tools)', () => {
     for (const file of await walk(root)) {
       const source = await readFile(file, 'utf8');
       expect(source).not.toMatch(/from ['"]openai['"]/u);
-      expect(source).not.toMatch(/@agentforge\/ai-provider-openai/u);
+      expect(source).not.toMatch(/@agentprodready\/ai-provider-openai/u);
     }
   });
 

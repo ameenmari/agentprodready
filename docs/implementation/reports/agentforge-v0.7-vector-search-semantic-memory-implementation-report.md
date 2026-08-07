@@ -1,8 +1,8 @@
-# AgentForge v0.7 Vector Search & Semantic Memory — Implementation Report
+# AgentProdReady v0.7 Vector Search & Semantic Memory — Implementation Report
 
 **Product Version:** 0.7.0  
-**Platform Host:** `@agentforge/platform-host@0.7.0`  
-**Packages:** `@agentforge/ai-provider@0.2.0`, `@agentforge/ai-provider-openai@0.3.0`, `@agentforge/memory@0.7.0`, `@agentforge/vector-store@0.1.0`, `@agentforge/vector-store-pgvector@0.1.0`  
+**Platform Host:** `@agentprodready/platform-host@0.7.0`  
+**Packages:** `@agentprodready/ai-provider@0.2.0`, `@agentprodready/ai-provider-openai@0.3.0`, `@agentprodready/memory@0.7.0`, `@agentprodready/vector-store@0.1.0`, `@agentprodready/vector-store-pgvector@0.1.0`  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
 **Status:** Complete
@@ -38,8 +38,8 @@ No Blueprint/ADR constitutional changes. No Context Assembly / Runtime / Persist
 
 ## Vector store
 
-- `@agentforge/vector-store` contracts + `InMemoryVectorStore`
-- `@agentforge/vector-store-pgvector` with profiles `reference-32` / `openai-1536-small`
+- `@agentprodready/vector-store` contracts + `InMemoryVectorStore`
+- `@agentprodready/vector-store-pgvector` with profiles `reference-32` / `openai-1536-small`
 - Table `memory_vector_index` + schema contract table; HNSW cosine
 - `pnpm db:migrate:vector` (not run at host startup)
 - Compose/CI image: `pgvector/pgvector:pg16`

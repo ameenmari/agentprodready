@@ -1,4 +1,4 @@
-# AgentForge v0.5 Persistent Memory — Implementation Specification
+# AgentProdReady v0.5 Persistent Memory — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 0.5.0  
@@ -100,13 +100,13 @@ class PersistenceBackedMemoryProvider
 }
 ```
 
-Package location: **`@agentforge/memory`** (new module under `packages/memory/src/`), depending on `@agentforge/persistence` only.
+Package location: **`@agentprodready/memory`** (new module under `packages/memory/src/`), depending on `@agentprodready/persistence` only.
 
 ## 3.2 Rejected alternatives
 
 | Alternative | Why rejected |
 |---|---|
-| `@agentforge/memory-postgres` + raw `pg` | Duplicates Persistence; Memory SQL forbidden |
+| `@agentprodready/memory-postgres` + raw `pg` | Duplicates Persistence; Memory SQL forbidden |
 | Memory logic inside `persistence-postgres` | Wrong ownership |
 | Host-only adapter without Memory package support | Weaker reuse; BP11 already depends on Persistence |
 

@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 02
 Plugin & Extension Framework
 
@@ -18,13 +18,13 @@ Cursor AI
 Third-Party Integrators
 1. Purpose
 
-The Plugin & Extension Framework provides the standardized mechanism for extending AgentForge without modifying the Platform Kernel.
+The Plugin & Extension Framework provides the standardized mechanism for extending AgentProdReady without modifying the Platform Kernel.
 
 It enables platform capabilities to evolve independently through deployable plugins that contribute providers, tools, workflow nodes, integrations, event handlers, and other extensible components.
 
 The framework ensures that extensions remain secure, version-compatible, discoverable, observable, and provider-independent while preserving the architectural integrity defined by Blueprint 01.
 
-Rather than treating plugins as optional add-ons, AgentForge considers extensibility a fundamental architectural capability.
+Rather than treating plugins as optional add-ons, AgentProdReady considers extensibility a fundamental architectural capability.
 
 Every non-core capability should be designed to be extensible through this framework.
 
@@ -832,7 +832,7 @@ Plugins participate in platform logging, metrics, tracing, and health monitoring
 Plugins operate through public contracts without direct Platform Kernel modification.
 25. Chief Architect's Notes
 
-The Plugin & Extension Framework is one of the defining characteristics of AgentForge. It enables the platform to evolve without requiring continual modification of the Platform Kernel.
+The Plugin & Extension Framework is one of the defining characteristics of AgentProdReady. It enables the platform to evolve without requiring continual modification of the Platform Kernel.
 
 A successful implementation should result in a Platform Kernel that remains small, stable, and focused on shared infrastructure, while most functional capabilities are introduced through plugins. This separation encourages modularity, simplifies testing, and allows organizations to customize deployments by selecting only the extensions they require.
 

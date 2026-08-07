@@ -1,4 +1,4 @@
-# AgentForge v0.8 Streaming Responses — Implementation Specification
+# AgentProdReady v0.8 Streaming Responses — Implementation Specification
 
 **Document Type:** Product Implementation Specification  
 **Product Version:** 0.8.0  
@@ -6,8 +6,8 @@
 **Status:** Implemented  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
-**Product:** [agentforge-v0.8-streaming-responses.md](../../product/agentforge-v0.8-streaming-responses.md)  
-**Plan:** [agentforge-v0.8-streaming-responses-plan.md](../plans/agentforge-v0.8-streaming-responses-plan.md)
+**Product:** [agentprodready-v0.8-streaming-responses.md](../../product/agentprodready-v0.8-streaming-responses.md)  
+**Plan:** [agentprodready-v0.8-streaming-responses-plan.md](../plans/agentprodready-v0.8-streaming-responses-plan.md)
 
 ---
 
@@ -26,12 +26,12 @@ Architectural authority order: Constitution → ADRs → Blueprints 04/08/13/15/
 # 2. Premises
 
 1. Blueprints 01–31 are implemented; v0.1–v0.7 productization is shipped.
-2. `@agentforge/ai-provider` already exposes chat `execute` + `stream` with `NormalizedAiStreamEvent`.
+2. `@agentprodready/ai-provider` already exposes chat `execute` + `stream` with `NormalizedAiStreamEvent`.
 3. Reference AI implements `stream`; OpenAI adapter throws “not supported in v0.2”.
 4. Runtime owns timeout/cancellation/recovery via `execute → Promise<RuntimeResult>` and AbortSignal; **no** stream delivery API exists.
 5. `CapabilityInvocationPort.invoke` is Promise-only.
 6. `AgentFramework.invoke` always calls `AgentRuntimePort.accept`; host `LocalReferenceRuntimePort.accept` awaits `RuntimeOrchestrator.execute` (execution starts inside accept).
-7. platform-host uses raw `node:http`; does not use `@agentforge/api-framework` for invoke.
+7. platform-host uses raw `node:http`; does not use `@agentprodready/api-framework` for invoke.
 8. API Framework already defines transport-independent `StreamFrame` and `TransportKind` including `'sse'`, but host does not consume it today.
 9. Default CI remains secret-free and deterministic.
 10. v0.8 is not tool calling, WebSockets, Runtime redesign, or stream replay.
@@ -126,7 +126,7 @@ Create before Autonomous code:
 
 `docs/implementation/amendments/04-runtime-streaming-execution-amendment.md`
 
-**Affects:** `@agentforge/runtime` implementation contracts (not Blueprint 04 constitutional rewrite).  
+**Affects:** `@agentprodready/runtime` implementation contracts (not Blueprint 04 constitutional rewrite).  
 **Blueprint amendment required?** No — streaming is a delivery mode of existing execution lifecycle.  
 **ADR required?** No.
 
@@ -266,7 +266,7 @@ Create before Autonomous code:
 
 `docs/implementation/amendments/18-agent-streaming-runtime-handoff-amendment.md`
 
-**Affects:** `@agentforge/agent-framework` implementation contracts (additive).  
+**Affects:** `@agentprodready/agent-framework` implementation contracts (additive).  
 **Blueprint 18 constitutional rewrite?** **No** — Runtime-coordinated acceptance already exists; streaming is an additive handoff mode.  
 **ADR required?** **No.**
 
@@ -517,7 +517,7 @@ Deterministic, no network.
 
 Given concatenated user text from request messages (text parts only), split into chunks:
 
-1. Tokenize by whitespace keeping separators: `"hello agentforge"` → `["hello", " ", "agentforge"]`  
+1. Tokenize by whitespace keeping separators: `"hello agentprodready"` → `["hello", " ", "agentprodready"]`  
 2. If empty input, emit single content part `""` then completed  
 3. Emit one `content` event per chunk (`part.type === 'text'`)  
 4. If `includeUsage`, emit deterministic usage `{ inputTokens: 1, outputTokens: chunkCount, totalTokens: 1 + chunkCount }`  
@@ -533,7 +533,7 @@ Final aggregated text = join of chunks (reproducible).
 
 # 12. OpenAI Streaming
 
-Implement inside `@agentforge/ai-provider-openai` only.
+Implement inside `@agentprodready/ai-provider-openai` only.
 
 | Concern | Design |
 |---|---|
@@ -1026,10 +1026,10 @@ Prove import boundaries:
 
 | Package | Must not import |
 |---|---|
-| `@agentforge/runtime` | Node HTTP / SSE wire types |
-| `@agentforge/ai-provider` | platform-host HTTP types |
-| `@agentforge/ai-provider-openai` | export OpenAI stream types from public index |
-| `@agentforge/agent-framework` | HTTP framing |
+| `@agentprodready/runtime` | Node HTTP / SSE wire types |
+| `@agentprodready/ai-provider` | platform-host HTTP types |
+| `@agentprodready/ai-provider-openai` | export OpenAI stream types from public index |
+| `@agentprodready/agent-framework` | HTTP framing |
 | `platform-host` | provider SDK retry/recovery ownership |
 
 ---
@@ -1055,7 +1055,7 @@ Document in guide:
 curl -N -X POST "$BASE/v1/agents/reference-agent/invoke/stream" \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
-  -d '{"input":"hello agentforge"}'
+  -d '{"input":"hello agentprodready"}'
 ```
 
 Plus a short Node `fetch` + `ReadableStream` reader example.  
@@ -1071,12 +1071,12 @@ Expected package bumps (only if surface changes):
 
 | Package | Likely |
 |---|---|
-| `@agentforge/ai-provider` | Yes (signal + terminal events + single-terminal rule) |
-| `@agentforge/ai-provider-openai` | Yes (stream impl) |
-| `@agentforge/runtime` | Yes (`executeStream` + capability stream) |
-| `@agentforge/agent-framework` | **Yes** (additive `invokeStream` + `acceptStream`) |
-| `@agentforge/platform-host` | Yes (SSE route + `acceptStream` impl) → product 0.8.0 |
-| `@agentforge/api-framework` | No (unused path) |
+| `@agentprodready/ai-provider` | Yes (signal + terminal events + single-terminal rule) |
+| `@agentprodready/ai-provider-openai` | Yes (stream impl) |
+| `@agentprodready/runtime` | Yes (`executeStream` + capability stream) |
+| `@agentprodready/agent-framework` | **Yes** (additive `invokeStream` + `acceptStream`) |
+| `@agentprodready/platform-host` | Yes (SSE route + `acceptStream` impl) → product 0.8.0 |
+| `@agentprodready/api-framework` | No (unused path) |
 | Memory / Evaluation / Vector / Persistence | No |
 
 Do not bump merely because v0.8 exists.

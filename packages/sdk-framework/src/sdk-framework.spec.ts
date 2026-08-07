@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ApiResponse, StreamFrame } from '@agentforge/api-framework';
+import type { ApiResponse, StreamFrame } from '@agentprodready/api-framework';
 import {
   HeaderAuthentication,
   ImmediateRetryScheduler,
@@ -23,7 +23,7 @@ class RetryableTestError extends Error {
   public readonly retryable = true;
 }
 const configuration: SdkConfiguration = {
-  endpoint: 'https://api.agentforge.dev',
+  endpoint: 'https://api.agentprodready.dev',
   sdkVersion: '0.1.0',
   clientVersion: '1.0.0',
   apiVersion: '1.1',

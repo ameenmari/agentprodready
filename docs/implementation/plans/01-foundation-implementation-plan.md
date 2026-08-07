@@ -8,7 +8,7 @@
 
 ## Objective
 
-Establish the executable AgentForge monorepo foundation: enforceable package boundaries, deterministic Application Host lifecycle, operational dependency injection, immutable execution context creation, foundational configuration and secret references, future-owned bootstrap ports, health/readiness reporting, and verification tooling.
+Establish the executable AgentProdReady monorepo foundation: enforceable package boundaries, deterministic Application Host lifecycle, operational dependency injection, immutable execution context creation, foundational configuration and secret references, future-owned bootstrap ports, health/readiness reporting, and verification tooling.
 
 ## Documents Reviewed
 
@@ -22,7 +22,7 @@ Blueprint 01 has no hard implementation dependency. The canonical graph permits 
 
 - pnpm workspace and strict TypeScript baseline;
 - ESLint, Prettier, Vitest, TypeDoc, and package-boundary verification;
-- `@agentforge/foundation` public contracts and reference implementation;
+- `@agentprodready/foundation` public contracts and reference implementation;
 - deterministic, dependency-aware startup and reverse-order shutdown;
 - failure rollback for partially initialized hosts;
 - immutable `ExecutionContext` produced only by `ExecutionContextFactory`;

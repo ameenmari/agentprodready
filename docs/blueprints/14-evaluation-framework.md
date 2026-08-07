@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 14
 
@@ -24,7 +24,7 @@
 
 # 1. Purpose
 
-The Evaluation Framework defines the standardized architecture through which AgentForge assesses the quality, correctness, relevance, safety, efficiency, and outcome of platform executions and their resulting artifacts.
+The Evaluation Framework defines the standardized architecture through which AgentProdReady assesses the quality, correctness, relevance, safety, efficiency, and outcome of platform executions and their resulting artifacts.
 
 Its purpose is to provide a provider-independent and extensible evaluation capability that can assess individual execution stages as well as complete end-to-end outcomes.
 
@@ -929,7 +929,7 @@ The Evaluation Framework does not decide how those artifacts are created. It ass
 
 A central design decision is that evaluation results remain descriptive rather than operational. The Evaluation Framework reports quality, correctness, safety, evidence, scores, and failures. The Runtime or other authorized policy owner decides whether an execution should continue, retry, recover, escalate, or fail.
 
-This prevents evaluation logic from becoming another orchestration engine while allowing quality governance to remain consistent across the entire AgentForge platform.
+This prevents evaluation logic from becoming another orchestration engine while allowing quality governance to remain consistent across the entire AgentProdReady platform.
 
 ---
 
@@ -2117,7 +2117,7 @@ Blueprint 14 is considered complete when:
 
 # 52. Chief Architect’s Notes
 
-The Evaluation Framework completes AgentForge’s quality-assessment architecture.
+The Evaluation Framework completes AgentProdReady’s quality-assessment architecture.
 
 Every major subsystem now produces immutable normalized artifacts that may be assessed independently:
 

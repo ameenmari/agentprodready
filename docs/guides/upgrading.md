@@ -19,7 +19,7 @@ The v0.9 → v1.0 path is **non-destructive**. Existing Persistence and vector d
 4. Optionally adopt v1.0 env:
    - `AI_ROUTING_MODE` / `AI_FALLBACK_PROVIDERS` for chat failover
    - `SHUTDOWN_TIMEOUT_MS`, `MAX_JSON_BODY_BYTES`
-   - Production: set `NODE_ENV=production` and ensure LocalReference auth is not sole auth (`AGENTFORGE_ALLOW_REFERENCE_AUTH` only for explicit demos)
+   - Production: set `NODE_ENV=production` and ensure LocalReference auth is not sole auth (`AGENTPRODREADY_ALLOW_REFERENCE_AUTH` only for explicit demos)
 5. Smoke: `/ready`, non-stream invoke, stream invoke; if tools/routing enabled, run `pnpm test:tools` / `pnpm test:routing` in CI.
 
 ## What does not migrate automatically

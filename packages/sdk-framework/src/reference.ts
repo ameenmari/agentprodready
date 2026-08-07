@@ -1,4 +1,4 @@
-import type { ApiResponse, StreamFrame } from '@agentforge/api-framework';
+import type { ApiResponse, StreamFrame } from '@agentprodready/api-framework';
 import type {
   SdkAuthenticationProvider,
   SdkCancellationSignal,

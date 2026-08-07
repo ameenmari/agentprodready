@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 08
 AI Provider Framework
 
@@ -10,7 +10,7 @@ Classification: Core Platform Blueprint
 
 1. Purpose
 
-The AI Provider Framework defines the provider-independent architecture through which AgentForge interacts with artificial intelligence services.
+The AI Provider Framework defines the provider-independent architecture through which AgentProdReady interacts with artificial intelligence services.
 
 Its purpose is to abstract vendor-specific implementations behind standardized capability contracts, enabling the platform to support multiple AI providers without coupling orchestration logic to any particular vendor, SDK, or model.
 
@@ -106,7 +106,7 @@ Plugin-Based Extensibility
 Deterministic Error Reporting
 Observability by Default
 
-These principles apply to all present and future AI providers integrated into AgentForge.
+These principles apply to all present and future AI providers integrated into AgentProdReady.
 
 8. Public Contract
 
@@ -118,7 +118,7 @@ Provider-specific SDK responses remain internal implementation details and must 
 
 Chief Architect's Notes
 
-Blueprint 08 introduces the first framework dedicated to a specific technology domain while preserving the architectural discipline established by the previous blueprints. The rest of AgentForge never communicates directly with AI vendors; it communicates only through normalized contracts. This design allows providers to be replaced, upgraded, or extended without affecting Planning, Workflow, Runtime, or Capability Resolution.
+Blueprint 08 introduces the first framework dedicated to a specific technology domain while preserving the architectural discipline established by the previous blueprints. The rest of AgentProdReady never communicates directly with AI vendors; it communicates only through normalized contracts. This design allows providers to be replaced, upgraded, or extended without affecting Planning, Workflow, Runtime, or Capability Resolution.
 
 The Normalized AI Result becomes the constitutional contract between AI execution and the remainder of the platform, just as the Capability Binding became the constitutional contract for provider selection in Blueprint 07.
 
@@ -332,7 +332,7 @@ Provider-specific metadata
 Vendor-specific finish reasons
 Proprietary response structures
 
-The remainder of AgentForge must remain completely isolated from vendor-specific APIs.
+The remainder of AgentProdReady must remain completely isolated from vendor-specific APIs.
 
 13.3 Conceptual Structure
 
@@ -354,7 +354,7 @@ The engineering team may refine this structure, but its purpose is to preserve s
 
 14. Provider Isolation
 
-Provider isolation is a constitutional architectural principle of AgentForge.
+Provider isolation is a constitutional architectural principle of AgentProdReady.
 
 No component outside the AI Provider Framework may depend upon:
 
@@ -374,9 +374,9 @@ This guarantees long-term vendor independence and enables providers to be replac
 
 Chief Architect Notes
 
-Part II establishes the contract layer of the AI Provider Framework. Rather than exposing AI vendors directly to the rest of the platform, AgentForge introduces two stable architectural contracts: the AI Execution Request as the framework's input and the Normalized AI Result as its output. Everything in between—provider adapters, SDKs, authentication mechanisms, request formats, and response formats—remains an internal concern of the framework.
+Part II establishes the contract layer of the AI Provider Framework. Rather than exposing AI vendors directly to the rest of the platform, AgentProdReady introduces two stable architectural contracts: the AI Execution Request as the framework's input and the Normalized AI Result as its output. Everything in between—provider adapters, SDKs, authentication mechanisms, request formats, and response formats—remains an internal concern of the framework.
 
-This approach reinforces the same architectural philosophy introduced in the previous blueprints: every subsystem should expose a small, stable public contract while encapsulating implementation details behind well-defined boundaries. By treating AI providers as interchangeable implementations behind standardized contracts, AgentForge preserves vendor independence without sacrificing extensibility or future evolution.
+This approach reinforces the same architectural philosophy introduced in the previous blueprints: every subsystem should expose a small, stable public contract while encapsulating implementation details behind well-defined boundaries. By treating AI providers as interchangeable implementations behind standardized contracts, AgentProdReady preserves vendor independence without sacrificing extensibility or future evolution.
 
 
 
@@ -526,7 +526,7 @@ Blueprint 08 establishes the constitutional boundary between AI provider interac
 
 The AI Provider Framework is responsible for communicating with AI providers and translating between platform contracts and vendor-specific implementations. It does not determine execution policies, instantiate implementations, execute tools, or perform orchestration.
 
-By separating resolution, instantiation, provider interaction, and operational execution into distinct architectural responsibilities, AgentForge preserves vendor independence, simplifies future provider integrations, and prevents orchestration concerns from leaking into the AI layer.
+By separating resolution, instantiation, provider interaction, and operational execution into distinct architectural responsibilities, AgentProdReady preserves vendor independence, simplifies future provider integrations, and prevents orchestration concerns from leaking into the AI layer.
 
 
 Appendix A.5 — Provider Adapter Execution Policy Boundary
@@ -548,7 +548,7 @@ concurrency decisions.
 
 These responsibilities belong exclusively to the Runtime and the Capability Resolution Framework.
 
-Provider SDKs that expose built-in retry, timeout, failover, or similar operational mechanisms must be configured so that they do not conflict with the centralized execution policies defined by AgentForge.
+Provider SDKs that expose built-in retry, timeout, failover, or similar operational mechanisms must be configured so that they do not conflict with the centralized execution policies defined by AgentProdReady.
 
 This preserves deterministic execution behavior and prevents provider-specific implementations from bypassing platform governance.
 
@@ -558,7 +558,7 @@ Operational execution policies are a constitutional responsibility of the Runtim
 
 Provider Adapters exist to communicate with AI providers—not to orchestrate execution.
 
-By prohibiting Provider Adapters from making execution-policy decisions, AgentForge ensures that retry behavior, cancellation, timeout enforcement, provider selection, and recovery remain centralized, observable, and consistent across all providers regardless of vendor-specific SDK capabilities.
+By prohibiting Provider Adapters from making execution-policy decisions, AgentProdReady ensures that retry behavior, cancellation, timeout enforcement, provider selection, and recovery remain centralized, observable, and consistent across all providers regardless of vendor-specific SDK capabilities.
 
 
 15. Acceptance Criteria

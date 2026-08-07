@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous  
-**Affects:** `@agentforge/memory` implementation contracts (not Blueprint 11 constitutional rewrite)  
-**Related:** [v0.7 Vector Search & Semantic Memory specification](../specifications/agentforge-v0.7-vector-search-semantic-memory-specification.md)
+**Affects:** `@agentprodready/memory` implementation contracts (not Blueprint 11 constitutional rewrite)  
+**Related:** [v0.7 Vector Search & Semantic Memory specification](../specifications/agentprodready-v0.7-vector-search-semantic-memory-specification.md)
 
 ---
 
@@ -162,7 +162,7 @@ Memory
   → provider
 ```
 
-`@agentforge/memory` must not import OpenAI package/SDK or provider-specific embedding types. See amendment `08-ai-provider-embedding`.
+`@agentprodready/memory` must not import OpenAI package/SDK or provider-specific embedding types. See amendment `08-ai-provider-embedding`.
 
 ---
 
@@ -188,4 +188,4 @@ When vector search is enabled, non-noop indexer applies §4–§5 strictly.
 
 ## 10. Status
 
-**Implemented** with `@agentforge/memory@0.7.0` INDEX/REMOVE ordering under AgentForge v0.7.
+**Implemented** with `@agentprodready/memory@0.7.0` INDEX/REMOVE ordering under AgentProdReady v0.7.

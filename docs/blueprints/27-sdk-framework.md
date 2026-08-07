@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 27
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The SDK Framework defines how external developers and applications interact with AgentForge through language-specific Software Development Kits (SDKs).
+The SDK Framework defines how external developers and applications interact with AgentProdReady through language-specific Software Development Kits (SDKs).
 
 It provides a consistent, provider-independent developer experience across supported programming languages.
 
@@ -406,7 +406,7 @@ Normalized API Request
 API Framework
       │
       ▼
-AgentForge Platform
+AgentProdReady Platform
       │
       ▼
 Normalized API Response
@@ -420,11 +420,11 @@ Application
 
 The SDK answers:
 
-> **"How do developers integrate with AgentForge from their preferred programming language?"**
+> **"How do developers integrate with AgentProdReady from their preferred programming language?"**
 
 It does **not** answer:
 
-> **"How does AgentForge internally execute requests?"**
+> **"How does AgentProdReady internally execute requests?"**
 
 That responsibility remains with the API Framework and Runtime.
 

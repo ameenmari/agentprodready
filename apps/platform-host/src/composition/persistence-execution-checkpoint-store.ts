@@ -1,20 +1,20 @@
 import type {
   ExecutionCheckpoint,
   ExecutionCheckpointPort,
-} from '@agentforge/runtime';
-import { CheckpointConflictError, stripConcurrencyFields } from '@agentforge/runtime';
+} from '@agentprodready/runtime';
+import { CheckpointConflictError, stripConcurrencyFields } from '@agentprodready/runtime';
 import type {
   PersistenceAuthorization,
   PersistenceProvider,
   PersistenceScope,
-} from '@agentforge/persistence';
-import { PersistenceError } from '@agentforge/persistence';
+} from '@agentprodready/persistence';
+import { PersistenceError } from '@agentprodready/persistence';
 
 const REPOSITORY = 'runtime-executions';
 
 /**
  * Host-owned adapter: Runtime ExecutionCheckpointPort → Blueprint 24 repository rows.
- * Runtime remains independent of @agentforge/persistence.
+ * Runtime remains independent of @agentprodready/persistence.
  */
 export class PersistenceExecutionCheckpointStore implements ExecutionCheckpointPort {
   public constructor(

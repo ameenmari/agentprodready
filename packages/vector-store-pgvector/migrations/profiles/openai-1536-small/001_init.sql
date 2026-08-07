@@ -1,4 +1,4 @@
--- AgentForge v0.7 vector index profile: openai-1536-small
+-- AgentProdReady v0.7 vector index profile: openai-1536-small
 
 CREATE EXTENSION IF NOT EXISTS vector;
 

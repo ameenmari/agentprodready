@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 29 is implemented as `@agentforge/deployment-framework`: immutable provider-independent definitions, standardized environments/topologies, lifecycle coordination, infrastructure-neutral scaling, Observability-owned readiness, deterministic upgrade/rollback, configuration and secret-reference injection, events, governance audit references, and diagnostics.
+Blueprint 29 is implemented as `@agentprodready/deployment-framework`: immutable provider-independent definitions, standardized environments/topologies, lifecycle coordination, infrastructure-neutral scaling, Observability-owned readiness, deterministic upgrade/rollback, configuration and secret-reference injection, events, governance audit references, and diagnostics.
 
 ## Delivered Artifacts
 

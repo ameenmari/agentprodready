@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/ai-provider",
+  "name": "@agentprodready/ai-provider",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,10 +12,26 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/foundation": "workspace:*",
-    "@agentforge/capability-resolution": "workspace:*"
+    "@agentprodready/foundation": "workspace:*",
+    "@agentprodready/capability-resolution": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

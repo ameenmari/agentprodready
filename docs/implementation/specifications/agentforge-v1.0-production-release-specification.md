@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Release — Implementation Specification
+# AgentProdReady v1.0 Production Release — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 1.0.0 (target)  
@@ -16,11 +16,11 @@ This specification freezes v1.0 contracts and behaviors. Production code must no
 
 | Package | Role |
 |---|---|
-| `@agentforge/ai-provider` | Chat/embedding contracts, framework, reference adapters |
-| `@agentforge/ai-provider-openai` | OpenAI chat + embedding (SDK private, `maxRetries: 0`) |
-| `@agentforge/capability-resolution` | Implementation selection |
-| `@agentforge/composition` | Instantiation |
-| `@agentforge/runtime` | Operational execution |
+| `@agentprodready/ai-provider` | Chat/embedding contracts, framework, reference adapters |
+| `@agentprodready/ai-provider-openai` | OpenAI chat + embedding (SDK private, `maxRetries: 0`) |
+| `@agentprodready/capability-resolution` | Implementation selection |
+| `@agentprodready/composition` | Instantiation |
+| `@agentprodready/runtime` | Operational execution |
 
 ### 1.2 Chat contract
 
@@ -298,7 +298,7 @@ Full table lands in `docs/guides/configuration.md` during implementation. Normat
 
 When `NODE_ENV=production`:
 
-1. LocalReference auth as **sole** HTTP auth → **startup fail** unless `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (demo escape hatch; documented unsafe).  
+1. LocalReference auth as **sole** HTTP auth → **startup fail** unless `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (demo escape hatch; documented unsafe).  
 2. Log warn if `POSTGRES_SSL=false` with non-local DB URL.  
 3. Default log level ≥ `info`.  
 
@@ -479,7 +479,7 @@ No broad Tool REST API.
 
 **Align stable public packages to 1.0.0** at the v1.0.0 tag for:
 
-`foundation`, `plugin-framework`, `composition`, `runtime`, `capability-resolution`, `ai-provider`, `ai-provider-openai`, `tool-framework`, `memory`, `evaluation`, `security`, `event-bus`, `audit`, `observability`, `persistence`, `persistence-postgres`, `vector-store`, `vector-store-pgvector`, `agent-framework`, `platform-host` (product), and other shipped `@agentforge/*` packages that form the supported surface.
+`foundation`, `plugin-framework`, `composition`, `runtime`, `capability-resolution`, `ai-provider`, `ai-provider-openai`, `tool-framework`, `memory`, `evaluation`, `security`, `event-bus`, `audit`, `observability`, `persistence`, `persistence-postgres`, `vector-store`, `vector-store-pgvector`, `agent-framework`, `platform-host` (product), and other shipped `@agentprodready/*` packages that form the supported surface.
 
 Rationale: first stable public release should not leave consumers on `0.x` for core contracts.
 

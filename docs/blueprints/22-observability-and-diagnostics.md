@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 # Engineering Blueprint 22
 
@@ -12,7 +12,7 @@
 
 # 1. Purpose
 
-The Observability & Diagnostics Framework provides a unified, provider-independent mechanism for understanding the health, behavior, and execution of AgentForge.
+The Observability & Diagnostics Framework provides a unified, provider-independent mechanism for understanding the health, behavior, and execution of AgentProdReady.
 
 It standardizes:
 
@@ -365,7 +365,7 @@ Owns:
 
 # 20. Chief Architect's Notes
 
-Blueprint 22 gives AgentForge operational visibility without coupling the platform to any specific observability vendor.
+Blueprint 22 gives AgentProdReady operational visibility without coupling the platform to any specific observability vendor.
 
 It answers:
 

@@ -1,16 +1,16 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { CompositionRoot } from '@agentforge/composition';
+import { CompositionRoot } from '@agentprodready/composition';
 import {
   loadPostgresPersistenceConfig,
   PostgresPersistenceProvider,
-} from '@agentforge/persistence-postgres';
+} from '@agentprodready/persistence-postgres';
 import {
   DEFAULT_RECOVERY_POLICY,
   InMemoryRuntimeEventPublisher,
   RuntimeOrchestrator,
   StaticRuntimePolicyProvider,
   type ExecutionCheckpoint,
-} from '@agentforge/runtime';
+} from '@agentprodready/runtime';
 import { PersistenceExecutionCheckpointStore } from './persistence-execution-checkpoint-store.js';
 
 const scope = Object.freeze({ tenantId: 'recovery-tenant', workspaceId: 'recovery-workspace' });

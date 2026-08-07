@@ -3,7 +3,7 @@ import {
   freeze,
   type PersistenceSnapshot,
   type SnapshotStore,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { withPostgresErrors, translatePostgresError } from './postgres-error-translation.js';
 import type { PostgresPool } from './pool.js';
 import { fromJson, mapEntityRow, toJson } from './serialize.js';

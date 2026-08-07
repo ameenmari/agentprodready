@@ -1,4 +1,4 @@
-# AgentForge
+# AgentProdReady
 
 > **A Modular, Provider-Independent AI Agent Framework**
 
@@ -35,7 +35,7 @@ Production notes: [docs/guides/production-deployment.md](docs/guides/production-
 
 # Vision
 
-AgentForge is a provider-independent framework for building intelligent agents, workflows, AI applications, automation systems, and multi-agent platforms.
+AgentProdReady is a provider-independent framework for building intelligent agents, workflows, AI applications, automation systems, and multi-agent platforms.
 
 Its architecture separates planning, workflow interpretation, runtime execution, provider interaction, security, persistence, observability, and governance into independent, replaceable platform frameworks.
 
@@ -45,7 +45,7 @@ The goal is to create a long-lived engineering platform where individual technol
 
 # Philosophy
 
-AgentForge follows several constitutional principles.
+AgentProdReady follows several constitutional principles.
 
 * Single Responsibility
 * Explicit Ownership
@@ -65,7 +65,7 @@ No framework silently assumes responsibilities that belong to another.
 
 # Architecture
 
-AgentForge is composed of 31 engineering blueprints.
+AgentProdReady is composed of 31 engineering blueprints.
 
 These blueprints collectively define the platform architecture.
 
@@ -138,7 +138,7 @@ Platform Governance
 # Repository Structure
 
 ```text
-AgentForge/
+AgentProdReady/
 │
 ├── docs/
 │   ├── blueprints/
@@ -282,7 +282,7 @@ Completed blueprints become stable dependencies for subsequent implementations.
 
 # Architectural Principles
 
-AgentForge follows these permanent principles.
+AgentProdReady follows these permanent principles.
 
 * Every framework owns exactly one architectural concern.
 * Runtime exclusively owns operational execution.
@@ -317,13 +317,24 @@ Architectural changes should never be introduced directly into the implementatio
 
 # License
 
-License information will be added as the project enters public release.
+MIT — see [LICENSE](LICENSE).
+
+# npm packages
+
+Public install (after you publish once to the npm registry):
+
+```bash
+npm install @agentprodready/agent-framework
+```
+
+Setup, scope ownership (`@agentprodready`), dry-run, and gated publish steps:
+[docs/guides/npm-distribution.md](docs/guides/npm-distribution.md).
 
 ---
 
 # Project Status
 
-**AgentForge v1.0**
+**AgentProdReady v1.0**
 
 **Architecture:** Approved
 

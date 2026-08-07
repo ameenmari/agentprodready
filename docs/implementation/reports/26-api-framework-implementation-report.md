@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 26 is implemented as `@agentforge/api-framework`: a transport-independent API boundary with route and schema contracts, deterministic version negotiation, separate authentication and Security authorization ports, request and response normalization, visibility filtering, rate limiting, streaming frames, lifecycle facts, governance audit references, and replaceable transport adapters. It delegates domain work and does not own Runtime execution, Workflow logic, Capability Resolution, event transport, or Audit persistence.
+Blueprint 26 is implemented as `@agentprodready/api-framework`: a transport-independent API boundary with route and schema contracts, deterministic version negotiation, separate authentication and Security authorization ports, request and response normalization, visibility filtering, rate limiting, streaming frames, lifecycle facts, governance audit references, and replaceable transport adapters. It delegates domain work and does not own Runtime execution, Workflow logic, Capability Resolution, event transport, or Audit persistence.
 
 ## Delivered Artifacts
 

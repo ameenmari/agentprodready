@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/memory",
+  "name": "@agentprodready/memory",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,17 +12,33 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/ai-provider": "workspace:*",
-    "@agentforge/capability-resolution": "workspace:*",
-    "@agentforge/foundation": "workspace:*",
-    "@agentforge/persistence": "workspace:*",
-    "@agentforge/vector-store": "workspace:*",
-    "@agentforge/workflow": "workspace:*"
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/capability-resolution": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@agentprodready/persistence": "workspace:*",
+    "@agentprodready/vector-store": "workspace:*",
+    "@agentprodready/workflow": "workspace:*"
   },
   "devDependencies": {
-    "@agentforge/persistence-postgres": "workspace:*"
+    "@agentprodready/persistence-postgres": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

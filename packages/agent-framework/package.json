@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/agent-framework",
+  "name": "@agentprodready/agent-framework",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,25 +12,41 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/ai-provider": "workspace:*",
-    "@agentforge/audit": "workspace:*",
-    "@agentforge/capability-resolution": "workspace:*",
-    "@agentforge/composition": "workspace:*",
-    "@agentforge/context-assembly": "workspace:*",
-    "@agentforge/evaluation": "workspace:*",
-    "@agentforge/event-bus": "workspace:*",
-    "@agentforge/foundation": "workspace:*",
-    "@agentforge/knowledge": "workspace:*",
-    "@agentforge/memory": "workspace:*",
-    "@agentforge/planning": "workspace:*",
-    "@agentforge/plugin-framework": "workspace:*",
-    "@agentforge/prompt-builder": "workspace:*",
-    "@agentforge/runtime": "workspace:*",
-    "@agentforge/security": "workspace:*",
-    "@agentforge/tool-framework": "workspace:*",
-    "@agentforge/workflow": "workspace:*"
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/audit": "workspace:*",
+    "@agentprodready/capability-resolution": "workspace:*",
+    "@agentprodready/composition": "workspace:*",
+    "@agentprodready/context-assembly": "workspace:*",
+    "@agentprodready/evaluation": "workspace:*",
+    "@agentprodready/event-bus": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@agentprodready/knowledge": "workspace:*",
+    "@agentprodready/memory": "workspace:*",
+    "@agentprodready/planning": "workspace:*",
+    "@agentprodready/plugin-framework": "workspace:*",
+    "@agentprodready/prompt-builder": "workspace:*",
+    "@agentprodready/runtime": "workspace:*",
+    "@agentprodready/security": "workspace:*",
+    "@agentprodready/tool-framework": "workspace:*",
+    "@agentprodready/workflow": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

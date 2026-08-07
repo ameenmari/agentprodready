@@ -2,9 +2,9 @@
 
 **Version:** 1.0
 
-Welcome to the **AgentForge Architectural Decision Records (ADRs)**.
+Welcome to the **AgentProdReady Architectural Decision Records (ADRs)**.
 
-This directory contains the permanent cross-cutting architectural decisions that govern the design and evolution of the AgentForge platform.
+This directory contains the permanent cross-cutting architectural decisions that govern the design and evolution of the AgentProdReady platform.
 
 Unlike Engineering Blueprints, which define the architecture of individual platform components, ADRs document the constitutional decisions that apply across the entire platform.
 
@@ -39,7 +39,7 @@ ADRs define constitutional architecture rather than implementation details.
 
 # Architectural Authority
 
-The architectural authority order for AgentForge is:
+The architectural authority order for AgentProdReady is:
 
 1. **Blueprint 01 — Foundation**
 2. **Accepted Architectural Decision Records (ADRs)**
@@ -186,7 +186,7 @@ Implementation must never redefine architecture independently.
 
 # Architectural Governance
 
-Accepted ADRs form part of the constitutional architecture of AgentForge.
+Accepted ADRs form part of the constitutional architecture of AgentProdReady.
 
 They are expected to change infrequently.
 
@@ -208,4 +208,4 @@ Engineering Blueprints define the architecture of individual platform components
 
 Implementation documents translate those architectural decisions into working software.
 
-Together they form the authoritative architectural governance model for every implementation of AgentForge.
+Together they form the authoritative architectural governance model for every implementation of AgentProdReady.

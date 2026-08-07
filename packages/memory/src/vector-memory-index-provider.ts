@@ -1,12 +1,12 @@
 import type {
   AiEmbeddingAdapterResolver,
   AiEmbeddingRequest,
-} from '@agentforge/ai-provider';
-import { ProviderAdapterError } from '@agentforge/ai-provider';
-import type { CapabilityBinding, CapabilityResolver } from '@agentforge/capability-resolution';
-import type { ExecutionContext, HealthResult } from '@agentforge/foundation';
-import type { VectorStorePort } from '@agentforge/vector-store';
-import { VectorStoreError } from '@agentforge/vector-store';
+} from '@agentprodready/ai-provider';
+import { ProviderAdapterError } from '@agentprodready/ai-provider';
+import type { CapabilityBinding, CapabilityResolver } from '@agentprodready/capability-resolution';
+import type { ExecutionContext, HealthResult } from '@agentprodready/foundation';
+import type { VectorStorePort } from '@agentprodready/vector-store';
+import { VectorStoreError } from '@agentprodready/vector-store';
 import { ExternalMemoryError } from './memory-errors.js';
 import type {
   IndexableMemoryRecord,

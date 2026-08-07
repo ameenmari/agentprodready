@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/security",
+  "name": "@agentprodready/security",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,14 +12,30 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/capability-resolution": "workspace:*",
-    "@agentforge/composition": "workspace:*",
-    "@agentforge/evaluation": "workspace:*",
-    "@agentforge/foundation": "workspace:*",
-    "@agentforge/plugin-framework": "workspace:*",
-    "@agentforge/runtime": "workspace:*"
+    "@agentprodready/capability-resolution": "workspace:*",
+    "@agentprodready/composition": "workspace:*",
+    "@agentprodready/evaluation": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@agentprodready/plugin-framework": "workspace:*",
+    "@agentprodready/runtime": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

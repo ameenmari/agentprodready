@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 21 is implemented as `@agentforge/plugin-marketplace`: an immutable provider-neutral distribution framework for package manifests, publisher identity, registry/discovery, integrity, compatibility, dependencies, descriptive trust, installation, updates, rollback, lifecycle, events, diagnostics, and audit facts. It does not load package code, activate or execute plugins, instantiate dependencies, resolve capabilities, schedule Runtime work, invoke providers, decide authorization, or persist audit records.
+Blueprint 21 is implemented as `@agentprodready/plugin-marketplace`: an immutable provider-neutral distribution framework for package manifests, publisher identity, registry/discovery, integrity, compatibility, dependencies, descriptive trust, installation, updates, rollback, lifecycle, events, diagnostics, and audit facts. It does not load package code, activate or execute plugins, instantiate dependencies, resolve capabilities, schedule Runtime work, invoke providers, decide authorization, or persist audit records.
 
 ## Delivered Artifacts
 

@@ -8,7 +8,7 @@
 
 # Context
 
-AgentForge integrates with a wide variety of external technologies, including AI providers, databases, message brokers, vector stores, identity systems, storage providers, and third-party APIs.
+AgentProdReady integrates with a wide variety of external technologies, including AI providers, databases, message brokers, vector stores, identity systems, storage providers, and third-party APIs.
 
 Each technology exposes its own requests, responses, errors, metadata, authentication mechanisms, and protocols.
 
@@ -49,7 +49,7 @@ Boundary normalization provides:
 * Improved testing.
 * Easier long-term maintenance.
 
-This approach allows AgentForge to evolve independently of external technologies while presenting a consistent programming model throughout the platform.
+This approach allows AgentProdReady to evolve independently of external technologies while presenting a consistent programming model throughout the platform.
 
 ---
 
@@ -111,7 +111,7 @@ Normalization
 Platform Contract
         │
         ▼
-Rest of AgentForge
+Rest of AgentProdReady
 ```
 
 ---
@@ -146,6 +146,6 @@ Rest of AgentForge
 
 # Final Statement
 
-Normalization at architectural boundaries preserves the technology independence of AgentForge.
+Normalization at architectural boundaries preserves the technology independence of AgentProdReady.
 
 By isolating provider-specific behavior within dedicated frameworks and exposing only stable platform contracts, the platform remains modular, replaceable, and resilient to technological change while presenting a consistent architectural model to every framework.

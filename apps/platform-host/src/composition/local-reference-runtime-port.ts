@@ -1,7 +1,7 @@
-import type { AgentRuntimePort, RuntimeAgentInvocation } from '@agentforge/agent-framework';
-import type { CreateExecutionContextRequest } from '@agentforge/foundation';
-import type { RuntimeOrchestrator, RuntimeResult, RuntimeStreamEvent } from '@agentforge/runtime';
-import type { SecurityContext } from '@agentforge/security';
+import type { AgentRuntimePort, RuntimeAgentInvocation } from '@agentprodready/agent-framework';
+import type { CreateExecutionContextRequest } from '@agentprodready/foundation';
+import type { RuntimeOrchestrator, RuntimeResult, RuntimeStreamEvent } from '@agentprodready/runtime';
+import type { SecurityContext } from '@agentprodready/security';
 import type { LocalCapabilityExecutionOutput } from './local-reference-capability-execution.js';
 import { LOCAL_TENANT, LOCAL_WORKSPACE } from '../config/local-reference-config.js';
 

@@ -1,4 +1,4 @@
--- AgentForge v0.7 vector index profile: reference-32
+-- AgentProdReady v0.7 vector index profile: reference-32
 
 CREATE EXTENSION IF NOT EXISTS vector;
 

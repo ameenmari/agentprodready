@@ -1,6 +1,6 @@
-import type { AiProviderFramework } from '@agentforge/ai-provider';
-import type { CapabilityResolver } from '@agentforge/capability-resolution';
-import type { EventBus } from '@agentforge/event-bus';
+import type { AiProviderFramework } from '@agentprodready/ai-provider';
+import type { CapabilityResolver } from '@agentprodready/capability-resolution';
+import type { EventBus } from '@agentprodready/event-bus';
 import {
   EvaluationFramework,
   EvaluatorRegistry,
@@ -13,9 +13,9 @@ import {
   type EvaluationFramework as EvaluationFrameworkType,
   type EvaluationResultStore,
   type InMemoryHumanEvaluator as HumanEvaluatorType,
-} from '@agentforge/evaluation';
-import type { InMemoryMetricsProvider } from '@agentforge/observability';
-import type { PersistenceProvider } from '@agentforge/persistence';
+} from '@agentprodready/evaluation';
+import type { InMemoryMetricsProvider } from '@agentprodready/observability';
+import type { PersistenceProvider } from '@agentprodready/persistence';
 import type { LocalReferenceConfig } from '../../config/local-reference-config.js';
 import { LocalReferenceAiEvaluationPort } from './local-reference-ai-evaluation-port.js';
 import {

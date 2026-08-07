@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Containerization and CI Baseline — Implementation Report
+# AgentProdReady v0.1 Local Containerization and CI Baseline — Implementation Report
 
 **Document Version:** 1.0  
 **Product Version:** 0.1.0  
@@ -10,19 +10,19 @@
 
 ## Summary
 
-Local containerization and CI baseline for the verified AgentForge v0.1 Local Reference Product. The runtime image packages the same entrypoint as `pnpm start` (`node dist/bootstrap-local.js` after `pnpm deploy`), binds with `HOST=0.0.0.0`, and passes Docker health/ready/invoke smoke. GitHub Actions workflow defines `verify` then `docker` jobs with no secrets.
+Local containerization and CI baseline for the verified AgentProdReady v0.1 Local Reference Product. The runtime image packages the same entrypoint as `pnpm start` (`node dist/bootstrap-local.js` after `pnpm deploy`), binds with `HOST=0.0.0.0`, and passes Docker health/ready/invoke smoke. GitHub Actions workflow defines `verify` then `docker` jobs with no secrets.
 
 ---
 
 ## Final Runtime Artifact Strategy Used
 
-**Preferred strategy succeeded:** `pnpm --filter @agentforge/platform-host deploy --prod --legacy /out`
+**Preferred strategy succeeded:** `pnpm --filter @agentprodready/platform-host deploy --prod --legacy /out`
 
 Notes:
 
 - pnpm v10 rejected default deploy without injected workspace packages (`ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE`).
 - Approved `--legacy` deploy produced a self-contained runtime that starts successfully.
-- Post-deploy cleanup removes `/out/src`, TypeScript project files, and `@agentforge/*/src` trees from `node_modules`.
+- Post-deploy cleanup removes `/out/src`, TypeScript project files, and `@agentprodready/*/src` trees from `node_modules`.
 - Monorepo-runtime-subset fallback was **not** required.
 
 Runtime command:
@@ -37,7 +37,7 @@ node dist/bootstrap-local.js
 
 | Item | Result |
 |---|---|
-| Command | `docker build -t agentforge/platform-host:0.1.0 -t agentforge/platform-host:latest .` |
+| Command | `docker build -t agentprodready/platform-host:0.1.0 -t agentprodready/platform-host:latest .` |
 | Result | **Pass** |
 | Base image | `node:24-bookworm-slim` |
 | Docker Engine | 29.6.2 |
@@ -56,7 +56,7 @@ node dist/bootstrap-local.js
 ```json
 {
   "status": "ok",
-  "service": "agentforge-local-reference",
+  "service": "agentprodready-local-reference",
   "version": "0.1.0",
   "uptimeMs": 2141,
   "correlationId": "3280667d-8d34-4211-b1a2-60f94e52d7cb"
@@ -105,7 +105,7 @@ Assertions: `result.text === "docker-smoke"` and `evidence.adapterId === "refere
 
 | Step | Result |
 |---|---|
-| `docker compose up --build -d` | **Pass** (single `agentforge` service) |
+| `docker compose up --build -d` | **Pass** (single `agentprodready` service) |
 | `node scripts/docker-smoke.mjs http://127.0.0.1:3000` | **Pass** |
 | `docker compose down` | **Pass** |
 
@@ -153,8 +153,8 @@ Triggers: `push`, `pull_request`.
 | `.env.example` |
 | `.github/workflows/ci.yml` |
 | `scripts/docker-smoke.mjs` |
-| `docs/implementation/reports/agentforge-v0.1-container-ci-implementation-report.md` |
-| `docs/implementation/checklists/agentforge-v0.1-container-ci-checklist.md` |
+| `docs/implementation/reports/agentprodready-v0.1-container-ci-implementation-report.md` |
+| `docs/implementation/checklists/agentprodready-v0.1-container-ci-checklist.md` |
 
 ## Files Modified
 
@@ -199,10 +199,10 @@ Triggers: `push`, `pull_request`.
 ```powershell
 pnpm verify
 pnpm smoke
-docker build -t agentforge/platform-host:0.1.0 .
-docker run --rm -d --name agentforge-v01 -p 3000:3000 -e HOST=0.0.0.0 -e PORT=3000 -e LOG_LEVEL=info -e REFERENCE_AGENT_ENABLED=true agentforge/platform-host:0.1.0
+docker build -t agentprodready/platform-host:0.1.0 .
+docker run --rm -d --name agentprodready-v01 -p 3000:3000 -e HOST=0.0.0.0 -e PORT=3000 -e LOG_LEVEL=info -e REFERENCE_AGENT_ENABLED=true agentprodready/platform-host:0.1.0
 node scripts/docker-smoke.mjs http://127.0.0.1:3000
-docker stop agentforge-v01
+docker stop agentprodready-v01
 docker compose up --build -d
 node scripts/docker-smoke.mjs http://127.0.0.1:3000
 docker compose down

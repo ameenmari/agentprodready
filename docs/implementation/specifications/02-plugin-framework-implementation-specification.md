@@ -8,7 +8,7 @@
 ## Package
 
 ```text
-@agentforge/plugin-framework
+@agentprodready/plugin-framework
 packages/plugin-framework
 src/index.ts
 ```

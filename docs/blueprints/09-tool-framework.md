@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 09
 Tool Framework
 
@@ -18,7 +18,7 @@ Runtime Engineers
 Cursor AI
 1. Purpose
 
-The Tool Framework defines the standardized architecture through which AgentForge interacts with external systems, services, applications, and platform extensions.
+The Tool Framework defines the standardized architecture through which AgentProdReady interacts with external systems, services, applications, and platform extensions.
 
 A tool represents a platform capability that performs work outside the boundaries of the AI Provider Framework.
 
@@ -356,7 +356,7 @@ The engineering implementation may extend this structure while preserving the ab
 17. Tool Adapter Architecture
 17.1 Purpose
 
-Tool Adapters isolate external technologies from the rest of AgentForge.
+Tool Adapters isolate external technologies from the rest of AgentProdReady.
 
 Each adapter translates between platform contracts and a specific external technology.
 
@@ -539,7 +539,7 @@ Tool implementations remain plugin-compatible.
 Runtime execution policies remain outside the Tool Framework.
 24. Chief Architect's Notes
 
-The Tool Framework is the external interaction layer of AgentForge. While the AI Provider Framework standardizes communication with AI vendors, the Tool Framework standardizes communication with every other external system. Both frameworks follow the same architectural philosophy: they expose a single, normalized public contract while encapsulating all implementation-specific details behind adapters.
+The Tool Framework is the external interaction layer of AgentProdReady. While the AI Provider Framework standardizes communication with AI vendors, the Tool Framework standardizes communication with every other external system. Both frameworks follow the same architectural philosophy: they expose a single, normalized public contract while encapsulating all implementation-specific details behind adapters.
 
 A deliberate design decision is that tools are capabilities, not functions. This distinction allows tools to be reused across AI-assisted workflows, deterministic workflows, scheduled processes, and future automation features without coupling them to any specific AI model or provider. It also reinforces the capability-driven architecture established in Blueprint 07, ensuring that external integrations remain modular, observable, and independently evolvable.
 
@@ -571,7 +571,7 @@ capability selection.
 
 These responsibilities belong exclusively to the Runtime and the Capability Resolution Framework.
 
-External SDKs that expose built-in retry, timeout, failover, or similar operational behavior must be configured so that they do not conflict with the centralized execution policies defined by AgentForge.
+External SDKs that expose built-in retry, timeout, failover, or similar operational behavior must be configured so that they do not conflict with the centralized execution policies defined by AgentProdReady.
 
 This preserves deterministic execution behavior and prevents external integrations from bypassing platform governance.
 

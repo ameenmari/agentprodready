@@ -22,7 +22,7 @@ Events, audit facts, diagnostics, and telemetry are concise reference-only ports
 
 ## Package
 
-- `@agentforge/multi-agent`
+- `@agentprodready/multi-agent`
 - `src/index.ts`: contracts and collaboration coordinator.
 - `src/reference.ts`: deterministic strategies and in-memory reference providers.
 - `src/multi-agent.spec.ts`: acceptance tests.

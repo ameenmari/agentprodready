@@ -1,6 +1,6 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
-import { ProviderAdapterError, type AiEmbeddingRequest } from '@agentforge/ai-provider';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import { ProviderAdapterError, type AiEmbeddingRequest } from '@agentprodready/ai-provider';
 import { describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_OPENAI_EMBEDDING_DIMENSIONS,

@@ -1,4 +1,4 @@
-import type { ExecutionContext, HealthResult } from '@agentforge/foundation';
+import type { ExecutionContext, HealthResult } from '@agentprodready/foundation';
 
 export type MemoryIndexRemoveReason = 'deleted' | 'expired' | 'archived' | 'reindex';
 

@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 31 is implemented as `@agentforge/platform-governance`: constitutional governance records and deterministic validation for semantic versions, blueprint/ADR histories, breaking changes, compatibility, deprecation, migrations, extensions, release compliance, governance reports, events, audit references, and diagnostics. All prior Blueprint 01–30 packages are declared governance inputs.
+Blueprint 31 is implemented as `@agentprodready/platform-governance`: constitutional governance records and deterministic validation for semantic versions, blueprint/ADR histories, breaking changes, compatibility, deprecation, migrations, extensions, release compliance, governance reports, events, audit references, and diagnostics. All prior Blueprint 01–30 packages are declared governance inputs.
 
 ## Delivered Artifacts
 

@@ -4,7 +4,7 @@ import type {
   EvaluatorOutput,
   EvaluatorTask,
   EvaluationPolicy,
-} from '@agentforge/evaluation';
+} from '@agentprodready/evaluation';
 
 /**
  * Host adapter for Blueprint 14 EvaluatorExecutionPort.

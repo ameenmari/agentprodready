@@ -1,5 +1,5 @@
 ﻿import {describe,expect,it,vi} from 'vitest';
-import type {EventDelivery,PlatformEvent} from '@agentforge/event-bus';
+import type {EventDelivery,PlatformEvent} from '@agentprodready/event-bus';
 import {AuditError,AuditPlatform,type AuditAuthorizationOutcome,type AuditIngestionRequest,type AuditQueryRequest,freeze} from './index.js';
 import {DeterministicHashChainIntegrityProvider,DeterministicRetentionResolver,InMemoryAuditArchive,InMemoryAuditDiagnostics,InMemoryAuditEvents,InMemoryAuditEvidenceStore,InMemoryAuditIndex,InMemoryAuditRecordStore,InMemoryAuditTelemetry,InMemoryAuditTombstones,InMemoryLegalHoldStore,JsonReferenceAuditExportProvider} from './reference.js';
 

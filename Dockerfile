@@ -8,9 +8,9 @@ RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
 COPY . .
 RUN pnpm install --frozen-lockfile
 RUN pnpm build
-RUN pnpm --filter @agentforge/platform-host deploy --prod --legacy /out \
+RUN pnpm --filter @agentprodready/platform-host deploy --prod --legacy /out \
   && rm -rf /out/src /out/tsconfig.json /out/tsconfig.tsbuildinfo \
-  && find /out/node_modules -type d -path '*/@agentforge/*/src' -prune -exec rm -rf {} + \
+  && find /out/node_modules -type d -path '*/@agentprodready/*/src' -prune -exec rm -rf {} + \
   && node -p "require('./apps/platform-host/package.json').version" > /out/PRODUCT_VERSION
 
 FROM node:24-bookworm-slim AS runtime
@@ -21,13 +21,13 @@ ENV NODE_ENV=production \
     PORT=3000 \
     LOG_LEVEL=info \
     REFERENCE_AGENT_ENABLED=true \
-    AGENTFORGE_ALLOW_REFERENCE_AUTH=true
+    AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true
 
 # Prefer explicit --build-arg from CI; fall back is unused when CI supplies the arg.
 ARG PRODUCT_VERSION=0.0.0
-LABEL org.opencontainers.image.title="agentforge-platform-host" \
+LABEL org.opencontainers.image.title="agentprodready-platform-host" \
       org.opencontainers.image.version="${PRODUCT_VERSION}" \
-      org.opencontainers.image.description="AgentForge Local Reference Product"
+      org.opencontainers.image.description="AgentProdReady Local Reference Product"
 
 COPY --from=build --chown=node:node /out /app
 

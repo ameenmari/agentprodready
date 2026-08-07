@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Reference Product — Implementation Report
+# AgentProdReady v0.1 Local Reference Product — Implementation Report
 
 **Document Version:** 1.1  
 **Product Version:** 0.1.0  
@@ -11,9 +11,9 @@
 
 ## Summary
 
-AgentForge v0.1 Local Reference Product is implemented in `apps/platform-host` as a composition-only HTTP boundary wiring Blueprints 01–18 plus observability, persistence, and memory reference providers into a long-running local host with three endpoints and a full end-to-end reference-agent execution chain.
+AgentProdReady v0.1 Local Reference Product is implemented in `apps/platform-host` as a composition-only HTTP boundary wiring Blueprints 01–18 plus observability, persistence, and memory reference providers into a long-running local host with three endpoints and a full end-to-end reference-agent execution chain.
 
-Local developer verification after dependency restore succeeded: `pnpm start` listens on `127.0.0.1:3000`, and invoke returns `result.text = "hello agentforge"` with `evidence.adapterId = "reference-ai"`.
+Local developer verification after dependency restore succeeded: `pnpm start` listens on `127.0.0.1:3000`, and invoke returns `result.text = "hello agentprodready"` with `evidence.adapterId = "reference-ai"`.
 
 ---
 
@@ -45,7 +45,7 @@ Local developer verification after dependency restore succeeded: `pnpm start` li
 | Path | Change |
 |---|---|
 | `packages/event-bus/src/reference.ts` | Export `InProcessEventTransport` |
-| `apps/platform-host/package.json` | Framework dependencies (incl. `@agentforge/memory`) + `start`/`smoke` scripts |
+| `apps/platform-host/package.json` | Framework dependencies (incl. `@agentprodready/memory`) + `start`/`smoke` scripts |
 | `apps/platform-host/tsconfig.json` | Project references for wired packages including memory |
 | `apps/platform-host/src/main.ts` | Re-export bootstrap entry |
 | `apps/platform-host/src/main.spec.ts` | Long-running host start/stop test |
@@ -54,7 +54,7 @@ Local developer verification after dependency restore succeeded: `pnpm start` li
 | `apps/platform-host/src/smoke/smoke.ts` | Assert memory/persistence reference wiring |
 | `apps/platform-host/src/local-reference.e2e.spec.ts` | Assert memory/persistence wiring |
 | `package.json` (root) | `start` and `smoke` scripts |
-| `pnpm-lock.yaml` | Workspace link for `@agentforge/memory` on platform-host |
+| `pnpm-lock.yaml` | Workspace link for `@agentprodready/memory` on platform-host |
 
 ---
 
@@ -91,7 +91,7 @@ Defaults: `HOST=127.0.0.1`, `PORT=3000`. No `.env` required.
 ```json
 {
   "status": "ok",
-  "service": "agentforge-local-reference",
+  "service": "agentprodready-local-reference",
   "version": "0.1.0",
   "uptimeMs": 6894,
   "correlationId": "836523a2-74f0-4ea0-8a31-2b978c37906c"
@@ -129,7 +129,7 @@ Authorization: LocalReference principalId=local-user;tenantId=local-tenant
 Content-Type: application/json; charset=utf-8
 
 {
-  "objective": "hello agentforge"
+  "objective": "hello agentprodready"
 }
 ```
 
@@ -154,7 +154,7 @@ Content-Type: application/json; charset=utf-8
   },
   "result": {
     "kind": "normalized-ai",
-    "text": "hello agentforge",
+    "text": "hello agentprodready",
     "finishReason": "completed",
     "diagnosticId": "ai:execution:fa0b0026-8a7f-4a18-9663-d501723a4ccc:binding:execution:fa0b0026-8a7f-4a18-9663-d501723a4ccc:task-1:0"
   },
@@ -279,7 +279,7 @@ Executed against `pnpm start` on `http://127.0.0.1:3000`:
 |---|---|
 | `GET /health` | 200, `status: ok` |
 | `GET /ready` | 200, `ready: true`, 7 healthy checks |
-| `POST .../invoke` objective `hello agentforge` | 200, `result.text: hello agentforge`, `adapterId: reference-ai` |
+| `POST .../invoke` objective `hello agentprodready` | 200, `result.text: hello agentprodready`, `adapterId: reference-ai` |
 
 ---
 

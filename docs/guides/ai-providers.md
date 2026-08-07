@@ -1,15 +1,15 @@
-# AgentForge AI Providers
+# AgentProdReady AI Providers
 
 **Version:** 1.0.0
 
 ## Overview
 
-AgentForge isolates AI vendors behind Blueprint 08. Higher layers consume only `NormalizedAiResult` / `NormalizedAiError`.
+AgentProdReady isolates AI vendors behind Blueprint 08. Higher layers consume only `NormalizedAiResult` / `NormalizedAiError`.
 
 | Implementation id | Package | Default | Requires secrets |
 |---|---|---|---|
-| `reference-ai` | `@agentforge/ai-provider` | Yes | No |
-| `openai-ai` | `@agentforge/ai-provider-openai` | No | `OPENAI_API_KEY` |
+| `reference-ai` | `@agentprodready/ai-provider` | Yes | No |
+| `openai-ai` | `@agentprodready/ai-provider-openai` | No | `OPENAI_API_KEY` |
 
 ## Selection
 
@@ -42,7 +42,7 @@ OPENAI_API_KEY=sk-...
 
 ## SDK pin
 
-`@agentforge/ai-provider-openai` depends on exact `openai@7.4.0` with `maxRetries: 0`. Runtime owns retry/timeout/cancellation.
+`@agentprodready/ai-provider-openai` depends on exact `openai@7.4.0` with `maxRetries: 0`. Runtime owns retry/timeout/cancellation.
 
 ## Models within one provider
 

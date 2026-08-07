@@ -1,5 +1,5 @@
-import type {PlatformEvent,EventDelivery} from '@agentforge/event-bus';
-import type {AuthorityState} from '@agentforge/security';
+import type {PlatformEvent,EventDelivery} from '@agentprodready/event-bus';
+import type {AuthorityState} from '@agentprodready/security';
 
 export type AuditOutcome='succeeded'|'failed'|'denied'|'cancelled'|'partial'|'inconclusive'|'pending'|'revoked'|'expired';
 export type TruthStatus='observed'|'derived'|'inferred'|'unknown';

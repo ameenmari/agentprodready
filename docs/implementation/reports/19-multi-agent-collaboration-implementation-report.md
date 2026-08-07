@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 19 is implemented as `@agentforge/multi-agent`: an immutable, provider-neutral collaboration control plane for participant definitions, independent authority, logical coordination, reference-only communication, consensus, conflict handling, normalized aggregation, lifecycle state, events, diagnostics, and audit facts. It does not register or execute Agents, schedule work, interpret workflows, resolve capabilities, retrieve Context or Memory, or create a second execution engine.
+Blueprint 19 is implemented as `@agentprodready/multi-agent`: an immutable, provider-neutral collaboration control plane for participant definitions, independent authority, logical coordination, reference-only communication, consensus, conflict handling, normalized aggregation, lifecycle state, events, diagnostics, and audit facts. It does not register or execute Agents, schedule work, interpret workflows, resolve capabilities, retrieve Context or Memory, or create a second execution engine.
 
 ## Delivered Artifacts
 

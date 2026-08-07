@@ -7,17 +7,17 @@ import { DenyByDefaultAuthorizationService, InMemoryAuditPublisher, InMemoryEven
 import * as tokens from './tokens.js';
 
 const providers = [
-  { provide: tokens.AGENTFORGE_APPLICATION_HOST, useFactory: (): ApplicationHost => new ApplicationHost([]) },
-  { provide: tokens.AGENTFORGE_EXECUTION_CONTEXT_FACTORY, useClass: ExecutionContextFactory },
-  { provide: tokens.AGENTFORGE_PLUGIN_REGISTRY, useClass: InMemoryPluginRegistry },
-  { provide: tokens.AGENTFORGE_CAPABILITY_REGISTRY, useClass: InMemoryCapabilityRegistry },
-  { provide: tokens.AGENTFORGE_CAPABILITY_RESOLVER, useFactory: (registry: InMemoryCapabilityRegistry): DeterministicCapabilityResolver => new DeterministicCapabilityResolver(registry), inject: [tokens.AGENTFORGE_CAPABILITY_REGISTRY] },
-  { provide: tokens.AGENTFORGE_AUTHORIZATION_SERVICE, useClass: DenyByDefaultAuthorizationService },
-  { provide: tokens.AGENTFORGE_EVENT_PUBLISHER, useClass: InMemoryEventPublisher },
-  { provide: tokens.AGENTFORGE_AUDIT_PUBLISHER, useClass: InMemoryAuditPublisher },
-  { provide: tokens.AGENTFORGE_TELEMETRY, useClass: NoopTelemetry },
-  { provide: tokens.AGENTFORGE_HEALTH_SERVICE, useFactory: (): HealthService => new HealthService([]) },
-  { provide: tokens.AGENTFORGE_READINESS_SERVICE, useFactory: (health: HealthService): ReadinessService => new ReadinessService(health), inject: [tokens.AGENTFORGE_HEALTH_SERVICE] },
+  { provide: tokens.AGENTPRODREADY_APPLICATION_HOST, useFactory: (): ApplicationHost => new ApplicationHost([]) },
+  { provide: tokens.AGENTPRODREADY_EXECUTION_CONTEXT_FACTORY, useClass: ExecutionContextFactory },
+  { provide: tokens.AGENTPRODREADY_PLUGIN_REGISTRY, useClass: InMemoryPluginRegistry },
+  { provide: tokens.AGENTPRODREADY_CAPABILITY_REGISTRY, useClass: InMemoryCapabilityRegistry },
+  { provide: tokens.AGENTPRODREADY_CAPABILITY_RESOLVER, useFactory: (registry: InMemoryCapabilityRegistry): DeterministicCapabilityResolver => new DeterministicCapabilityResolver(registry), inject: [tokens.AGENTPRODREADY_CAPABILITY_REGISTRY] },
+  { provide: tokens.AGENTPRODREADY_AUTHORIZATION_SERVICE, useClass: DenyByDefaultAuthorizationService },
+  { provide: tokens.AGENTPRODREADY_EVENT_PUBLISHER, useClass: InMemoryEventPublisher },
+  { provide: tokens.AGENTPRODREADY_AUDIT_PUBLISHER, useClass: InMemoryAuditPublisher },
+  { provide: tokens.AGENTPRODREADY_TELEMETRY, useClass: NoopTelemetry },
+  { provide: tokens.AGENTPRODREADY_HEALTH_SERVICE, useFactory: (): HealthService => new HealthService([]) },
+  { provide: tokens.AGENTPRODREADY_READINESS_SERVICE, useFactory: (health: HealthService): ReadinessService => new ReadinessService(health), inject: [tokens.AGENTPRODREADY_HEALTH_SERVICE] },
 ];
 
 @Module({ providers, exports: providers })

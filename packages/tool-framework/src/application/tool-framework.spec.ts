@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-assignment */
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { AiToolCallHandoff,ExternalToolError,FactoryToolAdapterResolver,InMemoryToolDiagnostics,InMemoryToolEvents,NormalizedToolError,PluginToolRegistrationAdapter,ReferenceToolAdapter,ToolInvocationCoordinator,ToolRegistry,ToolValidator,type ToolAdapter,type ToolContract,type ToolExecutionRequest } from '../index.js';
 

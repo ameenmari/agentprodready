@@ -1,4 +1,4 @@
-# AgentForge Naming Conventions
+# AgentProdReady Naming Conventions
 
 **Version:** 1.0
 
@@ -6,7 +6,7 @@
 
 # Purpose
 
-This document defines the official naming conventions used throughout the AgentForge platform.
+This document defines the official naming conventions used throughout the AgentProdReady platform.
 
 Consistent naming is essential for:
 

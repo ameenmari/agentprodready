@@ -1,6 +1,6 @@
-# @agentforge/vector-store
+# @agentprodready/vector-store
 
-Provider-independent Vector Store contracts and an in-memory reference implementation for AgentForge Memory semantic search (v0.7).
+Provider-independent Vector Store contracts and an in-memory reference implementation for AgentProdReady Memory semantic search (v0.7).
 
 **Package version:** `0.1.0`
 
@@ -17,14 +17,14 @@ It does **not** own:
 
 - Memory lifecycle, ranking, or authorization
 - Embedding generation (AI Provider)
-- pgvector SQL / migrations (`@agentforge/vector-store-pgvector`)
+- pgvector SQL / migrations (`@agentprodready/vector-store-pgvector`)
 - Knowledge Engine corpus vectors
 
 ## Contracts
 
 ```ts
-import type { VectorStorePort } from '@agentforge/vector-store';
-import { InMemoryVectorStore } from '@agentforge/vector-store';
+import type { VectorStorePort } from '@agentprodready/vector-store';
+import { InMemoryVectorStore } from '@agentprodready/vector-store';
 
 const store = new InMemoryVectorStore({
   dimensions: 32,

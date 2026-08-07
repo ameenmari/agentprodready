@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 16
 Event Bus & Platform Messaging
 
@@ -18,7 +18,7 @@ Integration Engineers
 Cursor AI
 1. Purpose
 
-The Event Bus defines the standardized architecture through which AgentForge publishes, distributes, observes, and consumes immutable platform events.
+The Event Bus defines the standardized architecture through which AgentProdReady publishes, distributes, observes, and consumes immutable platform events.
 
 Its purpose is to decouple platform components by replacing direct subsystem-to-subsystem communication with a normalized event-driven messaging architecture.
 
@@ -26,7 +26,7 @@ The Event Bus provides asynchronous communication between platform capabilities 
 
 It is not a workflow engine, execution engine, or orchestration layer.
 
-The Event Bus is AgentForge's platform-wide messaging backbone.
+The Event Bus is AgentProdReady's platform-wide messaging backbone.
 
 2. Responsibilities
 
@@ -107,7 +107,7 @@ Memory Evaluation Plugins
  ▼        ▼            ▼
 Subscribers receive immutable events
 
-The Event Bus is the communication backbone of AgentForge.
+The Event Bus is the communication backbone of AgentProdReady.
 
 7. Messaging Philosophy
 
@@ -230,7 +230,7 @@ Subscribers decide whether those facts are relevant to them according to their o
 
 Chief Architect's Notes
 
-Blueprint 16 introduces one of the foundational infrastructure services of AgentForge: event-driven communication.
+Blueprint 16 introduces one of the foundational infrastructure services of AgentProdReady: event-driven communication.
 
 A crucial architectural decision is that the Event Bus transports facts, not commands. This preserves the clear ownership boundaries established throughout the previous blueprints. Runtime continues to orchestrate execution, Workflow continues to interpret workflow graphs, Security continues to make authorization decisions, and Evaluation continues to assess outcomes. The Event Bus simply allows those components to announce what has occurred.
 
@@ -721,7 +721,7 @@ It deliberately does **not** define:
 
 Those belong to infrastructure implementations.
 
-By keeping messaging semantics independent of transport technology, AgentForge preserves the same architectural consistency already established for providers, tools, knowledge stores, memory stores, and evaluators.
+By keeping messaging semantics independent of transport technology, AgentProdReady preserves the same architectural consistency already established for providers, tools, knowledge stores, memory stores, and evaluators.
 
 ---
 
@@ -1183,7 +1183,7 @@ Blueprint 16 is complete when:
 
 # Chief Architect's Notes
 
-Blueprint 16 establishes AgentForge's messaging backbone.
+Blueprint 16 establishes AgentProdReady's messaging backbone.
 
 One architectural principle is intentionally repeated throughout this blueprint:
 
@@ -1201,7 +1201,7 @@ Finally, the Event Bus is intentionally transport-independent.
 
 Whether future deployments use an in-process publisher, Kafka, RabbitMQ, Redis, NATS, Azure Service Bus, Google Pub/Sub, or another technology has no effect on the architectural contracts defined here.
 
-This allows infrastructure to evolve independently while preserving a stable messaging model across the entire AgentForge platform.
+This allows infrastructure to evolve independently while preserving a stable messaging model across the entire AgentProdReady platform.
 
 ---
 
@@ -1348,7 +1348,7 @@ The Runtime retries execution.
 
 ## 45.1 Default Delivery Model
 
-The default AgentForge delivery model is:
+The default AgentProdReady delivery model is:
 
 > **At-least-once delivery with stable event identity and idempotent subscriber processing.**
 
@@ -1397,7 +1397,7 @@ Each subscriber owns the idempotency of its domain processing.
 
 ## 45.4 Exactly-Once Claims
 
-AgentForge must not claim end-to-end exactly-once processing unless the complete publication, delivery, and subscriber-processing path genuinely provides it.
+AgentProdReady must not claim end-to-end exactly-once processing unless the complete publication, delivery, and subscriber-processing path genuinely provides it.
 
 Transport-level exactly-once delivery does not automatically mean business-level exactly-once processing.
 
@@ -2185,7 +2185,7 @@ Subscriber idempotency must be based primarily on stable Event Identity rather t
 
 The Causation Identifier identifies the immediate event or operation that caused a Platform Event to be produced.
 
-It allows AgentForge to reconstruct event chains rather than relying only on broad execution correlation.
+It allows AgentProdReady to reconstruct event chains rather than relying only on broad execution correlation.
 
 ---
 

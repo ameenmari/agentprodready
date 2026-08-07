@@ -1,5 +1,5 @@
-import type { CreateExecutionContextRequest, ExecutionContext } from '@agentforge/foundation';
-import { ExecutionContextFactory } from '@agentforge/foundation';
+import type { CreateExecutionContextRequest, ExecutionContext } from '@agentprodready/foundation';
+import { ExecutionContextFactory } from '@agentprodready/foundation';
 import type {
   CompositionDiagnostics,
   CompositionTelemetry,

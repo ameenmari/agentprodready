@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/tool-framework",
+  "name": "@agentprodready/tool-framework",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,13 +12,29 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/ai-provider": "workspace:*",
-    "@agentforge/capability-resolution": "workspace:*",
-    "@agentforge/foundation": "workspace:*",
-    "@agentforge/plugin-framework": "workspace:*",
-    "@agentforge/workflow": "workspace:*"
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/capability-resolution": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@agentprodready/plugin-framework": "workspace:*",
+    "@agentprodready/workflow": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

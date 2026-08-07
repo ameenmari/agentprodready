@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { ExecutionContextFactory,type CreateExecutionContextRequest } from '@agentforge/foundation';
+import { ExecutionContextFactory,type CreateExecutionContextRequest } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { SecurityPlatform,SecurityPluginPermissionAdapter,SecurityRuntimeAdapter,enforce,type AuthorizationRequest,type DelegationGrant,type IdentityNormalizationPolicy,type Principal,type SecurityPolicy,type SecurityTelemetry } from './index.js';
 import { BasicSecurityPolicyEvaluator,DeterministicSecurityPolicySimulator,ExplicitDenyConflictResolver,InMemoryAuthorizationDecisionCache,InMemoryDelegationStore,InMemoryRevocationStore,InMemorySecurityAudit,InMemorySecurityDiagnostics,InMemorySecurityEvents,StaticPolicyResolver,StaticPrincipalNormalizer } from './reference.js';

@@ -1,12 +1,12 @@
-import type { CapabilityBinding, CapabilityRequest, CapabilityResolver } from '@agentforge/capability-resolution';
+import type { CapabilityBinding, CapabilityRequest, CapabilityResolver } from '@agentprodready/capability-resolution';
 import type {
   AiExecutionRequest,
   AiProviderFramework,
   NormalizedAiResult,
   NormalizedAiStreamEvent,
-} from '@agentforge/ai-provider';
-import { ProviderAttemptLedger, isFallbackEligibleAiError } from '@agentforge/runtime';
-import type { ExecutionContext } from '@agentforge/foundation';
+} from '@agentprodready/ai-provider';
+import { ProviderAttemptLedger, isFallbackEligibleAiError } from '@agentprodready/runtime';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import type { AiRoutingMode } from '../config/local-reference-config.js';
 
 export interface AiRoutingTelemetry {

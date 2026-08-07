@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Autonomous  
-**Affects:** `@agentforge/agent-framework` implementation contracts (not Blueprint 18 constitutional rewrite)  
-**Related:** [v0.8 Streaming Responses specification](../specifications/agentforge-v0.8-streaming-responses-specification.md)
+**Affects:** `@agentprodready/agent-framework` implementation contracts (not Blueprint 18 constitutional rewrite)  
+**Related:** [v0.8 Streaming Responses specification](../specifications/agentprodready-v0.8-streaming-responses-specification.md)
 
 ---
 
@@ -47,7 +47,7 @@ Normative:
 - `invoke` → `accept` only (never `acceptStream`)
 - `invokeStream` → `acceptStream` only (never `accept`)
 - Same acceptance fact/audit shape; `finalExecutionOutcomeIncluded: false`
-- No HTTP/SSE types in `@agentforge/agent-framework`
+- No HTTP/SSE types in `@agentprodready/agent-framework`
 - Composition implements `acceptStream` with `executeStream` only (`execute` count = 0)
 
 ---

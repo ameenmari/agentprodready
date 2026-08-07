@@ -3,8 +3,8 @@ import type {
   EvaluatorDescriptor,
   EvaluatorOutput,
   EvaluatorTask,
-} from '@agentforge/evaluation';
-import { WeightedCompositeEvaluator } from '@agentforge/evaluation';
+} from '@agentprodready/evaluation';
+import { WeightedCompositeEvaluator } from '@agentprodready/evaluation';
 
 /**
  * Host wrapper exposing composite category through Evaluator contract,

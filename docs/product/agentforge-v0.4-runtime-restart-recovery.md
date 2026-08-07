@@ -1,4 +1,4 @@
-# AgentForge v0.4 Runtime Restart & Recovery
+# AgentProdReady v0.4 Runtime Restart & Recovery
 
 **Version:** 0.4.0  
 **Status:** Design — In Review  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.4 introduces **deterministic Runtime restart and recovery** over the durable PostgreSQL persistence foundation delivered in v0.3.
+AgentProdReady v0.4 introduces **deterministic Runtime restart and recovery** over the durable PostgreSQL persistence foundation delivered in v0.3.
 
 This milestone proves that when a process crashes mid-execution, a restarted Runtime can:
 
@@ -33,8 +33,8 @@ It does **not** deliver high availability, multi-instance leadership, or Kuberne
 | Blueprint 05 / 06 | Planning & Workflow remain delegated stages |
 | Blueprint 16 / 17 / 22 | Event facts, Audit evidence, Observability |
 | Blueprint 24 + v0.3 PostgreSQL | Durable storage primitives only |
-| [Implementation Plan](../implementation/plans/agentforge-v0.4-runtime-restart-recovery-plan.md) | Approach (pending review) |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.4-runtime-restart-recovery-specification.md) | Exact decisions (pending review) |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.4-runtime-restart-recovery-plan.md) | Approach (pending review) |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.4-runtime-restart-recovery-specification.md) | Exact decisions (pending review) |
 
 Blueprints and ADRs remain authoritative. Public Runtime contract changes are **not** assumed; any required change is a documented stop condition in this design package.
 
@@ -51,9 +51,9 @@ apps/platform-host
         │           └── postgres (durable restart proof)
         └── Runtime owns recover / resume / fail decisions
 
-@agentforge/runtime                 ← recovery ownership + checkpoint contracts
-@agentforge/persistence             ← storage contracts only (no recovery logic)
-@agentforge/persistence-postgres    ← durable provider only (no Runtime SQL)
+@agentprodready/runtime                 ← recovery ownership + checkpoint contracts
+@agentprodready/persistence             ← storage contracts only (no recovery logic)
+@agentprodready/persistence-postgres    ← durable provider only (no Runtime SQL)
 ```
 
 Persistence stores opaque Runtime checkpoints. Persistence never decides resume vs fail.
@@ -133,6 +133,6 @@ See: [04-runtime-execution-checkpoint-amendment.md](../implementation/amendments
 
 ## Related Artifacts
 
-- Plan: [agentforge-v0.4-runtime-restart-recovery-plan.md](../implementation/plans/agentforge-v0.4-runtime-restart-recovery-plan.md)
-- Specification: [agentforge-v0.4-runtime-restart-recovery-specification.md](../implementation/specifications/agentforge-v0.4-runtime-restart-recovery-specification.md)
+- Plan: [agentprodready-v0.4-runtime-restart-recovery-plan.md](../implementation/plans/agentprodready-v0.4-runtime-restart-recovery-plan.md)
+- Specification: [agentprodready-v0.4-runtime-restart-recovery-specification.md](../implementation/specifications/agentprodready-v0.4-runtime-restart-recovery-specification.md)
 - Amendment: [04-runtime-execution-checkpoint-amendment.md](../implementation/amendments/04-runtime-execution-checkpoint-amendment.md)

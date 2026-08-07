@@ -1,4 +1,4 @@
-# AgentForge v0.2 Real AI Provider — Implementation Specification
+# AgentProdReady v0.2 Real AI Provider — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 0.2.0  
@@ -25,20 +25,20 @@ Architectural authority order remains:
 5. This specification and the companion plan  
 6. Conforming existing code  
 
-Existing public contracts in `@agentforge/ai-provider` are reused, not redesigned.
+Existing public contracts in `@agentprodready/ai-provider` are reused, not redesigned.
 
 ---
 
 # Package Boundary
 
 ```text
-Framework package (unchanged):  @agentforge/ai-provider
-Provider package (new):         @agentforge/ai-provider-openai
+Framework package (unchanged):  @agentprodready/ai-provider
+Provider package (new):         @agentprodready/ai-provider-openai
 Provider path:                  packages/ai-provider-openai/
 Product host (wiring only):     apps/platform-host/
 ```
 
-Public TypeScript exports from `@agentforge/ai-provider-openai` may include:
+Public TypeScript exports from `@agentprodready/ai-provider-openai` may include:
 
 - `OpenAiProviderAdapter`
 - `loadOpenAiProviderConfig` / `OpenAiProviderConfig` (adapter-local config types)
@@ -89,7 +89,7 @@ packages/
       reference/
       errors/
   ai-provider-openai/               # NEW — OpenAI production adapter
-    package.json                    # name: @agentforge/ai-provider-openai
+    package.json                    # name: @agentprodready/ai-provider-openai
     tsconfig.json
     README.md
     src/
@@ -108,33 +108,33 @@ packages/
 
 | Concern | Owner |
 |---|---|
-| AI public contracts | `@agentforge/ai-provider` (unchanged) |
-| Reference adapter | `@agentforge/ai-provider` (unchanged) |
-| OpenAI SDK + translation | `@agentforge/ai-provider-openai` |
+| AI public contracts | `@agentprodready/ai-provider` (unchanged) |
+| Reference adapter | `@agentprodready/ai-provider` (unchanged) |
+| OpenAI SDK + translation | `@agentprodready/ai-provider-openai` |
 | Instantiation | Composition in `apps/platform-host` |
 | Selection | Capability Resolution via seeded implementation ids |
 
 ## Dependency rules
 
 ```text
-@agentforge/ai-provider-openai
-  → @agentforge/ai-provider
-  → @agentforge/foundation          (HealthResult via adapter contract)
+@agentprodready/ai-provider-openai
+  → @agentprodready/ai-provider
+  → @agentprodready/foundation          (HealthResult via adapter contract)
   → openai                          (vendor SDK; private)
 
 apps/platform-host
-  → @agentforge/ai-provider
-  → @agentforge/ai-provider-openai
+  → @agentprodready/ai-provider
+  → @agentprodready/ai-provider-openai
   ✗ openai                          (forbidden direct dependency)
 ```
 
-No other framework package may depend on `openai` or `@agentforge/ai-provider-openai` unless it is Composition/host wiring.
+No other framework package may depend on `openai` or `@agentprodready/ai-provider-openai` unless it is Composition/host wiring.
 
 ---
 
 # 3. Provider Responsibilities
 
-Exactly what belongs inside `@agentforge/ai-provider-openai` / `OpenAiProviderAdapter`:
+Exactly what belongs inside `@agentprodready/ai-provider-openai` / `OpenAiProviderAdapter`:
 
 | Responsibility | In adapter? | Notes |
 |---|---|---|
@@ -455,7 +455,7 @@ Vendor error objects/stacks must not be assigned onto public result types. Optio
 
 ## Unit tests (CI)
 
-Package `@agentforge/ai-provider-openai`:
+Package `@agentprodready/ai-provider-openai`:
 
 - request translation (roles/content → vendor payload)
 - response translation (usage, finish reasons, model metadata)
@@ -474,7 +474,7 @@ Use mocked OpenAI client (dependency injection seam on adapter constructor).
 
 ## Framework regression (CI)
 
-Existing `@agentforge/ai-provider` tests remain unchanged and green.
+Existing `@agentprodready/ai-provider` tests remain unchanged and green.
 
 ## Real provider tests (NOT CI by default)
 
@@ -541,13 +541,13 @@ Real provider tests must remain opt-in and must not run on pull_request by defau
 
 | Document | Required update |
 |---|---|
-| `docs/product/agentforge-v0.2-real-ai-provider.md` | Created (this slice) |
+| `docs/product/agentprodready-v0.2-real-ai-provider.md` | Created (this slice) |
 | `docs/guides/ai-providers.md` | Create — how to select reference vs OpenAI, env vars, live tests |
 | `.env.example` | Add `AI_PROVIDER` and OpenAI variables (placeholders) |
 | Root `README.md` | Document v0.2 optional OpenAI mode; correct stale “Implementation: Not Started” status if touched |
 | `docs/README.md` | Link product/plan/spec |
 | Package README `packages/ai-provider-openai/README.md` | Adapter scope, non-goals, config |
-| `@agentforge/ai-provider` README | Optional one-line pointer to OpenAI package |
+| `@agentprodready/ai-provider` README | Optional one-line pointer to OpenAI package |
 
 Do not rewrite blueprints/ADRs.
 
@@ -584,7 +584,7 @@ Azure OpenAI should prefer reuse of OpenAI adapter config via `OPENAI_BASE_URL` 
 
 # Exact Types Reused (No Contract Changes)
 
-From `@agentforge/ai-provider` (already implemented):
+From `@agentprodready/ai-provider` (already implemented):
 
 - `AiProviderAdapter`
 - `AiExecutionRequest`
@@ -655,7 +655,7 @@ Persistence remains in-memory reference providers; OpenAI calls are ephemeral pr
 
 # Acceptance Criteria
 
-1. `@agentforge/ai-provider-openai` implements `AiProviderAdapter` with id `openai-ai`.  
+1. `@agentprodready/ai-provider-openai` implements `AiProviderAdapter` with id `openai-ai`.  
 2. Vendor SDK types do not appear in public exports or host imports.  
 3. SDK retries disabled.  
 4. Default config and CI use `reference-ai` without secrets.  
@@ -673,7 +673,7 @@ Persistence remains in-memory reference providers; OpenAI calls are ephemeral pr
 
 Stop and report if:
 
-1. Public `@agentforge/ai-provider` contracts must change incompatibly.  
+1. Public `@agentprodready/ai-provider` contracts must change incompatibly.  
 2. ADRs/blueprints require edit to proceed.  
 3. Adapter cannot operate without owning retry/timeout/failover.  
 4. Host must import `openai` SDK directly.  
@@ -688,7 +688,7 @@ Stop and report if:
 | Item | Decision |
 |---|---|
 | Recommended provider | **OpenAI** |
-| Package structure | `packages/ai-provider-openai` (`@agentforge/ai-provider-openai`) |
+| Package structure | `packages/ai-provider-openai` (`@agentprodready/ai-provider-openai`) |
 | Files to create | Provider package sources/tests, `docs/guides/ai-providers.md`, post-impl report/checklist |
 | Files to modify | Host config/composition/seed/package.json, `.env.example`, README/docs index, lockfile |
 | Environment variables | `AI_PROVIDER`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL` (default `gpt-5`), `OPENAI_ORGANIZATION`, `OPENAI_PROJECT` |

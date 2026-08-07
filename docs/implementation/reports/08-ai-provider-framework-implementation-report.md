@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 08 is implemented and verified in `@agentforge/ai-provider`. It is a replaceable provider-independent boundary that consumes normalized AI requests plus selected bindings and emits only normalized results, stream events, tool calls, diagnostics, health, or normalized errors.
+Blueprint 08 is implemented and verified in `@agentprodready/ai-provider`. It is a replaceable provider-independent boundary that consumes normalized AI requests plus selected bindings and emits only normalized results, stream events, tool calls, diagnostics, health, or normalized errors.
 
 ## Related Artifacts
 

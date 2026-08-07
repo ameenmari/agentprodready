@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Reference Product — Implementation Specification
+# AgentProdReady v0.1 Local Reference Product — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 0.1.0  
@@ -11,14 +11,14 @@
 # Package Boundary
 
 ```text
-Product package:  @agentforge/platform-host
+Product package:  @agentprodready/platform-host
 Product path:     apps/platform-host/
 Public entry:     apps/platform-host/src/main.ts
 Composition only: apps/platform-host/src/composition/**
 HTTP only:        apps/platform-host/src/http/**
 ```
 
-All framework behavior remains in existing `@agentforge/*` packages.
+All framework behavior remains in existing `@agentprodready/*` packages.
 
 ---
 
@@ -82,7 +82,7 @@ Responses are mapped from Blueprint 26 `ApiResponse<T>` to HTTP using `httpStatu
 ```json
 {
   "status": "ok",
-  "service": "agentforge-local-reference",
+  "service": "agentprodready-local-reference",
   "version": "0.1.0",
   "uptimeMs": 1234,
   "correlationId": "550e8400-e29b-41d4-a716-446655440000"
@@ -179,7 +179,7 @@ Implementation uses Foundation `HealthService` + `ReadinessService`; HTTP contro
 
 ```json
 {
-  "objective": "hello agentforge",
+  "objective": "hello agentprodready",
   "inputs": {
     "note": "optional"
   }
@@ -210,7 +210,7 @@ Implementation uses Foundation `HealthService` + `ReadinessService`; HTTP contro
   },
   "result": {
     "kind": "normalized-ai",
-    "text": "hello agentforge",
+    "text": "hello agentprodready",
     "finishReason": "completed",
     "diagnosticId": "ai:execution:abc123:task-1"
   },
@@ -245,7 +245,7 @@ Implementation uses Foundation `HealthService` + `ReadinessService`; HTTP contro
 | `evidence.adapterId` | `string` | Yes | Composition/AI proof |
 | `diagnosticsReference` | `string` | Yes | Product diagnostics id |
 
-Deterministic rule: for request objective `"hello agentforge"`, `result.text` must equal `"hello agentforge"`.
+Deterministic rule: for request objective `"hello agentprodready"`, `result.text` must equal `"hello agentprodready"`.
 
 ### Normalized Error Response
 
@@ -305,7 +305,7 @@ Product handler maps framework errors to the closest `ApiError` code without lea
   "version": "1.0.0",
   "name": "Reference Agent",
   "description": "Deterministic local reference agent",
-  "purpose": "Echo objectives through the full AgentForge execution chain",
+  "purpose": "Echo objectives through the full AgentProdReady execution chain",
   "type": "task",
   "principalReference": "agent-principal:reference-agent",
   "scope": {
@@ -352,12 +352,12 @@ Product handler maps framework errors to the closest `ApiError` code without lea
     "contractVersions": { "runtime": "1" }
   },
   "governance": {
-    "owner": "agentforge-local",
+    "owner": "agentprodready-local",
     "reviewStatus": "approved",
     "classification": "internal",
     "policyVersion": "local-1"
   },
-  "publisherReference": "publisher:agentforge-local",
+  "publisherReference": "publisher:agentprodready-local",
   "sourceConfigurationVersions": ["config:local:1"],
   "createdAt": "2026-08-07T00:00:00.000Z",
   "createdBy": "local-seed",
@@ -456,7 +456,7 @@ No step may short-circuit with hardcoded final text in the host. The echo must c
 
 ## Interface Use
 
-Uses existing `@agentforge/security` contracts only:
+Uses existing `@agentprodready/security` contracts only:
 
 - `AuthenticationEvidence`
 - `StaticPrincipalNormalizer`
@@ -521,15 +521,15 @@ This is reference-only and must not be used outside local product composition.
 
 | Concern | Class | Package |
 |---|---|---|
-| AI adapter | `ReferenceAiProviderAdapter` | `@agentforge/ai-provider` |
-| AI resolver | `FactoryAiAdapterResolver` | `@agentforge/ai-provider` |
-| Persistence | `InMemoryPersistenceProvider` | `@agentforge/persistence` |
-| Memory | `InMemoryMemoryProvider` | `@agentforge/memory` |
-| Audit | `AuditPlatform` + in-memory stores | `@agentforge/audit` |
-| Observability logs | `ConsoleLoggingProvider` | `@agentforge/observability` |
-| Observability metrics/traces | in-memory providers | `@agentforge/observability` |
-| Event Bus | `EventBus` + in-process transport | `@agentforge/event-bus` |
-| Security | `SecurityPlatform` + static policy | `@agentforge/security` |
+| AI adapter | `ReferenceAiProviderAdapter` | `@agentprodready/ai-provider` |
+| AI resolver | `FactoryAiAdapterResolver` | `@agentprodready/ai-provider` |
+| Persistence | `InMemoryPersistenceProvider` | `@agentprodready/persistence` |
+| Memory | `InMemoryMemoryProvider` | `@agentprodready/memory` |
+| Audit | `AuditPlatform` + in-memory stores | `@agentprodready/audit` |
+| Observability logs | `ConsoleLoggingProvider` | `@agentprodready/observability` |
+| Observability metrics/traces | in-memory providers | `@agentprodready/observability` |
+| Event Bus | `EventBus` + in-process transport | `@agentprodready/event-bus` |
+| Security | `SecurityPlatform` + static policy | `@agentprodready/security` |
 
 ## EventTransport Decision
 
@@ -712,7 +712,7 @@ Confirmed out of scope:
 
 ## 1. Proposed Files to Create
 
-See [implementation plan](./../plans/agentforge-v0.1-local-reference-product-plan.md#proposed-files).
+See [implementation plan](./../plans/agentprodready-v0.1-local-reference-product-plan.md#proposed-files).
 
 ## 2. Proposed Files to Modify
 
@@ -739,27 +739,27 @@ Defined in section **C** above (`reference-agent` v1.0.0).
 ```text
 apps/platform-host
   depends on:
-    @agentforge/foundation
-    @agentforge/composition
-    @agentforge/runtime
-    @agentforge/planning
-    @agentforge/workflow
-    @agentforge/capability-resolution
-    @agentforge/ai-provider
-    @agentforge/security
-    @agentforge/event-bus
-    @agentforge/audit
-    @agentforge/agent-framework
-    @agentforge/observability
-    @agentforge/api-framework
-    @agentforge/persistence        (in-memory snapshots only)
+    @agentprodready/foundation
+    @agentprodready/composition
+    @agentprodready/runtime
+    @agentprodready/planning
+    @agentprodready/workflow
+    @agentprodready/capability-resolution
+    @agentprodready/ai-provider
+    @agentprodready/security
+    @agentprodready/event-bus
+    @agentprodready/audit
+    @agentprodready/agent-framework
+    @agentprodready/observability
+    @agentprodready/api-framework
+    @agentprodready/persistence        (in-memory snapshots only)
     @nestjs/core
     @nestjs/common                 (if controller decorators used)
 ```
 
 ## 6. EventTransport Gap — Safe to Implement?
 
-**Yes.** `InProcessEventTransport` under `@agentforge/event-bus` reference providers completes the existing port. Not a stop condition.
+**Yes.** `InProcessEventTransport` under `@agentprodready/event-bus` reference providers completes the existing port. Not a stop condition.
 
 ## 7. Framework Contract Modifications Required?
 
@@ -793,7 +793,7 @@ curl -X POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke `
   -H "Content-Type: application/json" `
   -H "Authorization: LocalReference principalId=local-user;tenantId=local-tenant" `
   -H "X-Correlation-Id: demo-1" `
-  -d "{\"objective\":\"hello agentforge\"}"
+  -d "{\"objective\":\"hello agentprodready\"}"
 ```
 
 ## 10. Safe to Approve for Autonomous Implementation?

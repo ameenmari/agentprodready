@@ -21,8 +21,8 @@ describe('Evaluation package import boundaries', () => {
     const joined = sources.join('\n');
     expect(joined).not.toMatch(/from ['"]openai['"]/u);
     expect(joined).not.toMatch(/from ['"]pg['"]/u);
-    expect(joined).not.toMatch(/@agentforge\/platform-host/u);
+    expect(joined).not.toMatch(/@agentprodready\/platform-host/u);
     expect(joined).not.toMatch(/apps\/platform-host/u);
-    expect(joined).not.toMatch(/from ['"]@agentforge\/runtime['"]/u);
+    expect(joined).not.toMatch(/from ['"]@agentprodready\/runtime['"]/u);
   });
 });

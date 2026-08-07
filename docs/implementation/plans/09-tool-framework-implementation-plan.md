@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/tool-framework` as the plugin-compatible, provider-independent external interaction boundary consuming Runtime context, Workflow node contracts, and Capability Bindings and returning normalized tool results/errors.
+Implement `@agentprodready/tool-framework` as the plugin-compatible, provider-independent external interaction boundary consuming Runtime context, Workflow node contracts, and Capability Bindings and returning normalized tool results/errors.
 
 ## Work
 

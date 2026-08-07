@@ -1,4 +1,4 @@
-# AgentForge v0.2 Real AI Provider — Implementation Report
+# AgentProdReady v0.2 Real AI Provider — Implementation Report
 
 **Document Version:** 1.0  
 **Product Version:** 0.2.0  
@@ -10,16 +10,16 @@
 
 ## Summary
 
-Additive OpenAI provider integration for AgentForge. `@agentforge/ai-provider-openai` implements `AiProviderAdapter` (`openai-ai`) behind Blueprint 08 contracts. The host selects `reference` (default) or `openai` via `AI_PROVIDER`. Deterministic CI remains secret-free. `ReferenceAiProviderAdapter` and public `@agentforge/ai-provider` contracts are unchanged.
+Additive OpenAI provider integration for AgentProdReady. `@agentprodready/ai-provider-openai` implements `AiProviderAdapter` (`openai-ai`) behind Blueprint 08 contracts. The host selects `reference` (default) or `openai` via `AI_PROVIDER`. Deterministic CI remains secret-free. `ReferenceAiProviderAdapter` and public `@agentprodready/ai-provider` contracts are unchanged.
 
 ---
 
 ## Related Artifacts
 
-- [Product](../../product/agentforge-v0.2-real-ai-provider.md)
-- [Plan](../plans/agentforge-v0.2-real-ai-provider-plan.md)
-- [Specification](../specifications/agentforge-v0.2-real-ai-provider-specification.md)
-- [Checklist](../checklists/agentforge-v0.2-real-ai-provider-checklist.md)
+- [Product](../../product/agentprodready-v0.2-real-ai-provider.md)
+- [Plan](../plans/agentprodready-v0.2-real-ai-provider-plan.md)
+- [Specification](../specifications/agentprodready-v0.2-real-ai-provider-specification.md)
+- [Checklist](../checklists/agentprodready-v0.2-real-ai-provider-checklist.md)
 - [AI Providers guide](../../guides/ai-providers.md)
 
 ---
@@ -28,7 +28,7 @@ Additive OpenAI provider integration for AgentForge. `@agentforge/ai-provider-op
 
 | Item | Detail |
 |---|---|
-| Package | `packages/ai-provider-openai` → `@agentforge/ai-provider-openai@0.2.0` |
+| Package | `packages/ai-provider-openai` → `@agentprodready/ai-provider-openai@0.2.0` |
 | Adapter id | `openai-ai` |
 | SDK | Exact pin `openai@7.4.0`, `maxRetries: 0` |
 | Default model | `gpt-5` (`OPENAI_MODEL`) |
@@ -44,8 +44,8 @@ Additive OpenAI provider integration for AgentForge. `@agentforge/ai-provider-op
 ```text
 packages/ai-provider-openai/**
 docs/guides/ai-providers.md
-docs/implementation/reports/agentforge-v0.2-real-ai-provider-implementation-report.md
-docs/implementation/checklists/agentforge-v0.2-real-ai-provider-checklist.md
+docs/implementation/reports/agentprodready-v0.2-real-ai-provider-implementation-report.md
+docs/implementation/checklists/agentprodready-v0.2-real-ai-provider-checklist.md
 ```
 
 ## Files Modified
@@ -66,9 +66,9 @@ packages/ai-provider/README.md
 tsconfig.json
 tsconfig.eslint.json
 pnpm-lock.yaml
-docs/product/agentforge-v0.2-real-ai-provider.md
-docs/implementation/plans/agentforge-v0.2-real-ai-provider-plan.md
-docs/implementation/specifications/agentforge-v0.2-real-ai-provider-specification.md
+docs/product/agentprodready-v0.2-real-ai-provider.md
+docs/implementation/plans/agentprodready-v0.2-real-ai-provider-plan.md
+docs/implementation/specifications/agentprodready-v0.2-real-ai-provider-specification.md
 ```
 
 ---

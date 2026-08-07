@@ -2,17 +2,17 @@ import type {
   AiExecutionRequest,
   AiProviderFramework,
   NormalizedAiResult,
-} from '@agentforge/ai-provider';
-import type { CapabilityBinding, CapabilityResolver } from '@agentforge/capability-resolution';
-import type { ExecutionContextPackage } from '@agentforge/context-assembly';
+} from '@agentprodready/ai-provider';
+import type { CapabilityBinding, CapabilityResolver } from '@agentprodready/capability-resolution';
+import type { ExecutionContextPackage } from '@agentprodready/context-assembly';
 import type {
   EvaluatorDescriptor,
   EvaluatorTask,
   NormalizedAiAssessment,
   NormalizedAiEvaluationPort,
-} from '@agentforge/evaluation';
-import { ExternalEvaluationError } from '@agentforge/evaluation';
-import type { ExecutionContext } from '@agentforge/foundation';
+} from '@agentprodready/evaluation';
+import { ExternalEvaluationError } from '@agentprodready/evaluation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import {
   DefaultPromptPolicyEvaluator,
   InMemoryPromptDiagnostics,
@@ -22,7 +22,7 @@ import {
   StableCanonicalPromptFormatter,
   type PromptBuildRequest,
   type PromptPackage,
-} from '@agentforge/prompt-builder';
+} from '@agentprodready/prompt-builder';
 import { PRODUCT_VERSION } from '../../config/local-reference-config.js';
 
 export const EVALUATION_JUDGE_CAPABILITY = 'evaluation.judge';

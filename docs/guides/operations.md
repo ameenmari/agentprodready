@@ -43,7 +43,7 @@ See [multi-provider-routing.md](./multi-provider-routing.md).
 
 | Symptom | Likely cause |
 |---|---|
-| Startup fail on auth in production | Missing real auth; or need explicit unsafe `AGENTFORGE_ALLOW_REFERENCE_AUTH` for demos only |
+| Startup fail on auth in production | Missing real auth; or need explicit unsafe `AGENTPRODREADY_ALLOW_REFERENCE_AUTH` for demos only |
 | `/ready` false | Postgres / OpenAI key / vector prerequisites |
 | Routing startup fail | Bad `AI_ROUTING_MODE` / empty or duplicate `AI_FALLBACK_PROVIDERS` |
 | Stream ends with error after partial text | Fallback blocked after first client-visible content (by design) |

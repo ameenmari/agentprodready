@@ -1,4 +1,4 @@
-# AgentForge v0.3 Durable PostgreSQL Persistence — Implementation Specification
+# AgentProdReady v0.3 Durable PostgreSQL Persistence — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 0.3.0  
@@ -41,8 +41,8 @@ Exact npm pin is fixed at implementation time from the then-current stable `pg` 
 # 2. Package Boundary
 
 ```text
-packages/persistence/                 # @agentforge/persistence — contracts/framework (unchanged unless stop condition amendment)
-packages/persistence-postgres/        # @agentforge/persistence-postgres — NEW
+packages/persistence/                 # @agentprodready/persistence — contracts/framework (unchanged unless stop condition amendment)
+packages/persistence-postgres/        # @agentprodready/persistence-postgres — NEW
   package.json
   tsconfig.json
   README.md
@@ -68,17 +68,17 @@ packages/persistence-postgres/        # @agentforge/persistence-postgres — NEW
 ### Dependency rules
 
 ```text
-@agentforge/persistence-postgres
-  → @agentforge/persistence
+@agentprodready/persistence-postgres
+  → @agentprodready/persistence
   → pg                              (private)
 
 apps/platform-host
-  → @agentforge/persistence
-  → @agentforge/persistence-postgres
+  → @agentprodready/persistence
+  → @agentprodready/persistence-postgres
   ✗ pg                              (forbidden)
 
-Other @agentforge/* packages
-  ✗ @agentforge/persistence-postgres
+Other @agentprodready/* packages
+  ✗ @agentprodready/persistence-postgres
   ✗ pg
 ```
 
@@ -475,28 +475,28 @@ Runtime continues to own operational execution around any future durable recover
 
 ```yaml
 services:
-  agentforge:
+  agentprodready:
     # existing service; optionally:
     # profiles interaction documented; depends_on only when using postgres profile docs
   postgres:
     profiles: ["postgres"]
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: agentforge
-      POSTGRES_PASSWORD: agentforge
-      POSTGRES_DB: agentforge
+      POSTGRES_USER: agentprodready
+      POSTGRES_PASSWORD: agentprodready
+      POSTGRES_DB: agentprodready
     ports:
       - "5432:5432"
     volumes:
-      - agentforge_pg:/var/lib/postgresql/data
+      - agentprodready_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U agentforge -d agentforge"]
+      test: ["CMD-SHELL", "pg_isready -U agentprodready -d agentprodready"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  agentforge_pg:
+  agentprodready_pg:
 ```
 
 ### Why B
@@ -510,7 +510,7 @@ Local postgres mode example:
 ```bash
 pnpm db:up
 pnpm db:migrate
-PERSISTENCE_PROVIDER=postgres DATABASE_URL=postgres://agentforge:agentforge@127.0.0.1:5432/agentforge pnpm start
+PERSISTENCE_PROVIDER=postgres DATABASE_URL=postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready pnpm start
 ```
 
 ---
@@ -526,12 +526,12 @@ services:
   postgres:
     image: postgres:16-alpine
     env:
-      POSTGRES_USER: agentforge_ci
-      POSTGRES_PASSWORD: agentforge_ci
-      POSTGRES_DB: agentforge_ci
+      POSTGRES_USER: agentprodready_ci
+      POSTGRES_PASSWORD: agentprodready_ci
+      POSTGRES_DB: agentprodready_ci
     ports: ["5432:5432"]
     options: >-
-      --health-cmd "pg_isready -U agentforge_ci -d agentforge_ci"
+      --health-cmd "pg_isready -U agentprodready_ci -d agentprodready_ci"
       --health-interval 5s
       --health-timeout 5s
       --health-retries 10
@@ -652,7 +652,7 @@ Must **not** require changes to Runtime, Planning, Workflow, Security ownership,
 - External secret manager implementation  
 - Runtime redesign / workflow redesign  
 - New persistence architecture beyond Blueprint 24  
-- Persisting all AgentForge subsystems  
+- Persisting all AgentProdReady subsystems  
 
 ---
 
@@ -661,9 +661,9 @@ Must **not** require changes to Runtime, Planning, Workflow, Security ownership,
 | Item | Decision |
 |---|---|
 | Recommended client/ORM | **`pg` only (no ORM)** |
-| Package structure | `packages/persistence-postgres` (`@agentforge/persistence-postgres`) |
+| Package structure | `packages/persistence-postgres` (`@agentprodready/persistence-postgres`) |
 | Files to create | Provider package, migrations, guide, post-impl report/checklist |
-| Files to modify | Host config/composition/smoke types, compose profile, CI job, `.env.example`, README/docs, root scripts; `@agentforge/persistence` **only if async amendment approved** |
+| Files to modify | Host config/composition/smoke types, compose profile, CI job, `.env.example`, README/docs, root scripts; `@agentprodready/persistence` **only if async amendment approved** |
 | Schema/tables | `schema_migrations`, `persistence_entities`, `persistence_snapshots`, `persistence_migration_records` |
 | Migration strategy | Explicit versioned SQL; no silent startup migrate |
 | Environment variables | `PERSISTENCE_PROVIDER`, `DATABASE_URL` (+ optional SSL/pool/discrete URL parts) |
@@ -697,6 +697,6 @@ Stop and report if:
 
 # Review Decision
 
-**Status:** Implemented — see [implementation report](../reports/agentforge-v0.3-postgresql-persistence-implementation-report.md).
+**Status:** Implemented — see [implementation report](../reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md).
 
 Async I/O prerequisite was satisfied before this Autonomous PostgreSQL cycle.

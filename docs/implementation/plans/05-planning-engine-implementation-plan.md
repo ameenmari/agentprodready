@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/planning` as the provider-independent decision layer that converts every valid objective into an immutable, serializable, validated execution plan consumed through Runtime's `PlanningPort`.
+Implement `@agentprodready/planning` as the provider-independent decision layer that converts every valid objective into an immutable, serializable, validated execution plan consumed through Runtime's `PlanningPort`.
 
 ## Work
 

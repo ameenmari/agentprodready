@@ -13,7 +13,7 @@ Local Reference host config is loaded from the process environment (see `.env.ex
 
 `NODE_ENV=production` is the primary production signal:
 
-- LocalReference auth fails startup unless `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (unsafe demo escape hatch)
+- LocalReference auth fails startup unless `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (unsafe demo escape hatch)
 - Prefer TLS for non-local Postgres (`POSTGRES_SSL=false` may warn)
 - Prefer `LOG_LEVEL` ≥ `info`
 
@@ -65,7 +65,7 @@ Local Reference host config is loaded from the process environment (see `.env.ex
 | `TOOL_MAX_RESULT_BYTES` | int | `65536` | `1`–`4194304` | no | optional | Payload bound |
 | `SHUTDOWN_TIMEOUT_MS` | int | `30000` | `1`–`300000` | no | optional | Graceful drain window |
 | `MAX_JSON_BODY_BYTES` | int | `1048576` | `1`–`16777216` | no | optional | HTTP body limit |
-| `AGENTFORGE_ALLOW_REFERENCE_AUTH` | bool | `false` | `true`, `false` | no | `NODE_ENV=production` demo only | **Not** production auth |
+| `AGENTPRODREADY_ALLOW_REFERENCE_AUTH` | bool | `false` | `true`, `false` | no | `NODE_ENV=production` demo only | **Not** production auth |
 
 ## Related guides
 

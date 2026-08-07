@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 09 is implemented and verified in `@agentforge/tool-framework`. It provides plugin-compatible tool contracts, passive registration, validation-before-invocation, Composition-resolved adapters, private external translation, normalized results/errors, side-effect/idempotency semantics, diagnostics, events, telemetry, and AI tool-call handoff.
+Blueprint 09 is implemented and verified in `@agentprodready/tool-framework`. It provides plugin-compatible tool contracts, passive registration, validation-before-invocation, Composition-resolved adapters, private external translation, normalized results/errors, side-effect/idempotency semantics, diagnostics, events, telemetry, and AI tool-call handoff.
 
 ## Related Artifacts
 

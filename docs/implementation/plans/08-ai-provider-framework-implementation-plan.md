@@ -6,7 +6,7 @@
 
 ## Objective
 
-Implement `@agentforge/ai-provider` as the provider-independent AI interaction and normalization boundary consuming Blueprint 07 bindings and Composition-supplied adapters.
+Implement `@agentprodready/ai-provider` as the provider-independent AI interaction and normalization boundary consuming Blueprint 07 bindings and Composition-supplied adapters.
 
 ## Work
 

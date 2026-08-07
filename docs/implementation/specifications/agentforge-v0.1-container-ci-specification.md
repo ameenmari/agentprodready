@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Containerization and CI Baseline — Implementation Specification
+# AgentProdReady v0.1 Local Containerization and CI Baseline — Implementation Specification
 
 **Document Version:** 1.1  
 **Product Version:** 0.1.0  
@@ -6,7 +6,7 @@
 **Implementation Mode:** Review-Gated  
 **Date:** 2026-08-07
 
-**Prerequisite:** v0.1 Local Reference Product Complete (including `@agentforge/memory` host wiring).
+**Prerequisite:** v0.1 Local Reference Product Complete (including `@agentprodready/memory` host wiring).
 
 ---
 
@@ -14,8 +14,8 @@
 
 | Document | Role |
 |---|---|
-| [Implementation Plan](../plans/agentforge-v0.1-container-ci-plan.md) | Scope, stages, acceptance |
-| [v0.1 Local Reference Product Report](../reports/agentforge-v0.1-local-reference-product-implementation-report.md) | Verified product surface |
+| [Implementation Plan](../plans/agentprodready-v0.1-container-ci-plan.md) | Scope, stages, acceptance |
+| [v0.1 Local Reference Product Report](../reports/agentprodready-v0.1-local-reference-product-implementation-report.md) | Verified product surface |
 | Existing env loader | `apps/platform-host/src/config/local-reference-config.ts` |
 | Blueprints / ADRs | Unchanged; higher authority |
 
@@ -26,7 +26,7 @@ This specification defines exact infrastructure contracts. It does not authorize
 # Package / Product Boundary
 
 ```text
-Product:     @agentforge/platform-host 0.1.0
+Product:     @agentprodready/platform-host 0.1.0
 Entry (dev): pnpm start
              → node apps/platform-host/dist/bootstrap-local.js
 Entry (ctr): identical Node entry after image build
@@ -118,7 +118,7 @@ Thumbs.db
 - `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`
 - `tsconfig.json`, `tsconfig.base.json`, and any tsconfigs referenced by `tsc -b`
 - `apps/**` package manifests + **all** TypeScript sources under `src/` (including `*.spec.ts` and `smoke/`, because `include: ["src/**/*.ts"]` participates in `pnpm build`)
-- `packages/**` package manifests + TypeScript sources (including `@agentforge/memory` and every host workspace dependency)
+- `packages/**` package manifests + TypeScript sources (including `@agentprodready/memory` and every host workspace dependency)
 - Root tooling only if required by `pnpm build` (prefer not copying eslint/vitest into the image when unused by build)
 
 ### Clarification
@@ -162,7 +162,7 @@ node apps/platform-host/dist/bootstrap-local.js
 ### Preferred artifact strategy
 
 ```text
-pnpm --filter @agentforge/platform-host deploy --prod /out
+pnpm --filter @agentprodready/platform-host deploy --prod /out
 ```
 
 Validate that `/out` can start with `node dist/bootstrap-local.js` (or the deploy-relative equivalent).  
@@ -209,9 +209,9 @@ Probe loopback inside the container. Process must listen on `0.0.0.0` for publis
 ## C.6 Labels (recommended)
 
 ```text
-org.opencontainers.image.title=agentforge-platform-host
+org.opencontainers.image.title=agentprodready-platform-host
 org.opencontainers.image.version=0.1.0
-org.opencontainers.image.description=AgentForge v0.1 Local Reference Product
+org.opencontainers.image.description=AgentProdReady v0.1 Local Reference Product
 ```
 
 ## C.7 Prohibited in Dockerfile
@@ -241,11 +241,11 @@ Single service only:
 
 ```yaml
 services:
-  agentforge:
+  agentprodready:
     build:
       context: .
       dockerfile: Dockerfile
-    image: agentforge/platform-host:0.1.0
+    image: agentprodready/platform-host:0.1.0
     ports:
       - "3000:3000"
     environment:
@@ -275,7 +275,7 @@ services:
 ## E.2 Exact content
 
 ```text
-# AgentForge v0.1 Local Reference Product
+# AgentProdReady v0.1 Local Reference Product
 # Copy to .env only if you need overrides. Defaults work for pnpm start.
 
 HOST=127.0.0.1
@@ -299,7 +299,7 @@ REFERENCE_AGENT_ENABLED=true
 ## F.1 Image name
 
 ```text
-agentforge/platform-host
+agentprodready/platform-host
 ```
 
 Local/CI tags only for this baseline (no required registry).
@@ -315,14 +315,14 @@ Local/CI tags only for this baseline (no required registry).
 
 ## F.3 Version source of truth
 
-Product version `0.1.0` from `@agentforge/platform-host` / root package version. Do not invent a separate Docker version scheme in this cycle.
+Product version `0.1.0` from `@agentprodready/platform-host` / root package version. Do not invent a separate Docker version scheme in this cycle.
 
 ## F.4 CI tagging commands
 
 ```bash
 PRODUCT_VERSION=0.1.0
 SHORT_SHA=$(git rev-parse --short=7 HEAD)
-IMAGE=agentforge/platform-host
+IMAGE=agentprodready/platform-host
 
 docker build \
   -t "$IMAGE:$PRODUCT_VERSION" \
@@ -368,7 +368,7 @@ node scripts/docker-smoke.mjs http://127.0.0.1:3000
 | Step | Request | Pass criteria |
 |---|---|---|
 | 1 | Wait up to 30s polling `GET /ready` | `200` and `body.ready === true` |
-| 2 | `GET /health` | `200`, `status === "ok"`, `service === "agentforge-local-reference"`, `version === "0.1.0"` |
+| 2 | `GET /health` | `200`, `status === "ok"`, `service === "agentprodready-local-reference"`, `version === "0.1.0"` |
 | 3 | `GET /ready` | `200`, `ready === true`, includes checks named `composition`, `security`, `runtime`, `agent-registry`, `event-bus`, `audit`, `reference-agent` |
 | 4 | `POST /v1/agents/reference-agent/invoke` with local auth and `{"objective":"docker-smoke"}` | `200`, `result.text === "docker-smoke"`, `evidence.adapterId === "reference-ai"` |
 | 5 | Exit | print `docker-smoke: ok` and exit `0`; non-zero on failure |
@@ -387,16 +387,16 @@ Authorization: LocalReference principalId=local-user;tenantId=local-tenant
 ## G.3 Manual / CI container lifecycle
 
 ```bash
-docker build -t agentforge/platform-host:0.1.0 .
-docker run --rm -d --name agentforge-v01 \
+docker build -t agentprodready/platform-host:0.1.0 .
+docker run --rm -d --name agentprodready-v01 \
   -p 3000:3000 \
   -e HOST=0.0.0.0 \
   -e PORT=3000 \
   -e REFERENCE_AGENT_ENABLED=true \
-  agentforge/platform-host:0.1.0
+  agentprodready/platform-host:0.1.0
 
 node scripts/docker-smoke.mjs http://127.0.0.1:3000
-docker stop agentforge-v01
+docker stop agentprodready-v01
 ```
 
 ---
@@ -482,7 +482,7 @@ Notes:
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
-          IMAGE=agentforge/platform-host
+          IMAGE=agentprodready/platform-host
           VERSION=${{ steps.meta.outputs.version }}
           SHA=${{ steps.meta.outputs.short_sha }}
           docker build \
@@ -495,18 +495,18 @@ Notes:
           fi
       - name: Run container
         run: |
-          docker run --rm -d --name agentforge-ci \
+          docker run --rm -d --name agentprodready-ci \
             -p 3000:3000 \
             -e HOST=0.0.0.0 \
             -e PORT=3000 \
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
-            agentforge/platform-host:0.1.0
+            agentprodready/platform-host:0.1.0
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container
         if: always()
-        run: docker stop agentforge-ci || true
+        run: docker stop agentprodready-ci || true
 ```
 
 ## H.5 Required CI command list (normative)
@@ -536,19 +536,19 @@ Do not reference `secrets.*` in this workflow.
 ### PowerShell (local)
 
 ```powershell
-docker build -t agentforge/platform-host:0.1.0 -t agentforge/platform-host:latest .
+docker build -t agentprodready/platform-host:0.1.0 -t agentprodready/platform-host:latest .
 
-docker run --rm -d --name agentforge-v01 `
+docker run --rm -d --name agentprodready-v01 `
   -p 3000:3000 `
   -e HOST=0.0.0.0 `
   -e PORT=3000 `
   -e LOG_LEVEL=info `
   -e REFERENCE_AGENT_ENABLED=true `
-  agentforge/platform-host:0.1.0
+  agentprodready/platform-host:0.1.0
 
 node scripts/docker-smoke.mjs http://127.0.0.1:3000
 
-docker stop agentforge-v01
+docker stop agentprodready-v01
 ```
 
 ### Compose
@@ -562,15 +562,15 @@ docker compose down
 ### Bash (CI-equivalent)
 
 ```bash
-docker build -t agentforge/platform-host:0.1.0 .
-docker run --rm -d --name agentforge-v01 \
+docker build -t agentprodready/platform-host:0.1.0 .
+docker run --rm -d --name agentprodready-v01 \
   -p 3000:3000 \
   -e HOST=0.0.0.0 \
   -e PORT=3000 \
   -e REFERENCE_AGENT_ENABLED=true \
-  agentforge/platform-host:0.1.0
+  agentprodready/platform-host:0.1.0
 node scripts/docker-smoke.mjs http://127.0.0.1:3000
-docker stop agentforge-v01
+docker stop agentprodready-v01
 ```
 
 ---
@@ -585,8 +585,8 @@ docker stop agentforge-v01
 | `.env.example` | Create | Optional but recommended (**include**) |
 | `.github/workflows/ci.yml` | Create | Yes |
 | `scripts/docker-smoke.mjs` | Create | Yes |
-| `docs/implementation/reports/agentforge-v0.1-container-ci-implementation-report.md` | Create after impl | Yes |
-| `docs/implementation/checklists/agentforge-v0.1-container-ci-checklist.md` | Create after impl | Yes |
+| `docs/implementation/reports/agentprodready-v0.1-container-ci-implementation-report.md` | Create after impl | Yes |
+| `docs/implementation/checklists/agentprodready-v0.1-container-ci-checklist.md` | Create after impl | Yes |
 | `README.md` | Optional docs touch | Optional |
 
 **Do not modify** production application/framework source in this cycle.

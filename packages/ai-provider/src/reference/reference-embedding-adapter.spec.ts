@@ -1,5 +1,5 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe, expect, it } from 'vitest';
 import { ProviderAdapterError, type AiEmbeddingRequest } from '../index.js';
 import {

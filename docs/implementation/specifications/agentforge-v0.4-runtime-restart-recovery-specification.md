@@ -1,4 +1,4 @@
-# AgentForge v0.4 Runtime Restart & Recovery — Implementation Specification
+# AgentProdReady v0.4 Runtime Restart & Recovery — Implementation Specification
 
 **Document Version:** 1.0  
 **Product Version:** 0.4.0  
@@ -233,7 +233,7 @@ Host default when durable recovery enabled:
 This is an **explicitly unsafe / operator-selected** policy:
 
 - duplicate external side effects may occur;
-- AgentForge does **not** claim exactly-once external provider/tool effects;
+- AgentProdReady does **not** claim exactly-once external provider/tool effects;
 - Runtime still enforces at-most-once **terminalization** via OCC.
 
 Do **not** treat `ResumeImmediately` as the default for durable local reference recovery.
@@ -356,15 +356,15 @@ v0.4 does not add a new Audit storage backend. It ensures recovery emits account
 PersistenceExecutionCheckpointStore
   implements amended ExecutionSnapshotPort / ExecutionCheckpointPort
   uses PersistenceProvider (in-memory or postgres)
-  lives in @agentforge/runtime reference OR platform-host composition helpers
-  MUST NOT live inside @agentforge/persistence-postgres as Runtime logic
+  lives in @agentprodready/runtime reference OR platform-host composition helpers
+  MUST NOT live inside @agentprodready/persistence-postgres as Runtime logic
 ```
 
-Recommendation: implement adapter in `packages/runtime` reference layer depending on `@agentforge/persistence` (already a platform pattern for ports). If dependency direction forbids runtime→persistence today, place adapter in `platform-host` composition and keep Runtime depending only on the port — **preferred if package deps block runtime→persistence**.
+Recommendation: implement adapter in `packages/runtime` reference layer depending on `@agentprodready/persistence` (already a platform pattern for ports). If dependency direction forbids runtime→persistence today, place adapter in `platform-host` composition and keep Runtime depending only on the port — **preferred if package deps block runtime→persistence**.
 
-**Dependency check (implementation time):** today `@agentforge/runtime` depends on foundation + composition only. Adding persistence dependency may be undesirable.
+**Dependency check (implementation time):** today `@agentprodready/runtime` depends on foundation + composition only. Adding persistence dependency may be undesirable.
 
-**Selected resolution:** keep Runtime free of Persistence package dependency. Place `PersistenceExecutionCheckpointStore` in `apps/platform-host` (or a tiny `@agentforge/runtime-persistence` adapter package only if host placement becomes unwieldy). Runtime continues to depend on the port alone.
+**Selected resolution:** keep Runtime free of Persistence package dependency. Place `PersistenceExecutionCheckpointStore` in `apps/platform-host` (or a tiny `@agentprodready/runtime-persistence` adapter package only if host placement becomes unwieldy). Runtime continues to depend on the port alone.
 
 ## 13.3 Schema impact
 
@@ -437,7 +437,7 @@ Compatibility:
 
 - Remove/replace `ExecutionSnapshotPort.store(executionId, history)` as the canonical port.
 - No dual legacy port. Update in-memory adapter and all call sites in one migration.
-- Classification: **breaking pre-1.0 Runtime implementation-contract change**, localized to `@agentforge/runtime` + host wiring.
+- Classification: **breaking pre-1.0 Runtime implementation-contract change**, localized to `@agentprodready/runtime` + host wiring.
 
 ## 14.2 Runtime API additions
 
@@ -598,8 +598,8 @@ When recovery enabled + postgres: require migrated DB (existing readiness).
 ```text
 docs/guides/runtime-recovery.md
 docs/implementation/amendments/04-runtime-execution-checkpoint-amendment.md  (design recorded)
-docs/implementation/reports/agentforge-v0.4-...-report.md
-docs/implementation/checklists/agentforge-v0.4-...-checklist.md
+docs/implementation/reports/agentprodready-v0.4-...-report.md
+docs/implementation/checklists/agentprodready-v0.4-...-checklist.md
 packages/runtime checkpoint types/tests (incl. capabilityResult + post-invoke recovery)
 apps/platform-host persistence-backed checkpoint store
 scripts/runtime-recovery-probe.mjs

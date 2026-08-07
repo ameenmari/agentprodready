@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Review-Gated  
-**Affects:** `@agentforge/runtime` implementation contracts (not Blueprint 04 constitutional rewrite)  
-**Related:** [v0.9 Tool Calling specification](../specifications/agentforge-v0.9-tool-calling-agent-actions-specification.md)  
+**Affects:** `@agentprodready/runtime` implementation contracts (not Blueprint 04 constitutional rewrite)  
+**Related:** [v0.9 Tool Calling specification](../specifications/agentprodready-v0.9-tool-calling-agent-actions-specification.md)  
 **Companion:** [08-ai-provider-tool-calling-amendment.md](./08-ai-provider-tool-calling-amendment.md)
 
 ---
@@ -62,7 +62,7 @@ without:
 
 ## 4. Frozen `toolLoop` checkpoint shape
 
-Additive optional field on `ExecutionCheckpoint` (or nested under existing JSON-serializable metadata owned by Runtime). Types below are **JSON-serializable** and provider-neutral. Runtime does **not** import OpenAI SDK types. Shapes mirror `@agentforge/ai-provider` `NormalizedToolCall` / `AiMessage` / Tool Framework `NormalizedToolResult` without requiring Runtime to depend on those packages for the public checkpoint DTO (document equivalence; implementation may share types via careful dependency direction approved at code time, or duplicate structural types as `unknown`-validated JSON).
+Additive optional field on `ExecutionCheckpoint` (or nested under existing JSON-serializable metadata owned by Runtime). Types below are **JSON-serializable** and provider-neutral. Runtime does **not** import OpenAI SDK types. Shapes mirror `@agentprodready/ai-provider` `NormalizedToolCall` / `AiMessage` / Tool Framework `NormalizedToolResult` without requiring Runtime to depend on those packages for the public checkpoint DTO (document equivalence; implementation may share types via careful dependency direction approved at code time, or duplicate structural types as `unknown`-validated JSON).
 
 ```ts
 /** Structural mirror of NormalizedToolCall — provider-neutral. */

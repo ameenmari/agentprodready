@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Readiness Review
+# AgentProdReady v1.0 Production Readiness Review
 
 **Document Version:** 1.0  
 **Baseline:** v0.9.0  
@@ -110,7 +110,7 @@ No widespread `TODO`/`FIXME` release blockers in packages. Amendment D file abse
 
 ## Package versioning recommendation
 
-Align supported `@agentforge/*` packages and `platform-host` to **1.0.0** at release tag. Prefer GitHub Release + Docker image as primary artifacts; npm publish optional/separate approval. Mark unpublished packages private if not publishing.
+Align supported `@agentprodready/*` packages and `platform-host` to **1.0.0** at release tag. Prefer GitHub Release + Docker image as primary artifacts; npm publish optional/separate approval. Mark unpublished packages private if not publishing.
 
 ---
 

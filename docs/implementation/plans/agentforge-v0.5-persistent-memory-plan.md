@@ -1,4 +1,4 @@
-# AgentForge v0.5 Persistent Memory — Implementation Plan
+# AgentProdReady v0.5 Persistent Memory — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.5.0  
@@ -50,8 +50,8 @@ MemoryEngine
 
 | Option | Decision |
 |---|---|
-| **A. `PersistenceBackedMemoryProvider` in `@agentforge/memory` using `@agentforge/persistence`** | **Selected** — BP11 hard-depends on Persistence; keeps Memory semantics out of postgres package; zero Memory SQL |
-| B. Dedicated `@agentforge/memory-postgres` with `pg` | Rejected — duplicates Persistence provider; couples Memory to one DB |
+| **A. `PersistenceBackedMemoryProvider` in `@agentprodready/memory` using `@agentprodready/persistence`** | **Selected** — BP11 hard-depends on Persistence; keeps Memory semantics out of postgres package; zero Memory SQL |
+| B. Dedicated `@agentprodready/memory-postgres` with `pg` | Rejected — duplicates Persistence provider; couples Memory to one DB |
 | C. Host-only adapter (like Runtime checkpoints) | Viable fallback if Memory→Persistence dependency is rejected; inferior because BP11 already owns persistence-backed repositories |
 | D. New Memory-specific SQL tables in persistence-postgres | Rejected for v0.5 — unnecessary; `persistence_entities` already stores typed `data` |
 
@@ -279,7 +279,7 @@ Runtime recovery is **not** required for Memory durability.
 
 ### Modify
 
-- `packages/memory/package.json` — add `@agentforge/persistence` dependency; bump version toward `0.5.0`
+- `packages/memory/package.json` — add `@agentprodready/persistence` dependency; bump version toward `0.5.0`
 - `packages/memory/src/index.ts` / `reference` exports; optional `now` on engine
 - `apps/platform-host` config + composition Memory wiring
 - `.env.example`, README.md, docs/README.md, docs/guides/persistence.md

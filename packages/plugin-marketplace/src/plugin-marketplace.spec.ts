@@ -31,7 +31,7 @@ interface Fixture {
 function publisher(overrides: Partial<PublisherIdentity> = {}): PublisherIdentity {
   return {
     id: 'publisher-1',
-    organization: 'AgentForge Labs',
+    organization: 'AgentProdReady Labs',
     signingIdentityReference: 'signer:1',
     contactReference: 'contact:1',
     verificationStatus: 'verified',

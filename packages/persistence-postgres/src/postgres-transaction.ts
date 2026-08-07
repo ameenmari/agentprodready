@@ -10,7 +10,7 @@ import {
   type TransactionOperation,
   type TransactionRequest,
   type TransactionRollbackResult,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { withPostgresErrors, translatePostgresError } from './postgres-error-translation.js';
 import type { PostgresPool, PostgresPoolClient } from './pool.js';
 import { newVersionToken, scopeKey, toJson } from './serialize.js';

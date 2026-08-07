@@ -1,4 +1,4 @@
-# AgentForge v0.7 Vector Search & Semantic Memory
+# AgentProdReady v0.7 Vector Search & Semantic Memory
 
 **Version:** 0.7.0  
 **Status:** Implemented  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.7 introduces **production-capable vector search and semantic Memory retrieval** behind the existing `MemorySearchProvider` seam, while preserving:
+AgentProdReady v0.7 introduces **production-capable vector search and semantic Memory retrieval** behind the existing `MemorySearchProvider` seam, while preserving:
 
 - Memory Engine ownership of retrieval semantics, ranking, lifecycle eligibility, and normalized results
 - AI Provider ownership of embedding generation (no OpenAI SDK in Memory)
@@ -33,11 +33,11 @@ This milestone must **not** hardcode pgvector into Memory Engine public behavior
 | [Blueprint 08 — AI Provider Framework](../blueprints/08-ai-provider-framework.md) | Embedding Generation capability category (aspirational → must become real) |
 | [Blueprint 10 — Knowledge Engine](../blueprints/10-knowledge-engine.md) | Parallel knowledge retrieval; must not own Memory vectors |
 | [Blueprint 12 — Context Assembly](../blueprints/12-context-assembly-engine.md) | Consumes `MemoryRetrievalResult` only |
-| [Blueprint 24 + v0.3 PostgreSQL](./agentforge-v0.3-postgresql-persistence.md) | Durable Persistence primitives |
-| [v0.5 Persistent Memory](./agentforge-v0.5-persistent-memory.md) | Durable Memory; semantic degrade path |
+| [Blueprint 24 + v0.3 PostgreSQL](./agentprodready-v0.3-postgresql-persistence.md) | Durable Persistence primitives |
+| [v0.5 Persistent Memory](./agentprodready-v0.5-persistent-memory.md) | Durable Memory; semantic degrade path |
 | ADR-002 / 003 / 004 / 005 / 006 / 007 / 008 / 009 / 011 / 012 | Ownership, contracts, providers, Cap, Security, facts, normalize, config |
-| [Implementation Plan](../implementation/plans/agentforge-v0.7-vector-search-semantic-memory-plan.md) | Approach (pending review) |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.7-vector-search-semantic-memory-specification.md) | Exact decisions (pending review) |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.7-vector-search-semantic-memory-plan.md) | Approach (pending review) |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.7-vector-search-semantic-memory-specification.md) | Exact decisions (pending review) |
 | [08 embedding amendment](../implementation/amendments/08-ai-provider-embedding-contract-amendment.md) | Parallel AI embedding surface (In Review) |
 | [11 index-provider amendment](../implementation/amendments/11-memory-index-provider-contract-amendment.md) | INDEX/REMOVE consistency (In Review) |
 
@@ -49,7 +49,7 @@ Blueprints and ADRs remain authoritative over this product design.
 
 | Concern | Exists today? | Location / notes |
 |---|---|---|
-| Embedding generation typed contracts | **No** | BP08 lists “Embedding Generation”; `@agentforge/ai-provider` is chat-only (`AiExecutionRequest` / `NormalizedAiResult`) |
+| Embedding generation typed contracts | **No** | BP08 lists “Embedding Generation”; `@agentprodready/ai-provider` is chat-only (`AiExecutionRequest` / `NormalizedAiResult`) |
 | Vector representation / store contracts | **No** | ADR-004 names Pinecone/Qdrant/pgvector as examples only |
 | Memory semantic/hybrid strategy tags | **Yes** | `MemorySearchStrategy` includes `'semantic'` \| `'hybrid'` |
 | `MemorySearchProvider.search → MemoryCandidate[]` | **Yes** | Sufficient public search seam |
@@ -97,12 +97,12 @@ Context Assembly
 
 | Package / layer | Owns |
 |---|---|
-| `@agentforge/memory` | Retrieval semantics, ranking fusion, lifecycle eligibility filters, `MemorySearchProvider` implementations |
-| `@agentforge/ai-provider` (+ amendment) | Provider-neutral embedding request/result/errors |
-| `@agentforge/ai-provider-openai` | OpenAI `embeddings.create` translation |
-| `@agentforge/vector-store` (new) | `VectorStorePort` contracts + reference in-memory store |
-| `@agentforge/vector-store-pgvector` (new) | pgvector schema, migrations, NN search |
-| `@agentforge/persistence` / `-postgres` | Ordinary Persistence; **not** vector ranking owner |
+| `@agentprodready/memory` | Retrieval semantics, ranking fusion, lifecycle eligibility filters, `MemorySearchProvider` implementations |
+| `@agentprodready/ai-provider` (+ amendment) | Provider-neutral embedding request/result/errors |
+| `@agentprodready/ai-provider-openai` | OpenAI `embeddings.create` translation |
+| `@agentprodready/vector-store` (new) | `VectorStorePort` contracts + reference in-memory store |
+| `@agentprodready/vector-store-pgvector` (new) | pgvector schema, migrations, NN search |
+| `@agentprodready/persistence` / `-postgres` | Ordinary Persistence; **not** vector ranking owner |
 | `apps/platform-host` | Config, Composition wiring, capability seed for embeddings |
 
 ---
@@ -165,7 +165,7 @@ A pgvector deployment freezes one active `(embeddingModelId, dimensions, metric)
 - Mandatory paid OpenAI calls in default CI
 - Embedding columns or model ids on `MemoryRecord`
 - Moving authorization into pgvector
-- Making `@agentforge/persistence-postgres` owner of semantic ranking
+- Making `@agentprodready/persistence-postgres` owner of semantic ranking
 
 ---
 

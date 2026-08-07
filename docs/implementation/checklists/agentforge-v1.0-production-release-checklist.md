@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Release — Checklist
+# AgentProdReady v1.0 Production Release — Checklist
 
 **Product Version:** 1.0.0  
 **Status:** Complete — RELEASE READY (no tag/publish)  
@@ -41,7 +41,7 @@
 ## Routing architecture & proofs
 
 - [x] Cap Resolution selects; Runtime owns ledger; host `executeAiWithRouting` / `streamAiWithRouting`
-- [x] No `@agentforge/ai-router` package or `AiRouter` class
+- [x] No `@agentprodready/ai-router` package or `AiRouter` class
 - [x] Fallback-eligible codes: retryable `AI_UNAVAILABLE` / `AI_PROVIDER_TIMEOUT` / `AI_RATE_LIMITED` only
 - [x] Exact attempt counts: providers ≤ ordered unique; retries separate
 - [x] Streaming: fallback before first visible content; none after
@@ -63,7 +63,7 @@
 
 ## Hardening B1–B10
 
-- [x] B1 — Production auth fail-closed + `AGENTFORGE_ALLOW_REFERENCE_AUTH`
+- [x] B1 — Production auth fail-closed + `AGENTPRODREADY_ALLOW_REFERENCE_AUTH`
 - [x] B2 — Ordered fallback + Runtime ledger
 - [x] B3 — `MAX_JSON_BODY_BYTES` default 1 MiB + HTTP 500 sanitize
 - [x] B4 — Graceful shutdown (`SHUTDOWN_TIMEOUT_MS`, SIGTERM race)
@@ -81,7 +81,7 @@
 - [x] Fault injection classifications suite
 - [x] Observability `ai.routing.*` metrics
 - [x] Migrations: no destructive v0.9→v1.0 reset required
-- [x] Docker demo image `AGENTFORGE_ALLOW_REFERENCE_AUTH=true`
+- [x] Docker demo image `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true`
 - [x] Compose documented as local-dev only
 
 ## Documentation
@@ -98,7 +98,7 @@
 
 ## Versions / release artifacts
 
-- [x] All `@agentforge/*` and `platform-host` at **1.0.0**
+- [x] All `@agentprodready/*` and `platform-host` at **1.0.0**
 - [x] `release.yml` validate-only (**no publish**)
 - [x] **Git tag `v1.0.0` NOT created** (intentional this cycle)
 - [x] **npm publish NOT performed** (intentional this cycle)

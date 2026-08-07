@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Manual restart/recovery probe for AgentForge v0.4.
+ * Manual restart/recovery probe for AgentProdReady v0.4.
  *
  * Requires: pnpm build && pnpm db:up && pnpm db:migrate
  * Env: DATABASE_URL, PERSISTENCE_PROVIDER=postgres

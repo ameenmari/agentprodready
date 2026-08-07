@@ -1,4 +1,4 @@
-# AgentForge v0.5 Persistent Memory
+# AgentProdReady v0.5 Persistent Memory
 
 **Version:** 0.5.0  
 **Status:** Implemented  
@@ -9,7 +9,7 @@
 
 ## Purpose
 
-AgentForge v0.5 makes **Memory records durable across process restarts** by backing the existing Memory storage/search provider contracts with Blueprint 24 Persistence repositories (optionally PostgreSQL), while preserving:
+AgentProdReady v0.5 makes **Memory records durable across process restarts** by backing the existing Memory storage/search provider contracts with Blueprint 24 Persistence repositories (optionally PostgreSQL), while preserving:
 
 - Memory Engine ownership of capture, retrieval, lifecycle, and retention semantics
 - Persistence provider independence
@@ -31,11 +31,11 @@ This milestone proves that memory can survive process restarts **without** turni
 | [Blueprint 15 / ADR-008](../adrs/ADR-008%20%E2%80%94%20Security%20Owns%20Authorization.md) | Authorization |
 | [Blueprint 17 / ADR-009](../adrs/ADR-009%20%E2%80%94%20Historical%20Facts%20Are%20Immutable.md) | Audit immutability |
 | [Blueprint 22](../blueprints/22-observability-and-diagnostics.md) | Observability |
-| [Blueprint 24 + v0.3 PostgreSQL](./agentforge-v0.3-postgresql-persistence.md) | Storage primitives / durability |
+| [Blueprint 24 + v0.3 PostgreSQL](./agentprodready-v0.3-postgresql-persistence.md) | Storage primitives / durability |
 | [Blueprint 04 / ADR-006](../adrs/ADR-006%20%E2%80%94%20Runtime%20Owns%20Operational%20Execution.md) | Runtime does not own Memory |
 | [ADR-004](../adrs/ADR-004%20%E2%80%94%20Provider%20Independence.md) / [ADR-005](../adrs/ADR-005%20%E2%80%94%20Composition%20Owns%20Instantiation.md) | Provider selection |
-| [Implementation Plan](../implementation/plans/agentforge-v0.5-persistent-memory-plan.md) | Approach (pending review) |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.5-persistent-memory-specification.md) | Exact decisions (pending review) |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.5-persistent-memory-plan.md) | Approach (pending review) |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.5-persistent-memory-specification.md) | Exact decisions (pending review) |
 
 Blueprints and ADRs remain authoritative. **No Memory public contract amendment is required** for v0.5 (see plan/spec).
 
@@ -53,10 +53,10 @@ apps/platform-host (Composition)
               └── PersistenceProvider.repository("memory-records")
                     └── PersistenceScope = { tenantId } only
 
-@agentforge/memory                 ← Memory Engine + provider contracts (ownership)
-@agentforge/persistence            ← storage contracts only
-@agentforge/persistence-postgres   ← durable PersistenceProvider (no Memory SQL)
-@agentforge/context-assembly       ← consumes MemoryRetrievalResult only
+@agentprodready/memory                 ← Memory Engine + provider contracts (ownership)
+@agentprodready/persistence            ← storage contracts only
+@agentprodready/persistence-postgres   ← durable PersistenceProvider (no Memory SQL)
+@agentprodready/context-assembly       ← consumes MemoryRetrievalResult only
 ```
 
 Persistence stores opaque `MemoryRecord` bytes under **tenant-only** repository scope.  

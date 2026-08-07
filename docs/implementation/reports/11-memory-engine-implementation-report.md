@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 11 is implemented and fully verified. The implementation introduces the provider-neutral `@agentforge/memory` package, immutable execution-derived memory records, explicit lifecycle transitions, security-filtered retrieval, configurable ranking, normalized AI enrichment/consolidation/reranking, replaceable storage and search providers, normalized failures, diagnostics, events, and telemetry.
+Blueprint 11 is implemented and fully verified. The implementation introduces the provider-neutral `@agentprodready/memory` package, immutable execution-derived memory records, explicit lifecycle transitions, security-filtered retrieval, configurable ranking, normalized AI enrichment/consolidation/reranking, replaceable storage and search providers, normalized failures, diagnostics, events, and telemetry.
 
 No Blueprint 12 Context Assembly responsibilities were implemented. Context Assembly and Prompt Builder remain downstream consumers. Runtime retains scheduling and execution-policy ownership; Security retains authorization-policy ownership; Capability Resolution and the AI Provider Framework remain behind the normalized AI port.
 

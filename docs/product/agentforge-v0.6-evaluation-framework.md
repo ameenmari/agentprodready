@@ -1,4 +1,4 @@
-# AgentForge v0.6 Evaluation Framework
+# AgentProdReady v0.6 Evaluation Framework
 
 **Version:** 0.6.0  
 **Status:** Implemented  
@@ -9,9 +9,9 @@
 
 ## Purpose
 
-AgentForge v0.6 productizes the **already-complete Blueprint 14 Evaluation Framework** as the platform’s quality-assessment engine in the local reference host.
+AgentProdReady v0.6 productizes the **already-complete Blueprint 14 Evaluation Framework** as the platform’s quality-assessment engine in the local reference host.
 
-This milestone proves that AgentForge can:
+This milestone proves that AgentProdReady can:
 
 1. assess immutable platform artifacts through explicit criteria,
 2. orchestrate replaceable evaluators (deterministic, heuristic, AI-assisted, human, composite),
@@ -37,10 +37,10 @@ This milestone proves that AgentForge can:
 | [ADR-011](../adrs/ADR-011%20%E2%80%94%20Normalize%20at%20Architectural%20Boundaries.md) | Score / AI / evidence normalization |
 | Blueprints 03, 07, 08, 13, 15–17, 22–24 | Composition, Cap, AI, Prompt, Security, Events, Audit, Observability, Config, Persistence |
 | v0.1–v0.5 product reports | Host, AI, Persistence, Runtime recovery, Memory |
-| [Implementation Plan](../implementation/plans/agentforge-v0.6-evaluation-framework-plan.md) | Approach (Implemented) |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.6-evaluation-framework-specification.md) | Exact decisions (Implemented) |
-| [Implementation Report](../implementation/reports/agentforge-v0.6-evaluation-framework-implementation-report.md) | Completion evidence |
-| [Checklist](../implementation/checklists/agentforge-v0.6-evaluation-framework-checklist.md) | Acceptance checklist |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.6-evaluation-framework-plan.md) | Approach (Implemented) |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.6-evaluation-framework-specification.md) | Exact decisions (Implemented) |
+| [Implementation Report](../implementation/reports/agentprodready-v0.6-evaluation-framework-implementation-report.md) | Completion evidence |
+| [Checklist](../implementation/checklists/agentprodready-v0.6-evaluation-framework-checklist.md) | Acceptance checklist |
 
 Blueprints and ADRs remain authoritative. **No Evaluation public contract amendment is required** for v0.6 (see plan/spec). **No Runtime public contract amendment is required** for v0.6.
 
@@ -60,7 +60,7 @@ apps/platform-host (Composition)
   └── optional Persistence-backed EvaluationResultStore
         └── PersistenceProvider.repository("evaluation-results")
 
-@agentforge/evaluation   ← quality assessment ownership (already implemented)
+@agentprodready/evaluation   ← quality assessment ownership (already implemented)
 Runtime                  ← operational evaluator execution (via EvaluatorExecutionPort)
 Capability Resolution    ← evaluator / AI capability selection
 AI Provider Framework    ← AI-assisted evaluation only via normalized port
@@ -77,7 +77,7 @@ Evaluation Results remain **descriptive** (`descriptive: true`). Runtime / Agent
 
 | Capability | Status |
 |---|---|
-| `@agentforge/evaluation` contracts + `EvaluationFramework` | **Implemented (BP14 Approved)** |
+| `@agentprodready/evaluation` contracts + `EvaluationFramework` | **Implemented (BP14 Approved)** |
 | Five evaluator categories + reference implementations | **Implemented** |
 | Normalization, aggregation, human wait/resume, comparative | **Implemented** |
 | Package unit tests (12 categories) | **Implemented** |
@@ -144,6 +144,6 @@ v0.6 succeeds when:
 
 **Cleared — host productization completed under Autonomous mode.**
 
-Inspected `@agentforge/evaluation@0.1.0` public surface and BP14 Approved report. Existing contracts already cover requests, targets, criteria, policies, five evaluator categories, Runtime execution port, AI normalization port, human wait/resume, composite/comparative, aggregation, diagnostics, events, audit, store, and health.
+Inspected `@agentprodready/evaluation@0.1.0` public surface and BP14 Approved report. Existing contracts already cover requests, targets, criteria, policies, five evaluator categories, Runtime execution port, AI normalization port, human wait/resume, composite/comparative, aggregation, diagnostics, events, audit, store, and health.
 
 v0.6 implementation is host wiring + adapters + tests/docs — not a public contract redesign.

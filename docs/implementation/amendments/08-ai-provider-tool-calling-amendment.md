@@ -4,8 +4,8 @@
 **Status:** Implemented  
 **Date:** 2026-08-07  
 **Implementation Mode:** Review-Gated  
-**Affects:** `@agentforge/ai-provider`, `@agentforge/ai-provider-openai` implementation contracts (not Blueprint 08 constitutional rewrite)  
-**Related:** [v0.9 Tool Calling specification](../specifications/agentforge-v0.9-tool-calling-agent-actions-specification.md)  
+**Affects:** `@agentprodready/ai-provider`, `@agentprodready/ai-provider-openai` implementation contracts (not Blueprint 08 constitutional rewrite)  
+**Related:** [v0.9 Tool Calling specification](../specifications/agentprodready-v0.9-tool-calling-agent-actions-specification.md)  
 **Companion:** [04-runtime-tool-loop-checkpoint-amendment.md](./04-runtime-tool-loop-checkpoint-amendment.md)
 
 ---
@@ -117,7 +117,7 @@ Runtime durable toolLoop
 - Stream: assemble fragments by provider tool_call id → emit complete `NormalizedToolCall` only  
 - Map `AiMessage` with `toolCalls` / `role: 'tool'` → OpenAI assistant/tool messages  
 - Incomplete JSON arguments never cross the execution boundary  
-- SDK types remain private to `@agentforge/ai-provider-openai`  
+- SDK types remain private to `@agentprodready/ai-provider-openai`  
 
 ---
 

@@ -59,7 +59,7 @@ try {
       'Content-Type': 'application/json',
       Accept: 'text/event-stream',
     },
-    body: JSON.stringify({ objective: 'hello agentforge' }),
+    body: JSON.stringify({ objective: 'hello agentprodready' }),
   });
   if (response.status !== 200) {
     throw new Error(`expected 200, got ${String(response.status)}: ${await response.text()}`);
@@ -74,7 +74,7 @@ try {
     .filter((item) => item.event === 'delta')
     .map((item) => item.data.text)
     .join('');
-  if (text !== 'hello agentforge') throw new Error(`unexpected reconstructed text: ${text}`);
+  if (text !== 'hello agentprodready') throw new Error(`unexpected reconstructed text: ${text}`);
   const sequences = events.filter((item) => item.event === 'delta').map((item) => item.data.sequence);
   for (let i = 0; i < sequences.length; i++) {
     if (sequences[i] !== i) throw new Error(`non-contiguous delta sequence at ${String(i)}`);

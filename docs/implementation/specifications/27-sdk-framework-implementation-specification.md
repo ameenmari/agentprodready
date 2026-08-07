@@ -7,7 +7,7 @@
 
 ## Reference Deliverable
 
-`@agentforge/sdk-framework` provides a language-independent core contract and a TypeScript reference binding. Other language bindings require separate product scope.
+`@agentprodready/sdk-framework` provides a language-independent core contract and a TypeScript reference binding. Other language bindings require separate product scope.
 
 ## Client Surface and API Mapping
 

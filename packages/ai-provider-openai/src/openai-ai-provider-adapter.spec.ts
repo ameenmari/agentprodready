@@ -1,6 +1,6 @@
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { AiExecutionRequest } from '@agentforge/ai-provider';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { AiExecutionRequest } from '@agentprodready/ai-provider';
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_OPENAI_MODEL, loadOpenAiProviderConfig } from './config.js';
 import { OpenAiProviderAdapter, type OpenAiChatClient } from './openai-ai-provider-adapter.js';

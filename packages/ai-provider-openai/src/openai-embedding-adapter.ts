@@ -4,8 +4,8 @@ import {
   type AiEmbeddingRequest,
   type NormalizedEmbedding,
   type NormalizedEmbeddingResult,
-} from '@agentforge/ai-provider';
-import type { HealthResult } from '@agentforge/foundation';
+} from '@agentprodready/ai-provider';
+import type { HealthResult } from '@agentprodready/foundation';
 import OpenAI from 'openai';
 import type { OpenAiProviderConfig } from './config.js';
 import { translateError } from './translate-error.js';

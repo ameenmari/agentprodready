@@ -8,7 +8,7 @@
 ## Package
 
 ```text
-Name: @agentforge/composition
+Name: @agentprodready/composition
 Path: packages/composition
 Public entry point: src/index.ts
 ```

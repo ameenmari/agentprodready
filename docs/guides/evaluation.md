@@ -2,7 +2,7 @@
 
 **Version:** 0.6.0
 
-AgentForge Evaluation (Blueprint 14) is the platform quality-assessment engine. Package `@agentforge/evaluation@0.1.0` is complete; v0.6 wires it into the local reference host.
+AgentProdReady Evaluation (Blueprint 14) is the platform quality-assessment engine. Package `@agentprodready/evaluation@0.1.0` is complete; v0.6 wires it into the local reference host.
 
 ## Ownership
 
@@ -97,7 +97,7 @@ pnpm db:migrate
 $env:EVALUATION_ENABLED='true'
 $env:EVALUATION_RESULT_STORE='persistent'
 $env:PERSISTENCE_PROVIDER='postgres'
-$env:DATABASE_URL='postgres://agentforge:agentforge@127.0.0.1:5432/agentforge'
+$env:DATABASE_URL='postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready'
 pnpm start
 
 # suites / probe

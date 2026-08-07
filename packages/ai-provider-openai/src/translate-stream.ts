@@ -1,5 +1,5 @@
-import type { AiExecutionRequest, AiFinishReason, NormalizedAiStreamEvent, NormalizedToolCall } from '@agentforge/ai-provider';
-import { ProviderAdapterError } from '@agentforge/ai-provider';
+import type { AiExecutionRequest, AiFinishReason, NormalizedAiStreamEvent, NormalizedToolCall } from '@agentprodready/ai-provider';
+import { ProviderAdapterError } from '@agentprodready/ai-provider';
 
 /** Internal vendor chunk shape — never exported from package index. */
 export interface OpenAiChatCompletionChunk {

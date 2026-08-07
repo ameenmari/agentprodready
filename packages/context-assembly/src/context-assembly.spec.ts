@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { KnowledgeRetrievalResult } from '@agentforge/knowledge';
-import type { MemoryRetrievalResult } from '@agentforge/memory';
-import type { ExecutionPlan } from '@agentforge/planning';
-import type { WorkflowSnapshot } from '@agentforge/workflow';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { KnowledgeRetrievalResult } from '@agentprodready/knowledge';
+import type { MemoryRetrievalResult } from '@agentprodready/memory';
+import type { ExecutionPlan } from '@agentprodready/planning';
+import type { WorkflowSnapshot } from '@agentprodready/workflow';
 import { describe,expect,it,vi } from 'vitest';
 import { ContextAssemblyEngine,DefaultContextPolicyEvaluator,ExternalContextError,InMemoryContextDiagnostics,InMemoryContextEvents,type ContextAssemblyPolicy,type ContextAssemblyRequest,type ContextPolicyEvaluator,type ContextTelemetry } from './index.js';
 

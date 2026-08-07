@@ -2,7 +2,7 @@
 
 **Status:** Implemented  
 **Blueprint:** 04 Runtime  
-**Product:** AgentForge v1.0  
+**Product:** AgentProdReady v1.0  
 **Related:** `07-capability-resolution-ordered-fallback-amendment.md`
 
 ---

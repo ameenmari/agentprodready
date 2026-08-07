@@ -1,6 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-assignment, require-yield */
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { AiProviderFramework,FactoryAiAdapterResolver,InMemoryAiDiagnostics,InMemoryAiEvents,NormalizedAiError,ProviderAdapterError,ReferenceAiProviderAdapter,type AiExecutionRequest,type AiProviderAdapter } from '../index.js';
 

@@ -1,5 +1,5 @@
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { PlannedTask, TaskDecomposer } from '@agentforge/planning';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { PlannedTask, TaskDecomposer } from '@agentprodready/planning';
 
 /** Maps any objective to a single text-generation task for the reference agent product. */
 export class ReferenceAgentTaskDecomposer implements TaskDecomposer {

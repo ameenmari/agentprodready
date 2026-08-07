@@ -1,5 +1,5 @@
-import type { CreateExecutionContextRequest, ExecutionContext, HealthResult } from '@agentforge/foundation';
-import type { ExecutionScopeFactory } from '@agentforge/composition';
+import type { CreateExecutionContextRequest, ExecutionContext, HealthResult } from '@agentprodready/foundation';
+import type { ExecutionScopeFactory } from '@agentprodready/composition';
 
 export type ExecutionState =
   | 'created'

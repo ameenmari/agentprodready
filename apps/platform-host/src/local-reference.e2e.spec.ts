@@ -52,7 +52,7 @@ describe('local reference e2e', () => {
     expect(response.status).toBe(200);
     const body = (await response.json()) as Record<string, unknown>;
     expect(body['status']).toBe('ok');
-    expect(body['service']).toBe('agentforge-local-reference');
+    expect(body['service']).toBe('agentprodready-local-reference');
   });
 
   it('serves GET /ready', async () => {
@@ -69,13 +69,13 @@ describe('local reference e2e', () => {
         Authorization: authHeader,
         'Content-Type': 'application/json; charset=utf-8',
       },
-      body: JSON.stringify({ objective: 'hello agentforge' }),
+      body: JSON.stringify({ objective: 'hello agentprodready' }),
     });
     expect(response.status).toBe(200);
     const body = (await response.json()) as Record<string, unknown>;
     expect(body['status']).toBe('success');
     const result = body['result'] as Record<string, unknown>;
-    expect(result['text']).toBe('hello agentforge');
+    expect(result['text']).toBe('hello agentprodready');
     const evidence = body['evidence'] as Record<string, unknown>;
     expect(evidence['planId']).toMatch(/^plan:/);
     expect(evidence['workflowId']).toBe('reference-workflow');
@@ -146,7 +146,7 @@ describe('local reference e2e', () => {
         Accept: 'text/event-stream',
         'X-Correlation-Id': 'e2e-stream-correlation',
       },
-      body: JSON.stringify({ objective: 'hello agentforge' }),
+      body: JSON.stringify({ objective: 'hello agentprodready' }),
     });
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toMatch(/text\/event-stream/);
@@ -155,7 +155,7 @@ describe('local reference e2e', () => {
     expect(raw).toContain('event: delta');
     expect(raw).toContain('event: complete');
     expect(raw).toContain('"text":"hello"');
-    expect(raw).toContain('"text":"agentforge"');
+    expect(raw).toContain('"text":"agentprodready"');
     const counts = host.composition.runtimePort.counts;
     expect(counts.accept).toBe(0);
     expect(counts.acceptStream).toBe(1);

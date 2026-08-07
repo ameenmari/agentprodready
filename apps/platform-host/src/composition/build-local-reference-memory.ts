@@ -2,10 +2,10 @@ import {
   FactoryAiEmbeddingAdapterResolver,
   ReferenceEmbeddingAdapter,
   type AiEmbeddingAdapterResolver,
-} from '@agentforge/ai-provider';
-import { OpenAiEmbeddingAdapter } from '@agentforge/ai-provider-openai';
-import type { CapabilityResolver } from '@agentforge/capability-resolution';
-import type { HealthResult } from '@agentforge/foundation';
+} from '@agentprodready/ai-provider';
+import { OpenAiEmbeddingAdapter } from '@agentprodready/ai-provider-openai';
+import type { CapabilityResolver } from '@agentprodready/capability-resolution';
+import type { HealthResult } from '@agentprodready/foundation';
 import {
   InMemoryMemoryDiagnostics,
   InMemoryMemoryEvents,
@@ -21,13 +21,13 @@ import {
   type MemorySearchProvider,
   type MemoryStorageProvider,
   type MemoryTelemetry,
-} from '@agentforge/memory';
-import type { PersistenceProvider } from '@agentforge/persistence';
-import { InMemoryVectorStore, type VectorStorePort } from '@agentforge/vector-store';
+} from '@agentprodready/memory';
+import type { PersistenceProvider } from '@agentprodready/persistence';
+import { InMemoryVectorStore, type VectorStorePort } from '@agentprodready/vector-store';
 import {
   loadVectorPostgresConfig,
   PgvectorVectorStore,
-} from '@agentforge/vector-store-pgvector';
+} from '@agentprodready/vector-store-pgvector';
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
 import {
   OPENAI_EMBEDDING_IMPLEMENTATION_ID,

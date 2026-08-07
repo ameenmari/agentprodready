@@ -10,7 +10,7 @@ import {
   type PersistenceAuthorization,
   type PersistenceScope,
   type TransactionRequest,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import { bootstrapLocalReferenceHost } from './bootstrap-local.js';
 import { loadLocalReferenceConfig } from './config/local-reference-config.js';
 

@@ -25,7 +25,7 @@ Events and governance Audit facts use owner-provided ports. Diagnostics are desc
 
 ## Package
 
-- `@agentforge/api-framework`
+- `@agentprodready/api-framework`
 - `src/index.ts`: contracts and API pipeline.
 - `src/reference.ts`: deterministic versions, schemas, limits, transports, streams, and recorders.
 - `src/api-framework.spec.ts`: acceptance tests.

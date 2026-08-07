@@ -1,10 +1,10 @@
-# AgentForge Documentation
+# AgentProdReady Documentation
 
 **Version:** 1.0
 
-Welcome to the AgentForge documentation.
+Welcome to the AgentProdReady documentation.
 
-This directory contains the complete architectural specification, implementation guidance, engineering standards, and governance documentation for the AgentForge platform.
+This directory contains the complete architectural specification, implementation guidance, engineering standards, and governance documentation for the AgentProdReady platform.
 
 The documentation is organized so that both engineers and AI coding assistants (such as Cursor) can navigate the architecture deterministically.
 
@@ -43,7 +43,7 @@ docs/
 
 ## blueprints/
 
-Contains the constitutional architecture of AgentForge.
+Contains the constitutional architecture of AgentProdReady.
 
 Each blueprint defines one architectural concern and establishes:
 
@@ -141,12 +141,12 @@ Operator-facing guides for product slices.
 
 Product slice definitions.
 
-- [v0.3 PostgreSQL persistence](product/agentforge-v0.3-postgresql-persistence.md)
-- [v0.4 Runtime restart & recovery](product/agentforge-v0.4-runtime-restart-recovery.md)
-- [v0.5 Persistent Memory](product/agentforge-v0.5-persistent-memory.md)
-- [v0.6 Evaluation Framework](product/agentforge-v0.6-evaluation-framework.md)
-- [v0.7 Vector Search & Semantic Memory](product/agentforge-v0.7-vector-search-semantic-memory.md)
-- [v0.8 Streaming Responses](product/agentforge-v0.8-streaming-responses.md)
+- [v0.3 PostgreSQL persistence](product/agentprodready-v0.3-postgresql-persistence.md)
+- [v0.4 Runtime restart & recovery](product/agentprodready-v0.4-runtime-restart-recovery.md)
+- [v0.5 Persistent Memory](product/agentprodready-v0.5-persistent-memory.md)
+- [v0.6 Evaluation Framework](product/agentprodready-v0.6-evaluation-framework.md)
+- [v0.7 Vector Search & Semantic Memory](product/agentprodready-v0.7-vector-search-semantic-memory.md)
+- [v0.8 Streaming Responses](product/agentprodready-v0.8-streaming-responses.md)
 
 ---
 
@@ -251,7 +251,7 @@ Testing
 Implementation Report
 ```
 
-This workflow applies to every framework in AgentForge.
+This workflow applies to every framework in AgentProdReady.
 
 ---
 
@@ -419,7 +419,7 @@ Documentation must remain synchronized with implementation.
 
 # Final Principle
 
-Documentation is considered part of the AgentForge platform.
+Documentation is considered part of the AgentProdReady platform.
 
 The documentation defines **how the platform should exist**.
 

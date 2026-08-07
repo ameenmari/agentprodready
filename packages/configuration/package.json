@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/configuration",
+  "name": "@agentprodready/configuration",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,13 +12,29 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/security": "workspace:*",
-    "@agentforge/event-bus": "workspace:*",
-    "@agentforge/audit": "workspace:*",
-    "@agentforge/agent-framework": "workspace:*",
-    "@agentforge/observability": "workspace:*"
+    "@agentprodready/security": "workspace:*",
+    "@agentprodready/event-bus": "workspace:*",
+    "@agentprodready/audit": "workspace:*",
+    "@agentprodready/agent-framework": "workspace:*",
+    "@agentprodready/observability": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

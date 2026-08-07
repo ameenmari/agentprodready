@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 22 is implemented as `@agentforge/observability`: a provider-independent operational visibility framework for normalized logs, aggregated metrics, completed traces/spans, health reports/transitions, descriptive diagnostics, correlation, snapshots, scoped queries, provider replacement, concise events, and normalized failures. It does not execute or recover work, decide authorization, route events, create Audit Records, own business facts, or modify Agent lifecycle.
+Blueprint 22 is implemented as `@agentprodready/observability`: a provider-independent operational visibility framework for normalized logs, aggregated metrics, completed traces/spans, health reports/transitions, descriptive diagnostics, correlation, snapshots, scoped queries, provider replacement, concise events, and normalized failures. It does not execute or recover work, decide authorization, route events, create Audit Records, own business facts, or modify Agent lifecycle.
 
 ## Delivered Artifacts
 

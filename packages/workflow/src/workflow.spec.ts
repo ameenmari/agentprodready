@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { ExecutionPlanWorkflowAdapter,InMemoryWorkflowFacts,InMemoryWorkflowSnapshots,NoopWorkflowTelemetry,RuntimeWorkflowAdapter,WorkflowEngine,WorkflowError,type WorkflowGraph } from './index.js';
 

@@ -4,8 +4,8 @@ import {
   type AiProviderAdapter,
   type NormalizedAiResult,
   type NormalizedAiStreamEvent,
-} from '@agentforge/ai-provider';
-import type { HealthResult } from '@agentforge/foundation';
+} from '@agentprodready/ai-provider';
+import type { HealthResult } from '@agentprodready/foundation';
 import OpenAI from 'openai';
 import type { OpenAiProviderConfig } from './config.js';
 import { OPENAI_AI_ID } from './config.js';

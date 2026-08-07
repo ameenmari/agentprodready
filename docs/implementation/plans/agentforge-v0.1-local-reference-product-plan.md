@@ -1,4 +1,4 @@
-# AgentForge v0.1 Local Reference Product — Implementation Plan
+# AgentProdReady v0.1 Local Reference Product — Implementation Plan
 
 **Document Type:** Product Implementation Plan  
 **Product Version:** 0.1.0  
@@ -11,7 +11,7 @@
 
 # Objective
 
-Compose the existing Blueprint 01–31 framework packages into the smallest locally runnable AgentForge reference product. The product must expose three HTTP endpoints, seed one deterministic reference agent, and prove the constitutional execution chain without external dependencies.
+Compose the existing Blueprint 01–31 framework packages into the smallest locally runnable AgentProdReady reference product. The product must expose three HTTP endpoints, seed one deterministic reference agent, and prove the constitutional execution chain without external dependencies.
 
 This is a **product composition** task, not a framework redesign.
 
@@ -28,7 +28,7 @@ This is a **product composition** task, not a framework redesign.
 | docs/implementation/implementation-modes.md | Yes |
 | docs/architecture/dependency-graph.md | Yes |
 | docs/implementation/reviews/local-runnability-assessment.md | Yes |
-| docs/product/agentforge-v0.1-local-reference-product.md | Yes |
+| docs/product/agentprodready-v0.1-local-reference-product.md | Yes |
 | Blueprints 01, 03, 04, 05, 06, 07, 08, 15, 16, 17, 18, 22, 23, 24, 26 | Yes |
 | ADR-001 through ADR-015 | Yes |
 | Existing implementation reports 01–31 | Yes |
@@ -68,20 +68,20 @@ Hard dependencies are already implemented:
 
 | Blueprint | Package | Use |
 |---|---|---|
-| 01 | `@agentforge/foundation` | Host, ExecutionContext, health |
-| 03 | `@agentforge/composition` | CompositionRoot, execution scopes |
-| 04 | `@agentforge/runtime` | RuntimeOrchestrator |
-| 05 | `@agentforge/planning` | PlanningEngine |
-| 06 | `@agentforge/workflow` | WorkflowEngine |
-| 07 | `@agentforge/capability-resolution` | CapabilityResolver |
-| 08 | `@agentforge/ai-provider` | AiProviderFramework + reference adapter |
-| 15 | `@agentforge/security` | SecurityPlatform |
-| 16 | `@agentforge/event-bus` | EventBus |
-| 17 | `@agentforge/audit` | AuditPlatform |
-| 18 | `@agentforge/agent-framework` | AgentFramework |
-| 22 | `@agentforge/observability` | Observability providers |
-| 24 | `@agentforge/persistence` | In-memory persistence (optional snapshots) |
-| 26 | `@agentforge/api-framework` | Normalized API surface |
+| 01 | `@agentprodready/foundation` | Host, ExecutionContext, health |
+| 03 | `@agentprodready/composition` | CompositionRoot, execution scopes |
+| 04 | `@agentprodready/runtime` | RuntimeOrchestrator |
+| 05 | `@agentprodready/planning` | PlanningEngine |
+| 06 | `@agentprodready/workflow` | WorkflowEngine |
+| 07 | `@agentprodready/capability-resolution` | CapabilityResolver |
+| 08 | `@agentprodready/ai-provider` | AiProviderFramework + reference adapter |
+| 15 | `@agentprodready/security` | SecurityPlatform |
+| 16 | `@agentprodready/event-bus` | EventBus |
+| 17 | `@agentprodready/audit` | AuditPlatform |
+| 18 | `@agentprodready/agent-framework` | AgentFramework |
+| 22 | `@agentprodready/observability` | Observability providers |
+| 24 | `@agentprodready/persistence` | In-memory persistence (optional snapshots) |
+| 26 | `@agentprodready/api-framework` | Normalized API surface |
 
 ---
 
@@ -139,7 +139,7 @@ packages/event-bus/src/reference.ts      ← re-export transport (if barrel used
 
 ## Stage 1 — Reference EventTransport
 
-Add `InProcessEventTransport` under `@agentforge/event-bus` reference providers. It implements the existing `EventTransport` port by delegating to an injected `EventBus.publish`. This completes the approved Blueprint 16 contract; it is not new architecture.
+Add `InProcessEventTransport` under `@agentprodready/event-bus` reference providers. It implements the existing `EventTransport` port by delegating to an injected `EventBus.publish`. This completes the approved Blueprint 16 contract; it is not new architecture.
 
 ## Stage 2 — Local Composition
 
@@ -164,7 +164,7 @@ Use Nest HTTP (`NestFactory.create`) with a thin controller mapping:
 
 - Raw HTTP → `ApiFramework` normalization → handlers → product response mapping
 
-Product catalog lives in `apps/platform-host`; do not modify `referenceCatalog` in `@agentforge/api-framework`.
+Product catalog lives in `apps/platform-host`; do not modify `referenceCatalog` in `@agentprodready/api-framework`.
 
 ## Stage 5 — Startup Lifecycle
 
@@ -226,8 +226,8 @@ Replace bootstrap-and-exit with:
 
 After implementation:
 
-- `docs/implementation/reports/agentforge-v0.1-local-reference-product-implementation-report.md`
-- `docs/implementation/checklists/agentforge-v0.1-local-reference-product-checklist.md`
+- `docs/implementation/reports/agentprodready-v0.1-local-reference-product-implementation-report.md`
+- `docs/implementation/checklists/agentprodready-v0.1-local-reference-product-checklist.md`
 
 ---
 

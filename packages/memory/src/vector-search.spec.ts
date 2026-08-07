@@ -4,7 +4,7 @@ import {
   REFERENCE_EMBEDDING_DIMENSIONS,
   REFERENCE_EMBEDDING_MODEL_ID,
   ReferenceEmbeddingAdapter,
-} from '@agentforge/ai-provider';
+} from '@agentprodready/ai-provider';
 import {
   CapabilityRegistry,
   CapabilityResolver,
@@ -14,9 +14,9 @@ import {
   NoopResolutionTelemetry,
   ProviderRegistry,
   StaticResolutionConfiguration,
-} from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
-import { InMemoryVectorStore } from '@agentforge/vector-store';
+} from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import { InMemoryVectorStore } from '@agentprodready/vector-store';
 import { describe, expect, it, vi } from 'vitest';
 import { fuseHybridCandidates } from './hybrid-rrf.js';
 import {
@@ -127,7 +127,7 @@ function seedEmbeddingResolver(): CapabilityResolver {
     Object.freeze({
       id: EMBEDDING_IMPL,
       capabilityId: 'embedding',
-      providerId: 'agentforge-local',
+      providerId: 'agentprodready-local',
       pluginId: 'local-reference',
       contributionId: 'contribution:reference-embedding',
       contractVersions: Object.freeze(['1']),

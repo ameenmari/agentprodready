@@ -1,4 +1,4 @@
--- AgentForge v0.3 Blueprint 24 persistence schema (forward)
+-- AgentProdReady v0.3 Blueprint 24 persistence schema (forward)
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
   id TEXT PRIMARY KEY,

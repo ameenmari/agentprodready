@@ -1,4 +1,4 @@
-# AgentForge v0.3 Durable PostgreSQL Persistence
+# AgentProdReady v0.3 Durable PostgreSQL Persistence
 
 **Version:** 0.3.0  
 **Status:** Implemented  
@@ -9,9 +9,9 @@
 
 ## Purpose
 
-AgentForge v0.3 introduces the first production-capable **durable** persistence provider (PostgreSQL) while preserving Blueprint 24 contracts, Runtime ownership, provider independence, and the deterministic in-memory default used by local development and CI.
+AgentProdReady v0.3 introduces the first production-capable **durable** persistence provider (PostgreSQL) while preserving Blueprint 24 contracts, Runtime ownership, provider independence, and the deterministic in-memory default used by local development and CI.
 
-This slice proves Blueprint 24’s persistence semantics against a real database. It does **not** suddenly persist every AgentForge subsystem.
+This slice proves Blueprint 24’s persistence semantics against a real database. It does **not** suddenly persist every AgentProdReady subsystem.
 
 ---
 
@@ -24,9 +24,9 @@ This slice proves Blueprint 24’s persistence semantics against a real database
 | [ADR-005 — Composition Owns Instantiation](../adrs/ADR-005%20%E2%80%94%20Composition%20Owns%20Instantiation.md) | Provider lifetime |
 | [ADR-006 — Runtime Owns Operational Execution](../adrs/ADR-006%20%E2%80%94%20Runtime%20Owns%20Operational%20Execution.md) | Retry / timeout / recovery |
 | [ADR-012 — Configuration Resolution Is Centralized](../adrs/ADR-012%20%E2%80%94%20Configuration%20Resolution%20Is%20Centralized.md) | Config surface |
-| [Implementation Plan](../implementation/plans/agentforge-v0.3-postgresql-persistence-plan.md) | Approach |
-| [Implementation Specification](../implementation/specifications/agentforge-v0.3-postgresql-persistence-specification.md) | Exact decisions |
-| [Implementation Report](../implementation/reports/agentforge-v0.3-postgresql-persistence-implementation-report.md) | Completion evidence |
+| [Implementation Plan](../implementation/plans/agentprodready-v0.3-postgresql-persistence-plan.md) | Approach |
+| [Implementation Specification](../implementation/specifications/agentprodready-v0.3-postgresql-persistence-specification.md) | Exact decisions |
+| [Implementation Report](../implementation/reports/agentprodready-v0.3-postgresql-persistence-implementation-report.md) | Completion evidence |
 | [Persistence Guide](../guides/persistence.md) | Operator usage |
 
 Blueprints, ADRs, and existing public Persistence Framework contracts remain authoritative. Contract changes are **not** assumed; any required change is a documented stop condition.
@@ -41,8 +41,8 @@ apps/platform-host
         ├── InMemoryPersistenceProvider   (default, non-durable, unchanged)
         └── PostgresPersistenceProvider   (new, durable, additive)
 
-@agentforge/persistence                 ← public contracts / framework (unchanged unless stop condition approved)
-@agentforge/persistence-postgres        ← NEW provider package (pg client internal only)
+@agentprodready/persistence                 ← public contracts / framework (unchanged unless stop condition approved)
+@agentprodready/persistence-postgres        ← NEW provider package (pg client internal only)
 ```
 
 The host selects the provider via configuration. The host must not contain SQL.
@@ -85,7 +85,7 @@ Existing Blueprint 24 `Repository` and `SnapshotStore` surfaces are **synchronou
 - ADR: **not required**
 - Dual `AsyncRepository` APIs / fake-sync bridges: **rejected**
 
-Async I/O contract migration is complete (`@agentforge/persistence@0.2.0`). PostgreSQL provider implementation is complete in this product slice.
+Async I/O contract migration is complete (`@agentprodready/persistence@0.2.0`). PostgreSQL provider implementation is complete in this product slice.
 
 ---
 
@@ -115,5 +115,5 @@ v0.3 succeeds when:
 
 ## Related Artifacts
 
-- Plan: [agentforge-v0.3-postgresql-persistence-plan.md](../implementation/plans/agentforge-v0.3-postgresql-persistence-plan.md)
-- Specification: [agentforge-v0.3-postgresql-persistence-specification.md](../implementation/specifications/agentforge-v0.3-postgresql-persistence-specification.md)
+- Plan: [agentprodready-v0.3-postgresql-persistence-plan.md](../implementation/plans/agentprodready-v0.3-postgresql-persistence-plan.md)
+- Specification: [agentprodready-v0.3-postgresql-persistence-specification.md](../implementation/specifications/agentprodready-v0.3-postgresql-persistence-specification.md)

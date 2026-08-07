@@ -1,6 +1,6 @@
 # Multi-Provider AI Routing (v1.0)
 
-AgentForge selects AI implementations through **Capability Resolution** and records failover attempts in Runtime’s **ProviderAttemptLedger**. There is **no** `AiRouter` / `ProviderRouter` / `ModelRouter`.
+AgentProdReady selects AI implementations through **Capability Resolution** and records failover attempts in Runtime’s **ProviderAttemptLedger**. There is **no** `AiRouter` / `ProviderRouter` / `ModelRouter`.
 
 ## Ownership
 
@@ -82,4 +82,4 @@ pnpm test:routing
 
 - [AI providers](./ai-providers.md)
 - [Configuration](./configuration.md)
-- Product: `docs/product/agentforge-v1.0-production-release.md`
+- Product: `docs/product/agentprodready-v1.0-production-release.md`

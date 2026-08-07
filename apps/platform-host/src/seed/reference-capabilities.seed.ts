@@ -3,14 +3,14 @@ import {
   DeterministicResolutionPolicy,
   ProviderRegistry,
   StaticResolutionConfiguration,
-} from '@agentforge/capability-resolution';
-import { OPENAI_AI_ID } from '@agentforge/ai-provider-openai';
+} from '@agentprodready/capability-resolution';
+import { OPENAI_AI_ID } from '@agentprodready/ai-provider-openai';
 import {
   REFERENCE_COUNTER_CAPABILITY,
   REFERENCE_COUNTER_TOOL_ID,
   REFERENCE_ECHO_CAPABILITY,
   REFERENCE_ECHO_TOOL_ID,
-} from '@agentforge/tool-framework';
+} from '@agentprodready/tool-framework';
 import { REFERENCE_AI_ID } from '../config/local-reference-config.js';
 import type { EmbeddingProviderSelection } from '../config/local-reference-config.js';
 
@@ -53,7 +53,7 @@ export function seedReferenceCapabilities(): {
     Object.freeze({
       id: REFERENCE_AI_ID,
       capabilityId: 'text-generation',
-      providerId: 'agentforge-local',
+      providerId: 'agentprodready-local',
       pluginId: 'local-reference',
       contributionId: 'contribution:reference-ai',
       contractVersions: Object.freeze(['1']),
@@ -68,7 +68,7 @@ export function seedReferenceCapabilities(): {
     Object.freeze({
       id: `${REFERENCE_AI_ID}:evaluation.judge`,
       capabilityId: 'evaluation.judge',
-      providerId: 'agentforge-local',
+      providerId: 'agentprodready-local',
       pluginId: 'local-reference',
       contributionId: 'contribution:reference-ai-judge',
       contractVersions: Object.freeze(['1']),
@@ -83,7 +83,7 @@ export function seedReferenceCapabilities(): {
     Object.freeze({
       id: REFERENCE_EMBEDDING_IMPLEMENTATION_ID,
       capabilityId: 'embedding',
-      providerId: 'agentforge-local',
+      providerId: 'agentprodready-local',
       pluginId: 'local-reference',
       contributionId: 'contribution:reference-ai-embedding',
       contractVersions: Object.freeze(['1']),
@@ -157,7 +157,7 @@ export function seedReferenceCapabilities(): {
       Object.freeze({
         id: tool.id,
         capabilityId: tool.capability,
-        providerId: 'agentforge-local',
+        providerId: 'agentprodready-local',
         pluginId: 'reference-tools',
         contributionId: `contribution:${tool.id}`,
         contractVersions: Object.freeze(['1']),

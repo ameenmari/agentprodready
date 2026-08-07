@@ -1,13 +1,13 @@
 # Changelog
 
-All notable AgentForge product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
+All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
 ## [1.0.0] — Production release
 
 - Multi-provider chat routing via Capability Resolution ordered fallback + Runtime `ProviderAttemptLedger` (no `AiRouter`)
 - Opt-in `AI_ROUTING_MODE=fallback` with `AI_FALLBACK_PROVIDERS`; default `fixed` preserves v0.9
 - Fallback only on retryable `AI_UNAVAILABLE` / `AI_PROVIDER_TIMEOUT` / `AI_RATE_LIMITED`, with stream/tool/embedding safety boundaries
-- Production hardening: graceful shutdown (`SHUTDOWN_TIMEOUT_MS`), JSON body limits (`MAX_JSON_BODY_BYTES`), production LocalReference auth policy (`AGENTFORGE_ALLOW_REFERENCE_AUTH`)
+- Production hardening: graceful shutdown (`SHUTDOWN_TIMEOUT_MS`), JSON body limits (`MAX_JSON_BODY_BYTES`), production LocalReference auth policy (`AGENTPRODREADY_ALLOW_REFERENCE_AUTH`)
 - Ops/security docs: configuration, deployment, security, operations, upgrading, routing guide
 
 ## [0.9.0] — Tool calling & agent actions
@@ -46,7 +46,7 @@ All notable AgentForge product releases are summarized here. Architecture bluepr
 
 ## [0.3.0] — PostgreSQL persistence
 
-- First durable Persistence provider (`@agentforge/persistence-postgres`)
+- First durable Persistence provider (`@agentprodready/persistence-postgres`)
 - In-memory remains default for local/CI
 
 ## [0.2.0] — Real AI provider

@@ -2,7 +2,7 @@
 
 **Status:** Implemented  
 **Blueprint:** 07 Capability Resolution  
-**Product:** AgentForge v1.0  
+**Product:** AgentProdReady v1.0  
 **Related:** `04-runtime-provider-failover-attempt-amendment.md`
 
 ---

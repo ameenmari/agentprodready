@@ -8,7 +8,7 @@
 
 ## Outcome
 
-Blueprint 05 is implemented and verified in `@agentforge/planning`. It transforms objectives into deeply immutable, serializable, provider-neutral, optimized, and validated execution plans and exposes them to Blueprint 04 through `RuntimePlanningAdapter`.
+Blueprint 05 is implemented and verified in `@agentprodready/planning`. It transforms objectives into deeply immutable, serializable, provider-neutral, optimized, and validated execution plans and exposes them to Blueprint 04 through `RuntimePlanningAdapter`.
 
 ## Related Artifacts
 

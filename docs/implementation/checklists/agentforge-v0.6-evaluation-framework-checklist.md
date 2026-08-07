@@ -1,4 +1,4 @@
-# AgentForge v0.6 Evaluation Framework — Checklist
+# AgentProdReady v0.6 Evaluation Framework — Checklist
 
 **Product Version:** 0.6.0  
 **Implementation Mode:** Autonomous  
@@ -6,7 +6,7 @@
 
 ## Contracts / architecture
 
-- [x] Blueprint 14 package `@agentforge/evaluation@0.1.0` left unchanged
+- [x] Blueprint 14 package `@agentprodready/evaluation@0.1.0` left unchanged
 - [x] No Evaluation / Runtime / Persistence / Security public contract amendments
 - [x] No Runtime `ExecutionStage=evaluation`
 - [x] No Evaluation → `pg` / OpenAI / Runtime imports

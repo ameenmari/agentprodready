@@ -1,4 +1,4 @@
-# AgentForge v1.0 Production Release — Implementation Plan
+# AgentProdReady v1.0 Production Release — Implementation Plan
 
 **Document Version:** 1.0  
 **Product Version:** 1.0.0 (target)  
@@ -15,7 +15,7 @@ Implement only:
 1. Multi-provider AI routing (Capability Resolution + Runtime + host wiring)  
 2. Production readiness / release hardening  
 
-No Blueprint redesign. No `@agentforge/ai-router`. No Amendment D. No third paid-provider SDK unless a later amendment revises this plan after approval.
+No Blueprint redesign. No `@agentprodready/ai-router`. No Amendment D. No third paid-provider SDK unless a later amendment revises this plan after approval.
 
 ---
 

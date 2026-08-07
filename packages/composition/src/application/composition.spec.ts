@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ApplicationHost, ExecutionContextFactory } from '@agentforge/foundation';
-import type { CreateExecutionContextRequest, LifecycleComponent } from '@agentforge/foundation';
+import { ApplicationHost, ExecutionContextFactory } from '@agentprodready/foundation';
+import type { CreateExecutionContextRequest, LifecycleComponent } from '@agentprodready/foundation';
 import type { ModuleRegistrar, ServiceLifetime, ServiceRegistration } from '../contracts/composition.js';
 import { EXECUTION_CONTEXT, createServiceToken } from '../contracts/composition.js';
 import { CompositionError } from '../errors/composition-error.js';

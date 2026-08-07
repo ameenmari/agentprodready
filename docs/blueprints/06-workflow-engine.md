@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 06
 Workflow Engine
 
@@ -659,9 +659,9 @@ Workflow telemetry participates in the platform's observability infrastructure.
 Workflow execution remains independent of Runtime scheduling, provider resolution, and business logic.
 26. Chief Architect's Notes
 
-The Workflow Engine is the structural execution layer of AgentForge. Its purpose is not to decide what work should occur—that responsibility belongs to the Planning Engine—nor to decide how execution policies such as retries, timeouts, or concurrency should be applied—that belongs to the Runtime. Instead, the Workflow Engine is responsible for executing the logical graph that bridges planning and runtime orchestration.
+The Workflow Engine is the structural execution layer of AgentProdReady. Its purpose is not to decide what work should occur—that responsibility belongs to the Planning Engine—nor to decide how execution policies such as retries, timeouts, or concurrency should be applied—that belongs to the Runtime. Instead, the Workflow Engine is responsible for executing the logical graph that bridges planning and runtime orchestration.
 
-The Workflow Engine owns workflow semantics, while the Runtime owns execution mechanics. This distinction is a constitutional architectural boundary within AgentForge and must not be violated by future platform components or extensions.
+The Workflow Engine owns workflow semantics, while the Runtime owns execution mechanics. This distinction is a constitutional architectural boundary within AgentProdReady and must not be violated by future platform components or extensions.
 
 A deliberate architectural decision is to make workflows immutable executable artifacts. Once execution begins, the graph cannot be modified. This provides deterministic execution, simplifies debugging, enables future persistence and replay, and establishes a stable contract between planning and execution.
 
@@ -705,7 +705,7 @@ Capability Resolver
         ▼
 Provider / Tool / Knowledge / Memory
 
-This separation is a core architectural principle of AgentForge and must not be violated.
+This separation is a core architectural principle of AgentProdReady and must not be violated.
 
 A.2 Workflow Engine Responsibilities
 

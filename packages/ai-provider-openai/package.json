@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/ai-provider-openai",
+  "name": "@agentprodready/ai-provider-openai",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,11 +12,27 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/ai-provider": "workspace:*",
-    "@agentforge/foundation": "workspace:*",
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
     "openai": "7.4.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

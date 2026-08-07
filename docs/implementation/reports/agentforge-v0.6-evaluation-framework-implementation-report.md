@@ -1,8 +1,8 @@
-# AgentForge v0.6 Evaluation Framework — Implementation Report
+# AgentProdReady v0.6 Evaluation Framework — Implementation Report
 
 **Product Version:** 0.6.0  
-**Evaluation Package Version:** `@agentforge/evaluation@0.1.0` (unchanged)  
-**Platform Host Version:** `@agentforge/platform-host@0.6.0`  
+**Evaluation Package Version:** `@agentprodready/evaluation@0.1.0` (unchanged)  
+**Platform Host Version:** `@agentprodready/platform-host@0.6.0`  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
 **Status:** Complete
@@ -89,7 +89,7 @@ Default local/CI/smoke remain evaluation-off and database-free. Durable results 
 - `.env.example`, `README.md`, `docs/README.md`, `packages/evaluation/README.md`
 - Product / plan / specification status → Implemented
 
-`@agentforge/evaluation` package **source intentionally unchanged**.
+`@agentprodready/evaluation` package **source intentionally unchanged**.
 
 ---
 

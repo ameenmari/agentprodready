@@ -1,8 +1,8 @@
-# AgentForge v0.5 Persistent Memory — Implementation Report
+# AgentProdReady v0.5 Persistent Memory — Implementation Report
 
 **Product Version:** 0.5.0  
-**Memory Package Version:** `@agentforge/memory@0.5.0`  
-**Platform Host Version:** `@agentforge/platform-host@0.5.0`  
+**Memory Package Version:** `@agentprodready/memory@0.5.0`  
+**Platform Host Version:** `@agentprodready/platform-host@0.5.0`  
 **Implementation Mode:** Autonomous  
 **Date:** 2026-08-07  
 **Status:** Complete
@@ -11,7 +11,7 @@
 
 ## Summary
 
-v0.5 adds durable Memory storage via `PersistenceBackedMemoryProvider` in `@agentforge/memory`, using Blueprint 24 repository `memory-records` with **tenant-only** Persistence scope. Memory semantics (lifecycle, ranking, workspace/user/agent authorization, visibility, labels) remain Memory Engine + Security owned. No new PostgreSQL schema, no embeddings/pgvector, no Memory public contract amendment.
+v0.5 adds durable Memory storage via `PersistenceBackedMemoryProvider` in `@agentprodready/memory`, using Blueprint 24 repository `memory-records` with **tenant-only** Persistence scope. Memory semantics (lifecycle, ranking, workspace/user/agent authorization, visibility, labels) remain Memory Engine + Security owned. No new PostgreSQL schema, no embeddings/pgvector, no Memory public contract amendment.
 
 ---
 
@@ -161,8 +161,8 @@ CI additive job: `memory-persistence-postgres` (ephemeral Postgres, no GitHub Se
 
 ## Architectural deviations
 
-1. **Persistence `tsconfig.json` project references cleared** — Persistence source never imported `@agentforge/security`, `@agentforge/observability`, etc., but those project references created a TypeScript cycle once Memory referenced Persistence (`memory → persistence → security → … → context-assembly → memory`). Package.json Blueprint dependencies on Persistence are unchanged. No Persistence public contract change.
-2. Context Assembly proof lives in **platform-host** (not `@agentforge/context-assembly`) to avoid adding a Persistence dependency to Context Assembly.
+1. **Persistence `tsconfig.json` project references cleared** — Persistence source never imported `@agentprodready/security`, `@agentprodready/observability`, etc., but those project references created a TypeScript cycle once Memory referenced Persistence (`memory → persistence → security → … → context-assembly → memory`). Package.json Blueprint dependencies on Persistence are unchanged. No Persistence public contract change.
+2. Context Assembly proof lives in **platform-host** (not `@agentprodready/context-assembly`) to avoid adding a Persistence dependency to Context Assembly.
 
 No Memory/Persistence public contract amendments. No new SQL migrations. No ADR/Blueprint constitutional edits.
 

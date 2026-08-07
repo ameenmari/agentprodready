@@ -7,11 +7,11 @@ import {
   InMemoryEvaluationEvents,
   NoopEvaluationTelemetry,
   UnitIntervalScoreNormalizer,
-} from '@agentforge/evaluation';
+} from '@agentprodready/evaluation';
 import {
   loadPostgresPersistenceConfig,
   PostgresPersistenceProvider,
-} from '@agentforge/persistence-postgres';
+} from '@agentprodready/persistence-postgres';
 import { HostEvaluationAudit } from './local-reference-evaluation-lifecycle.js';
 import { LocalReferenceEvaluatorExecution } from './local-reference-evaluator-execution.js';
 import {

@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/testing-verification",
+  "name": "@agentprodready/testing-verification",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,14 +12,30 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/observability": "workspace:*",
-    "@agentforge/configuration": "workspace:*",
-    "@agentforge/persistence": "workspace:*",
-    "@agentforge/api-framework": "workspace:*",
-    "@agentforge/sdk-framework": "workspace:*",
-    "@agentforge/deployment-framework": "workspace:*"
+    "@agentprodready/observability": "workspace:*",
+    "@agentprodready/configuration": "workspace:*",
+    "@agentprodready/persistence": "workspace:*",
+    "@agentprodready/api-framework": "workspace:*",
+    "@agentprodready/sdk-framework": "workspace:*",
+    "@agentprodready/deployment-framework": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

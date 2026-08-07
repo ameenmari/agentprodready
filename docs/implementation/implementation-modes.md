@@ -1,8 +1,8 @@
-# AgentForge Implementation Modes
+# AgentProdReady Implementation Modes
 
 **Version:** 1.0
 
-This document is the canonical authority for AgentForge implementation execution modes. Every blueprint implementation must declare exactly one mode before work begins.
+This document is the canonical authority for AgentProdReady implementation execution modes. Every blueprint implementation must declare exactly one mode before work begins.
 
 ## Default Mode
 

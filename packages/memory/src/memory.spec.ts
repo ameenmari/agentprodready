@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { ExternalMemoryError,InMemoryMemoryDiagnostics,InMemoryMemoryEvents,InMemoryMemoryProvider,MemoryEngine,NoopMemoryAiPort,NoopMemoryIndexProvider,WeightedMemoryRanking,type MemoryAuthorization,type MemoryCaptureRequest,type MemoryRankingStrategy,type MemoryRecord,type MemoryRetrievalRequest,type MemorySearchProvider,type MemoryTelemetry } from './index.js';
 

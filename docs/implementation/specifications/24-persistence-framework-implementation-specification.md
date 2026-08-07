@@ -19,7 +19,7 @@ Security authorization, Event transport, Audit persistence, Observability, and C
 
 ## Package
 
-- `@agentforge/persistence`
+- `@agentprodready/persistence`
 - `src/index.ts`: public contracts, framework, capability negotiation, unit of work, queries, snapshots, migrations, and errors.
 - `src/reference.ts`: atomic in-memory provider/repository and reference accountability providers.
 - `src/persistence.spec.ts`: acceptance, contract, and integration tests.
@@ -34,7 +34,7 @@ Authoritative amendment:
 
 [docs/implementation/amendments/24-persistence-async-io-contract-amendment.md](../amendments/24-persistence-async-io-contract-amendment.md)
 
-Implemented shapes in `@agentforge/persistence@0.2.0`:
+Implemented shapes in `@agentprodready/persistence@0.2.0`:
 
 - `Repository.find/exists/count/query` → `Promise<...>`
 - `SnapshotStore.save/get` → `Promise<...>`
@@ -43,4 +43,4 @@ Implemented shapes in `@agentforge/persistence@0.2.0`:
 - `PersistenceTransaction.stage` remains synchronous (staging buffer only)
 - No parallel `AsyncRepository` hierarchy; no sync shims; no fake-sync bridges
 
-Blueprint 24 constitutional text is **not** rewritten. No ADR is required. Classification: breaking pre-1.0 implementation-contract change localized to `@agentforge/persistence` and its tests.
+Blueprint 24 constitutional text is **not** rewritten. No ADR is required. Classification: breaking pre-1.0 implementation-contract change localized to `@agentprodready/persistence` and its tests.

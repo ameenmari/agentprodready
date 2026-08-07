@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/foundation",
+  "name": "@agentprodready/foundation",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,7 +12,11 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -23,5 +27,17 @@
     "@nestjs/core": "^11.1.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

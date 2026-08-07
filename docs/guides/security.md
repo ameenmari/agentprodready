@@ -4,7 +4,7 @@
 
 **LocalReference auth is development/demo only.** It is not production authentication.
 
-When `NODE_ENV=production`, the host **fails startup** if LocalReference would be the sole HTTP auth, unless `AGENTFORGE_ALLOW_REFERENCE_AUTH=true` (unsafe escape hatch; logs a warning). Production deployments must plug in a real auth adapter (OAuth/OIDC/etc. are user/plugin-supplied — core does not ship an identity server).
+When `NODE_ENV=production`, the host **fails startup** if LocalReference would be the sole HTTP auth, unless `AGENTPRODREADY_ALLOW_REFERENCE_AUTH=true` (unsafe escape hatch; logs a warning). Production deployments must plug in a real auth adapter (OAuth/OIDC/etc. are user/plugin-supplied — core does not ship an identity server).
 
 Example LocalReference header (local only):
 

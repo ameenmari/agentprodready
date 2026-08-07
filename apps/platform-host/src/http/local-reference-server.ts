@@ -74,7 +74,7 @@ async function handleRequest(
       if (request.method === 'GET' && url.pathname === '/health') {
         const payload = Object.freeze({
           status: 'ok',
-          service: 'agentforge-local-reference',
+          service: 'agentprodready-local-reference',
           version: PRODUCT_VERSION,
           uptimeMs: Date.now() - composition.startedAt,
           correlationId: corr,

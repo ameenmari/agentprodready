@@ -1,6 +1,6 @@
-﻿import type { ExecutionContext,SecurityContextReference } from '@agentforge/foundation';
-import type { PluginPermissionAuthorizer } from '@agentforge/plugin-framework';
-import type { SecurityAuthorizationPort } from '@agentforge/runtime';
+﻿import type { ExecutionContext,SecurityContextReference } from '@agentprodready/foundation';
+import type { PluginPermissionAuthorizer } from '@agentprodready/plugin-framework';
+import type { SecurityAuthorizationPort } from '@agentprodready/runtime';
 
 export type PrincipalType='human'|'agent'|'service'|'workload'|'plugin'|'tool'|'external-system'|'administrator'|'anonymous';
 export type AuthenticationStrength='anonymous'|'single-factor'|'multi-factor'|'hardware-backed';

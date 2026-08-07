@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/vector-store-pgvector",
+  "name": "@agentprodready/vector-store-pgvector",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -13,13 +13,29 @@
   "files": [
     "dist",
     "migrations",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/vector-store": "workspace:*",
+    "@agentprodready/vector-store": "workspace:*",
     "pg": "8.22.0"
   },
   "devDependencies": {
     "@types/pg": "8.20.4"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

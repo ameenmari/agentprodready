@@ -1,4 +1,4 @@
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 
 export type ExecutionStrategy = 'single-step' | 'sequential' | 'parallel' | 'workflow';
 export interface PlanningRequest { readonly objective: string; readonly context: ExecutionContext; readonly signal?: AbortSignal; }

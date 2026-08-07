@@ -3,7 +3,7 @@ import {
   REFERENCE_EMBEDDING_DIMENSIONS,
   REFERENCE_EMBEDDING_MODEL_ID,
   ReferenceEmbeddingAdapter,
-} from '@agentforge/ai-provider';
+} from '@agentprodready/ai-provider';
 import {
   CapabilityRegistry,
   CapabilityResolver,
@@ -13,9 +13,9 @@ import {
   NoopResolutionTelemetry,
   ProviderRegistry,
   StaticResolutionConfiguration,
-} from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
-import type { KnowledgeRetrievalResult } from '@agentforge/knowledge';
+} from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
+import type { KnowledgeRetrievalResult } from '@agentprodready/knowledge';
 import {
   InMemoryMemoryDiagnostics,
   InMemoryMemoryEvents,
@@ -28,8 +28,8 @@ import {
   type MemoryAuthorization,
   type MemoryCaptureRequest,
   type MemoryTelemetry,
-} from '@agentforge/memory';
-import { InMemoryPersistenceProvider } from '@agentforge/persistence';
+} from '@agentprodready/memory';
+import { InMemoryPersistenceProvider } from '@agentprodready/persistence';
 import {
   ContextAssemblyEngine,
   DefaultContextPolicyEvaluator,
@@ -37,10 +37,10 @@ import {
   InMemoryContextEvents,
   type ContextAssemblyPolicy,
   type ContextTelemetry,
-} from '@agentforge/context-assembly';
-import type { ExecutionPlan } from '@agentforge/planning';
-import { InMemoryVectorStore } from '@agentforge/vector-store';
-import type { WorkflowSnapshot } from '@agentforge/workflow';
+} from '@agentprodready/context-assembly';
+import type { ExecutionPlan } from '@agentprodready/planning';
+import { InMemoryVectorStore } from '@agentprodready/vector-store';
+import type { WorkflowSnapshot } from '@agentprodready/workflow';
 import { describe, expect, it, vi } from 'vitest';
 
 const EMBEDDING_IMPL = 'reference-ai:embedding';
@@ -258,7 +258,7 @@ describe('Context Assembly + Persistence-backed Memory', () => {
       Object.freeze({
         id: EMBEDDING_IMPL,
         capabilityId: 'embedding',
-        providerId: 'agentforge-local',
+        providerId: 'agentprodready-local',
         pluginId: 'local-reference',
         contributionId: 'contribution:reference-embedding',
         contractVersions: Object.freeze(['1']),

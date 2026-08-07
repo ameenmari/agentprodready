@@ -1,4 +1,4 @@
-import { AgentFramework, buildAgentDefinition, DeterministicAgentValidator, InMemoryAgentAudit, InMemoryAgentDiagnostics, InMemoryAgentLifecycleStore, InMemoryAgentRegistry } from '@agentforge/agent-framework';
+import { AgentFramework, buildAgentDefinition, DeterministicAgentValidator, InMemoryAgentAudit, InMemoryAgentDiagnostics, InMemoryAgentLifecycleStore, InMemoryAgentRegistry } from '@agentprodready/agent-framework';
 import {
   AuditPlatform,
   InMemoryAuditArchive,
@@ -12,16 +12,16 @@ import {
   InMemoryLegalHoldStore,
   DeterministicHashChainIntegrityProvider,
   DeterministicRetentionResolver,
-} from '@agentforge/audit';
-import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentforge/ai-provider';
-import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentforge/ai-provider-openai';
+} from '@agentprodready/audit';
+import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentprodready/ai-provider';
+import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentprodready/ai-provider-openai';
 import {
   CapabilityResolver,
   InMemoryResolutionDiagnostics,
   InMemoryResolutionEvents,
   NoopResolutionTelemetry,
   validateResolutionRouting,
-} from '@agentforge/capability-resolution';
+} from '@agentprodready/capability-resolution';
 import {
   AiToolCallHandoff,
   FactoryToolAdapterResolver,
@@ -37,8 +37,8 @@ import {
   ToolValidator,
   referenceCounterContract,
   referenceEchoContract,
-} from '@agentforge/tool-framework';
-import { CompositionRoot } from '@agentforge/composition';
+} from '@agentprodready/tool-framework';
+import { CompositionRoot } from '@agentprodready/composition';
 import {
   EventBus,
   createPlatformEvent,
@@ -52,14 +52,14 @@ import {
   DeterministicEventRouter,
   StaticVisibilityAuthorizer,
   InProcessEventTransport,
-} from '@agentforge/event-bus';
-import { HealthService, ReadinessService } from '@agentforge/foundation';
+} from '@agentprodready/event-bus';
+import { HealthService, ReadinessService } from '@agentprodready/foundation';
 import {
   ConsoleLoggingProvider,
   InMemoryLoggingProvider,
   InMemoryMetricsProvider,
   InMemoryTracingProvider,
-} from '@agentforge/observability';
+} from '@agentprodready/observability';
 import {
   CatalogOrGeneratedWorkflowPlanner,
   DeduplicatingPlanOptimizer,
@@ -72,16 +72,16 @@ import {
   TaskCapabilityPlanner,
   TaskStrategySelector,
   NoopPlanningTelemetry,
-} from '@agentforge/planning';
-import { InMemoryPersistenceProvider, type PersistenceProvider } from '@agentforge/persistence';
-import { PostgresPersistenceProvider } from '@agentforge/persistence-postgres';
+} from '@agentprodready/planning';
+import { InMemoryPersistenceProvider, type PersistenceProvider } from '@agentprodready/persistence';
+import { PostgresPersistenceProvider } from '@agentprodready/persistence-postgres';
 import {
   DEFAULT_RECOVERY_POLICY,
   InMemoryRuntimeEventPublisher,
   RuntimeOrchestrator,
   StaticRuntimePolicyProvider,
   type RuntimeStreamEvent,
-} from '@agentforge/runtime';
+} from '@agentprodready/runtime';
 import {
   SecurityPlatform,
   SecurityRuntimeAdapter,
@@ -95,10 +95,10 @@ import {
   InMemorySecurityEvents,
   NoopSecurityTelemetry,
   StaticPolicyResolver,
-} from '@agentforge/security';
-import type { AuthorizationDecision, SecurityContext } from '@agentforge/security';
-import type { EventVisibilityDecision } from '@agentforge/event-bus';
-import { InMemoryWorkflowFacts, InMemoryWorkflowSnapshots, NoopWorkflowTelemetry, RuntimeWorkflowAdapter, WorkflowEngine } from '@agentforge/workflow';
+} from '@agentprodready/security';
+import type { AuthorizationDecision, SecurityContext } from '@agentprodready/security';
+import type { EventVisibilityDecision } from '@agentprodready/event-bus';
+import { InMemoryWorkflowFacts, InMemoryWorkflowSnapshots, NoopWorkflowTelemetry, RuntimeWorkflowAdapter, WorkflowEngine } from '@agentprodready/workflow';
 
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
 import { LOCAL_AGENT_PRINCIPAL, LOCAL_POLICY_VERSION, LOCAL_PROJECT, LOCAL_TENANT, LOCAL_USER, LOCAL_WORKSPACE, REFERENCE_AI_ID } from '../config/local-reference-config.js';

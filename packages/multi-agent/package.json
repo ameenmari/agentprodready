@@ -1,5 +1,5 @@
 {
-  "name": "@agentforge/multi-agent",
+  "name": "@agentprodready/multi-agent",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,17 +12,33 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@agentforge/agent-framework": "workspace:*",
-    "@agentforge/audit": "workspace:*",
-    "@agentforge/capability-resolution": "workspace:*",
-    "@agentforge/evaluation": "workspace:*",
-    "@agentforge/event-bus": "workspace:*",
-    "@agentforge/planning": "workspace:*",
-    "@agentforge/runtime": "workspace:*",
-    "@agentforge/security": "workspace:*",
-    "@agentforge/workflow": "workspace:*"
+    "@agentprodready/agent-framework": "workspace:*",
+    "@agentprodready/audit": "workspace:*",
+    "@agentprodready/capability-resolution": "workspace:*",
+    "@agentprodready/evaluation": "workspace:*",
+    "@agentprodready/event-bus": "workspace:*",
+    "@agentprodready/planning": "workspace:*",
+    "@agentprodready/runtime": "workspace:*",
+    "@agentprodready/security": "workspace:*",
+    "@agentprodready/workflow": "workspace:*"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
   }
 }

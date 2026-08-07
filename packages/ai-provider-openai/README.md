@@ -1,4 +1,4 @@
-# @agentforge/ai-provider-openai
+# @agentprodready/ai-provider-openai
 
 Additive Blueprint 08 provider adapter for OpenAI.
 
@@ -12,4 +12,4 @@ Additive Blueprint 08 provider adapter for OpenAI.
 - Native tool calling (v0.5 / product v0.9): `AiToolDefinition[]` → OpenAI tools; vendor tool_calls → `NormalizedToolCall[]`; continuation messages → assistant `tool_calls` + `role=tool`; streamed fragments assembled before emission
 - SDK retries disabled (`maxRetries: 0`); Runtime owns retry/timeout/cancellation
 
-Higher layers must depend only on `@agentforge/ai-provider` contracts. Hosts must not construct OpenAI tool messages directly. See [Tool Calling guide](../../docs/guides/tools.md) and [Streaming guide](../../docs/guides/streaming.md).
+Higher layers must depend only on `@agentprodready/ai-provider` contracts. Hosts must not construct OpenAI tool messages directly. See [Tool Calling guide](../../docs/guides/tools.md) and [Streaming guide](../../docs/guides/streaming.md).

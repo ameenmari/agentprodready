@@ -1,6 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/explicit-function-return-type */
-import type { CapabilityBinding } from '@agentforge/capability-resolution';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { CapabilityBinding } from '@agentprodready/capability-resolution';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import { describe,expect,it,vi } from 'vitest';
 import { AiAssistedKnowledgeEnricher,ExternalKnowledgeError,FactoryKnowledgeConnectorResolver,FixedSizeChunkingStrategy,InMemoryIngestionCheckpoints,InMemoryKnowledgeConnector,InMemoryKnowledgeDiagnostics,InMemoryKnowledgeEvents,InMemoryKnowledgeIndex,KnowledgeIngestionCoordinator,KnowledgeRetrievalCoordinator,NoopKnowledgeEnricher,PlainTextDocumentNormalizer,StaticRetrievalProviderResolver,type KnowledgeCandidate,type KnowledgeEnricher,type KnowledgeIngestionRequest,type KnowledgeRetrievalRequest,type KnowledgeTelemetry,type RawKnowledgeRecord,type RetrievalStrategyProvider } from './index.js';
 

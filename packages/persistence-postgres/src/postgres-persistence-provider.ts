@@ -5,7 +5,7 @@ import {
   type ProviderCapabilities,
   type Repository,
   type UnitOfWork,
-} from '@agentforge/persistence';
+} from '@agentprodready/persistence';
 import {
   PERSISTENCE_POSTGRES_BOUNDARY_ID,
   PERSISTENCE_POSTGRES_PROVIDER_ID,

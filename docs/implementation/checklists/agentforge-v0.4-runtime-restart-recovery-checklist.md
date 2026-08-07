@@ -1,4 +1,4 @@
-# AgentForge v0.4 Runtime Restart & Recovery — Checklist
+# AgentProdReady v0.4 Runtime Restart & Recovery — Checklist
 
 **Product Version:** 0.4.0  
 **Implementation Mode:** Autonomous  
@@ -31,7 +31,7 @@
 
 - [x] `PersistenceExecutionCheckpointStore` in platform-host
 - [x] Repository `runtime-executions`; no new SQL tables
-- [x] Runtime package independent of `@agentforge/persistence` / `pg`
+- [x] Runtime package independent of `@agentprodready/persistence` / `pg`
 - [x] `InMemoryExecutionCheckpointPort` for deterministic tests
 - [x] `RUNTIME_RECOVERY_ENABLED` default false
 - [x] Boot ordering + readiness gating when recovery enabled

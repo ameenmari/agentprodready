@@ -5,7 +5,7 @@ import type {
   EvaluationSecurityScope,
   EvaluatorRequirement,
   ScoreSchema,
-} from '@agentforge/evaluation';
+} from '@agentprodready/evaluation';
 import { PRODUCT_VERSION } from '../../config/local-reference-config.js';
 
 export const LOCAL_EVALUATION_POLICY_ID = 'evaluation-policy:local';

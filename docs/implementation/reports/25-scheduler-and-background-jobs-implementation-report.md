@@ -7,7 +7,7 @@
 
 ## Outcome
 
-Blueprint 25 is implemented as `@agentforge/scheduler`: a provider-independent framework for immutable jobs/schedules, explicit trigger eligibility, replaceable queues, lifecycle, Runtime dispatch handoff, dispatch-infrastructure retry, dead-letter, expiration, cancellation, events, governance audit references, and diagnostics. It does not execute jobs, progress Workflows, plan, resolve capabilities, authorize operations, invoke Tools/AI, route events, persist Audit records, or own Runtime execution retry/timeout/recovery.
+Blueprint 25 is implemented as `@agentprodready/scheduler`: a provider-independent framework for immutable jobs/schedules, explicit trigger eligibility, replaceable queues, lifecycle, Runtime dispatch handoff, dispatch-infrastructure retry, dead-letter, expiration, cancellation, events, governance audit references, and diagnostics. It does not execute jobs, progress Workflows, plan, resolve capabilities, authorize operations, invoke Tools/AI, route events, persist Audit records, or own Runtime execution retry/timeout/recovery.
 
 ## Delivered Artifacts
 

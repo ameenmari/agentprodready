@@ -1,4 +1,4 @@
-AgentForge
+AgentProdReady
 Engineering Blueprint 01
 Engineering Constitution & Platform Foundation
 
@@ -18,9 +18,9 @@ Cursor AI
 Future Engineering Teams
 1. Purpose
 
-Engineering Blueprint 01 establishes the constitutional engineering rules of the AgentForge platform.
+Engineering Blueprint 01 establishes the constitutional engineering rules of the AgentProdReady platform.
 
-Unlike other Engineering Blueprints, this document does not define a specific subsystem. Instead, it defines the engineering principles, architectural laws, platform boundaries, and development standards that govern every subsystem built within AgentForge.
+Unlike other Engineering Blueprints, this document does not define a specific subsystem. Instead, it defines the engineering principles, architectural laws, platform boundaries, and development standards that govern every subsystem built within AgentProdReady.
 
 Every future blueprint, implementation, plugin, and architectural decision must comply with the rules established in this document unless explicitly superseded by an approved Architecture Decision Record (ADR).
 
@@ -28,7 +28,7 @@ This blueprint serves as the single source of truth for how the platform is engi
 
 2. Scope
 
-This blueprint defines the engineering foundation of AgentForge.
+This blueprint defines the engineering foundation of AgentProdReady.
 
 It establishes:
 
@@ -54,7 +54,7 @@ The implementation details of Runtime, Planning, Workflow, Knowledge, Memory, To
 
 3. Engineering Constitution
 
-The Engineering Constitution defines the permanent architectural rules of AgentForge.
+The Engineering Constitution defines the permanent architectural rules of AgentProdReady.
 
 These rules are intentionally stable and are expected to change only through formal architectural governance.
 
@@ -66,7 +66,7 @@ The purpose of the Constitution is not to restrict innovation—it is to prevent
 
 5. Canonical Terminology
 
-To ensure consistency across all engineering documentation, the following terms have precise meanings within AgentForge.
+To ensure consistency across all engineering documentation, the following terms have precise meanings within AgentProdReady.
 
 Application Host
 
@@ -98,7 +98,7 @@ Plugin
 
 A deployable extension that contributes capabilities, providers, tools, workflow nodes, or integrations to the platform.
 
-Plugins extend AgentForge without requiring changes to the Platform Kernel.
+Plugins extend AgentProdReady without requiring changes to the Platform Kernel.
 
 Execution
 
@@ -124,7 +124,7 @@ Planning decides execution structure before workflows are executed.
 
 Platform Kernel
 
-The logical composition of AgentForge's foundational packages, assembled by the Application Host and Composition Framework.
+The logical composition of AgentProdReady's foundational packages, assembled by the Application Host and Composition Framework.
 
 The Platform Kernel is not an independent domain owner. If represented by a physical bootstrap package, that package remains a thin composition root with no business or cross-cutting responsibility of its own.
 
@@ -138,17 +138,17 @@ Every Platform Module owns exactly one responsibility and collaborates with othe
 6. Platform Vision
 6.1 Vision Statement
 
-AgentForge is an enterprise-grade AI application platform designed to enable organizations to build intelligent, extensible, secure, and provider-independent AI systems.
+AgentProdReady is an enterprise-grade AI application platform designed to enable organizations to build intelligent, extensible, secure, and provider-independent AI systems.
 
 The platform is designed to support the entire lifecycle of AI-powered applications, from planning and orchestration to execution, memory, knowledge retrieval, evaluation, and continuous evolution.
 
-Rather than functioning as a single AI framework or SDK, AgentForge provides a stable platform upon which specialized AI solutions can be built.
+Rather than functioning as a single AI framework or SDK, AgentProdReady provides a stable platform upon which specialized AI solutions can be built.
 
 Its primary objective is to separate business intelligence from infrastructure complexity, allowing applications to evolve without being coupled to specific AI providers, storage technologies, or execution environments.
 
 6.2 Design Goals
 
-Every architectural decision within AgentForge must contribute toward one or more of the following goals.
+Every architectural decision within AgentProdReady must contribute toward one or more of the following goals.
 
 Modularity
 
@@ -209,9 +209,9 @@ Minimal coupling
 Consistent engineering practices
 6.3 Non-Goals
 
-The following responsibilities are intentionally outside the scope of AgentForge.
+The following responsibilities are intentionally outside the scope of AgentProdReady.
 
-AgentForge is not:
+AgentProdReady is not:
 
 A chatbot framework
 A low-code workflow designer
@@ -221,12 +221,12 @@ An LLM SDK
 A vector database
 A model hosting platform
 
-These technologies may integrate with AgentForge, but they are not responsibilities of the platform itself.
+These technologies may integrate with AgentProdReady, but they are not responsibilities of the platform itself.
 
 7. Platform Topology
 7.1 Architectural Style
 
-AgentForge follows a Microkernel (Plugin-Based) Architecture.
+AgentProdReady follows a Microkernel (Plugin-Based) Architecture.
 
 The platform consists of a stable logical Platform Kernel surrounded by independently evolving platform modules and plugins.
 
@@ -268,7 +268,7 @@ Every component communicates through stable contracts defined by their owning fr
 
 7.3 Platform Kernel
 
-The Platform Kernel is the stable logical composition of AgentForge's foundational packages.
+The Platform Kernel is the stable logical composition of AgentProdReady's foundational packages.
 
 It contains no independent domain behavior. It assembles:
 
@@ -291,7 +291,7 @@ It should evolve significantly slower than functional modules.
 
 7.4 Platform Modules
 
-Platform Modules implement the core capabilities of AgentForge.
+Platform Modules implement the core capabilities of AgentProdReady.
 
 Each module owns a single responsibility.
 
@@ -312,7 +312,7 @@ Future modules may be introduced provided they follow the Engineering Constituti
 
 7.5 Plugin Ecosystem
 
-Plugins are the primary extension mechanism of AgentForge.
+Plugins are the primary extension mechanism of AgentProdReady.
 
 Plugins extend the platform by contributing:
 
@@ -360,7 +360,7 @@ Each top-level directory represents a bounded architectural context.
 This organization ensures that ownership, discoverability, and long-term maintenance remain straightforward as the platform grows.
 
 8.2 Repository Structure
-agentforge/
+agentprodready/
 
 ├── src/
 │
@@ -589,7 +589,7 @@ Architectural consistency is prioritized over implementation convenience.
 11. Platform Startup Lifecycle
 11.1 Purpose
 
-AgentForge follows a deterministic startup lifecycle managed exclusively by the Application Host.
+AgentProdReady follows a deterministic startup lifecycle managed exclusively by the Application Host.
 
 Startup is responsible for constructing the platform in a predictable order so that every subsystem starts with its required dependencies available.
 
@@ -799,7 +799,7 @@ The DI Container is owned by the Platform Kernel and configured during startup.
 
 12.2 Service Lifetimes
 
-AgentForge defines three service lifetimes.
+AgentProdReady defines three service lifetimes.
 
 Singleton
 
@@ -876,7 +876,7 @@ This rule preserves thread safety, tenant isolation, and predictable behavior.
 13. Execution Model
 13.1 Purpose
 
-Every request processed by AgentForge follows a standardized execution lifecycle.
+Every request processed by AgentProdReady follows a standardized execution lifecycle.
 
 Execution is coordinated by the Runtime using a single immutable ExecutionContext created by the ExecutionContextFactory.
 
@@ -1017,7 +1017,7 @@ Encryption keys
 15. Plugin Foundation
 15.1 Purpose
 
-Plugins provide the primary extension mechanism for AgentForge.
+Plugins provide the primary extension mechanism for AgentProdReady.
 
 The Plugin Framework owns plugin lifecycle semantics. The Application Host coordinates startup and shutdown, and the logical Platform Kernel composes the Plugin Framework through its public contracts.
 
@@ -1135,7 +1135,7 @@ Capabilities are stable platform contracts and evolve independently of provider 
 
 Security is a first-class platform capability.
 
-Every subsystem within AgentForge executes under the governance of the Security Platform.
+Every subsystem within AgentProdReady executes under the governance of the Security Platform.
 
 Security is never treated as an implementation detail or delegated to individual modules.
 
@@ -1205,7 +1205,7 @@ Observability is considered a platform capability rather than a debugging featur
 
 18.2 Pillars of Observability
 
-AgentForge provides four complementary observability pillars.
+AgentProdReady provides four complementary observability pillars.
 
 Structured Logging
 
@@ -1513,7 +1513,7 @@ Health and Readiness infrastructure is available.
 A minimal platform instance can start, initialize, and shut down successfully without functional engines.
 24. Chief Architect's Notes
 
-Engineering Blueprint 01 is the constitutional document of AgentForge.
+Engineering Blueprint 01 is the constitutional document of AgentProdReady.
 
 It defines the engineering principles, architectural laws, and foundational contracts upon which every subsequent blueprint and implementation is built.
 
@@ -1521,13 +1521,13 @@ The purpose of this blueprint is not to accelerate feature development. Its purp
 
 Future Engineering Blueprints expand upon this foundation by defining the behavior of individual platform capabilities. They must never contradict the Architectural Laws or engineering principles established here without an approved Architecture Decision Record (ADR).
 
-The long-term success of AgentForge depends not only on the quality of its code but on the consistency of its architecture. This blueprint exists to preserve that consistency throughout the lifetime of the platform.
+The long-term success of AgentProdReady depends not only on the quality of its code but on the consistency of its architecture. This blueprint exists to preserve that consistency throughout the lifetime of the platform.
 
 
 Appendix B — Engineering Baseline
 B.1 Purpose
 
-This appendix establishes the mandatory engineering baseline for AgentForge implementations.
+This appendix establishes the mandatory engineering baseline for AgentProdReady implementations.
 
 It defines the default technology stack, repository structure, engineering standards, development tooling, and implementation conventions.
 
@@ -1535,7 +1535,7 @@ Unless explicitly superseded by an approved Architectural Decision Record (ADR),
 
 B.2 Reference Engineering Documents
 
-This blueprint establishes the architectural foundation of AgentForge.
+This blueprint establishes the architectural foundation of AgentProdReady.
 
 Implementation guidance is defined by the following engineering documents:
 
@@ -1553,7 +1553,7 @@ These documents complement the Engineering Blueprints and together form the comp
 
 B.3 Default Technology Stack
 
-The initial implementation of AgentForge should use the following technology stack.
+The initial implementation of AgentProdReady should use the following technology stack.
 
 Category	Technology
 Programming Language	TypeScript
@@ -1584,7 +1584,7 @@ docs/project-structure.md
 
 The high-level structure is:
 
-AgentForge/
+AgentProdReady/
 │
 ├── apps/
 ├── packages/

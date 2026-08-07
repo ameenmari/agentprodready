@@ -1,6 +1,6 @@
 import { once } from 'node:events';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { RuntimeStreamEvent } from '@agentforge/runtime';
+import type { RuntimeStreamEvent } from '@agentprodready/runtime';
 import type { LocalCapabilityExecutionOutput } from '../composition/local-reference-capability-execution.js';
 
 export interface SseStreamOptions {

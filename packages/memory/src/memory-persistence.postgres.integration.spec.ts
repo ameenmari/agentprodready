@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import type { ExecutionContext } from '@agentforge/foundation';
+import type { ExecutionContext } from '@agentprodready/foundation';
 import {
   loadPostgresPersistenceConfig,
   PostgresPersistenceProvider,
-} from '@agentforge/persistence-postgres';
+} from '@agentprodready/persistence-postgres';
 import {
   InMemoryMemoryDiagnostics,
   InMemoryMemoryEvents,
