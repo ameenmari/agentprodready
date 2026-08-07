@@ -1,0 +1,13 @@
+services:
+  agentforge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentforge/platform-host:0.1.0
+    ports:
+      - "3000:3000"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      LOG_LEVEL: "info"
+      REFERENCE_AGENT_ENABLED: "true"

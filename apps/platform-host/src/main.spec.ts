@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { bootstrap } from './main.js';
+import { bootstrapLocalReferenceHost } from './bootstrap-local.js';
 
-describe('minimal platform host', () => {
-  it('starts, initializes dependency injection, and shuts down', async () => {
-    await expect(bootstrap()).resolves.toBeUndefined();
+describe('platform host bootstrap', () => {
+  it('starts and shuts down cleanly', async () => {
+    const host = await bootstrapLocalReferenceHost({
+      host: '127.0.0.1',
+      port: 0,
+      logLevel: 'error',
+      referenceAgentEnabled: true,
+    });
+    expect(await host.composition.readinessService.isReady()).toBe(true);
+    await host.stop();
   });
 });

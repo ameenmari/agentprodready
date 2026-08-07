@@ -29,7 +29,12 @@
       "@agentforge/configuration": ["packages/configuration/src/index.ts"],
       "@agentforge/persistence": ["packages/persistence/src/index.ts"],
       "@agentforge/scheduler": ["packages/scheduler/src/index.ts"],
-      "@agentforge/api-framework": ["packages/api-framework/src/index.ts"]
+      "@agentforge/api-framework": ["packages/api-framework/src/index.ts"],
+      "@agentforge/sdk-framework": ["packages/sdk-framework/src/index.ts"],
+      "@agentforge/cli-framework": ["packages/cli-framework/src/index.ts"],
+      "@agentforge/deployment-framework": ["packages/deployment-framework/src/index.ts"],
+      "@agentforge/testing-verification": ["packages/testing-verification/src/index.ts"],
+      "@agentforge/platform-governance": ["packages/platform-governance/src/index.ts"]
     }
   },
   "include": ["apps/**/*.ts", "packages/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]

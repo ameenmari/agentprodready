@@ -27,6 +27,11 @@
     { "path": "packages/persistence" },
     { "path": "packages/scheduler" },
     { "path": "packages/api-framework" },
+    { "path": "packages/sdk-framework" },
+    { "path": "packages/cli-framework" },
+    { "path": "packages/deployment-framework" },
+    { "path": "packages/testing-verification" },
+    { "path": "packages/platform-governance" },
     { "path": "apps/platform-host" }
   ]
 }

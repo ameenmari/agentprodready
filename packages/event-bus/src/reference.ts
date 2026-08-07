@@ -24,3 +24,5 @@ export class InMemoryPublicationIntentStore implements PublicationIntentStore{re
 function matchesType(type:string,patterns:readonly string[]):boolean{return patterns.includes(type)||patterns.some(value=>value.endsWith('*')&&type.startsWith(value.slice(0,-1)));}
 function matchesFilter(event:PlatformEvent,filter:EventFilter):boolean{return(filter.producers===undefined||filter.producers.includes(event.producer))&&(filter.correlationIds===undefined||filter.correlationIds.includes(event.correlationId))&&(filter.classifications===undefined||filter.classifications.includes(event.security.classification))&&(filter.labels===undefined||filter.labels.every(value=>event.security.labels.includes(value)));}
 function scopeMatches(event:PlatformEvent,subscription:EventSubscription):boolean{return event.scope.tenantId===subscription.scope.tenantId&&(subscription.scope.workspaceId===undefined||event.scope.workspaceId===subscription.scope.workspaceId)&&(subscription.scope.projectId===undefined||event.scope.projectId===subscription.scope.projectId);}
+
+export { InProcessEventTransport } from './reference/in-process-event-transport.js';

@@ -1,6 +1,21 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "rootDir": "src", "outDir": "dist", "composite": true },
-  "references": [{ "path": "../../packages/foundation" }],
+  "references": [
+    { "path": "../../packages/foundation" },
+    { "path": "../../packages/composition" },
+    { "path": "../../packages/runtime" },
+    { "path": "../../packages/planning" },
+    { "path": "../../packages/workflow" },
+    { "path": "../../packages/capability-resolution" },
+    { "path": "../../packages/ai-provider" },
+    { "path": "../../packages/security" },
+    { "path": "../../packages/event-bus" },
+    { "path": "../../packages/audit" },
+    { "path": "../../packages/agent-framework" },
+    { "path": "../../packages/observability" },
+    { "path": "../../packages/persistence" },
+    { "path": "../../packages/memory" }
+  ],
   "include": ["src/**/*.ts"]
 }

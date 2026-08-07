@@ -3,6 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": { "build": "tsc -b", "typecheck": "tsc -b --pretty false", "start": "node dist/main.js" },
-  "dependencies": { "@agentforge/foundation": "workspace:*", "@nestjs/core": "^11.1.6", "reflect-metadata": "^0.2.2" }
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "start": "node dist/bootstrap-local.js",
+    "smoke": "node dist/smoke/smoke.js"
+  },
+  "dependencies": {
+    "@agentforge/agent-framework": "workspace:*",
+    "@agentforge/ai-provider": "workspace:*",
+    "@agentforge/audit": "workspace:*",
+    "@agentforge/capability-resolution": "workspace:*",
+    "@agentforge/composition": "workspace:*",
+    "@agentforge/event-bus": "workspace:*",
+    "@agentforge/foundation": "workspace:*",
+    "@agentforge/memory": "workspace:*",
+    "@agentforge/observability": "workspace:*",
+    "@agentforge/persistence": "workspace:*",
+    "@agentforge/planning": "workspace:*",
+    "@agentforge/runtime": "workspace:*",
+    "@agentforge/security": "workspace:*",
+    "@agentforge/workflow": "workspace:*"
+  }
 }

@@ -8,11 +8,15 @@
     "node": ">=24 <25"
   },
   "scripts": {
+    "dev": "tsc -b --watch --preserveWatchOutput",
+    "start": "pnpm --filter @agentforge/platform-host start",
+    "smoke": "pnpm --filter @agentforge/platform-host smoke",
     "lint": "eslint . --max-warnings 0 && pnpm boundaries",
     "boundaries": "node scripts/verify-boundaries.mjs",
     "typecheck": "tsc --noEmit --project tsconfig.eslint.json --pretty false && tsc -b --pretty false",
     "test": "vitest run --coverage",
     "build": "tsc -b --pretty false",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "format:check": "prettier --check ."
   },
   "devDependencies": {

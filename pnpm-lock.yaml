@@ -38,15 +38,48 @@ importers:
 
   apps/platform-host:
     dependencies:
+      '@agentforge/agent-framework':
+        specifier: workspace:*
+        version: link:../../packages/agent-framework
+      '@agentforge/ai-provider':
+        specifier: workspace:*
+        version: link:../../packages/ai-provider
+      '@agentforge/audit':
+        specifier: workspace:*
+        version: link:../../packages/audit
+      '@agentforge/capability-resolution':
+        specifier: workspace:*
+        version: link:../../packages/capability-resolution
+      '@agentforge/composition':
+        specifier: workspace:*
+        version: link:../../packages/composition
+      '@agentforge/event-bus':
+        specifier: workspace:*
+        version: link:../../packages/event-bus
       '@agentforge/foundation':
         specifier: workspace:*
         version: link:../../packages/foundation
-      '@nestjs/core':
-        specifier: ^11.1.6
-        version: 11.1.28(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
+      '@agentforge/memory':
+        specifier: workspace:*
+        version: link:../../packages/memory
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../../packages/observability
+      '@agentforge/persistence':
+        specifier: workspace:*
+        version: link:../../packages/persistence
+      '@agentforge/planning':
+        specifier: workspace:*
+        version: link:../../packages/planning
+      '@agentforge/runtime':
+        specifier: workspace:*
+        version: link:../../packages/runtime
+      '@agentforge/security':
+        specifier: workspace:*
+        version: link:../../packages/security
+      '@agentforge/workflow':
+        specifier: workspace:*
+        version: link:../../packages/workflow
 
   packages/agent-framework:
     dependencies:
@@ -171,6 +204,24 @@ importers:
         specifier: workspace:*
         version: link:../workflow
 
+  packages/cli-framework:
+    dependencies:
+      '@agentforge/api-framework':
+        specifier: workspace:*
+        version: link:../api-framework
+      '@agentforge/configuration':
+        specifier: workspace:*
+        version: link:../configuration
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@agentforge/plugin-marketplace':
+        specifier: workspace:*
+        version: link:../plugin-marketplace
+      '@agentforge/sdk-framework':
+        specifier: workspace:*
+        version: link:../sdk-framework
+
   packages/composition:
     dependencies:
       '@agentforge/foundation':
@@ -215,6 +266,24 @@ importers:
       '@agentforge/workflow':
         specifier: workspace:*
         version: link:../workflow
+
+  packages/deployment-framework:
+    dependencies:
+      '@agentforge/api-framework':
+        specifier: workspace:*
+        version: link:../api-framework
+      '@agentforge/configuration':
+        specifier: workspace:*
+        version: link:../configuration
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@agentforge/persistence':
+        specifier: workspace:*
+        version: link:../persistence
+      '@agentforge/scheduler':
+        specifier: workspace:*
+        version: link:../scheduler
 
   packages/evaluation:
     dependencies:
@@ -390,6 +459,99 @@ importers:
         specifier: workspace:*
         version: link:../runtime
 
+  packages/platform-governance:
+    dependencies:
+      '@agentforge/agent-framework':
+        specifier: workspace:*
+        version: link:../agent-framework
+      '@agentforge/ai-provider':
+        specifier: workspace:*
+        version: link:../ai-provider
+      '@agentforge/api-framework':
+        specifier: workspace:*
+        version: link:../api-framework
+      '@agentforge/audit':
+        specifier: workspace:*
+        version: link:../audit
+      '@agentforge/capability-resolution':
+        specifier: workspace:*
+        version: link:../capability-resolution
+      '@agentforge/cli-framework':
+        specifier: workspace:*
+        version: link:../cli-framework
+      '@agentforge/composition':
+        specifier: workspace:*
+        version: link:../composition
+      '@agentforge/configuration':
+        specifier: workspace:*
+        version: link:../configuration
+      '@agentforge/context-assembly':
+        specifier: workspace:*
+        version: link:../context-assembly
+      '@agentforge/deployment-framework':
+        specifier: workspace:*
+        version: link:../deployment-framework
+      '@agentforge/evaluation':
+        specifier: workspace:*
+        version: link:../evaluation
+      '@agentforge/event-bus':
+        specifier: workspace:*
+        version: link:../event-bus
+      '@agentforge/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      '@agentforge/human-interaction':
+        specifier: workspace:*
+        version: link:../human-interaction
+      '@agentforge/knowledge':
+        specifier: workspace:*
+        version: link:../knowledge
+      '@agentforge/memory':
+        specifier: workspace:*
+        version: link:../memory
+      '@agentforge/multi-agent':
+        specifier: workspace:*
+        version: link:../multi-agent
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@agentforge/persistence':
+        specifier: workspace:*
+        version: link:../persistence
+      '@agentforge/planning':
+        specifier: workspace:*
+        version: link:../planning
+      '@agentforge/plugin-framework':
+        specifier: workspace:*
+        version: link:../plugin-framework
+      '@agentforge/plugin-marketplace':
+        specifier: workspace:*
+        version: link:../plugin-marketplace
+      '@agentforge/prompt-builder':
+        specifier: workspace:*
+        version: link:../prompt-builder
+      '@agentforge/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@agentforge/scheduler':
+        specifier: workspace:*
+        version: link:../scheduler
+      '@agentforge/sdk-framework':
+        specifier: workspace:*
+        version: link:../sdk-framework
+      '@agentforge/security':
+        specifier: workspace:*
+        version: link:../security
+      '@agentforge/testing-verification':
+        specifier: workspace:*
+        version: link:../testing-verification
+      '@agentforge/tool-framework':
+        specifier: workspace:*
+        version: link:../tool-framework
+      '@agentforge/workflow':
+        specifier: workspace:*
+        version: link:../workflow
+
   packages/plugin-framework:
     dependencies:
       '@agentforge/foundation':
@@ -459,6 +621,18 @@ importers:
         specifier: workspace:*
         version: link:../security
 
+  packages/sdk-framework:
+    dependencies:
+      '@agentforge/api-framework':
+        specifier: workspace:*
+        version: link:../api-framework
+      '@agentforge/configuration':
+        specifier: workspace:*
+        version: link:../configuration
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../observability
+
   packages/security:
     dependencies:
       '@agentforge/capability-resolution':
@@ -479,6 +653,27 @@ importers:
       '@agentforge/runtime':
         specifier: workspace:*
         version: link:../runtime
+
+  packages/testing-verification:
+    dependencies:
+      '@agentforge/api-framework':
+        specifier: workspace:*
+        version: link:../api-framework
+      '@agentforge/configuration':
+        specifier: workspace:*
+        version: link:../configuration
+      '@agentforge/deployment-framework':
+        specifier: workspace:*
+        version: link:../deployment-framework
+      '@agentforge/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@agentforge/persistence':
+        specifier: workspace:*
+        version: link:../persistence
+      '@agentforge/sdk-framework':
+        specifier: workspace:*
+        version: link:../sdk-framework
 
   packages/tool-framework:
     dependencies:

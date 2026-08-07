@@ -1,0 +1,43 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "composite": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    { "path": "../foundation" },
+    { "path": "../plugin-framework" },
+    { "path": "../composition" },
+    { "path": "../runtime" },
+    { "path": "../planning" },
+    { "path": "../workflow" },
+    { "path": "../capability-resolution" },
+    { "path": "../ai-provider" },
+    { "path": "../tool-framework" },
+    { "path": "../knowledge" },
+    { "path": "../memory" },
+    { "path": "../context-assembly" },
+    { "path": "../prompt-builder" },
+    { "path": "../evaluation" },
+    { "path": "../security" },
+    { "path": "../event-bus" },
+    { "path": "../audit" },
+    { "path": "../agent-framework" },
+    { "path": "../multi-agent" },
+    { "path": "../human-interaction" },
+    { "path": "../plugin-marketplace" },
+    { "path": "../observability" },
+    { "path": "../configuration" },
+    { "path": "../persistence" },
+    { "path": "../scheduler" },
+    { "path": "../api-framework" },
+    { "path": "../sdk-framework" },
+    { "path": "../cli-framework" },
+    { "path": "../deployment-framework" },
+    { "path": "../testing-verification" }
+  ]
+}

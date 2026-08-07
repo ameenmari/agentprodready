@@ -1,0 +1,49 @@
+{
+  "name": "@agentforge/platform-governance",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentforge/foundation": "workspace:*",
+    "@agentforge/plugin-framework": "workspace:*",
+    "@agentforge/composition": "workspace:*",
+    "@agentforge/runtime": "workspace:*",
+    "@agentforge/planning": "workspace:*",
+    "@agentforge/workflow": "workspace:*",
+    "@agentforge/capability-resolution": "workspace:*",
+    "@agentforge/ai-provider": "workspace:*",
+    "@agentforge/tool-framework": "workspace:*",
+    "@agentforge/knowledge": "workspace:*",
+    "@agentforge/memory": "workspace:*",
+    "@agentforge/context-assembly": "workspace:*",
+    "@agentforge/prompt-builder": "workspace:*",
+    "@agentforge/evaluation": "workspace:*",
+    "@agentforge/security": "workspace:*",
+    "@agentforge/event-bus": "workspace:*",
+    "@agentforge/audit": "workspace:*",
+    "@agentforge/agent-framework": "workspace:*",
+    "@agentforge/multi-agent": "workspace:*",
+    "@agentforge/human-interaction": "workspace:*",
+    "@agentforge/plugin-marketplace": "workspace:*",
+    "@agentforge/observability": "workspace:*",
+    "@agentforge/configuration": "workspace:*",
+    "@agentforge/persistence": "workspace:*",
+    "@agentforge/scheduler": "workspace:*",
+    "@agentforge/api-framework": "workspace:*",
+    "@agentforge/sdk-framework": "workspace:*",
+    "@agentforge/cli-framework": "workspace:*",
+    "@agentforge/deployment-framework": "workspace:*",
+    "@agentforge/testing-verification": "workspace:*"
+  }
+}

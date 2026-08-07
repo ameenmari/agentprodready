@@ -1,0 +1,24 @@
+{
+  "name": "@agentforge/deployment-framework",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@agentforge/observability": "workspace:*",
+    "@agentforge/configuration": "workspace:*",
+    "@agentforge/persistence": "workspace:*",
+    "@agentforge/scheduler": "workspace:*",
+    "@agentforge/api-framework": "workspace:*"
+  }
+}
