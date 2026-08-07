@@ -50,7 +50,7 @@ jobs:
       - name: Compute tags
         id: meta
         run: |
-          echo "version=0.1.0" >> "$GITHUB_OUTPUT"
+          echo "version=0.2.0" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
@@ -73,7 +73,7 @@ jobs:
             -e PORT=3000 \
             -e LOG_LEVEL=error \
             -e REFERENCE_AGENT_ENABLED=true \
-            agentforge/platform-host:0.1.0
+            agentforge/platform-host:0.2.0
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container
