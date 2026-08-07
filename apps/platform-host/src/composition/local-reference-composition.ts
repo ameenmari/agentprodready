@@ -55,7 +55,7 @@ import {
 import { InMemoryPersistenceProvider, type PersistenceProvider } from '@agentforge/persistence';
 import { PostgresPersistenceProvider } from '@agentforge/persistence-postgres';
 import {
-  InMemoryExecutionSnapshotPort,
+  DEFAULT_RECOVERY_POLICY,
   InMemoryRuntimeEventPublisher,
   RuntimeOrchestrator,
   StaticRuntimePolicyProvider,
@@ -110,6 +110,7 @@ import {
   parseLocalReferenceAuth,
 } from './local-reference-security.js';
 import { LocalReferenceRuntimePort } from './local-reference-runtime-port.js';
+import { PersistenceExecutionCheckpointStore } from './persistence-execution-checkpoint-store.js';
 import { ReferenceAgentTaskDecomposer } from './reference-task-decomposer.js';
 import { ReferenceWorkflowCatalog } from './reference-workflow-catalog.js';
 
@@ -120,6 +121,20 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 
   const compositionRoot = new CompositionRoot();
   compositionRoot.build();
+
+  const persistence: PersistenceProvider =
+    config.persistenceProvider === 'postgres'
+      ? new PostgresPersistenceProvider(
+          config.postgres ??
+            ((): never => {
+              throw new Error('postgres config missing for PERSISTENCE_PROVIDER=postgres');
+            })(),
+        )
+      : new InMemoryPersistenceProvider();
+  const checkpointStore = new PersistenceExecutionCheckpointStore(
+    persistence,
+    Object.freeze({ tenantId: LOCAL_TENANT, workspaceId: LOCAL_WORKSPACE }),
+  );
 
   const selectedImplementationId = selectedAiImplementationId(config.aiProvider);
   const { capabilities, providers } = seedReferenceCapabilities();
@@ -169,6 +184,12 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 
   const runtimeEvents = new InMemoryRuntimeEventPublisher();
   const authorizationDecisions = new Map<string, AuthorizationDecision>();
+  const logs = new InMemoryLoggingProvider();
+  const consoleLogs = new ConsoleLoggingProvider((line) => {
+    process.stderr.write(`${line}\n`);
+  });
+  const metrics = new InMemoryMetricsProvider();
+  const traces = new InMemoryTracingProvider();
 
   const securityPlatform = new SecurityPlatform(
     new StaticPolicyResolver(localReferenceSecurityPolicies()),
@@ -190,6 +211,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       maxAttempts: 1,
       maxConcurrency: 4,
       isRetryable: (): boolean => false,
+      recovery: DEFAULT_RECOVERY_POLICY,
     }),
     planning: new RuntimePlanningAdapter(planningEngine),
     workflow: workflowAdapter,
@@ -204,8 +226,35 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
       transition: (): void => {},
       completed: (): void => {},
       failed: (): void => {},
+      recovery: (kind, executionId): void => {
+        const at = new Date().toISOString();
+        void metrics.record(
+          Object.freeze({
+            id: `metric:runtime.recovery.${kind}:${executionId}:${at}`,
+            name: `runtime.recovery.${kind}`,
+            kind: 'counter' as const,
+            value: 1,
+            unit: 'count',
+            timestamp: at,
+            component: 'runtime',
+            correlation: Object.freeze({
+              correlationId: executionId,
+              causationId: null,
+              tenantId: LOCAL_TENANT,
+              workspaceId: LOCAL_WORKSPACE,
+              executionReference: executionId,
+            }),
+            labels: Object.freeze({ executionId }),
+            aggregatedObservation: true as const,
+          }),
+        );
+        void writeOperationalLog(logs, executionId, `runtime.recovery.${kind}`, {
+          kind,
+          executionId,
+        });
+      },
     },
-    snapshots: new InMemoryExecutionSnapshotPort(),
+    checkpoints: checkpointStore,
   });
 
   const runtimePort = new LocalReferenceRuntimePort(runtime, securityContexts);
@@ -267,21 +316,6 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     telemetry: new InMemoryAuditTelemetry(),
   });
 
-  const logs = new InMemoryLoggingProvider();
-  const consoleLogs = new ConsoleLoggingProvider((line) => {
-    process.stderr.write(`${line}\n`);
-  });
-  const metrics = new InMemoryMetricsProvider();
-  const traces = new InMemoryTracingProvider();
-  const persistence: PersistenceProvider =
-    config.persistenceProvider === 'postgres'
-      ? new PostgresPersistenceProvider(
-          config.postgres ??
-            ((): never => {
-              throw new Error('postgres config missing for PERSISTENCE_PROVIDER=postgres');
-            })(),
-        )
-      : new InMemoryPersistenceProvider();
   const memory = new InMemoryMemoryProvider();
   const healthService = new HealthService(
     createHealthContributors({
@@ -297,22 +331,53 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
   const readinessService = new ReadinessService(healthService);
 
   async function seed(): Promise<void> {
+    // Readiness stays false until persistence (when required) and optional boot recovery finish.
     if (persistence instanceof PostgresPersistenceProvider) {
-      await persistence.assertReady();
+      try {
+        await persistence.assertReady();
+      } catch (error) {
+        if (config.runtimeRecoveryEnabled) {
+          const message = error instanceof Error ? error.message : 'persistence unavailable';
+          throw new Error(`Durable runtime recovery enabled but PostgreSQL is unavailable: ${message}`);
+        }
+        throw error;
+      }
     }
-    if (!config.referenceAgentEnabled) {
-      ready = true;
-      return;
+
+    if (config.referenceAgentEnabled) {
+      const definition = buildAgentDefinition(referenceAgentManifest(), ['local-validation-1']);
+      const validation = agentFramework.validate(definition, referenceValidationCatalog());
+      await agentFramework.register(definition, validation, seedAuthorization('register'), LOCAL_USER, new Date().toISOString());
+      await agentFramework.transition(definition.agentId, definition.version, definition.scope, 'approved', seedAuthorization('lifecycle'), 'approved', new Date().toISOString());
+      await agentFramework.transition(definition.agentId, definition.version, definition.scope, 'active', seedAuthorization('lifecycle'), 'activated', new Date().toISOString(), {
+        approvalReference: 'approval:local',
+        evaluationReference: 'evaluation:local',
+        compatibilityReference: 'compatibility:local',
+      });
     }
-    const definition = buildAgentDefinition(referenceAgentManifest(), ['local-validation-1']);
-    const validation = agentFramework.validate(definition, referenceValidationCatalog());
-    await agentFramework.register(definition, validation, seedAuthorization('register'), LOCAL_USER, new Date().toISOString());
-    await agentFramework.transition(definition.agentId, definition.version, definition.scope, 'approved', seedAuthorization('lifecycle'), 'approved', new Date().toISOString());
-    await agentFramework.transition(definition.agentId, definition.version, definition.scope, 'active', seedAuthorization('lifecycle'), 'activated', new Date().toISOString(), {
-      approvalReference: 'approval:local',
-      evaluationReference: 'evaluation:local',
-      compatibilityReference: 'compatibility:local',
-    });
+
+    if (config.runtimeRecoveryEnabled) {
+      try {
+        const recovery = await runtime.recoverIncomplete();
+        await writeOperationalLog(logs, 'boot-recovery', 'runtime.recoverIncomplete completed', {
+          examined: recovery.examined,
+          resumed: recovery.resumed,
+          failed: recovery.failed,
+          deferred: recovery.deferred,
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'boot recovery failed';
+        await writeOperationalLog(logs, 'boot-recovery', 'runtime.recoverIncomplete failed', {
+          error: message,
+        });
+        if (config.persistenceProvider === 'postgres') {
+          // Durable recovery explicitly enabled: do not become ready.
+          throw new Error(`Runtime recovery initialization failed: ${message}`);
+        }
+        throw error;
+      }
+    }
+
     ready = true;
   }
 

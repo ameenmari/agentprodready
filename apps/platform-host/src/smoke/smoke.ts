@@ -13,6 +13,7 @@ async function main(): Promise<void> {
     referenceAgentEnabled: true,
     aiProvider: 'reference',
     persistenceProvider: 'in-memory',
+    runtimeRecoveryEnabled: false,
   });
 
   const address = host.server.address();

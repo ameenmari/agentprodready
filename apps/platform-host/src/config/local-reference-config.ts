@@ -17,6 +17,8 @@ export interface LocalReferenceConfig {
   readonly openAi?: OpenAiProviderConfig;
   readonly persistenceProvider: PersistenceProviderSelection;
   readonly postgres?: PostgresPersistenceConfig;
+  /** Boot-time Runtime.recoverIncomplete. Default false. */
+  readonly runtimeRecoveryEnabled: boolean;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -28,7 +30,7 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.3.0';
+export const PRODUCT_VERSION = '0.4.0';
 
 export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): LocalReferenceConfig {
   const port = Number.parseInt(env['PORT'] ?? '3000', 10);
@@ -60,5 +62,6 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     ...(openAi === undefined ? {} : { openAi }),
     persistenceProvider,
     ...(postgres === undefined ? {} : { postgres }),
+    runtimeRecoveryEnabled: (env['RUNTIME_RECOVERY_ENABLED'] ?? 'false') === 'true',
   });
 }

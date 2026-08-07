@@ -1,8 +1,10 @@
 # Persistence Providers
 
-**Version:** 0.3.0
+**Version:** 0.3.0 (storage) / 0.4.0 (Runtime checkpoint rows)
 
 AgentForge persistence is provider-independent (Blueprint 24). Composition selects one `PersistenceProvider`.
+
+Runtime restart checkpoints (v0.4) are stored as ordinary repository entities in `runtime-executions` — see [runtime-recovery.md](./runtime-recovery.md). No Runtime-specific PostgreSQL tables are added.
 
 ## Selection
 
@@ -58,15 +60,19 @@ PERSISTENCE_ALLOW_RESET=1 pnpm db:reset:test
 
 Host startup never auto-migrates. Production should treat SQL migrations as forward-oriented; down migrations are for local/test reset.
 
-## Durability scope (v0.3)
+## Durability scope
 
-Durable: generic entities, Blueprint 24 snapshots, migration records.  
-**Not** durable yet: Runtime execution recovery, agents, audit, events, memory, knowledge, OpenAI state.
+| Concern | Durable when `PERSISTENCE_PROVIDER=postgres` |
+|---|---|
+| Generic entities / Blueprint 24 snapshots / migrations | Yes (v0.3) |
+| Runtime `ExecutionCheckpoint` in `runtime-executions` | Yes (v0.4) — recovery still owned by Runtime |
+| Agents, audit journal, event journal, memory, knowledge, OpenAI adapter state | No |
 
 ## CI
 
 - `verify` / `docker`: in-memory only, no DB secrets  
 - `persistence-postgres`: ephemeral Postgres service + migrate + `pnpm test:postgres`
+- `runtime-recovery-postgres`: ephemeral Postgres + `pnpm test:runtime-recovery`
 
 ## Packages
 

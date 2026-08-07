@@ -1,9 +1,9 @@
 # Blueprint 04 Implementation Contract Amendment — Execution Checkpoints for Restart Recovery
 
 **Amendment ID:** `04-runtime-execution-checkpoint`  
-**Status:** In Review  
+**Status:** Implemented  
 **Date:** 2026-08-07  
-**Implementation Mode:** Review-Gated  
+**Implementation Mode:** Autonomous (design was Review-Gated; implementation authorized)  
 **Affects:** `@agentforge/runtime` implementation contracts (not Blueprint 04 constitutional text)  
 **Related:** [v0.4 Runtime Restart & Recovery specification](../specifications/agentforge-v0.4-runtime-restart-recovery-specification.md)
 

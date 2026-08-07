@@ -39,5 +39,12 @@
       "@agentforge/platform-governance": ["packages/platform-governance/src/index.ts"]
     }
   },
-  "include": ["apps/**/*.ts", "packages/**/*.ts", "tests/**/*.ts", "vitest.config.ts", "vitest.postgres.config.ts"]
+  "include": [
+    "apps/**/*.ts",
+    "packages/**/*.ts",
+    "tests/**/*.ts",
+    "vitest.config.ts",
+    "vitest.postgres.config.ts",
+    "vitest.runtime-recovery.config.ts"
+  ]
 }

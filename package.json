@@ -23,7 +23,8 @@
     "db:migrate": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js migrate",
     "db:status": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js status",
     "db:reset:test": "pnpm --filter @agentforge/persistence-postgres exec node dist/cli.js reset",
-    "test:postgres": "node scripts/run-postgres-tests.mjs"
+    "test:postgres": "node scripts/run-postgres-tests.mjs",
+    "test:runtime-recovery": "node scripts/run-runtime-recovery-tests.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
