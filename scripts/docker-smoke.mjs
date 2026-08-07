@@ -1,10 +1,21 @@
 #!/usr/bin/env node
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 
 const baseUrl = process.argv[2];
 if (baseUrl === undefined || baseUrl.trim() === '') {
   process.stderr.write('Usage: node scripts/docker-smoke.mjs <baseUrl>\n');
   process.exit(1);
+}
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const expectedVersion = JSON.parse(
+  readFileSync(join(root, 'apps/platform-host/package.json'), 'utf8'),
+).version;
+if (typeof expectedVersion !== 'string' || expectedVersion.trim() === '') {
+  throw new Error('apps/platform-host/package.json is missing a version field');
 }
 
 const authHeader = 'LocalReference principalId=local-user;tenantId=local-tenant';
@@ -20,7 +31,7 @@ const requiredChecks = Object.freeze([
 
 async function fetchJson(path, init) {
   const response = await fetch(`${baseUrl}${path}`, init);
-  const body = (await response.json());
+  const body = await response.json();
   return { status: response.status, body };
 }
 
@@ -57,7 +68,10 @@ const health = await fetchJson('/health');
 assert(health.status === 200, `Health status ${String(health.status)}`);
 assert(health.body.status === 'ok', 'health.status must be ok');
 assert(health.body.service === 'agentforge-local-reference', 'unexpected health.service');
-assert(health.body.version === '0.9.0', 'unexpected health.version');
+assert(
+  health.body.version === expectedVersion,
+  `unexpected health.version: got ${String(health.body.version)}, expected ${expectedVersion}`,
+);
 
 const readyAgain = await fetchJson('/ready');
 assert(readyAgain.status === 200 && readyAgain.body.ready === true, 'Readiness check failed');
@@ -75,4 +89,4 @@ assert(invoke.body.status === 'success', 'invoke.status must be success');
 assert(invoke.body.result?.text === 'docker-smoke', 'Deterministic echo failed');
 assert(invoke.body.evidence?.adapterId === 'reference-ai', 'Expected adapterId reference-ai');
 
-process.stdout.write('docker-smoke: ok\n');
+process.stdout.write(`docker-smoke: ok (version ${expectedVersion})\n`);

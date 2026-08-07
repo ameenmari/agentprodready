@@ -56,7 +56,8 @@ jobs:
       - name: Compute tags
         id: meta
         run: |
-          echo "version=1.0.0" >> "$GITHUB_OUTPUT"
+          VERSION="$(node -p "require('./apps/platform-host/package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build image
         run: |
@@ -64,6 +65,7 @@ jobs:
           VERSION=${{ steps.meta.outputs.version }}
           SHA=${{ steps.meta.outputs.short_sha }}
           docker build \
+            --build-arg PRODUCT_VERSION="$VERSION" \
             -t "$IMAGE:$VERSION" \
             -t "$IMAGE:$VERSION-$SHA" \
             -t "$IMAGE:sha-$SHA" \
@@ -81,7 +83,7 @@ jobs:
             -e REFERENCE_AGENT_ENABLED=true \
             -e PERSISTENCE_PROVIDER=in-memory \
             -e AGENTFORGE_ALLOW_REFERENCE_AUTH=true \
-            agentforge/platform-host:1.0.0
+            "agentforge/platform-host:${{ steps.meta.outputs.version }}"
       - name: Docker smoke
         run: node scripts/docker-smoke.mjs http://127.0.0.1:3000
       - name: Stop container

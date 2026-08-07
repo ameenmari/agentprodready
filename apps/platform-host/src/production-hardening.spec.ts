@@ -1,7 +1,11 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   assertProductionAuthPolicy,
   loadLocalReferenceConfig,
+  PRODUCT_VERSION,
   type LocalReferenceConfig,
 } from './config/local-reference-config.js';
 import { RequestBodyTooLargeError, readJsonBody } from './http/local-reference-server.js';
@@ -26,6 +30,13 @@ function baseConfig(overrides: Partial<LocalReferenceConfig> = {}): LocalReferen
 }
 
 describe('v1.0 production hardening', () => {
+  it('keeps PRODUCT_VERSION synchronized with platform-host package.json', () => {
+    const pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { readonly version?: unknown };
+    expect(typeof pkg.version).toBe('string');
+    expect(PRODUCT_VERSION).toBe(pkg.version);
+  });
+
   it('rejects production LocalReference auth without escape hatch', () => {
     const config = loadLocalReferenceConfig({
       AGENTFORGE_ALLOW_REFERENCE_AUTH: 'false',

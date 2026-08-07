@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import {
   DEFAULT_OPENAI_EMBEDDING_DIMENSIONS,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
@@ -14,6 +15,14 @@ import {
   type PersistenceProviderSelection,
   type PostgresPersistenceConfig,
 } from '@agentforge/persistence-postgres';
+
+const requirePackageJson = createRequire(import.meta.url);
+const hostPackageJson = requirePackageJson('../../package.json') as { readonly version?: unknown };
+const hostPackageVersion =
+  typeof hostPackageJson.version === 'string' ? hostPackageJson.version : '';
+if (hostPackageVersion.trim() === '') {
+  throw new Error('@agentforge/platform-host package.json is missing version');
+}
 
 export type AiProviderSelection = 'reference' | 'openai';
 export type AiRoutingMode = 'fixed' | 'fallback';
@@ -75,10 +84,11 @@ export const LOCAL_PROJECT = 'local-project';
 export const LOCAL_USER = 'local-user';
 export const LOCAL_AGENT_PRINCIPAL = 'agent-principal:reference-agent';
 export const REFERENCE_AGENT_ID = 'reference-agent';
-export const REFERENCE_AGENT_VERSION = '1.0.0';
+export const REFERENCE_AGENT_VERSION = hostPackageVersion;
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '1.0.0';
+/** Always derived from apps/platform-host/package.json — do not hardcode. */
+export const PRODUCT_VERSION = hostPackageVersion;
 export const MAX_TOOL_MAX_CALLS = 64;
 export const MAX_TOOL_MAX_TURNS = 32;
 export const MAX_TOOL_ARGUMENT_BYTES = 1_048_576;
