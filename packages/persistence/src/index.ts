@@ -66,10 +66,10 @@ export interface QueryResult<T = unknown> {
 export interface Repository<T = unknown> {
   readonly name: string;
   readonly providerBoundaryId: string;
-  find(id: string, scope: PersistenceScope): PersistedEntity<T> | undefined;
-  exists(id: string, scope: PersistenceScope): boolean;
-  count(scope: PersistenceScope): number;
-  query(request: RepositoryQuery): QueryResult<T>;
+  find(id: string, scope: PersistenceScope): Promise<PersistedEntity<T> | undefined>;
+  exists(id: string, scope: PersistenceScope): Promise<boolean>;
+  count(scope: PersistenceScope): Promise<number>;
+  query(request: RepositoryQuery): Promise<QueryResult<T>>;
 }
 export interface ProviderCapabilities {
   readonly providerId: string;
@@ -129,7 +129,7 @@ export interface PersistenceTransaction {
   rollback(at: string): Promise<TransactionRollbackResult>;
 }
 export interface UnitOfWork {
-  begin(request: TransactionRequest): PersistenceTransaction;
+  begin(request: TransactionRequest): Promise<PersistenceTransaction>;
 }
 export interface PersistenceProvider {
   readonly capabilities: ProviderCapabilities;
@@ -157,8 +157,8 @@ export interface PersistenceSnapshot<T = unknown> {
   readonly auditHistory: false;
 }
 export interface SnapshotStore {
-  save(value: PersistenceSnapshot): void;
-  get(id: string): PersistenceSnapshot | undefined;
+  save(value: PersistenceSnapshot): Promise<void>;
+  get(id: string): Promise<PersistenceSnapshot | undefined>;
 }
 export interface MigrationPlan {
   readonly id: string;
@@ -281,7 +281,7 @@ export class PersistenceFramework {
     enforce(authorization, 'read', authorization.scope, `persistence:repository:${name}`);
     return this.provider.repository<T>(name);
   }
-  public begin(request: TransactionRequest): PersistenceTransaction {
+  public async begin(request: TransactionRequest): Promise<PersistenceTransaction> {
     enforce(
       request.authorization,
       'transaction',
@@ -289,7 +289,7 @@ export class PersistenceFramework {
       `persistence:transaction:${request.id}`,
     );
     const isolation = negotiate(this.provider.capabilities, request);
-    const inner = this.provider.unitOfWork().begin({ ...request, isolation });
+    const inner = await this.provider.unitOfWork().begin({ ...request, isolation });
     return new AccountableTransaction(
       inner,
       request,
@@ -298,13 +298,13 @@ export class PersistenceFramework {
       this.diagnostics,
     );
   }
-  public snapshot<T = unknown>(
+  public async snapshot<T = unknown>(
     id: string,
     repository: string,
     scope: PersistenceScope,
     authorization: PersistenceAuthorization,
     at: string,
-  ): PersistenceSnapshot<T> {
+  ): Promise<PersistenceSnapshot<T>> {
     enforce(authorization, 'snapshot', scope, `persistence:snapshot:${id}`);
     if (!this.provider.capabilities.snapshots)
       throw new PersistenceError(
@@ -312,32 +312,33 @@ export class PersistenceFramework {
         'Provider does not support snapshots',
         `persistence:snapshot:${id}`,
       );
-    const entities = this.provider.repository<T>(repository).query({
-        id: `snapshot:${id}`,
-        scope,
-        filters: [],
-        sort: [{ field: 'id', direction: 'ascending' }],
-        projection: [],
-        offset: 0,
-        limit: 100000,
-        aggregate: 'none',
-      }).entities,
-      value = freeze({
-        id,
-        repository,
-        providerBoundaryId: this.provider.capabilities.boundaryId,
-        scope: copy(scope),
-        entities: entities.map(copy),
-        createdAt: at,
-        sourceRevisionDigest: digest(
-          entities
-            .map((item) => `${item.id}:${String(item.revision)}:${item.versionToken}`)
-            .join('|'),
-        ),
-        immutable: true as const,
-        auditHistory: false as const,
-      });
-    this.snapshots.save(value);
+    const queried = await this.provider.repository<T>(repository).query({
+      id: `snapshot:${id}`,
+      scope,
+      filters: [],
+      sort: [{ field: 'id', direction: 'ascending' }],
+      projection: [],
+      offset: 0,
+      limit: 100000,
+      aggregate: 'none',
+    });
+    const entities = queried.entities;
+    const value = freeze({
+      id,
+      repository,
+      providerBoundaryId: this.provider.capabilities.boundaryId,
+      scope: copy(scope),
+      entities: entities.map(copy),
+      createdAt: at,
+      sourceRevisionDigest: digest(
+        entities
+          .map((item) => `${item.id}:${String(item.revision)}:${item.versionToken}`)
+          .join('|'),
+      ),
+      immutable: true as const,
+      auditHistory: false as const,
+    });
+    await this.snapshots.save(value);
     return value;
   }
   public async migrate(plan: MigrationPlan, correlationId: string): Promise<MigrationResult> {

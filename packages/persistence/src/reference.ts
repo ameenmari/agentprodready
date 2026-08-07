@@ -57,7 +57,7 @@ export class InMemoryPersistenceProvider implements PersistenceProvider {
   }
   public unitOfWork(): UnitOfWork {
     return {
-      begin: (request) => new InMemoryTransaction(request, this.capabilities, this.#repositories),
+      begin: async (request) => new InMemoryTransaction(request, this.capabilities, this.#repositories),
     };
   }
 }
@@ -67,17 +67,17 @@ class InMemoryRepository<T = unknown> implements Repository<T> {
     public readonly name: string,
     public readonly providerBoundaryId: string,
   ) {}
-  public find(id: string, scope: PersistenceScope): PersistedEntity<T> | undefined {
+  public async find(id: string, scope: PersistenceScope): Promise<PersistedEntity<T> | undefined> {
     const value = this.#values.get(key(id, scope));
     return value === undefined ? undefined : (freeze(copy(value)) as PersistedEntity<T>);
   }
-  public exists(id: string, scope: PersistenceScope): boolean {
+  public async exists(id: string, scope: PersistenceScope): Promise<boolean> {
     return this.#values.has(key(id, scope));
   }
-  public count(scope: PersistenceScope): number {
+  public async count(scope: PersistenceScope): Promise<number> {
     return [...this.#values.values()].filter((value) => sameScope(value.scope, scope)).length;
   }
-  public query(request: RepositoryQuery): QueryResult<T> {
+  public async query(request: RepositoryQuery): Promise<QueryResult<T>> {
     if (request.limit < 1 || request.offset < 0)
       throw new PersistenceError(
         'CONSTRAINT_VIOLATION',
@@ -210,10 +210,10 @@ class InMemoryTransaction implements PersistenceTransaction {
 }
 export class InMemorySnapshotStore implements SnapshotStore {
   readonly #values = new Map<string, PersistenceSnapshot>();
-  public save(value: PersistenceSnapshot): void {
+  public async save(value: PersistenceSnapshot): Promise<void> {
     this.#values.set(value.id, freeze(copy(value)));
   }
-  public get(id: string): PersistenceSnapshot | undefined {
+  public async get(id: string): Promise<PersistenceSnapshot | undefined> {
     const value = this.#values.get(id);
     return value === undefined ? undefined : freeze(copy(value));
   }

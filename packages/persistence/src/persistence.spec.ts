@@ -86,13 +86,75 @@ async function create(
   repository = 'entities',
   data: unknown = { name: 'first', score: 1 },
 ): Promise<PersistedEntity | undefined> {
-  const transaction = value.framework.begin(
+  const transaction = await value.framework.begin(
     request(`create-${id}`, { repositoryNames: [repository] }),
   );
   transaction.stage({ type: 'save', write: { repository, id, scope, data, occurredAt: at } });
   await transaction.commit(at);
-  return value.provider.repository(repository).find(id, scope);
+  return await value.provider.repository(repository).find(id, scope);
 }
+
+describe('async I/O contract amendment', () => {
+  it('resolves in-memory repository and SnapshotStore methods as Promises', async () => {
+    const value = fixture();
+    await create(value);
+    const repository = value.provider.repository('entities');
+    const findPromise = repository.find('entity-1', scope);
+    const existsPromise = repository.exists('entity-1', scope);
+    const countPromise = repository.count(scope);
+    expect(findPromise).toBeInstanceOf(Promise);
+    expect(existsPromise).toBeInstanceOf(Promise);
+    expect(countPromise).toBeInstanceOf(Promise);
+    expect(await findPromise).toMatchObject({ id: 'entity-1', revision: 1 });
+    expect(await existsPromise).toBe(true);
+    expect(await countPromise).toBe(1);
+
+    const snapshot = await value.framework.snapshot(
+      'async-snapshot',
+      'entities',
+      scope,
+      authorization('snapshot'),
+      at,
+    );
+    const getPromise = value.snapshots.get('async-snapshot');
+    expect(getPromise).toBeInstanceOf(Promise);
+    expect(await getPromise).toEqual(snapshot);
+  });
+
+  it('requires awaiting UnitOfWork.begin and PersistenceFramework.begin', async () => {
+    const value = fixture();
+    const beginPromise = value.framework.begin(request('async-begin'));
+    expect(beginPromise).toBeInstanceOf(Promise);
+    const transaction = await beginPromise;
+    expect(transaction.state).toBe('active');
+    expect(typeof transaction.stage).toBe('function');
+  });
+
+  it('propagates rejected repository Promises as PersistenceError', async () => {
+    const value = fixture();
+    const repository = value.provider.repository('entities');
+    await expect(
+      repository.query({
+        id: 'bad-query',
+        scope,
+        filters: [],
+        sort: [],
+        projection: [],
+        offset: -1,
+        limit: 1,
+        aggregate: 'none',
+      }),
+    ).rejects.toMatchObject({ code: 'CONSTRAINT_VIOLATION' });
+  });
+
+  it('exposes no synchronous repository or snapshot compatibility path', async () => {
+    const repository = fixture().provider.repository('entities');
+    const findResult: unknown = repository.find('missing', scope);
+    expect(findResult).toBeInstanceOf(Promise);
+    expect(typeof (findResult as Promise<unknown>).then).toBe('function');
+    await expect(findResult as Promise<unknown>).resolves.toBeUndefined();
+  });
+});
 
 describe('repositories, transactions, atomicity, and concurrency', () => {
   it('standardizes CRUD through explicit transactions and repositories', async () => {
@@ -104,7 +166,7 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       data: { name: 'first', score: 1 },
     });
     if (created === undefined) throw new Error('Entity fixture was not created');
-    const transaction = value.framework.begin(request('update'));
+    const transaction = await value.framework.begin(request('update'));
     transaction.stage({
       type: 'save',
       write: {
@@ -125,11 +187,11 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       isolation: 'read-committed',
       durability: 'non-durable',
     });
-    expect(value.provider.repository('entities').exists('entity-1', scope)).toBe(true);
+    await expect(value.provider.repository('entities').exists('entity-1', scope)).resolves.toBe(true);
   });
   it('rolls back explicitly without persisting staged writes', async () => {
     const value = fixture(),
-      transaction = value.framework.begin(request('rollback'));
+      transaction = await value.framework.begin(request('rollback'));
     transaction.stage({
       type: 'save',
       write: { repository: 'entities', id: 'entity-1', scope, data: { value: 1 }, occurredAt: at },
@@ -140,11 +202,11 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       partialCommit: false,
       operationCount: 1,
     });
-    expect(value.provider.repository('entities').count(scope)).toBe(0);
+    await expect(value.provider.repository('entities').count(scope)).resolves.toBe(0);
   });
   it('prevents partial commit when any staged operation fails', async () => {
     const value = fixture(),
-      transaction = value.framework.begin(request('atomic'));
+      transaction = await value.framework.begin(request('atomic'));
     transaction.stage({
       type: 'save',
       write: { repository: 'entities', id: 'valid', scope, data: { value: 1 }, occurredAt: at },
@@ -160,13 +222,13 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       },
     });
     await expect(transaction.commit(at)).rejects.toMatchObject({ code: 'ENTITY_NOT_FOUND' });
-    expect(value.provider.repository('entities').exists('valid', scope)).toBe(false);
+    await expect(value.provider.repository('entities').exists('valid', scope)).resolves.toBe(false);
   });
   it('rejects stale concurrent updates with normalized optimistic locking', async () => {
     const value = fixture(),
       created = await create(value),
-      first = value.framework.begin(request('first')),
-      second = value.framework.begin(request('second'));
+      first = await value.framework.begin(request('first')),
+      second = await value.framework.begin(request('second'));
     if (created === undefined) throw new Error('Entity fixture was not created');
     for (const [transaction, name] of [
       [first, 'first'],
@@ -186,13 +248,13 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       });
     await first.commit(at);
     await expect(second.commit(at)).rejects.toMatchObject({ code: 'OPTIMISTIC_LOCK_FAILED' });
-    expect(value.provider.repository('entities').find('entity-1', scope)?.data).toEqual({
-      name: 'first',
+    expect(await value.provider.repository('entities').find('entity-1', scope)).toMatchObject({
+      data: { name: 'first' },
     });
   });
   it('supports atomic same-boundary cross-repository transactions', async () => {
     const value = fixture(),
-      transaction = value.framework.begin(
+      transaction = await value.framework.begin(
         request('multi', { repositoryNames: ['entities', 'metadata'] }),
       );
     transaction.stage({
@@ -204,8 +266,8 @@ describe('repositories, transactions, atomicity, and concurrency', () => {
       write: { repository: 'metadata', id: 'm1', scope, data: { entity: 'e1' }, occurredAt: at },
     });
     await transaction.commit(at);
-    expect(value.provider.repository('entities').count(scope)).toBe(1);
-    expect(value.provider.repository('metadata').count(scope)).toBe(1);
+    await expect(value.provider.repository('entities').count(scope)).resolves.toBe(1);
+    await expect(value.provider.repository('metadata').count(scope)).resolves.toBe(1);
   });
 });
 
@@ -220,19 +282,19 @@ describe('capabilities, durability, isolation, snapshots, queries, and migration
       defaultIsolation: 'read-committed',
     });
   });
-  it('fails mandatory durability without silently weakening it', () => {
+  it('fails mandatory durability without silently weakening it', async () => {
     const value = fixture();
-    expect(() =>
+    await expect(
       value.framework.begin(request('durable', { mandatoryDurability: 'durable' })),
-    ).toThrowError(/durability/);
+    ).rejects.toThrow(/durability/);
   });
-  it('fails unsupported isolation unless an explicit approved fallback exists', () => {
+  it('fails unsupported isolation unless an explicit approved fallback exists', async () => {
     const provider = new InMemoryPersistenceProvider({ isolationLevels: ['read-committed'] }),
       value = fixture(provider);
-    expect(() =>
+    await expect(
       value.framework.begin(request('strict', { isolation: 'serializable' })),
-    ).toThrowError(/isolation/);
-    const transaction = value.framework.begin(
+    ).rejects.toThrow(/isolation/);
+    const transaction = await value.framework.begin(
       request('fallback', {
         isolation: 'serializable',
         approvedIsolationFallback: {
@@ -244,16 +306,16 @@ describe('capabilities, durability, isolation, snapshots, queries, and migration
     );
     expect(transaction.isolation).toBe('read-committed');
   });
-  it('rejects implicit cross-provider transaction boundaries', () => {
+  it('rejects implicit cross-provider transaction boundaries', async () => {
     const value = fixture();
-    expect(() =>
+    await expect(
       value.framework.begin(request('cross', { boundaryId: 'another-provider' })),
-    ).toThrowError(PersistenceError);
+    ).rejects.toBeInstanceOf(PersistenceError);
   });
   it('creates deeply immutable point-in-time snapshots distinct from Audit history', async () => {
     const value = fixture();
     await create(value);
-    const snapshot = value.framework.snapshot(
+    const snapshot = await value.framework.snapshot(
       'snapshot-1',
       'entities',
       scope,
@@ -266,7 +328,7 @@ describe('capabilities, durability, isolation, snapshots, queries, and migration
       providerBoundaryId: 'memory-boundary',
     });
     expect(Object.isFrozen(snapshot.entities[0])).toBe(true);
-    expect(value.snapshots.get('snapshot-1')).toEqual(snapshot);
+    await expect(value.snapshots.get('snapshot-1')).resolves.toEqual(snapshot);
   });
   it('provides deterministic filtered, sorted, paginated, and aggregated queries', async () => {
     const value = fixture();
@@ -276,7 +338,7 @@ describe('capabilities, durability, isolation, snapshots, queries, and migration
         'entities',
         authorization('read'),
       ),
-      result = repository.query({
+      result = await repository.query({
         id: 'query',
         scope,
         filters: [{ field: 'data.score', operator: 'greater-than', value: 0 }],
@@ -331,15 +393,17 @@ describe('provider replacement, authorization, events, diagnostics, and Runtime 
       fixture(new InMemoryPersistenceProvider({ providerId: 'alternate-memory' })),
     ]) {
       await create(value);
-      expect(value.provider.repository('entities').find('entity-1', scope)?.revision).toBe(1);
+      expect(await value.provider.repository('entities').find('entity-1', scope)).toMatchObject({
+        revision: 1,
+      });
     }
   });
-  it('enforces supplied Security decisions and tenant/workspace scope', () => {
+  it('enforces supplied Security decisions and tenant/workspace scope', async () => {
     const value = fixture();
     expect(() =>
       value.framework.repository('entities', authorization('read', { authorized: false })),
     ).toThrowError(/unauthorized/);
-    expect(() =>
+    await expect(
       value.framework.snapshot(
         's',
         'entities',
@@ -347,12 +411,12 @@ describe('provider replacement, authorization, events, diagnostics, and Runtime 
         authorization('snapshot'),
         at,
       ),
-    ).toThrowError(/scope/);
+    ).rejects.toThrow(/scope/);
   });
   it('publishes transaction facts and records diagnostics without owning Event transport', async () => {
     const value = fixture();
     await create(value);
-    const transaction = value.framework.begin(request('rollback-event'));
+    const transaction = await value.framework.begin(request('rollback-event'));
     await transaction.rollback(at);
     expect(value.events.values.map((item) => item.type)).toEqual([
       'persistence.transaction-committed',

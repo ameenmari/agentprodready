@@ -1,8 +1,9 @@
 # Blueprint 24 — Persistence Framework Implementation Specification
 
 **Implementation Mode:** Autonomous  
-**Implementation Version:** 0.1.0  
-**Date:** 2026-08-06
+**Implementation Version:** 0.2.0  
+**Date:** 2026-08-06  
+**Contract amendments:** See below; async I/O migration implemented 2026-08-07
 
 ## Contract Decisions
 
@@ -22,3 +23,24 @@ Security authorization, Event transport, Audit persistence, Observability, and C
 - `src/index.ts`: public contracts, framework, capability negotiation, unit of work, queries, snapshots, migrations, and errors.
 - `src/reference.ts`: atomic in-memory provider/repository and reference accountability providers.
 - `src/persistence.spec.ts`: acceptance, contract, and integration tests.
+
+## Implementation Contract Amendments
+
+### 24-persistence-async-io (Implemented — 2026-08-07)
+
+Canonical persistence I/O contracts are **Promise-based** so durable providers (PostgreSQL) can satisfy Blueprint 24 honestly in Node.js.
+
+Authoritative amendment:
+
+[docs/implementation/amendments/24-persistence-async-io-contract-amendment.md](../amendments/24-persistence-async-io-contract-amendment.md)
+
+Implemented shapes in `@agentforge/persistence@0.2.0`:
+
+- `Repository.find/exists/count/query` → `Promise<...>`
+- `SnapshotStore.save/get` → `Promise<...>`
+- `UnitOfWork.begin` / `PersistenceFramework.begin` → `Promise<PersistenceTransaction>`
+- `PersistenceFramework.snapshot` → `Promise<PersistenceSnapshot>`
+- `PersistenceTransaction.stage` remains synchronous (staging buffer only)
+- No parallel `AsyncRepository` hierarchy; no sync shims; no fake-sync bridges
+
+Blueprint 24 constitutional text is **not** rewritten. No ADR is required. Classification: breaking pre-1.0 implementation-contract change localized to `@agentforge/persistence` and its tests.
