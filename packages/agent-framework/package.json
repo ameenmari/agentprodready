@@ -1,5 +1,5 @@
 {
-  "name":"@agentforge/agent-framework","version":"0.1.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts",
+  "name":"@agentforge/agent-framework","version":"0.2.0","type":"module","main":"dist/index.js","types":"dist/index.d.ts",
   "exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"files":["dist","README.md"],
   "dependencies":{"@agentforge/ai-provider":"workspace:*","@agentforge/audit":"workspace:*","@agentforge/capability-resolution":"workspace:*","@agentforge/composition":"workspace:*","@agentforge/context-assembly":"workspace:*","@agentforge/evaluation":"workspace:*","@agentforge/event-bus":"workspace:*","@agentforge/foundation":"workspace:*","@agentforge/knowledge":"workspace:*","@agentforge/memory":"workspace:*","@agentforge/planning":"workspace:*","@agentforge/plugin-framework":"workspace:*","@agentforge/prompt-builder":"workspace:*","@agentforge/runtime":"workspace:*","@agentforge/security":"workspace:*","@agentforge/tool-framework":"workspace:*","@agentforge/workflow":"workspace:*"}
 }

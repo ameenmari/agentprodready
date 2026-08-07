@@ -20,6 +20,8 @@ describe('platform host bootstrap', () => {
       embeddingModel: '',
       embeddingDimensions: 0,
       vectorIndexProfile: 'none',
+      streamingHeartbeatIntervalMs: 0,
+      streamingMaxDrainWaitMs: 30_000,
     });
     expect(await host.composition.readinessService.isReady()).toBe(true);
     await host.stop();

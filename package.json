@@ -30,7 +30,8 @@
     "test:vector-search": "node scripts/run-vector-search-tests.mjs",
     "test:runtime-recovery": "node scripts/run-runtime-recovery-tests.mjs",
     "test:memory-persistence": "node scripts/run-memory-persistence-tests.mjs",
-    "test:evaluation-persistence": "node scripts/run-evaluation-persistence-tests.mjs"
+    "test:evaluation-persistence": "node scripts/run-evaluation-persistence-tests.mjs",
+    "test:streaming": "node scripts/run-streaming-tests.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

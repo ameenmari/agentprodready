@@ -1,6 +1,6 @@
 import type { CapabilityBinding } from '@agentforge/capability-resolution';
 import type { ExecutionContext } from '@agentforge/foundation';
-import { ProviderAdapterError, type AiExecutionRequest } from '@agentforge/ai-provider';
+import type { AiExecutionRequest } from '@agentforge/ai-provider';
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_OPENAI_MODEL, loadOpenAiProviderConfig } from './config.js';
 import { OpenAiProviderAdapter, type OpenAiChatClient } from './openai-ai-provider-adapter.js';
@@ -85,7 +85,7 @@ describe('OpenAiProviderAdapter', () => {
     );
   });
 
-  it('rejects tools and streaming', async () => {
+  it('rejects tools on execute', async () => {
     const adapter = new OpenAiProviderAdapter({ apiKey: 'sk-test', model: 'gpt-5' }, mockClient({}).client);
     await expect(
       adapter.execute(
@@ -94,8 +94,47 @@ describe('OpenAiProviderAdapter', () => {
         }),
       ),
     ).rejects.toMatchObject({ kind: 'invalid-request' });
-    const iterator = adapter.stream(baseRequest())[Symbol.asyncIterator]();
-    await expect(iterator.next()).rejects.toBeInstanceOf(ProviderAdapterError);
+  });
+
+  it('streams normalized deltas from mock OpenAI chunks', async () => {
+    async function* chunks(): AsyncGenerator<{
+      choices?: { delta?: { content?: string }; finish_reason?: string }[];
+      usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
+    }> {
+      yield { choices: [{ delta: { content: 'hel' } }] };
+      yield { choices: [{ delta: { content: 'lo' }, finish_reason: 'stop' }] };
+      yield { usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 } };
+    }
+    const create = vi.fn(async () => chunks());
+    const adapter = new OpenAiProviderAdapter(
+      { apiKey: 'sk-test', model: 'gpt-5' },
+      { chat: { completions: { create } } },
+    );
+    const events = [];
+    for await (const event of adapter.stream(
+      baseRequest({ streaming: Object.freeze({ enabled: true, includeUsage: true }) }),
+    )) {
+      events.push(event);
+    }
+    expect(events.map((e) => e.type)).toEqual(['content', 'content', 'usage', 'completed']);
+    const firstCall = create.mock.calls[0] as unknown as [{ stream?: boolean }] | undefined;
+    expect(firstCall?.[0]).toEqual(expect.objectContaining({ stream: true }));
+  });
+
+  it('cancels stream when signal already aborted', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const adapter = new OpenAiProviderAdapter({ apiKey: 'sk-test', model: 'gpt-5' }, mockClient({}).client);
+    const events = [];
+    for await (const event of adapter.stream(
+      baseRequest({
+        streaming: Object.freeze({ enabled: true, includeUsage: false }),
+        signal: controller.signal,
+      }),
+    )) {
+      events.push(event);
+    }
+    expect(events).toEqual([{ type: 'cancelled', sequence: 0, diagnosticId: 'ai:r1' }]);
   });
 
   it('parses structured JSON output', async () => {

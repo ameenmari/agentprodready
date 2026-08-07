@@ -26,6 +26,8 @@ describe('local reference e2e', () => {
       embeddingModel: '',
       embeddingDimensions: 0,
       vectorIndexProfile: 'none',
+      streamingHeartbeatIntervalMs: 0,
+      streamingMaxDrainWaitMs: 30_000,
     });
     const address = host.server.address();
     if (address === null || typeof address === 'string') throw new TypeError('Server address unavailable');
@@ -124,5 +126,49 @@ describe('local reference e2e', () => {
     const body = (await response.json()) as Record<string, unknown>;
     const errors = body['errors'] as Array<Record<string, unknown>>;
     expect(errors[0]?.['code']).toBe('REQUEST_INVALID');
+  });
+
+  it('streams reference-agent via SSE with one Runtime execution', async () => {
+    host.composition.runtimePort.clear();
+    const beforeAccepted = host.composition.agentFacts.filter(
+      (fact) => fact.type === 'agent.invocation.accepted',
+    ).length;
+    const response = await request('/v1/agents/reference-agent/invoke/stream', {
+      method: 'POST',
+      headers: {
+        Authorization: authHeader,
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'text/event-stream',
+        'X-Correlation-Id': 'e2e-stream-correlation',
+      },
+      body: JSON.stringify({ objective: 'hello agentforge' }),
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toMatch(/text\/event-stream/);
+    const raw = await response.text();
+    expect(raw).toContain('event: start');
+    expect(raw).toContain('event: delta');
+    expect(raw).toContain('event: complete');
+    expect(raw).toContain('"text":"hello"');
+    expect(raw).toContain('"text":"agentforge"');
+    const counts = host.composition.runtimePort.counts;
+    expect(counts.accept).toBe(0);
+    expect(counts.acceptStream).toBe(1);
+    expect(counts.execute).toBe(0);
+    expect(counts.executeStream).toBe(1);
+    expect(
+      host.composition.agentFacts.filter((fact) => fact.type === 'agent.invocation.accepted').length -
+        beforeAccepted,
+    ).toBe(1);
+  });
+
+  it('rejects unauthorized streaming before SSE starts', async () => {
+    const response = await request('/v1/agents/reference-agent/invoke/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ objective: 'deny-me' }),
+    });
+    expect(response.status).toBe(401);
+    expect(response.headers.get('content-type')).toMatch(/application\/json/);
   });
 });

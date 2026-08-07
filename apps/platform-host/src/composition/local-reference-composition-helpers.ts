@@ -11,9 +11,10 @@ import type {
   OperationalLog,
 } from '@agentforge/observability';
 import type { PersistenceProvider } from '@agentforge/persistence';
-import type { RuntimeOrchestrator } from '@agentforge/runtime';
+import type { RuntimeOrchestrator, RuntimeStreamEvent } from '@agentforge/runtime';
 import type { SecurityContext, SecurityPlatform } from '@agentforge/security';
 import type { LocalReferenceConfig } from '../config/local-reference-config.js';
+import type { LocalCapabilityExecutionOutput } from './local-reference-capability-execution.js';
 import type { LocalReferenceRuntimePort, StoredExecutionResult } from './local-reference-runtime-port.js';
 import type { LocalReferenceEvaluationBundle } from './evaluation/build-local-reference-evaluation.js';
 import {
@@ -80,6 +81,21 @@ export interface LocalReferenceComposition {
   seed(): Promise<void>;
   invoke(objective: string, inputs: Readonly<Record<string, string>>, correlationId: string, authHeader: string | undefined): Promise<
     | { readonly ok: true; readonly status: 200; readonly body: InvokeSuccessResponse; readonly correlationId: string }
+    | { readonly ok: false; readonly status: number; readonly body: InvokeErrorResponse; readonly correlationId: string }
+  >;
+  beginStreamInvoke(
+    objective: string,
+    inputs: Readonly<Record<string, string>>,
+    correlationId: string,
+    authHeader: string | undefined,
+  ): Promise<
+    | {
+        readonly ok: true;
+        readonly executionReference: string;
+        readonly correlationId: string;
+        readonly stream: AsyncIterable<RuntimeStreamEvent<LocalCapabilityExecutionOutput>>;
+        readonly cancel: () => void;
+      }
     | { readonly ok: false; readonly status: number; readonly body: InvokeErrorResponse; readonly correlationId: string }
   >;
   dispose(): Promise<void>;

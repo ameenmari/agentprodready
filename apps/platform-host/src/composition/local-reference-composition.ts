@@ -58,6 +58,7 @@ import {
   InMemoryRuntimeEventPublisher,
   RuntimeOrchestrator,
   StaticRuntimePolicyProvider,
+  type RuntimeStreamEvent,
 } from '@agentforge/runtime';
 import {
   SecurityPlatform,
@@ -86,7 +87,10 @@ import {
   referenceResolutionConfiguration,
   seedReferenceCapabilities,
 } from '../seed/reference-capabilities.seed.js';
-import { LocalReferenceCapabilityExecution } from './local-reference-capability-execution.js';
+import {
+  LocalReferenceCapabilityExecution,
+  type LocalCapabilityExecutionOutput,
+} from './local-reference-capability-execution.js';
 import {
   agentAuthorizationFromDecision,
   buildInvokeError,
@@ -598,6 +602,94 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     }
   }
 
+  async function beginStreamInvoke(
+    objective: string,
+    inputs: Readonly<Record<string, string>>,
+    correlationId: string,
+    authHeader: string | undefined,
+  ): Promise<
+    | {
+        readonly ok: true;
+        readonly executionReference: string;
+        readonly correlationId: string;
+        readonly stream: AsyncIterable<RuntimeStreamEvent<LocalCapabilityExecutionOutput>>;
+        readonly cancel: () => void;
+      }
+    | { readonly ok: false; readonly status: number; readonly body: InvokeErrorResponse; readonly correlationId: string }
+  > {
+    if (!ready) {
+      return buildInvokeError(correlationId, 503, 'INTERNAL_ERROR', 'Host is not ready');
+    }
+    if (!config.referenceAgentEnabled) {
+      return buildInvokeError(correlationId, 404, 'RESOURCE_NOT_FOUND', 'Reference agent is disabled');
+    }
+
+    const identity = parseLocalReferenceAuth(authHeader);
+    if (identity === null) {
+      return buildInvokeError(correlationId, 401, 'AUTHENTICATION_FAILED', 'Local reference authentication failed');
+    }
+
+    const at = new Date().toISOString();
+    const evidence = localAuthenticationEvidence(identity, at);
+    const principal = localPrincipal(evidence);
+    const executionId = `execution:${crypto.randomUUID()}`;
+    const authRequest = invokeAuthorizationRequest(principal, correlationId, executionId, at);
+    const decision = await securityPlatform.authorize(authRequest);
+    authorizationDecisions.set(decision.id, decision);
+    const validity = securityPlatform.validity(decision);
+    if (!decision.authorized || validity.state !== 'active') {
+      return buildInvokeError(correlationId, 403, 'AUTHORIZATION_DENIED', 'Local reference authorization denied');
+    }
+
+    const securityContext = securityPlatform.createSecurityContext(authRequest, decision, '1');
+    securityContexts.set(securityContext.id, securityContext);
+
+    const authorization = agentAuthorizationFromDecision(decision, validity);
+    const invocationId = `invocation:${correlationId}`;
+    const request = Object.freeze({
+      id: invocationId,
+      agentId: 'reference-agent',
+      version: '1.0.0',
+      objective,
+      initiatingPrincipalId: LOCAL_USER,
+      agentPrincipalId: LOCAL_AGENT_PRINCIPAL,
+      scope: Object.freeze({ tenantId: LOCAL_TENANT, workspaceId: LOCAL_WORKSPACE, projectId: LOCAL_PROJECT }),
+      inputs,
+      constraints: Object.freeze({}),
+      delegationReferences: Object.freeze([]),
+      securityContextReference: securityContext.id,
+      authorization,
+      correlationId,
+      causationId: null,
+      requestedAt: at,
+      versionPolicyVersion: LOCAL_POLICY_VERSION,
+    });
+
+    try {
+      const acceptance = await agentFramework.invokeStream(request);
+      const stream = runtimePort.getStream(acceptance.runtimeExecutionReference);
+      if (stream === undefined) {
+        return buildInvokeError(correlationId, 500, 'INTERNAL_ERROR', 'Runtime stream unavailable');
+      }
+      await ingestAgentAudit(auditPlatform, request, decision.id, acceptance.runtimeExecutionReference);
+      const controller = runtimePort.getCancelController(acceptance.runtimeExecutionReference);
+      return Object.freeze({
+        ok: true as const,
+        executionReference: acceptance.runtimeExecutionReference,
+        correlationId,
+        stream,
+        cancel: (): void => {
+          controller?.abort();
+        },
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Invocation failed';
+      const status = message.includes('not active') ? 409 : 500;
+      const code = status === 409 ? 'VALIDATION_FAILED' : 'INTERNAL_ERROR';
+      return buildInvokeError(correlationId, status, code, message);
+    }
+  }
+
   async function dispose(): Promise<void> {
     ready = false;
     runtimePort.clear();
@@ -632,6 +724,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     startedAt,
     seed,
     invoke,
+    beginStreamInvoke,
     dispose,
   });
 }

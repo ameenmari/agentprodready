@@ -70,9 +70,78 @@ export interface WorkflowPort {
   execute(plan: unknown, context: ExecutionContext, signal: AbortSignal): Promise<unknown>;
 }
 
+export type RuntimeStreamUsage = Readonly<{
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+}>;
+
+export type CapabilityStreamEvent =
+  | Readonly<{ type: 'delta'; sequence: number; payload: Readonly<{ kind: 'text'; text: string }> }>
+  | Readonly<{ type: 'usage'; sequence: number; usage: RuntimeStreamUsage }>
+  | Readonly<{ type: 'final'; sequence: number; result: unknown }>;
+
 export interface CapabilityInvocationPort {
   invoke(work: unknown, context: ExecutionContext, signal: AbortSignal): Promise<unknown>;
+  stream?(
+    work: unknown,
+    context: ExecutionContext,
+    signal: AbortSignal,
+  ): AsyncIterable<CapabilityStreamEvent>;
 }
+
+export type RuntimeFailedResult = Readonly<{
+  executionId: string;
+  state: 'failed';
+  error: Readonly<{ code: string; message: string }>;
+  attempts: number;
+  history: readonly StateTransition[];
+}>;
+
+export type RuntimeCancelledResult = Readonly<{
+  executionId: string;
+  state: 'cancelled';
+  error: Readonly<{ code: string; message: string }>;
+  attempts: number;
+  history: readonly StateTransition[];
+}>;
+
+export type RuntimeStreamEvent<T = unknown> =
+  | Readonly<{
+      type: 'delta';
+      sequence: number;
+      executionId: string;
+      correlationId: string;
+      occurredAt: string;
+      payload: Readonly<{ kind: 'text'; text: string } | { kind: 'usage'; usage: RuntimeStreamUsage }>;
+    }>
+  | Readonly<{
+      type: 'completed';
+      sequence: number;
+      executionId: string;
+      correlationId: string;
+      occurredAt: string;
+      result: RuntimeResult<T>;
+      terminal: true;
+    }>
+  | Readonly<{
+      type: 'failed';
+      sequence: number;
+      executionId: string;
+      correlationId: string;
+      occurredAt: string;
+      result: RuntimeFailedResult;
+      terminal: true;
+    }>
+  | Readonly<{
+      type: 'cancelled';
+      sequence: number;
+      executionId: string;
+      correlationId: string;
+      occurredAt: string;
+      result: RuntimeCancelledResult;
+      terminal: true;
+    }>;
 
 export interface SecurityAuthorizationPort {
   authorize(context: ExecutionContext): Promise<{ readonly authorized: boolean; readonly decisionId: string }>;

@@ -2,6 +2,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import type { LocalReferenceComposition } from '../composition/local-reference-composition-helpers.js';
 import { PRODUCT_VERSION } from '../config/local-reference-config.js';
 import { validateInvokeRequest } from '../composition/local-reference-composition.js';
+import { pipeRuntimeStreamToSse, writeSseHeaders } from './sse-stream.js';
 
 function headerValue(value: string | string[] | undefined): string | undefined {
   if (Array.isArray(value)) return value[0];
@@ -124,6 +125,68 @@ async function handleRequest(
         const result = jsonResponse(invokeResult.status, invokeResult.body, invokeResult.correlationId);
         response.writeHead(result.status, result.headers);
         response.end(result.body);
+        return;
+      }
+
+      if (request.method === 'POST' && url.pathname === '/v1/agents/reference-agent/invoke/stream') {
+        let body: unknown;
+        try {
+          body = await readJsonBody(request);
+        } catch {
+          const result = jsonResponse(
+            400,
+            {
+              status: 'failed',
+              correlationId: corr,
+              errors: [{ code: 'REQUEST_INVALID', message: 'Invalid JSON body', retryable: false, details: {} }],
+              diagnosticsReference: `local-reference:error:${corr}`,
+            },
+            corr,
+          );
+          response.writeHead(result.status, result.headers);
+          response.end(result.body);
+          return;
+        }
+
+        const validated = validateInvokeRequest(body);
+        if (!validated.ok) {
+          const result = jsonResponse(
+            400,
+            {
+              status: 'failed',
+              correlationId: corr,
+              errors: [{ code: 'REQUEST_INVALID', message: validated.message, retryable: false, details: {} }],
+              diagnosticsReference: `local-reference:error:${corr}`,
+            },
+            corr,
+          );
+          response.writeHead(result.status, result.headers);
+          response.end(result.body);
+          return;
+        }
+
+        const started = await composition.beginStreamInvoke(
+          validated.objective,
+          validated.inputs,
+          corr,
+          headerValue(request.headers.authorization),
+        );
+        if (!started.ok) {
+          const result = jsonResponse(started.status, started.body, started.correlationId);
+          response.writeHead(result.status, result.headers);
+          response.end(result.body);
+          return;
+        }
+
+        writeSseHeaders(response, started.correlationId);
+        await pipeRuntimeStreamToSse(request, response, started.stream, {
+          heartbeatIntervalMs: composition.config.streamingHeartbeatIntervalMs,
+          maxDrainWaitMs: composition.config.streamingMaxDrainWaitMs,
+          correlationId: started.correlationId,
+          executionReference: started.executionReference,
+          agentId: 'reference-agent',
+          onCancel: started.cancel,
+        });
         return;
       }
 

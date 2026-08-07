@@ -555,4 +555,73 @@ describe('recoverIncomplete', () => {
     expect(final.history.slice(0, seeded.history.length)).toEqual([...seeded.history]);
     expect(final.history.length).toBeGreaterThan(seeded.history.length);
   });
+
+  it('executeStream yields deltas and one completed terminal with final result', async () => {
+    const stream = vi.fn(async function* (_work: unknown, _ctx: unknown, _signal: AbortSignal) {
+      yield { type: 'delta' as const, sequence: 0, payload: { kind: 'text' as const, text: 'hello' } };
+      yield { type: 'delta' as const, sequence: 1, payload: { kind: 'text' as const, text: '!' } };
+      yield { type: 'final' as const, sequence: 2, result: { text: 'hello!' } };
+    });
+    const f = fixture({
+      capabilities: { invoke: vi.fn(async (work: unknown) => work), stream },
+    });
+    const events = [];
+    for await (const event of f.runtime.executeStream({ context, input: 'hello' })) {
+      events.push(event);
+    }
+    expect(events.map((e) => e.type)).toEqual(['delta', 'delta', 'completed']);
+    expect(events.filter((e) => e.type === 'completed' || e.type === 'failed' || e.type === 'cancelled')).toHaveLength(
+      1,
+    );
+    const terminal = events.at(-1);
+    expect(terminal).toMatchObject({
+      type: 'completed',
+      terminal: true,
+      executionId: 'e1',
+      result: { state: 'completed', output: { text: 'hello!' } },
+    });
+    expect(f.capabilities.invoke).not.toHaveBeenCalled();
+    expect(stream).toHaveBeenCalledOnce();
+    const checkpoint = await f.checkpoints.load('e1');
+    expect(checkpoint?.capabilityResult).toEqual({ text: 'hello!' });
+    expect(checkpoint?.terminal).toBe(true);
+  });
+
+  it('executeStream fails closed when capability stream is missing', async () => {
+    const f = fixture();
+    const events = [];
+    for await (const event of f.runtime.executeStream({ context, input: 'hello' })) {
+      events.push(event);
+    }
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({
+      type: 'failed',
+      terminal: true,
+      result: { state: 'failed', error: { code: 'RUNTIME_STREAM_UNSUPPORTED' } },
+    });
+  });
+
+  it('executeStream cancels once when signal aborts during stream', async () => {
+    const controller = new AbortController();
+    const stream = vi.fn(async function* (_work: unknown, _ctx: unknown, signal: AbortSignal) {
+      yield { type: 'delta' as const, sequence: 0, payload: { kind: 'text' as const, text: 'a' } };
+      controller.abort();
+      if (signal.aborted) {
+        throw new RuntimeError('RUNTIME_CANCELLED', 'Execution cancelled');
+      }
+    });
+    const f = fixture({
+      capabilities: { invoke: vi.fn(async (work: unknown) => work), stream },
+    });
+    const events = [];
+    for await (const event of f.runtime.executeStream({
+      context,
+      input: 'hello',
+      signal: controller.signal,
+    })) {
+      events.push(event);
+    }
+    expect(events.map((e) => e.type)).toEqual(['delta', 'cancelled']);
+    expect(events.at(-1)).toMatchObject({ type: 'cancelled', terminal: true });
+  });
 });

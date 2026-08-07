@@ -14,6 +14,7 @@ import type {
   RuntimePolicy,
   RuntimeRequest,
   RuntimeResult,
+  RuntimeStreamEvent,
   StateTransition,
 } from '../contracts/runtime.js';
 import { DEFAULT_RECOVERY_POLICY } from '../contracts/runtime.js';
@@ -306,6 +307,223 @@ export class RuntimeOrchestrator {
           : new RuntimeError('RUNTIME_EXECUTION_FAILED', 'Runtime execution failed', { cause: error });
       this.dependencies.telemetry.failed(context.executionId, normalized.code, Date.now() - startedMs);
       throw normalized;
+    } finally {
+      request.signal?.removeEventListener('abort', forward);
+      await scope.dispose();
+    }
+  }
+
+  public async *executeStream<T = unknown>(
+    request: RuntimeRequest,
+  ): AsyncIterable<RuntimeStreamEvent<T>> {
+    const startedMs = Date.now();
+    const now = this.dependencies.now ?? (() => new Date());
+    assertCheckpointableValue(request.input, 'RuntimeRequest.input');
+    const scope = this.dependencies.scopes.createExecutionScope(request.context);
+    const state = new ExecutionStateManager(now);
+    const controller = new AbortController();
+    const forward = (): void => {
+      controller.abort();
+    };
+    request.signal?.addEventListener('abort', forward, { once: true });
+    const context = scope.context;
+    let checkpoint = this.#seedCheckpoint(request.context, request.input, context, state, now());
+    let sequence = 0;
+    let attempts = 1;
+    const correlationId = context.correlationId;
+    const occurred = (): string => now().toISOString();
+
+    try {
+      checkpoint = await this.#transitionAndCheckpoint(state, checkpoint, 'initializing', 'accepted', {});
+
+      const decision = await this.dependencies.security.authorize(context);
+      if (!decision.authorized) {
+        throw new RuntimeError('RUNTIME_UNAUTHORIZED', `Authorization denied: ${decision.decisionId}`);
+      }
+
+      const policy = await this.dependencies.policies.get(context);
+      const recovery = recoveryPolicyOf(policy);
+      const startedAt = now();
+      const deadlineAt = new Date(startedAt.getTime() + policy.timeoutMs);
+      checkpoint = await this.#upsert({
+        ...checkpoint,
+        maxAttempts: policy.maxAttempts,
+        timeoutMs: policy.timeoutMs,
+        startedAt: startedAt.toISOString(),
+        deadlineAt: deadlineAt.toISOString(),
+        recoveryPolicy: recovery,
+        state: state.state,
+        history: state.history,
+        updatedAt: now().toISOString(),
+      });
+
+      if (typeof this.dependencies.capabilities.stream !== 'function') {
+        throw new RuntimeError(
+          'RUNTIME_STREAM_UNSUPPORTED',
+          'Capability streaming is not supported for this execution',
+        );
+      }
+
+      const streamCapability = this.dependencies.capabilities.stream.bind(this.dependencies.capabilities);
+
+      const prepared = await this.#scheduler.schedule(policy, () =>
+        this.#timeout.run(
+          Math.max(1, deadlineAt.getTime() - now().getTime()),
+          controller.signal,
+          async (signal) =>
+            this.#runDelegatedStagesUntilPreInvoke(state, checkpoint, request.input, context, signal),
+        ),
+      );
+      checkpoint = prepared.checkpoint;
+      attempts = checkpoint.attempts;
+
+      let finalResult: unknown;
+      let sawFinal = false;
+      const streamIter = streamCapability(prepared.work, context, controller.signal);
+
+      for await (const capEvent of streamIter) {
+        if (now().getTime() >= deadlineAt.getTime()) {
+          controller.abort();
+          throw new RuntimeError('RUNTIME_TIMEOUT', 'Execution timed out');
+        }
+        if (controller.signal.aborted || request.signal?.aborted === true) {
+          throw new RuntimeError('RUNTIME_CANCELLED', 'Execution cancelled');
+        }
+
+        switch (capEvent.type) {
+          case 'delta': {
+            yield Object.freeze({
+              type: 'delta' as const,
+              sequence: sequence++,
+              executionId: context.executionId,
+              correlationId,
+              occurredAt: occurred(),
+              payload: Object.freeze({ kind: 'text' as const, text: capEvent.payload.text }),
+            });
+            break;
+          }
+          case 'usage': {
+            yield Object.freeze({
+              type: 'delta' as const,
+              sequence: sequence++,
+              executionId: context.executionId,
+              correlationId,
+              occurredAt: occurred(),
+              payload: Object.freeze({ kind: 'usage' as const, usage: Object.freeze({ ...capEvent.usage }) }),
+            });
+            break;
+          }
+          case 'final': {
+            finalResult = assertCheckpointableValue(capEvent.result, 'capabilityResult');
+            sawFinal = true;
+            break;
+          }
+        }
+      }
+
+      if (!sawFinal) {
+        throw new RuntimeError('RUNTIME_EXECUTION_FAILED', 'Capability stream ended without final result');
+      }
+
+      checkpoint = (await this.dependencies.checkpoints.load(context.executionId)) ?? checkpoint;
+      checkpoint = await this.#upsert({
+        ...checkpoint,
+        capabilityResult: finalResult,
+        stage: 'post-invoke',
+        state: state.state,
+        history: state.history,
+      });
+      checkpoint = await this.#transitionAndCheckpoint(state, checkpoint, 'completing', 'post-invoke', {
+        capabilityResult: finalResult,
+      });
+      checkpoint = await this.#terminalize(state, checkpoint, 'completed', {
+        capabilityResult: finalResult,
+      });
+      this.#completed++;
+      this.dependencies.telemetry.completed(context.executionId, Date.now() - startedMs, attempts);
+
+      const result: RuntimeResult<T> = Object.freeze({
+        executionId: context.executionId,
+        state: 'completed',
+        output: finalResult as T,
+        attempts,
+        history: state.history,
+      });
+
+      yield Object.freeze({
+        type: 'completed' as const,
+        sequence: sequence++,
+        executionId: context.executionId,
+        correlationId,
+        occurredAt: occurred(),
+        result,
+        terminal: true as const,
+      });
+    } catch (error) {
+      const cancelled = error instanceof RuntimeError && error.code === 'RUNTIME_CANCELLED';
+      const normalized =
+        error instanceof RuntimeError
+          ? error
+          : new RuntimeError('RUNTIME_EXECUTION_FAILED', 'Runtime execution failed', { cause: error });
+      try {
+        checkpoint = (await this.dependencies.checkpoints.load(context.executionId)) ?? checkpoint;
+        if (cancelled) {
+          checkpoint = await this.#upsert({
+            ...checkpoint,
+            cancelled: true,
+            cancellationReason: normalized.message,
+          });
+          if (!isTerminalState(state.state)) {
+            checkpoint = await this.#reachState(state, checkpoint, 'cancelling');
+            checkpoint = await this.#terminalize(state, checkpoint, 'cancelled', { cancelled: true });
+          }
+          this.#cancelled++;
+        } else if (!isTerminalState(state.state)) {
+          checkpoint = await this.#reachState(state, checkpoint, 'failed');
+          checkpoint = await this.#terminalize(state, checkpoint, 'failed', {});
+          this.#failed++;
+        } else {
+          this.#failed++;
+        }
+      } catch {
+        if (cancelled) this.#cancelled++;
+        else this.#failed++;
+      }
+      this.dependencies.telemetry.failed(context.executionId, normalized.code, Date.now() - startedMs);
+
+      if (cancelled) {
+        yield Object.freeze({
+          type: 'cancelled' as const,
+          sequence: sequence++,
+          executionId: context.executionId,
+          correlationId,
+          occurredAt: occurred(),
+          result: Object.freeze({
+            executionId: context.executionId,
+            state: 'cancelled' as const,
+            error: Object.freeze({ code: normalized.code, message: normalized.message }),
+            attempts,
+            history: state.history,
+          }),
+          terminal: true as const,
+        });
+      } else {
+        yield Object.freeze({
+          type: 'failed' as const,
+          sequence: sequence++,
+          executionId: context.executionId,
+          correlationId,
+          occurredAt: occurred(),
+          result: Object.freeze({
+            executionId: context.executionId,
+            state: 'failed' as const,
+            error: Object.freeze({ code: normalized.code, message: normalized.message }),
+            attempts,
+            history: state.history,
+          }),
+          terminal: true as const,
+        });
+      }
     } finally {
       request.signal?.removeEventListener('abort', forward);
       await scope.dispose();
@@ -638,6 +856,65 @@ export class RuntimeOrchestrator {
       );
     }
     return current;
+  }
+
+  async #runDelegatedStagesUntilPreInvoke(
+    state: ExecutionStateManager,
+    checkpoint: ExecutionCheckpoint,
+    input: unknown,
+    context: ExecutionContext,
+    signal: AbortSignal,
+  ): Promise<Readonly<{ checkpoint: ExecutionCheckpoint; work: unknown; plan: unknown }>> {
+    let current =
+      (await this.dependencies.checkpoints.load(checkpoint.executionId)) ?? checkpoint;
+    let plan = current.plan;
+    let work = current.workflowWork;
+
+    if (state.state === 'recovering') {
+      if (plan === undefined) {
+        current = await this.#transitionAndCheckpoint(state, current, 'planning', current.stage, {});
+      } else {
+        current = await this.#transitionAndCheckpoint(state, current, 'executing', current.stage, {
+          plan,
+        });
+      }
+    }
+
+    if (plan === undefined) {
+      current = await this.#ensurePlanningState(state, current);
+      plan = await this.dependencies.planning.plan(input, context, signal);
+      current = await this.#upsert({
+        ...current,
+        plan: assertCheckpointableValue(plan, 'plan'),
+        stage: 'post-planning',
+        state: state.state,
+        history: state.history,
+      });
+    }
+
+    if (work === undefined) {
+      current = await this.#ensureExecutingState(state, current);
+      work = await this.dependencies.workflow.execute(plan, context, signal);
+      current = await this.#upsert({
+        ...current,
+        plan,
+        workflowWork: assertCheckpointableValue(work, 'workflowWork'),
+        stage: 'post-workflow',
+        state: state.state,
+        history: state.history,
+      });
+    }
+
+    current = await this.#upsert({
+      ...current,
+      plan,
+      workflowWork: work,
+      stage: 'pre-invoke',
+      state: state.state,
+      history: state.history,
+    });
+
+    return Object.freeze({ checkpoint: current, work, plan });
   }
 
   async #runDelegatedStages<T>(

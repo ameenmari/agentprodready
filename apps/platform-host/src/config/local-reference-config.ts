@@ -46,6 +46,10 @@ export interface LocalReferenceConfig {
   readonly embeddingModel: string;
   readonly embeddingDimensions: number;
   readonly vectorIndexProfile: VectorIndexProfileSelection | 'none';
+  /** SSE comment heartbeat interval. 0 disables. Default 15000. */
+  readonly streamingHeartbeatIntervalMs: number;
+  /** Max wait for response drain before Runtime cancel. Default 30000. */
+  readonly streamingMaxDrainWaitMs: number;
 }
 
 export const LOCAL_TENANT = 'local-tenant';
@@ -57,7 +61,7 @@ export const REFERENCE_AGENT_ID = 'reference-agent';
 export const REFERENCE_AGENT_VERSION = '1.0.0';
 export const REFERENCE_AI_ID = 'reference-ai';
 export const LOCAL_POLICY_VERSION = 'local-1';
-export const PRODUCT_VERSION = '0.7.0';
+export const PRODUCT_VERSION = '0.8.0';
 
 const REFERENCE_PROFILE = Object.freeze({
   embeddingProvider: 'reference' as const,
@@ -238,6 +242,17 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     assertProfileMatch(embeddingProvider, embeddingModel, embeddingDimensions, vectorIndexProfile);
   }
 
+  const streamingHeartbeatIntervalMs = parseNonNegativeInt(
+    env['STREAMING_HEARTBEAT_INTERVAL_MS'],
+    'STREAMING_HEARTBEAT_INTERVAL_MS',
+    15_000,
+  );
+  const streamingMaxDrainWaitMs = parsePositiveInt(
+    env['STREAMING_MAX_DRAIN_WAIT_MS'],
+    'STREAMING_MAX_DRAIN_WAIT_MS',
+    30_000,
+  );
+
   const resolvedOpenAi =
     openAi ??
     (vectorSearchEnabled && embeddingProvider === 'openai'
@@ -263,7 +278,27 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     embeddingModel,
     embeddingDimensions,
     vectorIndexProfile,
+    streamingHeartbeatIntervalMs,
+    streamingMaxDrainWaitMs,
   });
+}
+
+function parseNonNegativeInt(raw: string | undefined, name: string, fallback: number): number {
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const value = Number.parseInt(raw, 10);
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error(`${name} must be a non-negative integer`);
+  }
+  return value;
+}
+
+function parsePositiveInt(raw: string | undefined, name: string, fallback: number): number {
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const value = Number.parseInt(raw, 10);
+  if (!Number.isFinite(value) || value < 1) {
+    throw new Error(`${name} must be a positive integer`);
+  }
+  return value;
 }
 
 /** Defaults for hand-built LocalReferenceConfig objects in tests/smoke. */
@@ -283,5 +318,15 @@ export function defaultVectorSearchConfigFields(): Pick<
     embeddingModel: '',
     embeddingDimensions: 0,
     vectorIndexProfile: 'none',
+  });
+}
+
+export function defaultStreamingConfigFields(): Pick<
+  LocalReferenceConfig,
+  'streamingHeartbeatIntervalMs' | 'streamingMaxDrainWaitMs'
+> {
+  return Object.freeze({
+    streamingHeartbeatIntervalMs: 15_000,
+    streamingMaxDrainWaitMs: 30_000,
   });
 }

@@ -23,6 +23,8 @@ async function main(): Promise<void> {
     embeddingModel: '',
     embeddingDimensions: 0,
     vectorIndexProfile: 'none',
+    streamingHeartbeatIntervalMs: 0,
+    streamingMaxDrainWaitMs: 30_000,
   });
 
   const address = host.server.address();

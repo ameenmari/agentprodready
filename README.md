@@ -304,7 +304,7 @@ License information will be added as the project enters public release.
 
 **Documentation Hardening:** Complete
 
-**Implementation:** Blueprints 01–31 complete; v0.1–v0.7 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory)
+**Implementation:** Blueprints 01–31 complete; v0.1–v0.8 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory, Streaming Responses)
 
 **Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`
 
