@@ -46,6 +46,7 @@ import {
   InMemoryAgentRegistry,
 } from '../index.js';
 import {
+  ANTHROPIC_AI_ID,
   OPENAI_AI_ID,
   OPENAI_COMPATIBLE_AI_ID,
   REFERENCE_AI_ID,
@@ -112,6 +113,8 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     aiResolver.bind(REFERENCE_AI_ID, async () => new ReferenceAiProviderAdapter());
   } else if (options.model.provider === 'openai') {
     await bindOpenAiAdapter(aiResolver, options.model.modelId);
+  } else if (options.model.provider === 'anthropic') {
+    await bindAnthropicAdapter(aiResolver, options.model.modelId);
   } else {
     await bindOpenAiCompatibleAdapter(aiResolver, options.model);
   }
@@ -354,7 +357,39 @@ class SimpleToolAdapter implements ToolAdapter {
 async function resolveImplementationId(model: AgentModel): Promise<string> {
   if (model.provider === 'reference') return REFERENCE_AI_ID;
   if (model.provider === 'openai-compatible') return OPENAI_COMPATIBLE_AI_ID;
+  if (model.provider === 'anthropic') return ANTHROPIC_AI_ID;
   return OPENAI_AI_ID;
+}
+
+async function bindAnthropicAdapter(resolver: FactoryAiAdapterResolver, modelId: string): Promise<void> {
+  try {
+    const anthropicModule = await import('@agentprodready/ai-provider-anthropic');
+    const apiKey = process.env['ANTHROPIC_API_KEY']?.trim() ?? '';
+    if (apiKey === '') {
+      throw new SimpleAgentError(
+        'AGENT_MISSING_ANTHROPIC_KEY',
+        'ANTHROPIC_API_KEY is required when using anthropic(...). Set it in the environment (the library does not load .env files).',
+      );
+    }
+
+    const baseUrl = process.env['ANTHROPIC_BASE_URL']?.trim();
+    const config = Object.freeze({
+      apiKey,
+      model: modelId,
+      implementationId: ANTHROPIC_AI_ID,
+      ...(baseUrl !== undefined && baseUrl !== '' ? { baseUrl } : {}),
+    });
+
+    resolver.bind(ANTHROPIC_AI_ID, async () => new anthropicModule.AnthropicProviderAdapter(config));
+  } catch (error) {
+    if (error instanceof SimpleAgentError) throw error;
+    throw new SimpleAgentError(
+      'AGENT_MISSING_ANTHROPIC_PACKAGE',
+      'Anthropic support requires @agentprodready/ai-provider-anthropic. Install it with:\n npm install @agentprodready/ai-provider-anthropic',
+      undefined,
+      { cause: error },
+    );
+  }
 }
 
 async function bindOpenAiAdapter(resolver: FactoryAiAdapterResolver, modelId: string): Promise<void> {

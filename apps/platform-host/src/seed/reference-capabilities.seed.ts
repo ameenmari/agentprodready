@@ -4,6 +4,7 @@ import {
   ProviderRegistry,
   StaticResolutionConfiguration,
 } from '@agentprodready/capability-resolution';
+import { ANTHROPIC_AI_ID } from '@agentprodready/ai-provider-anthropic';
 import { OPENAI_AI_ID, OPENAI_COMPATIBLE_AI_ID } from '@agentprodready/ai-provider-openai';
 import {
   REFERENCE_COUNTER_CAPABILITY,
@@ -153,6 +154,36 @@ export function seedReferenceCapabilities(): {
       health: 'healthy' as const,
       priority: 11,
       attributes: Object.freeze({ locality: 'external', compliance: 'openai-compatible' }),
+    }),
+  );
+  providers.register(
+    Object.freeze({
+      id: ANTHROPIC_AI_ID,
+      capabilityId: 'text-generation',
+      providerId: 'anthropic',
+      pluginId: 'anthropic',
+      contributionId: 'contribution:anthropic-ai',
+      contractVersions: Object.freeze(['1']),
+      implementationVersion: '1.0.0',
+      enabled: true,
+      health: 'healthy' as const,
+      priority: 12,
+      attributes: Object.freeze({ locality: 'external', compliance: 'anthropic-messages' }),
+    }),
+  );
+  providers.register(
+    Object.freeze({
+      id: `${ANTHROPIC_AI_ID}:evaluation.judge`,
+      capabilityId: 'evaluation.judge',
+      providerId: 'anthropic',
+      pluginId: 'anthropic',
+      contributionId: 'contribution:anthropic-ai-judge',
+      contractVersions: Object.freeze(['1']),
+      implementationVersion: '1.0.0',
+      enabled: true,
+      health: 'healthy' as const,
+      priority: 12,
+      attributes: Object.freeze({ locality: 'external', compliance: 'anthropic-messages' }),
     }),
   );
   providers.register(

@@ -8,6 +8,7 @@ export type OpenAiCompatibleAuth = 'api-key' | 'none';
 export type AgentModel =
   | { readonly provider: 'reference'; readonly modelId: 'reference' }
   | { readonly provider: 'openai'; readonly modelId: string }
+  | { readonly provider: 'anthropic'; readonly modelId: string }
   | {
       readonly provider: 'openai-compatible';
       readonly modelId: string;

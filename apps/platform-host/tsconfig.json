@@ -10,6 +10,7 @@
     { "path": "../../packages/capability-resolution" },
     { "path": "../../packages/ai-provider" },
     { "path": "../../packages/ai-provider-openai" },
+    { "path": "../../packages/ai-provider-anthropic" },
     { "path": "../../packages/security" },
     { "path": "../../packages/event-bus" },
     { "path": "../../packages/audit" },

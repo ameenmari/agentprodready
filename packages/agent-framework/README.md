@@ -4,9 +4,9 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
+**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) · [Why AgentProdReady](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/why-agentprodready.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
 
 ---
 
@@ -79,6 +79,23 @@ const agent = createAgent({
 ```
 
 Capability id `openai-compatible-ai`. Credentials: `OPENAI_COMPATIBLE_API_KEY` (never silent `OPENAI_API_KEY` fallback).
+
+### Anthropic
+
+```bash
+npm install @agentprodready/agent-framework @agentprodready/ai-provider-anthropic
+```
+
+```js
+import { createAgent, anthropic } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: anthropic("claude-sonnet-4-20250514"),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Set `ANTHROPIC_API_KEY`. Messages API — not `openaiCompatible()`.
 
 ---
 

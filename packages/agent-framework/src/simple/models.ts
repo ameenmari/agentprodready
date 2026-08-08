@@ -15,6 +15,16 @@ export function openai(modelId: string): AgentModel {
   return Object.freeze({ provider: 'openai', modelId: modelId.trim() });
 }
 
+export function anthropic(modelId: string): AgentModel {
+  if (typeof modelId !== 'string' || modelId.trim() === '') {
+    throw new SimpleAgentError(
+      'AGENT_INVALID_MODEL',
+      'anthropic(modelId) requires a non-empty model id string, for example anthropic("claude-sonnet-4-20250514").',
+    );
+  }
+  return Object.freeze({ provider: 'anthropic', modelId: modelId.trim() });
+}
+
 export interface OpenAiCompatibleOptions {
   readonly baseUrl: string;
   readonly model: string;
@@ -86,7 +96,7 @@ export function isAgentModel(value: unknown): value is AgentModel {
     auth?: unknown;
   };
   if (record.provider === 'reference') return record.modelId === 'reference';
-  if (record.provider === 'openai') {
+  if (record.provider === 'openai' || record.provider === 'anthropic') {
     return typeof record.modelId === 'string' && record.modelId.trim() !== '';
   }
   if (record.provider === 'openai-compatible') {

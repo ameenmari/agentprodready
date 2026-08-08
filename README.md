@@ -177,6 +177,7 @@ Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRe
 | [`examples/tools-agent`](examples/tools-agent) | Focused `tool()` path |
 | [`examples/openai-compatible-agent`](examples/openai-compatible-agent) | Gateway / credential isolation |
 | [`examples/openai-agent`](examples/openai-agent) | Live OpenAI |
+| [`examples/anthropic-agent`](examples/anthropic-agent) | Live Anthropic (Messages API) |
 | [`examples/memory-agent`](examples/memory-agent) | Honest memory wiring + optional NL recall |
 | [`examples/streaming-agent`](examples/streaming-agent) | Library `stream()` only |
 
@@ -189,8 +190,9 @@ Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRe
 | `reference()` | none | none |
 | `openai()` | `@agentprodready/ai-provider-openai` | `OPENAI_API_KEY` |
 | `openaiCompatible()` | `@agentprodready/ai-provider-openai` | `OPENAI_COMPATIBLE_API_KEY` (or `auth: "none"`) |
+| `anthropic()` | `@agentprodready/ai-provider-anthropic` | `ANTHROPIC_API_KEY` |
 
-Anthropic and other named vendors are on the roadmap — not implemented yet.
+Guide: [anthropic.md](docs/guides/anthropic.md).
 
 ---
 
@@ -238,7 +240,7 @@ CI runs verification on every push ([workflow](.github/workflows/ci.yml)). Prefe
 - Approval-required tools fail closed (no durable HITL wait/resume)
 - No SSE reconnect / stream replay
 - No exactly-once external tool side effects
-- Provider catalog today: reference + OpenAI + OpenAI-compatible (not Anthropic yet)
+- Provider catalog today: reference + OpenAI + OpenAI-compatible + Anthropic
 - No official GHCR image yet
 - Embedded Simple mode ≠ hosted multi-tenant platform
 

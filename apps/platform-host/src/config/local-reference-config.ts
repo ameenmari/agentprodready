@@ -1,5 +1,9 @@
 import { createRequire } from 'node:module';
 import {
+  loadAnthropicProviderConfig,
+  type AnthropicProviderConfig,
+} from '@agentprodready/ai-provider-anthropic';
+import {
   DEFAULT_OPENAI_EMBEDDING_DIMENSIONS,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   loadOpenAiCompatibleProviderConfig,
@@ -25,7 +29,7 @@ if (hostPackageVersion.trim() === '') {
   throw new Error('@agentprodready/platform-host package.json is missing version');
 }
 
-export type AiProviderSelection = 'reference' | 'openai' | 'openai-compatible';
+export type AiProviderSelection = 'reference' | 'openai' | 'openai-compatible' | 'anthropic';
 export type AiRoutingMode = 'fixed' | 'fallback';
 export type MemoryProviderSelection = 'in-memory' | 'persistent';
 export type EvaluationResultStoreSelection = 'in-memory' | 'persistent';
@@ -46,6 +50,8 @@ export interface LocalReferenceConfig {
   readonly openAi?: OpenAiProviderConfig;
   /** Distinct from openAi — never populated from OPENAI_API_KEY. */
   readonly openAiCompatible?: OpenAiProviderConfig;
+  /** Anthropic Messages API — uses ANTHROPIC_API_KEY only. */
+  readonly anthropic?: AnthropicProviderConfig;
   readonly persistenceProvider: PersistenceProviderSelection;
   readonly postgres?: PostgresPersistenceConfig;
   /** Boot-time Runtime.recoverIncomplete. Default false. */
@@ -181,9 +187,10 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
   if (
     aiProviderRaw !== 'reference' &&
     aiProviderRaw !== 'openai' &&
-    aiProviderRaw !== 'openai-compatible'
+    aiProviderRaw !== 'openai-compatible' &&
+    aiProviderRaw !== 'anthropic'
   ) {
-    throw new Error('AI_PROVIDER must be reference, openai, or openai-compatible');
+    throw new Error('AI_PROVIDER must be reference, openai, openai-compatible, or anthropic');
   }
   const aiProvider: AiProviderSelection = aiProviderRaw;
 
@@ -352,6 +359,10 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     ? loadOpenAiCompatibleProviderConfig(env)
     : undefined;
 
+  const needsAnthropic =
+    aiProvider === 'anthropic' || aiFallbackProviders.includes('anthropic');
+  const resolvedAnthropic = needsAnthropic ? loadAnthropicProviderConfig(env) : undefined;
+
   return Object.freeze({
     host: env['HOST'] ?? '127.0.0.1',
     port,
@@ -362,6 +373,7 @@ export function loadLocalReferenceConfig(env: NodeJS.ProcessEnv = process.env): 
     aiFallbackProviders,
     ...(resolvedOpenAi === undefined ? {} : { openAi: resolvedOpenAi }),
     ...(resolvedOpenAiCompatible === undefined ? {} : { openAiCompatible: resolvedOpenAiCompatible }),
+    ...(resolvedAnthropic === undefined ? {} : { anthropic: resolvedAnthropic }),
     persistenceProvider,
     ...(postgres === undefined ? {} : { postgres }),
     runtimeRecoveryEnabled: parseBooleanFlag(
@@ -410,8 +422,15 @@ function parseFallbackProviders(
   const seen = new Set<string>([primary]);
   const result: AiProviderSelection[] = [];
   for (const part of parts) {
-    if (part !== 'reference' && part !== 'openai' && part !== 'openai-compatible') {
-      throw new Error('AI_FALLBACK_PROVIDERS entries must be reference, openai, or openai-compatible');
+    if (
+      part !== 'reference' &&
+      part !== 'openai' &&
+      part !== 'openai-compatible' &&
+      part !== 'anthropic'
+    ) {
+      throw new Error(
+        'AI_FALLBACK_PROVIDERS entries must be reference, openai, openai-compatible, or anthropic',
+      );
     }
     if (seen.has(part)) {
       throw new Error(`Duplicate AI provider in routing list: ${part}`);

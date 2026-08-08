@@ -37,7 +37,7 @@ export function normalizeCreateAgentOptions(options: unknown): NormalizedCreateA
   if (!isAgentModel(record.model)) {
     throw new SimpleAgentError(
       'AGENT_INVALID_MODEL',
-      'model must be reference() or openai("model-id").',
+      'model must be reference(), openai("model-id"), anthropic("model-id"), or openaiCompatible({ baseUrl, model }).',
     );
   }
 

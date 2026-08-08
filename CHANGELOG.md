@@ -2,6 +2,17 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.4.0] — Anthropic provider
+
+Named-vendor Anthropic Messages API path (architecture ownership unchanged):
+
+- New `@agentprodready/ai-provider-anthropic@1.0.0` — `AnthropicProviderAdapter`, capability id `anthropic-ai`
+- Simple helper `anthropic(modelId)` on `@agentprodready/agent-framework@1.4.0`
+- Credential: `ANTHROPIC_API_KEY` only (never `OPENAI_API_KEY`)
+- Tools + streaming via Messages API; embeddings deferred
+- Host parity: `AI_PROVIDER=anthropic`
+- Guide: `docs/guides/anthropic.md`; example: `examples/anthropic-agent`
+
 ## [1.3.1] — Developer Adoption Sprint (DX)
 
 Adoption / discoverability cycle (architecture ownership unchanged):

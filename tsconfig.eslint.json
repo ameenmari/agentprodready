@@ -13,6 +13,7 @@
       "@agentprodready/capability-resolution": ["packages/capability-resolution/src/index.ts"],
       "@agentprodready/ai-provider": ["packages/ai-provider/src/index.ts"],
       "@agentprodready/ai-provider-openai": ["packages/ai-provider-openai/src/index.ts"],
+      "@agentprodready/ai-provider-anthropic": ["packages/ai-provider-anthropic/src/index.ts"],
       "@agentprodready/tool-framework": ["packages/tool-framework/src/index.ts"],
       "@agentprodready/knowledge": ["packages/knowledge/src/index.ts"],
       "@agentprodready/memory": ["packages/memory/src/index.ts"],

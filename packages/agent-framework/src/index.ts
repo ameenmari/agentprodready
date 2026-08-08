@@ -79,6 +79,7 @@ export function freeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!
 
 export * from './reference.js';
 export {
+  anthropic,
   createAgent,
   inMemory,
   openai,

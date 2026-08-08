@@ -10,6 +10,7 @@
     { "path": "packages/capability-resolution" },
     { "path": "packages/ai-provider" },
     { "path": "packages/ai-provider-openai" },
+    { "path": "packages/ai-provider-anthropic" },
     { "path": "packages/tool-framework" },
     { "path": "packages/knowledge" },
     { "path": "packages/memory" },

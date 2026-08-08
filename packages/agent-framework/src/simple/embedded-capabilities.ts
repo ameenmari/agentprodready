@@ -11,6 +11,8 @@ export const REFERENCE_AI_ID = 'reference-ai';
 export const OPENAI_AI_ID = 'openai-ai';
 /** Matches @agentprodready/ai-provider-openai OPENAI_COMPATIBLE_AI_ID — string only. */
 export const OPENAI_COMPATIBLE_AI_ID = 'openai-compatible-ai';
+/** Matches @agentprodready/ai-provider-anthropic ANTHROPIC_AI_ID — string only. */
+export const ANTHROPIC_AI_ID = 'anthropic-ai';
 
 export function seedEmbeddedCapabilities(
   implementationId: string,

@@ -15,6 +15,10 @@ import {
 } from '@agentprodready/audit';
 import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentprodready/ai-provider';
 import {
+  ANTHROPIC_AI_ID,
+  AnthropicProviderAdapter,
+} from '@agentprodready/ai-provider-anthropic';
+import {
   OPENAI_AI_ID,
   OPENAI_COMPATIBLE_AI_ID,
   OpenAiProviderAdapter,
@@ -227,6 +231,20 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     aiResolver.bind(
       `${OPENAI_COMPATIBLE_AI_ID}:evaluation.judge`,
       async () => new OpenAiProviderAdapter(compatibleConfig),
+    );
+  }
+
+  const needsAnthropicAdapter =
+    config.aiProvider === 'anthropic' || config.aiFallbackProviders.includes('anthropic');
+  if (needsAnthropicAdapter) {
+    if (config.anthropic === undefined) {
+      throw new Error('Anthropic configuration is required when anthropic is in the AI routing list');
+    }
+    const anthropicConfig = config.anthropic;
+    aiResolver.bind(ANTHROPIC_AI_ID, async () => new AnthropicProviderAdapter(anthropicConfig));
+    aiResolver.bind(
+      `${ANTHROPIC_AI_ID}:evaluation.judge`,
+      async () => new AnthropicProviderAdapter(anthropicConfig),
     );
   }
   const aiFramework = new AiProviderFramework(aiResolver, new InMemoryAiDiagnostics(), new InMemoryAiEvents(), new NoopAiTelemetry());
@@ -923,6 +941,7 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 function selectedAiImplementationId(aiProvider: AiProviderSelection): string {
   if (aiProvider === 'openai') return OPENAI_AI_ID;
   if (aiProvider === 'openai-compatible') return OPENAI_COMPATIBLE_AI_ID;
+  if (aiProvider === 'anthropic') return ANTHROPIC_AI_ID;
   return REFERENCE_AI_ID;
 }
 

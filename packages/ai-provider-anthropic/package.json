@@ -1,0 +1,49 @@
+{
+  "name": "@agentprodready/ai-provider-anthropic",
+  "version": "1.0.0",
+  "description": "Anthropic Messages API adapter for AgentProdReady AI Provider",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
+  ],
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "dependencies": {
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@anthropic-ai/sdk": "0.116.0"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git",
+    "directory": "packages/ai-provider-anthropic"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
+  },
+  "keywords": [
+    "anthropic",
+    "claude",
+    "ai-provider",
+    "agentprodready"
+  ]
+}

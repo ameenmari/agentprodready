@@ -8,26 +8,21 @@ This roadmap is directional. It does **not** promise delivery dates.
 
 ## Now
 
-- **Developer Adoption Sprint** — implemented in-tree; **publish pending** (`create-agentprodready@0.1.0`, `@agentprodready/agent-framework@1.3.1`)  
-  See [report](docs/implementation/reports/agentprodready-developer-adoption-sprint-implementation-report.md)
-- Record shareable demo GIF (manual; not a technical release gate) — [demo-script](docs/community/demo-script.md)
-- Apply manual GitHub About / Discussions / labels — [manual-actions](docs/implementation/manual-actions/github-repository-metadata.md)
+- **v1.4 Anthropic** — in-tree; publish pending (`@agentprodready/ai-provider-anthropic@1.0.0`, `@agentprodready/agent-framework@1.4.0`)
+- v1.3.1 Adoption Sprint **published** (`create-agentprodready@0.1.0`, `agent-framework@1.3.1`, tag `v1.3.1`)
+- Record shareable demo GIF (manual) — [demo-script](docs/community/demo-script.md)
+- Apply manual GitHub About / Discussions / labels / Release notes if `gh` unavailable
 
 ---
 
-## Next (after Adoption Sprint)
+## Next
 
-Ordered for discovery → trust → expand (not architecture depth first):
+1. **Diagnostics & debugging** (Simple-path DX)
+2. **Production deployment improvements** (evidence-driven)
+3. Observe real users
+4. **Durable Simple Memory / HITL** only when justified by demand
 
-1. **Anthropic** provider (named-vendor credibility)
-2. **Diagnostics & debugging** (Simple-path DX)
-3. **Production deployment improvements** (evidence-driven; recipe starts in Adoption Sprint)
-4. Observe real users
-5. **Durable Simple Memory / HITL** only when justified by demand
-
-Also: official GHCR image publication; CodeQL / dependency review; community labels/Discussions (started in Adoption Sprint).
-
-The prior “five developer-job” track remains, but **Agent in My App** / front-door Deploy credibility are partially absorbed by the Adoption Sprint — do not duplicate those releases.
+Also: official GHCR image publication; CodeQL / dependency review.
 
 ---
 

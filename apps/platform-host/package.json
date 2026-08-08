@@ -13,6 +13,7 @@
     "@agentprodready/agent-framework": "workspace:*",
     "@agentprodready/ai-provider": "workspace:*",
     "@agentprodready/ai-provider-openai": "workspace:*",
+    "@agentprodready/ai-provider-anthropic": "workspace:*",
     "@agentprodready/audit": "workspace:*",
     "@agentprodready/capability-resolution": "workspace:*",
     "@agentprodready/composition": "workspace:*",

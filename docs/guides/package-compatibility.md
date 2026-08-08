@@ -4,12 +4,13 @@ AgentProdReady uses **selective versioning**: packages bump only when their publ
 
 Production-oriented architecture with a young ecosystem.
 
-## Current published/repo line (v1.3.1 adoption)
+## Current published/repo line (v1.4 Anthropic)
 
 | Package | Version | Notes |
 |---|---|---|
-| `@agentprodready/agent-framework` | **1.3.1** | Simple Agent API + engines `>=22 <25` + adoption docs |
-| `create-agentprodready` | **0.1.0** | Unscoped `npm create` scaffold (publish pending) |
+| `@agentprodready/agent-framework` | **1.4.0** | Simple Agent API + `anthropic()` (publish pending) |
+| `@agentprodready/ai-provider-anthropic` | **1.0.0** | Anthropic Messages adapter (`anthropic-ai`) |
+| `create-agentprodready` | **0.1.1** | Scaffold pins framework `^1.4.0` |
 | `@agentprodready/ai-provider` | **1.0.2** | Reference adapter supports deterministic `USE_TOOL:<name>:<json>` |
 | `@agentprodready/ai-provider-openai` | **1.0.2** | Optional peer for `openai()` / `openaiCompatible()` |
 | `@agentprodready/runtime` | 1.0.1 | Selective bump |
