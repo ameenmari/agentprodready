@@ -18,6 +18,7 @@ class SimpleAgent implements Agent {
   public async invoke(input: string): Promise<AgentResult> {
     this.#ensureOpen();
     const objective = normalizeInput(input);
+    const startedAt = Date.now();
     try {
       const correlationId = `correlation:${crypto.randomUUID()}`;
       const secured = await this.#platform.security.authorizeInvoke({
@@ -42,7 +43,12 @@ class SimpleAgent implements Agent {
           acceptance.runtimeExecutionReference,
         );
       }
-      return mapRuntimeResultToAgentResult(stored.runtime);
+      return mapRuntimeResultToAgentResult(stored.runtime, {
+        provider: this.#platform.model.provider,
+        modelId: this.#platform.model.modelId,
+        durationMs: Date.now() - startedAt,
+        configuredTools: this.#platform.configuredToolCount,
+      });
     } catch (error) {
       throw mapInvokeError(error);
     }

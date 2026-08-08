@@ -1,6 +1,6 @@
 # Simple Agent API
 
-Short reference for the embedded facade on `@agentprodready/agent-framework` (v1.2).
+Short reference for the embedded facade on `@agentprodready/agent-framework` (v1.5+).
 
 Production-oriented architecture with a young ecosystem.
 
@@ -103,11 +103,15 @@ For natural-language recall, use `openai(...)` + `OPENAI_API_KEY` ([`examples/me
 }
 ```
 
+## Invoke diagnostics
+
+Successful `invoke` results include `result.metadata` with `provider`, `modelId`, `durationMs`, and `tools` counts (plus optional `memory`). See [Simple Diagnostics](./simple-diagnostics.md).
+
 ## Stream events
 
 `start` | `text` | `tool_call` | `tool_result` | `usage` | `complete`
 
-`tool_call` / `tool_result` are safe lifecycle events (no raw args/results by default).
+`tool_call` / `tool_result` are safe lifecycle events (no raw args/results by default). Structured post-turn diagnostics live on **invoke** metadata, not on stream events.
 
 ## Errors
 
@@ -115,8 +119,12 @@ For natural-language recall, use `openai(...)` + `OPENAI_API_KEY` ([`examples/me
 
 - `AGENT_INVALID_CONFIG` / `AGENT_INVALID_MODEL`
 - `AGENT_MISSING_OPENAI_KEY` / `AGENT_MISSING_OPENAI_PACKAGE`
+- `AGENT_MISSING_ANTHROPIC_KEY` / `AGENT_MISSING_ANTHROPIC_PACKAGE`
 - `AGENT_TOOL_AUTHORIZATION` / `AGENT_TOOL_APPROVAL_REQUIRED` / `AGENT_TOOL_REJECTED`
-- `AGENT_CLOSED` / `AGENT_INVOKE_FAILED` / …
+- `AGENT_PROVIDER_UNAVAILABLE` / `AGENT_TIMEOUT`
+- `AGENT_CLOSED` / `AGENT_INVOKE_FAILED` / `AGENT_STREAM_FAILED`
+
+Use `error.code` and optional `error.diagnosticId` when debugging.
 
 ## Limitations (honest)
 

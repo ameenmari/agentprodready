@@ -56,6 +56,18 @@ export interface EmbeddedToolLoopDeps {
   readonly toolDefinitions: () => readonly AiToolDefinition[];
 }
 
+/** Opaque tool-call counts for Simple result metadata (no payloads). */
+export interface EmbeddedToolCallSummary {
+  readonly invoked: number;
+  readonly succeeded: number;
+  readonly failed: number;
+}
+
+export interface EmbeddedToolLoopOutcome {
+  readonly result: NormalizedAiResult;
+  readonly tools: EmbeddedToolCallSummary;
+}
+
 const handoff = new AiToolCallHandoff();
 
 export async function runEmbeddedToolLoop(
@@ -66,7 +78,7 @@ export async function runEmbeddedToolLoop(
   signal: AbortSignal,
   control: CapabilityExecutionControl | undefined,
   emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
-): Promise<NormalizedAiResult> {
+): Promise<EmbeddedToolLoopOutcome> {
   const existing = await control?.loadToolLoop();
   if (existing !== undefined) {
     throw new NormalizedToolError(
@@ -80,6 +92,8 @@ export async function runEmbeddedToolLoop(
   let conversation: AiMessage[] = [...messages];
   let turn = 0;
   let totalCalls = 0;
+  let succeeded = 0;
+  let failed = 0;
   const seenIds = new Set<string>();
   const toolsOffered = deps.toolDefinitions();
 
@@ -89,7 +103,10 @@ export async function runEmbeddedToolLoop(
       makeAiRequest(binding, context, signal, false, conversation, toolsOffered),
     );
     if (result.finishReason !== 'tool-calls' || result.toolCalls.length === 0) {
-      return result;
+      return Object.freeze({
+        result,
+        tools: Object.freeze({ invoked: totalCalls, succeeded, failed }),
+      });
     }
     assertUniqueProposedIds(result.toolCalls, seenIds);
     if (totalCalls + result.toolCalls.length > deps.limits.maxCallsPerInvocation) {
@@ -116,21 +133,27 @@ export async function runEmbeddedToolLoop(
     const continuationResults: AiToolContinuationResult[] = [];
     for (const call of result.toolCalls) {
       totalCalls += 1;
-      const outcome = await admitAndExecuteCall(
-        deps,
-        context,
-        signal,
-        call,
-        turn,
-        control,
-        envelope,
-        admitted,
-        emit,
-      );
-      admitted.push(outcome.call);
-      continuationResults.push(outcome.continuation);
-      seenIds.add(call.id);
-      envelope = Object.freeze({ ...envelope, calls: Object.freeze([...admitted]) });
+      try {
+        const outcome = await admitAndExecuteCall(
+          deps,
+          context,
+          signal,
+          call,
+          turn,
+          control,
+          envelope,
+          admitted,
+          emit,
+        );
+        succeeded += 1;
+        admitted.push(outcome.call);
+        continuationResults.push(outcome.continuation);
+        seenIds.add(call.id);
+        envelope = Object.freeze({ ...envelope, calls: Object.freeze([...admitted]) });
+      } catch (error) {
+        failed += 1;
+        throw error;
+      }
     }
 
     await control?.persistToolLoop(

@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.4.0",
+  "version": "1.5.0",
 
   "description": "TypeScript agents you can ship this week — with a clean path to production controls when you need them. Simple Agent API (createAgent) plus advanced Agent Framework.",
   "type": "module",

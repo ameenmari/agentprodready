@@ -6,7 +6,7 @@ import { stdin as input, stdout as output } from "node:process";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TEMPLATES = ["reference", "openai", "openai-compatible"];
-const FRAMEWORK_RANGE = "^1.4.0";
+const FRAMEWORK_RANGE = "^1.5.0";
 const OPENAI_PEER_RANGE = "^1.0.2";
 const ANTHROPIC_PEER_RANGE = "^1.0.0";
 

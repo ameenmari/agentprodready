@@ -8,7 +8,8 @@ This roadmap is directional. It does **not** promise delivery dates.
 
 ## Now
 
-- **v1.4 Anthropic** — in-tree; publish pending (`@agentprodready/ai-provider-anthropic@1.0.0`, `@agentprodready/agent-framework@1.4.0`)
+- **v1.5 Simple diagnostics** — in-tree; publish with this release (`agent-framework@1.5.0`, `create-agentprodready@0.1.2`)
+- v1.4 Anthropic **published** (`@agentprodready/ai-provider-anthropic@1.0.0`, `@agentprodready/agent-framework@1.4.0`, tag `v1.4.0`)
 - v1.3.1 Adoption Sprint **published** (`create-agentprodready@0.1.0`, `agent-framework@1.3.1`, tag `v1.3.1`)
 - Record shareable demo GIF (manual) — [demo-script](docs/community/demo-script.md)
 - Apply manual GitHub About / Discussions / labels / Release notes if `gh` unavailable
@@ -17,10 +18,9 @@ This roadmap is directional. It does **not** promise delivery dates.
 
 ## Next
 
-1. **Diagnostics & debugging** (Simple-path DX)
-2. **Production deployment improvements** (evidence-driven)
-3. Observe real users
-4. **Durable Simple Memory / HITL** only when justified by demand
+1. **Production deployment improvements** (evidence-driven)
+2. Observe real users
+3. **Durable Simple Memory / HITL** only when justified by demand
 
 Also: official GHCR image publication; CodeQL / dependency review.
 

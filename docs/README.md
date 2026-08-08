@@ -15,7 +15,7 @@ This directory contains product guides, architectural specification, implementat
 1. [Getting Started](guides/getting-started.md)
 2. [Simple Agent API](guides/simple-agent-api.md)
 3. [Why AgentProdReady](guides/why-agentprodready.md)
-4. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md)
+4. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md) · [Simple Diagnostics](guides/simple-diagnostics.md)
 5. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
 6. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
 7. [Streaming](guides/streaming.md)

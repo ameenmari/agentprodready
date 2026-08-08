@@ -1,5 +1,11 @@
 import { SimpleAgentError } from './errors.js';
-import type { AgentMemoryDiagnostics, AgentResult, AgentUsage } from './types.js';
+import type {
+  AgentMemoryDiagnostics,
+  AgentModel,
+  AgentResult,
+  AgentToolDiagnostics,
+  AgentUsage,
+} from './types.js';
 
 interface NormalizedAiLike {
   readonly content?: readonly { readonly type: string; readonly text?: string }[];
@@ -13,9 +19,24 @@ interface NormalizedAiLike {
 interface CapabilityOutputLike {
   readonly aiResult?: NormalizedAiLike;
   readonly memory?: AgentMemoryDiagnostics;
+  readonly tools?: {
+    readonly invoked?: unknown;
+    readonly succeeded?: unknown;
+    readonly failed?: unknown;
+  };
 }
 
-export function mapRuntimeResultToAgentResult(runtimeResult: unknown): AgentResult {
+export interface AgentResultMapContext {
+  readonly provider: AgentModel['provider'];
+  readonly modelId: string;
+  readonly durationMs: number;
+  readonly configuredTools: number;
+}
+
+export function mapRuntimeResultToAgentResult(
+  runtimeResult: unknown,
+  context: AgentResultMapContext,
+): AgentResult {
   if (typeof runtimeResult !== 'object' || runtimeResult === null) {
     throw new SimpleAgentError(
       'AGENT_INVOKE_FAILED',
@@ -50,6 +71,7 @@ export function mapRuntimeResultToAgentResult(runtimeResult: unknown): AgentResu
 
   const usage = mapUsage(aiResult?.usage);
   const memory = normalizeMemoryDiagnostics(output?.memory);
+  const tools = mapToolDiagnostics(output?.tools, context.configuredTools);
   return Object.freeze({
     text,
     output: record.output,
@@ -57,10 +79,34 @@ export function mapRuntimeResultToAgentResult(runtimeResult: unknown): AgentResu
     ...(usage === undefined ? {} : { usage }),
     metadata: Object.freeze({
       mode: 'simple' as const,
+      provider: context.provider,
+      modelId: context.modelId,
+      durationMs: Math.max(0, Math.trunc(context.durationMs)),
+      tools,
       ...(memory === undefined ? {} : { memory }),
     }),
     raw: runtimeResult,
   });
+}
+
+function mapToolDiagnostics(
+  value: CapabilityOutputLike['tools'],
+  configured: number,
+): AgentToolDiagnostics {
+  const invoked = finiteCount(value?.invoked);
+  const succeeded = finiteCount(value?.succeeded);
+  const failed = finiteCount(value?.failed);
+  return Object.freeze({
+    configured: Math.max(0, Math.trunc(configured)),
+    invoked,
+    succeeded,
+    failed,
+  });
+}
+
+function finiteCount(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return 0;
+  return Math.trunc(value);
 }
 
 function normalizeMemoryDiagnostics(value: unknown): AgentMemoryDiagnostics | undefined {

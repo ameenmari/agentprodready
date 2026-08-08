@@ -85,6 +85,14 @@ describe('createAgent tools invoke', () => {
       const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
       expect(result.text).toMatch(/Tool returned/);
       expect(result.text).toMatch(/Paris|22/);
+      expect(result.metadata?.tools).toEqual({
+        configured: 1,
+        invoked: 1,
+        succeeded: 1,
+        failed: 0,
+      });
+      expect(result.metadata?.provider).toBe('reference');
+      expect(typeof result.metadata?.durationMs).toBe('number');
     } finally {
       await agent.close();
     }
@@ -180,9 +188,15 @@ describe('createAgent memory wiring diagnostics', () => {
       await agent.invoke('My favorite color is blue.');
       const result = await agent.invoke('What color did I mention?');
       expect(result.text).toBe('What color did I mention?');
-      expect(result.metadata?.memory).toMatchObject({
-        enabled: true,
-        injected: true,
+      expect(result.metadata).toMatchObject({
+        mode: 'simple',
+        provider: 'reference',
+        modelId: 'reference',
+        tools: { configured: 0, invoked: 0, succeeded: 0, failed: 0 },
+        memory: {
+          enabled: true,
+          injected: true,
+        },
       });
       expect(result.metadata?.memory?.retrievedItemCount).toBeGreaterThanOrEqual(1);
       expect(result.metadata?.memory?.injectedPreview).toMatch(/blue/i);
@@ -198,7 +212,12 @@ describe('createAgent memory wiring diagnostics', () => {
     });
     try {
       const result = await agent.invoke('Hello');
-      expect(result.metadata).toEqual({ mode: 'simple' });
+      expect(result.metadata).toMatchObject({
+        mode: 'simple',
+        provider: 'reference',
+        modelId: 'reference',
+        tools: { configured: 0, invoked: 0, succeeded: 0, failed: 0 },
+      });
       expect(result.metadata?.memory).toBeUndefined();
     } finally {
       await agent.close();

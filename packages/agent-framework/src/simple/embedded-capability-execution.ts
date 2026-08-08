@@ -12,7 +12,7 @@ import type {
 } from '@agentprodready/runtime';
 import { NormalizedToolError } from '@agentprodready/tool-framework';
 import type { NodeExecutionContract } from '@agentprodready/workflow';
-import type { EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
+import type { EmbeddedToolCallSummary, EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
 import { runEmbeddedToolLoop } from './embedded-tool-loop.js';
 import { formatMemoryForPrompt, type EmbeddedMemorySession } from './memory.js';
 import type { EmbeddedPromptService } from './embedded-prompt.js';
@@ -21,12 +21,19 @@ import type { AgentMemoryDiagnostics } from './types.js';
 
 const MEMORY_PREVIEW_MAX = 280;
 
+const EMPTY_TOOL_SUMMARY: EmbeddedToolCallSummary = Object.freeze({
+  invoked: 0,
+  succeeded: 0,
+  failed: 0,
+});
+
 export interface EmbeddedCapabilityOutput {
   readonly bindings: readonly CapabilityBinding[];
   readonly aiResult: NormalizedAiResult;
   readonly planId: string;
   readonly workflowId: string;
   readonly promptPackageId: string;
+  readonly tools: EmbeddedToolCallSummary;
   readonly memory?: AgentMemoryDiagnostics;
 }
 
@@ -59,14 +66,15 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
   ): Promise<EmbeddedCapabilityOutput> {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const prepared = await this.#prepare(work, context, signal);
-    const aiResult = await this.#executeAi(prepared, context, signal, control);
-    await this.#rememberTurn(context, prepared.objective, aiResult);
+    const executed = await this.#executeAi(prepared, context, signal, control);
+    await this.#rememberTurn(context, prepared.objective, executed.aiResult);
     return Object.freeze({
       bindings: Object.freeze([prepared.binding]),
-      aiResult,
+      aiResult: executed.aiResult,
       planId: `plan:${context.executionId}`,
       workflowId: prepared.workflowId,
       promptPackageId: prepared.promptPackageId,
+      tools: executed.tools,
       ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
     });
   }
@@ -87,12 +95,12 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         pending.push(event);
       };
 
-      const aiResult = await this.#executeAi(prepared, context, signal, control, emit);
+      const executed = await this.#executeAi(prepared, context, signal, control, emit);
       for (const event of pending) {
         yield { ...event, sequence: sequence++ };
       }
 
-      const text = extractText(aiResult) ?? '';
+      const text = extractText(executed.aiResult) ?? '';
       for (const chunk of referenceStreamChunks(text)) {
         if (chunk === '') continue;
         yield {
@@ -102,17 +110,18 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         };
       }
 
-      await this.#rememberTurn(context, prepared.objective, aiResult);
+      await this.#rememberTurn(context, prepared.objective, executed.aiResult);
 
       yield {
         type: 'final',
         sequence: sequence++,
         result: Object.freeze({
           bindings: Object.freeze([prepared.binding]),
-          aiResult,
+          aiResult: executed.aiResult,
           planId: `plan:${context.executionId}`,
           workflowId: prepared.workflowId,
           promptPackageId: prepared.promptPackageId,
+          tools: executed.tools,
           ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
         }),
       };
@@ -192,6 +201,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         planId: `plan:${context.executionId}`,
         workflowId: prepared.workflowId,
         promptPackageId: prepared.promptPackageId,
+        tools: EMPTY_TOOL_SUMMARY,
         ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
       }),
     };
@@ -210,10 +220,10 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     signal: AbortSignal,
     control?: CapabilityExecutionControl,
     emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
-  ): Promise<NormalizedAiResult> {
+  ): Promise<{ readonly aiResult: NormalizedAiResult; readonly tools: EmbeddedToolCallSummary }> {
     try {
       if (this.toolLoopDeps !== undefined) {
-        return await runEmbeddedToolLoop(
+        const outcome = await runEmbeddedToolLoop(
           this.toolLoopDeps,
           prepared.binding,
           context,
@@ -222,8 +232,10 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
           control,
           emit,
         );
+        return Object.freeze({ aiResult: outcome.result, tools: outcome.tools });
       }
-      return await this.ai.execute(prepared.request);
+      const aiResult = await this.ai.execute(prepared.request);
+      return Object.freeze({ aiResult, tools: EMPTY_TOOL_SUMMARY });
     } catch (error) {
       throw mapToolLoopError(error);
     }

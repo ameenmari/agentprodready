@@ -178,6 +178,7 @@ Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRe
 | [`examples/openai-compatible-agent`](examples/openai-compatible-agent) | Gateway / credential isolation |
 | [`examples/openai-agent`](examples/openai-agent) | Live OpenAI |
 | [`examples/anthropic-agent`](examples/anthropic-agent) | Live Anthropic (Messages API) |
+| [`examples/diagnostics-agent`](examples/diagnostics-agent) | Zero-key `result.metadata` diagnostics |
 | [`examples/memory-agent`](examples/memory-agent) | Honest memory wiring + optional NL recall |
 | [`examples/streaming-agent`](examples/streaming-agent) | Library `stream()` only |
 

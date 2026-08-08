@@ -83,6 +83,8 @@ export interface EmbeddedPlatform {
   readonly agentPrincipalId: string;
   readonly hasTools: boolean;
   readonly hasMemory: boolean;
+  readonly model: AgentModel;
+  readonly configuredToolCount: number;
   readonly scope: {
     readonly tenantId: string;
     readonly workspaceId: string;
@@ -296,6 +298,8 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     agentPrincipalId,
     hasTools: options.tools.length > 0,
     hasMemory: options.memory !== undefined,
+    model: options.model,
+    configuredToolCount: options.tools.length,
     scope,
     framework,
     runtimePort,

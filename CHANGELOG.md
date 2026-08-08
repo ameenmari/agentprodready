@@ -2,6 +2,17 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.5.0] — Simple diagnostics & debugging
+
+Richer Simple invoke metadata for local debugging (architecture ownership unchanged):
+
+- `result.metadata` now includes `provider`, `modelId`, `durationMs`, and `tools` counts (`configured` / `invoked` / `succeeded` / `failed`)
+- Existing optional `metadata.memory` wiring diagnostics unchanged
+- Guide: `docs/guides/simple-diagnostics.md`; example: `examples/diagnostics-agent`
+- `@agentprodready/agent-framework@1.5.0`
+- Scaffold pin: `create-agentprodready@0.1.2` → `^1.5.0`
+- Does **not** wire `@agentprodready/observability` into Simple
+
 ## [1.4.0] — Anthropic provider
 
 Named-vendor Anthropic Messages API path (architecture ownership unchanged):

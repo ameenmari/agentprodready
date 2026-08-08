@@ -52,7 +52,15 @@ describe('createAgent reference path', () => {
       const result = await agent.invoke('Hello');
       expect(result.text).toBe('Hello');
       expect(result.executionId).toMatch(/^execution:/);
-      expect(result.metadata).toMatchObject({ mode: 'simple' });
+      expect(result.metadata).toMatchObject({
+        mode: 'simple',
+        provider: 'reference',
+        modelId: 'reference',
+        tools: { configured: 0, invoked: 0, succeeded: 0, failed: 0 },
+      });
+      const durationMs = result.metadata?.durationMs;
+      expect(typeof durationMs).toBe('number');
+      expect(durationMs).toBeGreaterThanOrEqual(0);
       expect(result.raw).toBeDefined();
       const output = result.output as { promptPackageId?: string; aiResult?: { metadata?: { promptPackageId?: string } } };
       expect(typeof output.promptPackageId).toBe('string');

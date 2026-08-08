@@ -45,8 +45,24 @@ export interface AgentMemoryDiagnostics {
   readonly injectedPreview: string;
 }
 
+/**
+ * Counts of tool activity for a successful invoke.
+ * On success, `failed` is always 0 (tool failures abort with SimpleAgentError).
+ */
+export interface AgentToolDiagnostics {
+  readonly configured: number;
+  readonly invoked: number;
+  readonly succeeded: number;
+  readonly failed: number;
+}
+
 export interface AgentResultMetadata {
   readonly mode: 'simple';
+  readonly provider: AgentModel['provider'];
+  readonly modelId: string;
+  /** Wall-clock duration of the invoke (ms). */
+  readonly durationMs: number;
+  readonly tools: AgentToolDiagnostics;
   readonly memory?: AgentMemoryDiagnostics;
 }
 
