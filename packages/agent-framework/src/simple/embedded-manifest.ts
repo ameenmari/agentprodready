@@ -1,5 +1,7 @@
 import type { AgentManifest, ValidationCatalog } from '../index.js';
 import { freeze } from '../index.js';
+import type { SimpleTool } from './tool.js';
+import { EMBEDDED_MEMORY_SCOPE } from './embedded-security.js';
 import {
   EMBEDDED_PROJECT,
   EMBEDDED_TENANT,
@@ -12,7 +14,11 @@ export function buildEmbeddedManifest(params: {
   readonly name: string;
   readonly description: string;
   readonly purpose: string;
+  readonly tools?: readonly SimpleTool[];
+  readonly memoryEnabled?: boolean;
 }): AgentManifest {
+  const tools = params.tools ?? [];
+  const maxToolInvocations = tools.length > 0 ? 8 : 0;
   const createdAt = new Date().toISOString();
   return freeze({
     manifestId: `manifest:${params.agentId}:1.0.0`,
@@ -36,9 +42,29 @@ export function buildEmbeddedManifest(params: {
         requirement: 'required' as const,
       }),
     ]),
-    tools: Object.freeze([]),
+    tools: Object.freeze(
+      tools.map((simpleTool) =>
+        Object.freeze({
+          id: simpleTool.contract.id,
+          operations: Object.freeze(['execute']),
+          scopes: Object.freeze(['embedded']),
+          authorizationRequired: true as const,
+        }),
+      ),
+    ),
     knowledge: Object.freeze([]),
-    memory: Object.freeze([]),
+    memory: Object.freeze(
+      params.memoryEnabled === true
+        ? [
+            Object.freeze({
+              id: EMBEDDED_MEMORY_SCOPE,
+              operations: Object.freeze(['retrieve', 'capture']),
+              scopes: Object.freeze(['embedded']),
+              authorizationRequired: true as const,
+            }),
+          ]
+        : [],
+    ),
     planning: Object.freeze({
       enabled: true,
       strategies: Object.freeze(['single-step']),
@@ -53,7 +79,7 @@ export function buildEmbeddedManifest(params: {
     constraints: Object.freeze({
       maximumDurationMs: 30_000,
       maximumCost: 1,
-      maximumToolInvocations: 0,
+      maximumToolInvocations: maxToolInvocations,
       maximumPlanningDepth: 1,
       maximumWorkflowIterations: 1,
       prohibitedOperations: Object.freeze([]),

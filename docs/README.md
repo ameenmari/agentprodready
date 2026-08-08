@@ -4,7 +4,7 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**New in v1.1 — Simple Agent API:** `createAgent`, `reference()`, `openai()`, `invoke()`, `stream()`, `close()` on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework).
+**New in v1.2 — Simple Agent API:** chat (`createAgent`), tools (`tool()`), ephemeral memory (`memory: true` / `inMemory()`) on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework).
 
 This directory contains product guides, architectural specification, implementation guidance, and governance documentation.
 
@@ -14,18 +14,20 @@ This directory contains product guides, architectural specification, implementat
 
 1. [Getting Started](guides/getting-started.md)
 2. [Simple Agent API](guides/simple-agent-api.md)
-3. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent)
-4. [Streaming](guides/streaming.md)
-5. [Tools](guides/tools.md)
-6. [Memory](guides/memory.md)
-7. [Production Deployment](guides/production-deployment.md)
-8. [Security](guides/security.md)
-9. [Operations](guides/operations.md)
-10. [Adopting AgentProdReady](guides/adopting-agentprodready.md) *(evaluators / leads)*
-11. [Architecture index](architecture-index.md)
-12. [Blueprints](blueprints/) · [ADRs](adrs/)
+3. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md)
+4. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent) · [openai-agent](../examples/openai-agent)
+5. [Streaming](guides/streaming.md)
+6. [Tools](guides/tools.md) *(advanced)*
+7. [Memory](guides/memory.md) *(advanced / durable)*
+8. [Production Deployment](guides/production-deployment.md)
+9. [Security](guides/security.md)
+10. [Operations](guides/operations.md)
+11. [Package compatibility](guides/package-compatibility.md)
+12. [Adopting AgentProdReady](guides/adopting-agentprodready.md) *(evaluators / leads)*
+13. [Architecture index](architecture-index.md)
+14. [Blueprints](blueprints/) · [ADRs](adrs/)
 
-**Beginner path:** Getting Started → Simple Agent API → Examples → Streaming → Production / Security → Architecture.
+**Beginner path:** Getting Started → Simple Agent API → Simple Tools / Memory → Examples → Production / Security → Architecture.
 
 Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
 
@@ -37,7 +39,7 @@ Blueprints and ADRs are under **Architecture / Advanced** — you do not need th
 |---|---|
 | **Build your first agent** | [Getting Started](guides/getting-started.md) · [Simple Agent API](guides/simple-agent-api.md) |
 | Evaluate for a larger project | [Adopting AgentProdReady](guides/adopting-agentprodready.md) · [ROADMAP](../ROADMAP.md) |
-| Install packages in your app | [Repository README](../README.md) · [npm distribution](guides/npm-distribution.md) |
+| Install packages in your app | [Repository README](../README.md) · [npm distribution](guides/npm-distribution.md) · [package compatibility](guides/package-compatibility.md) |
 | Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · [examples/streaming-agent](../examples/streaming-agent) |
 | Tools / Memory / Evaluation (advanced) | [tools](guides/tools.md) · [memory](guides/memory.md) · [evaluation](guides/evaluation.md) |
 | Production deployment | [production-deployment.md](guides/production-deployment.md) · [security.md](guides/security.md) |

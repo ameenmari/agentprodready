@@ -4,11 +4,9 @@ Build an AI agent in minutes. Add production controls when you need them.
 
 Production-oriented architecture with a young ecosystem.
 
-**v1.1 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `invoke()` · `stream()` · `close()`
+**v1.2 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
-`@agentprodready/agent-framework` is the package most developers should install first. It includes a simple embedded API plus the full advanced Agent Framework for production platforms.
-
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Agent API](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-agent-api.md) · [Adopting AgentProdReady](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/adopting-agentprodready.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
 
 ---
 
@@ -18,13 +16,11 @@ Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/
 npm install @agentprodready/agent-framework
 ```
 
-Requires **Node.js 24** and an **ESM** project (`"type": "module"` or an `.mjs` file).
+Requires **Node.js 24** (see repo CI for Node 22 status) and an **ESM** project.
 
 ---
 
-## 60-second hello world
-
-No API key. No database. No Docker.
+## A. Simple chat
 
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
@@ -36,28 +32,15 @@ const agent = createAgent({
 
 const result = await agent.invoke("Hello");
 console.log(result.text);
-
 await agent.close();
 ```
 
-With the deterministic reference model, `result.text` echoes the user input (`Hello`).
+No API key. No database. No Docker.
 
----
-
-## OpenAI example
+### OpenAI
 
 ```bash
 npm install @agentprodready/agent-framework @agentprodready/ai-provider-openai
-```
-
-Set your key in the environment (the library does **not** load `.env` files):
-
-```bash
-# bash
-export OPENAI_API_KEY="..."
-
-# PowerShell
-$env:OPENAI_API_KEY="..."
 ```
 
 ```js
@@ -70,124 +53,80 @@ const agent = createAgent({
 
 const result = await agent.invoke("Hello");
 console.log(result.text);
-
 await agent.close();
 ```
 
+Set `OPENAI_API_KEY` in the environment (the library does not load `.env` files).
+
 ---
 
-## Streaming example
+## B. Agent with tools
+
+```js
+import { createAgent, reference, tool } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are helpful.",
+  tools: [
+    tool({
+      name: "getWeather",
+      description: "Get weather for a city",
+      parameters: {
+        type: "object",
+        properties: { city: { type: "string" } },
+        required: ["city"],
+      },
+      execute: async ({ city }) => ({ city, forecast: "sunny" }),
+    }),
+  ],
+});
+
+const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
+console.log(result.text);
+await agent.close();
+```
+
+Defaults are conservative (`mutating` / `non-idempotent`). See the Simple Tools guide.
+
+---
+
+## C. Agent with memory (ephemeral)
 
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
   model: reference(),
-  instructions: "You are a helpful assistant.",
+  instructions: "Remember user facts when helpful.",
+  memory: true,
 });
 
-for await (const event of agent.stream("Hello")) {
-  if (event.type === "text") {
-    process.stdout.write(event.text);
-  }
-}
-
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text);
 await agent.close();
 ```
 
-This is an embedded library stream API — not HTTP SSE.
+`memory: true` is process-local and instance-scoped — not durable Postgres memory.
 
 ---
 
-## How simple mode works
+## Streaming
 
-`createAgent` assembles an isolated embedded platform for you:
-
-- in-memory Persistence / Event Bus / Audit / Observability defaults
-- automatic Agent manifest, registration, and lifecycle activation
-- application-local Security for register / activate / invoke
-- Runtime execution through existing AgentProdReady frameworks
-- Prompt Builder ownership for `instructions`
-
-Each `createAgent()` call owns its own composition. There is no global shared platform singleton.
-
-**Security:** simple/embedded mode is **not** production HTTP authentication. LocalReference host auth is development-only. Internet-facing multi-tenant apps must authenticate users and use advanced Security integration. See [SECURITY.md](https://github.com/ameenmari/agentprodready/blob/main/SECURITY.md).
-
----
-
-## Advanced API
-
-When you outgrow hello-world, the same package still exports the advanced surface:
-
-- `AgentFramework`, `buildAgentDefinition`
-- registry / lifecycle / discovery
-- Runtime handoff contracts
-
-Use advanced APIs with Composition, Capability Resolution, Security, Memory, Tools, Evaluation, and your own host.
-
-Nothing in the advanced API is deprecated by `createAgent`.
-
----
-
-## Production notes
-
-Simple mode is appropriate for:
-
-- local apps and CLIs
-- prototypes
-- embedded agent features
-- learning / demos
-
-For **internet-facing multi-tenant services**, use advanced platform configuration and production Security integration. `createAgent()` is an embedded library API — it is **not** public HTTP authentication. If you expose your own API, you authenticate users and supply appropriate Security context.
-
----
-
-## Guides / examples
-
-- Getting Started: see repository `docs/guides/getting-started.md`
-- Simple Agent API: `docs/guides/simple-agent-api.md`
-- Examples: `examples/hello-agent`, `examples/streaming-agent`
-
----
-
-## Simple API reference
-
-| Export | Purpose |
-|---|---|
-| `createAgent(options)` | Create an embedded agent |
-| `reference()` | Deterministic local model descriptor |
-| `openai(modelId)` | OpenAI model descriptor (optional peer package) |
-| `agent.invoke(text)` | Run once → `AgentResult` (`result.text`) |
-| `agent.stream(text)` | AsyncIterable simple events |
-| `agent.close()` | Dispose this agent instance |
-| `SimpleAgentError` | Developer-facing facade errors |
-
-### `CreateAgentOptions`
-
-```ts
-{
-  model: AgentModel;
-  instructions: string;
-  name?: string;
-  description?: string;
+```js
+for await (const event of agent.stream("Hello")) {
+  if (event.type === "text") process.stdout.write(event.text);
+  if (event.type === "tool_call") {
+    /* safe lifecycle only */
+  }
 }
 ```
 
-### `AgentResult`
-
-```ts
-{
-  text: string;
-  output?: unknown;
-  executionId: string;
-  usage?: AgentUsage;
-  metadata?: Record<string, unknown>;
-  raw?: unknown;
-}
-```
+Embedded library stream — not HTTP SSE.
 
 ---
 
-## License
+## Advanced APIs
 
-MIT
+This package also exports the advanced Agent Framework. Simple helpers do not deprecate it. Production multi-tenant hosts should use advanced Security, Runtime, Composition, and durable Memory/Persistence as documented in the repository.

@@ -80,14 +80,20 @@ export function freeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!
 export * from './reference.js';
 export {
   createAgent,
+  inMemory,
   openai,
   reference,
+  tool,
   SimpleAgentError,
   type Agent,
   type AgentModel,
   type AgentResult,
   type AgentStreamEvent,
+  type AgentToolStreamStatus,
   type AgentUsage,
   type CreateAgentOptions,
   type SimpleAgentErrorCode,
+  type SimpleMemory,
+  type SimpleTool,
+  type SimpleToolDefinition,
 } from './simple/index.js';

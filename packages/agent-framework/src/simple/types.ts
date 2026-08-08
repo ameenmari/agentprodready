@@ -1,4 +1,7 @@
-/** Approachable Simple Agent API types (v1.1). */
+/** Approachable Simple Agent API types (v1.1+). */
+
+import type { SimpleMemory } from './memory.js';
+import type { SimpleTool } from './tool.js';
 
 export type AgentModel =
   | { readonly provider: 'reference'; readonly modelId: 'reference' }
@@ -9,6 +12,8 @@ export interface CreateAgentOptions {
   readonly instructions: string;
   readonly name?: string;
   readonly description?: string;
+  readonly tools?: readonly SimpleTool[];
+  readonly memory?: true | SimpleMemory;
 }
 
 export interface AgentUsage {
@@ -26,9 +31,23 @@ export interface AgentResult {
   readonly raw?: unknown;
 }
 
+export type AgentToolStreamStatus = 'executing' | 'succeeded' | 'failed';
+
 export type AgentStreamEvent =
   | { readonly type: 'start'; readonly executionId: string }
   | { readonly type: 'text'; readonly text: string }
+  | {
+      readonly type: 'tool_call';
+      readonly toolCallId: string;
+      readonly toolId: string;
+      readonly status: AgentToolStreamStatus;
+    }
+  | {
+      readonly type: 'tool_result';
+      readonly toolCallId: string;
+      readonly toolId: string;
+      readonly status: AgentToolStreamStatus;
+    }
   | { readonly type: 'usage'; readonly usage: AgentUsage }
   | { readonly type: 'complete'; readonly executionId: string };
 

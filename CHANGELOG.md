@@ -2,6 +2,19 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.2.0] — Simple Tools, Simple Memory & developer compatibility
+
+Documentation + Simple Agent facade (architecture ownership unchanged):
+
+- `tool()` + `createAgent({ tools })` over Tool Framework / Security / Runtime checkpoints
+- Conservative tool defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRequirement: "none"`
+- `memory: true` / `inMemory()` ephemeral MemoryEngine session (not durable Postgres)
+- Additive `tool_call` / `tool_result` stream lifecycle events
+- Guides: Simple Tools, Simple Memory; README paths A/B/C
+- CI verify matrix: Node 22 + Node 24 (engines remain `>=24 <25` until Node 22 is green on main)
+- Package compatibility guide expanded; public DX packs `ai-provider` + `agent-framework`
+- `@agentprodready/ai-provider@1.0.2` — reference `USE_TOOL:<name>:<json>` for deterministic tool demos
+
 ## [1.1.1] — Public credibility & trust (docs/metadata)
 
 Documentation and discoverability only (no Simple Agent behavior change):

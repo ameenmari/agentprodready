@@ -4,15 +4,17 @@ Build an agent in minutes with `@agentprodready/agent-framework`.
 
 Production-oriented architecture with a young ecosystem.
 
-**v1.1 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `invoke()` · `stream()` · `close()`
+**v1.2 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
 ## Requirements
 
-- Node.js **24**
+- Node.js **24** for the claimed engines line (`>=24 <25`); CI also runs Node **22** (engines widen only after that job is green on main)
 - npm, pnpm, or yarn
 - ESM (`"type": "module"` in `package.json`, or use `.mjs` files)
 
-CommonJS `require(...)` is **not** a first-class supported path for v1.1.
+CommonJS `require(...)` is **not** a first-class supported path.
+
+**Why Node 24 in engines today?** It is the last fully claimed verified baseline. Node 22 is under CI proof — not silently supported via engines until green.
 
 ## Install (reference / zero-secret)
 
@@ -148,6 +150,6 @@ Vulnerability reporting: [SECURITY.md](../../SECURITY.md). Evaluator guide: [Ado
 
 ## Next steps
 
-- [Simple Agent API](./simple-agent-api.md)
-- Examples: `examples/hello-agent`, `examples/streaming-agent`
+- [Simple Agent API](./simple-agent-api.md) · [Simple Tools](./simple-tools.md) · [Simple Memory](./simple-memory.md)
+- Examples: `examples/hello-agent`, `examples/streaming-agent`, `examples/openai-agent`
 - Advanced architecture / production deployment docs under `docs/`

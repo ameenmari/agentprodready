@@ -1,6 +1,6 @@
 import type { RuntimeStreamEvent } from '@agentprodready/runtime';
 import { SimpleAgentError } from './errors.js';
-import type { AgentStreamEvent, AgentUsage } from './types.js';
+import type { AgentStreamEvent, AgentToolStreamStatus, AgentUsage } from './types.js';
 
 export async function* mapRuntimeStream(
   executionId: string,
@@ -16,6 +16,13 @@ export async function* mapRuntimeStream(
           yield Object.freeze({ type: 'text', text: event.payload.text });
         } else if (event.payload.kind === 'usage') {
           yield Object.freeze({ type: 'usage', usage: toUsage(event.payload.usage) });
+        } else {
+          yield Object.freeze({
+            type: event.payload.kind,
+            toolCallId: event.payload.toolCallId,
+            toolId: event.payload.toolId,
+            status: toToolStatus(event.payload.status),
+          });
         }
         break;
       }
@@ -50,6 +57,11 @@ export async function* mapRuntimeStream(
   }
 }
 
+function toToolStatus(status: string): AgentToolStreamStatus {
+  if (status === 'executing' || status === 'succeeded' || status === 'failed') return status;
+  return 'failed';
+}
+
 function toUsage(usage: {
   readonly inputTokens: number;
   readonly outputTokens: number;
@@ -80,6 +92,15 @@ function mapStreamFailure(code: string, message: string, executionId: string): S
       'The configured AI provider is unavailable.',
       executionId,
     );
+  }
+  if (/TOOL_AUTHORIZATION|tool authorization/i.test(code) || /tool authorization/i.test(message)) {
+    return new SimpleAgentError('AGENT_TOOL_AUTHORIZATION', message, executionId);
+  }
+  if (/TOOL_APPROVAL|approval required/i.test(code) || /approval required/i.test(message)) {
+    return new SimpleAgentError('AGENT_TOOL_APPROVAL_REQUIRED', message, executionId);
+  }
+  if (/TOOL_REJECTED|TOOL_MAX/i.test(code) || /TOOL_MAX/i.test(message)) {
+    return new SimpleAgentError('AGENT_TOOL_REJECTED', message, executionId);
   }
   return new SimpleAgentError(
     'AGENT_STREAM_FAILED',

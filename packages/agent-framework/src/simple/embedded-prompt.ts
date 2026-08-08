@@ -27,7 +27,12 @@ export class EmbeddedPromptService {
     readonly correlationId: string;
     readonly tenantId: string;
     readonly workspaceId: string;
+    readonly memoryBlock?: string;
   }): Promise<PromptPackage> {
+    const instructionsText =
+      params.memoryBlock === undefined || params.memoryBlock.trim() === ''
+        ? params.instructions
+        : `${params.instructions}\n\n${params.memoryBlock.trim()}`;
     const context = syntheticContextPackage(params);
     return this.#builder.build({
       requestId: `prompt:${params.executionId}`,
@@ -36,7 +41,7 @@ export class EmbeddedPromptService {
         Object.freeze({
           id: 'facade-instructions',
           hierarchy: 'system' as const,
-          content: params.instructions,
+          content: instructionsText,
           sourceReference: 'createAgent.instructions',
           sourceVersion: '1',
           securityLabels: Object.freeze([SECURITY_LABEL]),

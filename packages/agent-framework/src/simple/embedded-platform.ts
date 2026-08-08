@@ -5,6 +5,7 @@ import {
   InMemoryAiEvents,
   NoopAiTelemetry,
   ReferenceAiProviderAdapter,
+  type AiToolDefinition,
 } from '@agentprodready/ai-provider';
 import {
   CapabilityResolver,
@@ -24,6 +25,17 @@ import {
 } from '@agentprodready/runtime';
 import { SecurityRuntimeAdapter } from '@agentprodready/security';
 import {
+  FactoryToolAdapterResolver,
+  InMemoryToolDiagnostics,
+  InMemoryToolEvents,
+  NoopToolTelemetry,
+  ToolInvocationCoordinator,
+  ToolRegistry,
+  ToolValidator,
+  type NormalizedToolResult,
+  type ToolAdapter,
+} from '@agentprodready/tool-framework';
+import {
   AgentFramework,
   buildAgentDefinition,
   DeterministicAgentValidator,
@@ -33,26 +45,42 @@ import {
   InMemoryAgentLifecycleStore,
   InMemoryAgentRegistry,
 } from '../index.js';
-import { OPENAI_AI_ID, REFERENCE_AI_ID, seedEmbeddedCapabilities } from './embedded-capabilities.js';
+import {
+  OPENAI_AI_ID,
+  REFERENCE_AI_ID,
+  seedEmbeddedCapabilities,
+} from './embedded-capabilities.js';
 import { EmbeddedCapabilityExecution } from './embedded-capability-execution.js';
 import { buildEmbeddedManifest, embeddedValidationCatalog } from './embedded-manifest.js';
 import { createEmbeddedPlanningAdapter, createEmbeddedWorkflowAdapter } from './embedded-planning.js';
 import { EmbeddedPromptService } from './embedded-prompt.js';
 import { EmbeddedRuntimePort } from './embedded-runtime-port.js';
+import type { EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
+import {
+  EMBEDDED_MAX_ARGUMENT_BYTES,
+  EMBEDDED_MAX_RESULT_BYTES,
+  EMBEDDED_MAX_TOOL_CALLS,
+  EMBEDDED_MAX_TOOL_TURNS,
+} from './embedded-tool-loop-limits.js';
 import {
   EMBEDDED_PROJECT,
   EMBEDDED_TENANT,
   EMBEDDED_USER,
   EMBEDDED_WORKSPACE,
   EmbeddedSecurity,
+  embeddedPrincipal,
 } from './embedded-security.js';
+import { EmbeddedMemorySession } from './memory.js';
 import { SimpleAgentError } from './errors.js';
+import type { SimpleTool } from './tool.js';
 import type { AgentModel } from './types.js';
 import type { NormalizedCreateAgentOptions } from './validate-options.js';
 
 export interface EmbeddedPlatform {
   readonly agentId: string;
   readonly agentPrincipalId: string;
+  readonly hasTools: boolean;
+  readonly hasMemory: boolean;
   readonly scope: {
     readonly tenantId: string;
     readonly workspaceId: string;
@@ -74,8 +102,9 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     projectId: EMBEDDED_PROJECT,
   });
 
+  const toolIds = options.tools.map((tool) => tool.contract.id);
   const implementationId = await resolveImplementationId(options.model);
-  const { capabilities, providers, configuration } = seedEmbeddedCapabilities(implementationId);
+  const { capabilities, providers, configuration } = seedEmbeddedCapabilities(implementationId, options.tools);
 
   const aiResolver = new FactoryAiAdapterResolver();
   if (options.model.provider === 'reference') {
@@ -101,6 +130,63 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     new NoopResolutionTelemetry(),
   );
 
+  const toolRegistry = new ToolRegistry();
+  const toolAdapterResolver = new FactoryToolAdapterResolver();
+  for (const simpleTool of options.tools) {
+    toolRegistry.register(simpleTool.contract);
+    toolAdapterResolver.bind(simpleTool.contract.id, async () => new SimpleToolAdapter(simpleTool));
+  }
+
+  const toolCoordinator = new ToolInvocationCoordinator(
+    toolRegistry,
+    toolAdapterResolver,
+    new ToolValidator(),
+    new InMemoryToolDiagnostics(),
+    new InMemoryToolEvents(),
+    new NoopToolTelemetry(),
+  );
+
+  const security = new EmbeddedSecurity({
+    allowedToolIds: toolIds,
+    memoryEnabled: options.memory !== undefined,
+  });
+
+  const toolDefinitions = (): readonly AiToolDefinition[] =>
+    Object.freeze(
+      options.tools.map((simpleTool) =>
+        Object.freeze({
+          name: simpleTool.contract.id,
+          description: simpleTool.description,
+          inputSchema: simpleTool.parameters,
+        }),
+      ),
+    );
+
+  const toolLoopDeps: EmbeddedToolLoopDeps | undefined =
+    options.tools.length > 0
+      ? Object.freeze({
+          ai: aiFramework,
+          tools: toolRegistry,
+          coordinator: toolCoordinator,
+          validator: new ToolValidator(),
+          adapters: toolAdapterResolver,
+          events: new InMemoryToolEvents(),
+          security: security.platform,
+          resolver: capabilityResolver,
+          principal: embeddedPrincipal(new Date().toISOString()),
+          limits: Object.freeze({
+            maxCallsPerInvocation: EMBEDDED_MAX_TOOL_CALLS,
+            maxTurns: EMBEDDED_MAX_TOOL_TURNS,
+            maxArgumentBytes: EMBEDDED_MAX_ARGUMENT_BYTES,
+            maxResultBytes: EMBEDDED_MAX_RESULT_BYTES,
+          }),
+          toolDefinitions,
+        })
+      : undefined;
+
+  const memorySession =
+    options.memory === undefined ? undefined : new EmbeddedMemorySession(agentId, options.memory);
+
   const prompts = new EmbeddedPromptService();
   const capabilityExecution = new EmbeddedCapabilityExecution(
     capabilityResolver,
@@ -109,12 +195,13 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     options.instructions,
     EMBEDDED_TENANT,
     EMBEDDED_WORKSPACE,
+    toolLoopDeps,
+    memorySession,
   );
 
   const compositionRoot = new CompositionRoot();
   compositionRoot.build();
 
-  const security = new EmbeddedSecurity();
   const runtime = new RuntimeOrchestrator({
     scopes: compositionRoot,
     policies: new StaticRuntimePolicyProvider({
@@ -151,6 +238,8 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     name: options.name,
     description: options.description,
     purpose: options.description,
+    tools: options.tools,
+    memoryEnabled: options.memory !== undefined,
   });
   const definition = buildAgentDefinition(manifest, ['validation:embedded-1']);
   const catalog = embeddedValidationCatalog();
@@ -199,16 +288,64 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
   return Object.freeze({
     agentId,
     agentPrincipalId,
+    hasTools: options.tools.length > 0,
+    hasMemory: options.memory !== undefined,
     scope,
     framework,
     runtimePort,
     security,
     compositionRoot,
     async dispose(): Promise<void> {
+      await memorySession?.dispose();
       await runtimePort.dispose();
       await compositionRoot.dispose();
     },
   });
+}
+
+class SimpleToolAdapter implements ToolAdapter {
+  public readonly id: string;
+
+  public constructor(private readonly simpleTool: SimpleTool) {
+    this.id = simpleTool.contract.id;
+  }
+
+  public async invoke(
+    request: Parameters<ToolAdapter['invoke']>[0],
+  ): Promise<NormalizedToolResult> {
+    if (request.signal?.aborted === true) {
+      throw Object.assign(new Error('cancelled'), { kind: 'rejected' });
+    }
+    const data = await Promise.resolve(this.simpleTool.execute({ ...request.parameters }));
+    return {
+      requestId: request.requestId,
+      status: 'completed',
+      data,
+      tool: {
+        id: request.binding.implementationId,
+        version: request.binding.implementationVersion,
+        sideEffect: this.simpleTool.sideEffect,
+        idempotency: this.simpleTool.idempotency,
+      },
+      execution: {
+        executionId: request.context.executionId,
+        correlationId: request.context.correlationId,
+        ...(request.idempotencyKey === undefined ? {} : { idempotencyKey: request.idempotencyKey }),
+      },
+      validation: {
+        valid: true,
+        contractId: request.binding.implementationId,
+        contractVersion: request.binding.implementationVersion,
+        checkedFields: [],
+      },
+      diagnosticId: `tool:${request.requestId}`,
+      metadata: Object.freeze({ source: 'simple-tool' }),
+    };
+  }
+
+  public async health(): Promise<{ readonly name: string; readonly status: 'healthy' }> {
+    return Object.freeze({ name: this.id, status: 'healthy' as const });
+  }
 }
 
 async function resolveImplementationId(model: AgentModel): Promise<string> {

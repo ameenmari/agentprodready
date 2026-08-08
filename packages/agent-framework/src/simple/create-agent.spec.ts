@@ -27,11 +27,17 @@ describe('createAgent validation', () => {
       createAgent({ model: reference(), instructions: '   ' }),
     ).toThrowError(/instructions/);
     expect(() =>
-      createAgent({ model: reference(), instructions: 'ok', tools: [] } as never),
+      createAgent({ model: reference(), instructions: 'ok', unknownField: true } as never),
     ).toThrowError(/Unknown createAgent option/);
     expect(() => createAgent({ model: { provider: 'x' } as never, instructions: 'ok' })).toThrow(
       SimpleAgentError,
     );
+  });
+
+  it('allows empty tools array', () => {
+    expect(() =>
+      createAgent({ model: reference(), instructions: 'ok', tools: [] }),
+    ).not.toThrow();
   });
 });
 

@@ -1,0 +1,12 @@
+{
+  "name": "openai-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@agentprodready/agent-framework": "^1.2.0",
+    "@agentprodready/ai-provider-openai": "^1.0.1"
+  }
+}

@@ -4,13 +4,19 @@ import type {
   AiProviderFramework,
   NormalizedAiResult,
 } from '@agentprodready/ai-provider';
+import { referenceStreamChunks } from '@agentprodready/ai-provider';
 import type {
   CapabilityExecutionControl,
   CapabilityInvocationPort,
   CapabilityStreamEvent,
 } from '@agentprodready/runtime';
+import { NormalizedToolError } from '@agentprodready/tool-framework';
 import type { NodeExecutionContract } from '@agentprodready/workflow';
+import type { EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
+import { runEmbeddedToolLoop } from './embedded-tool-loop.js';
+import { formatMemoryForPrompt, type EmbeddedMemorySession } from './memory.js';
 import type { EmbeddedPromptService } from './embedded-prompt.js';
+import { SimpleAgentError } from './errors.js';
 
 export interface EmbeddedCapabilityOutput {
   readonly bindings: readonly CapabilityBinding[];
@@ -21,6 +27,11 @@ export interface EmbeddedCapabilityOutput {
 }
 
 export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
+  public readonly hasToolLoop: boolean;
+
+  private readonly toolLoopDeps: EmbeddedToolLoopDeps | undefined;
+  private readonly memorySession: EmbeddedMemorySession | undefined;
+
   public constructor(
     private readonly resolver: CapabilityResolver,
     private readonly ai: AiProviderFramework,
@@ -28,17 +39,24 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     private readonly instructions: string,
     private readonly tenantId: string,
     private readonly workspaceId: string,
-  ) {}
+    toolLoopDeps?: EmbeddedToolLoopDeps,
+    memorySession?: EmbeddedMemorySession,
+  ) {
+    this.toolLoopDeps = toolLoopDeps;
+    this.memorySession = memorySession;
+    this.hasToolLoop = toolLoopDeps !== undefined;
+  }
 
   public async invoke(
     work: unknown,
     context: ExecutionContext,
     signal: AbortSignal,
-    _control?: CapabilityExecutionControl,
+    control?: CapabilityExecutionControl,
   ): Promise<EmbeddedCapabilityOutput> {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const prepared = await this.#prepare(work, context, signal);
-    const aiResult = await this.ai.execute(prepared.request);
+    const aiResult = await this.#executeAi(prepared, context, signal, control);
+    await this.#rememberTurn(context, prepared.objective, aiResult);
     return Object.freeze({
       bindings: Object.freeze([prepared.binding]),
       aiResult,
@@ -52,9 +70,49 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     work: unknown,
     context: ExecutionContext,
     signal: AbortSignal,
-    _control?: CapabilityExecutionControl,
+    control?: CapabilityExecutionControl,
   ): AsyncIterable<CapabilityStreamEvent> {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
+
+    if (this.toolLoopDeps !== undefined) {
+      const prepared = await this.#prepare(work, context, signal, false);
+      let sequence = 0;
+      const pending: CapabilityStreamEvent[] = [];
+      const emit = async (event: CapabilityStreamEvent): Promise<void> => {
+        pending.push(event);
+      };
+
+      const aiResult = await this.#executeAi(prepared, context, signal, control, emit);
+      for (const event of pending) {
+        yield { ...event, sequence: sequence++ };
+      }
+
+      const text = extractText(aiResult) ?? '';
+      for (const chunk of referenceStreamChunks(text)) {
+        if (chunk === '') continue;
+        yield {
+          type: 'delta',
+          sequence: sequence++,
+          payload: Object.freeze({ kind: 'text' as const, text: chunk }),
+        };
+      }
+
+      await this.#rememberTurn(context, prepared.objective, aiResult);
+
+      yield {
+        type: 'final',
+        sequence: sequence++,
+        result: Object.freeze({
+          bindings: Object.freeze([prepared.binding]),
+          aiResult,
+          planId: `plan:${context.executionId}`,
+          workflowId: prepared.workflowId,
+          promptPackageId: prepared.promptPackageId,
+        }),
+      };
+      return;
+    }
+
     const prepared = await this.#prepare(work, context, signal, true);
     let sequence = 0;
     let text = '';
@@ -96,36 +154,88 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
           throw new TypeError('Capability execution aborted');
         }
         case 'tool-call': {
-          throw new TypeError('Tool calling is not supported in the simple Agent API');
+          throw new TypeError('Unexpected tool-call event without tool loop configuration');
         }
       }
     }
 
     if (!sawTerminal) throw new TypeError('AI stream ended without terminal event');
 
+    const aiResult = Object.freeze({
+      requestId: prepared.request.requestId,
+      content: Object.freeze([Object.freeze({ type: 'text' as const, text })]),
+      usage: Object.freeze(usage),
+      model: Object.freeze({
+        id: prepared.binding.implementationId,
+        capabilities: Object.freeze([prepared.binding.capability]),
+      }),
+      finishReason,
+      toolCalls: Object.freeze([]),
+      diagnosticId,
+      metadata: Object.freeze({ source: 'simple-facade', mode: 'stream' }),
+    }) as NormalizedAiResult;
+
+    await this.#rememberTurn(context, prepared.objective, aiResult);
+
     yield {
       type: 'final',
       sequence: sequence++,
       result: Object.freeze({
         bindings: Object.freeze([prepared.binding]),
-        aiResult: Object.freeze({
-          requestId: prepared.request.requestId,
-          content: Object.freeze([Object.freeze({ type: 'text' as const, text })]),
-          usage: Object.freeze(usage),
-          model: Object.freeze({
-            id: prepared.binding.implementationId,
-            capabilities: Object.freeze([prepared.binding.capability]),
-          }),
-          finishReason,
-          toolCalls: Object.freeze([]),
-          diagnosticId,
-          metadata: Object.freeze({ source: 'simple-facade', mode: 'stream' }),
-        }),
+        aiResult,
         planId: `plan:${context.executionId}`,
         workflowId: prepared.workflowId,
         promptPackageId: prepared.promptPackageId,
       }),
     };
+  }
+
+  async #executeAi(
+    prepared: {
+      readonly binding: CapabilityBinding;
+      readonly request: Parameters<AiProviderFramework['execute']>[0];
+      readonly messages: Parameters<AiProviderFramework['execute']>[0]['messages'];
+      readonly objective: string;
+      readonly workflowId: string;
+      readonly promptPackageId: string;
+    },
+    context: ExecutionContext,
+    signal: AbortSignal,
+    control?: CapabilityExecutionControl,
+    emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
+  ): Promise<NormalizedAiResult> {
+    try {
+      if (this.toolLoopDeps !== undefined) {
+        return await runEmbeddedToolLoop(
+          this.toolLoopDeps,
+          prepared.binding,
+          context,
+          prepared.messages,
+          signal,
+          control,
+          emit,
+        );
+      }
+      return await this.ai.execute(prepared.request);
+    } catch (error) {
+      throw mapToolLoopError(error);
+    }
+  }
+
+  async #rememberTurn(
+    context: ExecutionContext,
+    objective: string,
+    aiResult: NormalizedAiResult,
+  ): Promise<void> {
+    if (this.memorySession === undefined) return;
+    const assistantText = extractText(aiResult) ?? '';
+    await this.memorySession.rememberTurn({
+      executionId: context.executionId,
+      correlationId: context.correlationId,
+      decisionId: memoryDecisionId(context.executionId),
+      userInput: objective,
+      assistantText,
+    });
   }
 
   async #prepare(
@@ -136,11 +246,14 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
   ): Promise<{
     readonly binding: CapabilityBinding;
     readonly request: Parameters<AiProviderFramework['execute']>[0];
+    readonly messages: Parameters<AiProviderFramework['execute']>[0]['messages'];
+    readonly objective: string;
     readonly workflowId: string;
     readonly promptPackageId: string;
   }> {
     const nodes = extractNodes(work);
-    const objective = context.attributes['objective'] ?? '';
+    const objectiveAttr = context.attributes['objective'];
+    const objective = typeof objectiveAttr === 'string' ? objectiveAttr : '';
     const node = nodes.find((item) => item.capability !== undefined);
     if (node === undefined || node.capability === undefined) {
       throw new TypeError('No capability binding resolved');
@@ -155,6 +268,17 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       constraints: Object.freeze({}),
     });
 
+    let memoryBlock: string | undefined;
+    if (this.memorySession !== undefined) {
+      const retrieval = await this.memorySession.retrieveForPrompt({
+        executionId: context.executionId,
+        correlationId: context.correlationId,
+        query: objective,
+        decisionId: memoryDecisionId(context.executionId),
+      });
+      memoryBlock = formatMemoryForPrompt(retrieval);
+    }
+
     const promptPackage = await this.prompts.build({
       instructions: this.instructions,
       userInput: objective,
@@ -162,24 +286,27 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       correlationId: context.correlationId,
       tenantId: this.tenantId,
       workspaceId: this.workspaceId,
+      ...(memoryBlock === undefined || memoryBlock === '' ? {} : { memoryBlock }),
     });
+
+    const messages = Object.freeze([
+      Object.freeze({
+        role: 'system' as const,
+        content: Object.freeze([
+          Object.freeze({ type: 'text' as const, text: promptPackage.canonical }),
+        ]),
+      }),
+      Object.freeze({
+        role: 'user' as const,
+        content: Object.freeze([Object.freeze({ type: 'text' as const, text: objective })]),
+      }),
+    ]);
 
     const request = Object.freeze({
       requestId: `${context.executionId}:${binding.bindingId}`,
       binding,
       context,
-      messages: Object.freeze([
-        Object.freeze({
-          role: 'system' as const,
-          content: Object.freeze([
-            Object.freeze({ type: 'text' as const, text: promptPackage.canonical }),
-          ]),
-        }),
-        Object.freeze({
-          role: 'user' as const,
-          content: Object.freeze([Object.freeze({ type: 'text' as const, text: objective })]),
-        }),
-      ]),
+      messages,
       generation: Object.freeze({ maximumOutputTokens: 512 }),
       ...(streaming ? { streaming: Object.freeze({ enabled: true, includeUsage: true }) } : {}),
       metadata: Object.freeze({ source: 'simple-facade', promptPackageId: promptPackage.id }),
@@ -190,9 +317,47 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     return Object.freeze({
       binding,
       request,
+      messages,
+      objective,
       workflowId: snapshot.workflowId,
       promptPackageId: promptPackage.id,
     });
+  }
+}
+
+function memoryDecisionId(executionId: string): string {
+  return `decision:embedded-memory:${executionId}`;
+}
+
+function extractText(aiResult: NormalizedAiResult): string | undefined {
+  const parts = aiResult.content
+    .filter((part): part is { readonly type: 'text'; readonly text: string } => part.type === 'text')
+    .map((part) => part.text);
+  if (parts.length === 0) return undefined;
+  return parts.join('');
+}
+
+function mapToolLoopError(error: unknown): Error {
+  if (!(error instanceof NormalizedToolError)) {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+  switch (error.code) {
+    case 'TOOL_AUTHORIZATION':
+      return new SimpleAgentError('AGENT_TOOL_AUTHORIZATION', error.message, error.diagnosticId, {
+        cause: error,
+      });
+    case 'TOOL_APPROVAL_REQUIRED':
+      return new SimpleAgentError('AGENT_TOOL_APPROVAL_REQUIRED', error.message, error.diagnosticId, {
+        cause: error,
+      });
+    case 'TOOL_REJECTED':
+      return new SimpleAgentError('AGENT_TOOL_REJECTED', error.message, error.diagnosticId, {
+        cause: error,
+      });
+    default:
+      return new SimpleAgentError('AGENT_INVOKE_FAILED', error.message, error.diagnosticId, {
+        cause: error,
+      });
   }
 }
 

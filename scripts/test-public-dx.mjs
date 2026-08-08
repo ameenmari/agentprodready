@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * External clean-install DX gate for @agentprodready/agent-framework simple API.
- * Packs the package, installs the tarball outside the workspace, runs hello + stream.
+ * Packs local packages (including unpublished selective bumps), installs outside the
+ * workspace, runs hello / stream / tools smoke.
  */
 import { spawnSync } from 'node:child_process';
 import {
@@ -22,7 +23,6 @@ const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 function run(command, args, options = {}) {
-  // Windows: shell for npm/pnpm.cmd; never shell for node.exe (path has spaces).
   const useShell =
     options.shell ?? (process.platform === 'win32' && !/node(\.exe)?$/i.test(command));
   const result = spawnSync(command, args, {
@@ -43,43 +43,49 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-process.stdout.write('Building @agentprodready/agent-framework...\n');
+function packPackage(filter, packDir) {
+  const pack = run(pnpm, ['--filter', filter, 'pack', '--pack-destination', packDir]);
+  const packOut = `${pack.stdout ?? ''}\n${pack.stderr ?? ''}`;
+  const packLine = packOut
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.endsWith('.tgz'));
+  assert(packLine !== undefined, `Could not determine tarball for ${filter}:\n${packOut}`);
+  const tarballPath = isAbsolute(packLine) ? packLine : join(packDir, packLine);
+  assert(existsSync(tarballPath), `Missing tarball at ${tarballPath}`);
+  return tarballPath;
+}
+
+process.stdout.write('Building @agentprodready/agent-framework and ai-provider...\n');
 run(pnpm, ['--filter', '@agentprodready/agent-framework...', 'build']);
 
 const packDir = join(root, '.npm-pack-dx');
 rmSync(packDir, { recursive: true, force: true });
 mkdirSync(packDir, { recursive: true });
 
+process.stdout.write('Packing @agentprodready/ai-provider...\n');
+const aiProviderTarball = packPackage('@agentprodready/ai-provider', packDir);
 process.stdout.write('Packing @agentprodready/agent-framework...\n');
-const pack = run(pnpm, [
-  '--filter',
-  '@agentprodready/agent-framework',
-  'pack',
-  '--pack-destination',
-  packDir,
-]);
-const packOut = `${pack.stdout ?? ''}\n${pack.stderr ?? ''}`;
-const packLine = packOut
-  .split(/\r?\n/)
-  .map((line) => line.trim())
-  .find((line) => line.endsWith('.tgz'));
-assert(packLine !== undefined, `Could not determine tarball name from pack output:\n${packOut}`);
-const tarballPath = isAbsolute(packLine) ? packLine : join(packDir, packLine);
-const tarballName = basename(tarballPath);
-assert(existsSync(tarballPath), `Missing tarball at ${tarballPath}`);
+const frameworkTarball = packPackage('@agentprodready/agent-framework', packDir);
 
 const externalRoot = mkdtempSync(join(tmpdir(), 'agentprodready-dx-'));
 const projectDir = join(externalRoot, 'demo');
 mkdirSync(projectDir, { recursive: true });
-const localTarball = join(projectDir, tarballName);
-copyFileSync(tarballPath, localTarball);
+
+for (const tarball of [aiProviderTarball, frameworkTarball]) {
+  copyFileSync(tarball, join(projectDir, basename(tarball)));
+}
 
 process.stdout.write(`External project: ${projectDir}\n`);
 run(npm, ['init', '-y'], { cwd: projectDir });
 run(npm, ['pkg', 'set', 'type=module'], { cwd: projectDir });
 
-process.stdout.write('Installing packed tarball (no workspace linking)...\n');
-run(npm, ['install', `./${tarballName}`], { cwd: projectDir });
+process.stdout.write('Installing packed tarballs (no workspace linking)...\n');
+run(
+  npm,
+  ['install', `./${basename(aiProviderTarball)}`, `./${basename(frameworkTarball)}`],
+  { cwd: projectDir },
+);
 
 const pkg = JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf8'));
 assert(
@@ -128,7 +134,41 @@ const stream = run(process.execPath, ['stream.mjs'], { cwd: projectDir });
 const streamText = (stream.stdout ?? '').trim();
 assert(streamText === 'Hello', `Expected stream Hello, got: ${JSON.stringify(streamText)}`);
 
+const toolsSource = `import { createAgent, reference, tool } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are a helpful assistant.",
+  tools: [
+    tool({
+      name: "getWeather",
+      description: "Get weather for a city",
+      parameters: {
+        type: "object",
+        properties: { city: { type: "string" } },
+        required: ["city"],
+      },
+      execute: async ({ city }) => ({ city, forecast: "sunny" }),
+    }),
+  ],
+});
+
+const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
+console.log(result.text);
+await agent.close();
+`;
+writeFileSync(join(projectDir, 'tools.mjs'), toolsSource, 'utf8');
+
+process.stdout.write('Running tools case...\n');
+const tools = run(process.execPath, ['tools.mjs'], { cwd: projectDir });
+const toolsText = (tools.stdout ?? '').trim();
+assert(
+  /Tool returned/i.test(toolsText) && /Paris|sunny/i.test(toolsText),
+  `Expected tool result text, got: ${JSON.stringify(toolsText)}`,
+);
+
 process.stdout.write('Cleaning temp directory...\n');
 rmSync(externalRoot, { recursive: true, force: true });
+rmSync(packDir, { recursive: true, force: true });
 
 process.stdout.write('PASS — public DX clean install succeeded\n');

@@ -12,7 +12,9 @@ GitHub can stay **private**. npm visibility is independent of GitHub visibility.
 
 ## Registry status
 
-Public packages under `@agentprodready/*` are published to npm. Baseline synchronized release was `1.0.0` (35 packages). Selective bumps followed (for example `@agentprodready/agent-framework@1.1.0` for the Simple Agent API).
+Public packages under `@agentprodready/*` are published to npm. Baseline synchronized release was `1.0.0` (35 packages). Selective bumps followed (for example `@agentprodready/agent-framework@1.1.1` for the Simple Agent API + credibility metadata).
+
+For the current version scatter and install guidance, see [package-compatibility.md](./package-compatibility.md).
 
 ```bash
 npm install @agentprodready/agent-framework

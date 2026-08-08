@@ -8,17 +8,17 @@ This roadmap is directional. It does **not** promise delivery dates.
 
 ## Now
 
-- v1.1 **Simple Agent API** visibility (`createAgent`, `reference`, `openai`, `invoke`, `stream`, `close`)
-- Developer onboarding and documentation navigation
-- Public credibility metadata (README, badges, npm keywords/engines)
-- Evaluator / adoption documentation (`docs/guides/adopting-agentprodready.md`)
+- v1.2 Simple Tools + Simple Memory facade (`tool()`, `memory: true` / `inMemory()`)
+- Node 22+24 CI matrix; widen engines only after Node 22 is green
+- Package compatibility documentation
+- GitHub About metadata (description / homepage / topics) — apply in UI if tooling unavailable
 
 ---
 
 ## Next
 
-- Simplified tools / memory developer experience on the Simple Agent path
-- `examples/openai-agent`
+- Soften engines to `>=22 <25` after Node 22 CI stays green
+- OpenAI-compatible provider (preferred next provider — separate cycle)
 - Official GHCR image publication (immutable version tags)
 - Measured public performance baselines (`docs/benchmarks/` — local baseline, not an SLA)
 - CodeQL / dependency review in CI

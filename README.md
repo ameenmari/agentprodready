@@ -11,27 +11,40 @@ Production-oriented architecture with a young ecosystem.
 
 | | |
 |---|---|
-| **Entry package** | [`@agentprodready/agent-framework@1.1.1`](https://www.npmjs.com/package/@agentprodready/agent-framework) |
+| **Entry package** | [`@agentprodready/agent-framework@1.2.0`](https://www.npmjs.com/package/@agentprodready/agent-framework) |
 | **License** | [MIT](LICENSE) |
-| **Node** | `24` |
+| **Node** | **24** verified (`engines`: `>=24 <25`); CI also runs Node **22** — see [why](#nodejs-24) |
 | **npm scope** | [`@agentprodready/*`](https://www.npmjs.com/org/agentprodready) |
+| **Package versions** | Selective — [compatibility matrix](docs/guides/package-compatibility.md) |
 
 ---
 
-## New in v1.1 — Simple Agent API
+## New in v1.2 — chat, tools, memory
 
-The public entrance is no longer Blueprint-first. Install one package and use:
+Three simple paths. No Blueprints required.
 
-| API | Role |
+| Path | API |
 |---|---|
-| `createAgent(options)` | Create an embedded agent |
-| `reference()` | Deterministic local model (no API key) |
-| `openai(modelId)` | OpenAI model descriptor (optional peer) |
-| `agent.invoke(text)` | One-shot response → `result.text` |
-| `agent.stream(text)` | Embedded async stream (not HTTP SSE) |
-| `agent.close()` | Dispose this agent instance |
+| **A. Simple chat** | `createAgent` + `reference()` / `openai()` + `invoke` / `stream` / `close` |
+| **B. Agent with tools** | `tool()` + `createAgent({ tools })` |
+| **C. Agent with memory** | `memory: true` or `inMemory()` (ephemeral) |
 
-Guide: [Simple Agent API](docs/guides/simple-agent-api.md) · [Getting Started](docs/guides/getting-started.md)
+Guides: [Simple Agent API](docs/guides/simple-agent-api.md) · [Simple Tools](docs/guides/simple-tools.md) · [Simple Memory](docs/guides/simple-memory.md) · [Getting Started](docs/guides/getting-started.md)
+
+---
+
+## Node.js 24
+
+Published `engines` remain **`>=24 <25`** until the Node **22** CI job is green on `main`. CI already runs verify on Node 22 and 24.
+
+| Question | Answer |
+|---|---|
+| Why 24 in engines today? | Last fully claimed verified baseline |
+| Node 22? | Exercised in CI; engines widen only after green results |
+| Node 20? | Not claimed |
+| How to check? | `node -v` |
+
+This is a verification pin — not evidence of Node-24-only language APIs.
 
 ---
 
@@ -106,6 +119,56 @@ await agent.close();
 
 This is an embedded library stream — not HTTP SSE.
 
+### B. Agent with tools
+
+```js
+import { createAgent, reference, tool } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are a helpful assistant.",
+  tools: [
+    tool({
+      name: "getWeather",
+      description: "Get weather for a city",
+      parameters: {
+        type: "object",
+        properties: { city: { type: "string" } },
+        required: ["city"],
+      },
+      execute: async ({ city }) => ({ city, forecast: "sunny" }),
+    }),
+  ],
+});
+
+// Deterministic reference demo (OpenAI chooses tools from schemas instead):
+const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
+console.log(result.text);
+await agent.close();
+```
+
+Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRequirement: "none"`.  
+`approvalRequirement: "required"` fails closed. External effects are not exactly-once.
+
+### C. Agent with memory (ephemeral)
+
+```js
+import { createAgent, reference } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "Remember user facts when helpful.",
+  memory: true, // same as inMemory() — process-local, not durable
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text);
+await agent.close();
+```
+
+Durable Postgres memory is an advanced/host configuration — not `memory: true`.
+
 ---
 
 ## Quality & verification
@@ -136,9 +199,9 @@ Docker image smoke and Postgres service jobs also run in CI. Local performance b
 **Available today**
 
 - Simple Agent API (`createAgent`, `reference`, `openai`, `invoke`, `stream`, `close`)
+- Simple Tools (`tool()` / `createAgent({ tools })`) and ephemeral Simple Memory (`memory: true` / `inMemory()`)
 - Streaming (library + host SSE)
-- Tool calling (advanced / host path)
-- Memory, evaluation, runtime recovery, multi-provider routing
+- Advanced tool calling / durable memory / evaluation / recovery / routing
 - OpenAI + deterministic reference providers
 - PostgreSQL persistence and pgvector paths
 - Deterministic CI / reference verification paths
@@ -146,12 +209,15 @@ Docker image smoke and Postgres service jobs also run in CI. Local performance b
 **Honest limitations**
 
 - Young ecosystem — limited external adoption evidence
+- `memory: true` is **ephemeral** (not durable Postgres)
+- Approval-required tools fail closed (no durable HITL wait)
 - No SSE reconnect / stream replay
 - No durable HITL approval wait / resume
 - No exactly-once guarantee for external tool side effects
 - Limited vendor provider catalog (reference + OpenAI today)
 - No official GHCR image yet (build locally from `Dockerfile` / `compose.yaml`)
 - Embedded Simple Agent mode is **not** a hosted multi-tenant production platform
+- Node **24** only in the verified line (older majors not claimed)
 
 ---
 
@@ -171,6 +237,7 @@ Docker image smoke and Postgres service jobs also run in CI. Local performance b
 |---|---|
 | [`examples/hello-agent`](examples/hello-agent) | `reference()` + `invoke` (no API key) |
 | [`examples/streaming-agent`](examples/streaming-agent) | library `stream()` (not HTTP SSE) |
+| [`examples/openai-agent`](examples/openai-agent) | `openai()` + `invoke` (needs `OPENAI_API_KEY`) |
 
 Each example uses published-style `@agentprodready/agent-framework` package names.
 

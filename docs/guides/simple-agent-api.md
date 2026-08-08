@@ -1,10 +1,12 @@
 # Simple Agent API
 
-Short reference for the v1.1 embedded facade.
+Short reference for the embedded facade on `@agentprodready/agent-framework` (v1.2).
 
-Import from `@agentprodready/agent-framework`.
+Production-oriented architecture with a young ecosystem.
 
-## createAgent
+## Three paths
+
+### A. Simple chat
 
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
@@ -12,90 +14,112 @@ import { createAgent, reference } from "@agentprodready/agent-framework";
 const agent = createAgent({
   model: reference(),
   instructions: "You are a helpful assistant.",
-  name: "demo", // optional
-  description: "Demo agent", // optional
 });
-```
 
-## reference
-
-```js
-import { reference } from "@agentprodready/agent-framework";
-
-const model = reference();
-// { provider: "reference", modelId: "reference" }
-```
-
-No API key. No network.
-
-## openai
-
-```js
-import { openai } from "@agentprodready/agent-framework";
-
-const model = openai("gpt-4o-mini");
-// { provider: "openai", modelId: "gpt-4o-mini" }
-```
-
-Requires optional peer `@agentprodready/ai-provider-openai` and `OPENAI_API_KEY`.
-
-## Agent.invoke
-
-```js
 const result = await agent.invoke("Hello");
 console.log(result.text);
-```
-
-## Agent.stream
-
-```js
-for await (const event of agent.stream("Hello")) {
-  if (event.type === "text") process.stdout.write(event.text);
-}
-```
-
-Events: `start` | `text` | `usage` | `complete`.
-
-## Agent.close
-
-```js
 await agent.close();
 ```
 
-## AgentResult
+### B. Agent with tools
+
+```js
+import { createAgent, reference, tool } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are helpful.",
+  tools: [
+    tool({
+      name: "getWeather",
+      description: "Get weather for a city",
+      parameters: {
+        type: "object",
+        properties: { city: { type: "string" } },
+        required: ["city"],
+      },
+      execute: async ({ city }) => ({ city, forecast: "sunny" }),
+    }),
+  ],
+});
+
+const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
+console.log(result.text);
+await agent.close();
+```
+
+See [Simple Tools](./simple-tools.md).
+
+### C. Agent with memory
+
+```js
+import { createAgent, reference, inMemory } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "Use remembered facts when helpful.",
+  memory: true, // or memory: inMemory()
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text);
+await agent.close();
+```
+
+`memory: true` is **ephemeral**. See [Simple Memory](./simple-memory.md).
+
+---
+
+## Helpers
+
+| Export | Role |
+|---|---|
+| `createAgent(options)` | Create embedded agent |
+| `reference()` | Deterministic local model (no API key / network) |
+| `openai(modelId)` | OpenAI descriptor (optional peer package + `OPENAI_API_KEY`) |
+| `tool(definition)` | Declare a simple tool |
+| `inMemory()` | Ephemeral memory descriptor |
+| `agent.invoke(text)` | One-shot → `result.text` |
+| `agent.stream(text)` | AsyncIterable stream (not HTTP SSE) |
+| `agent.close()` | Dispose instance |
+
+## createAgent options
 
 ```ts
 {
-  text: string;
-  output?: unknown;
-  executionId: string;
-  usage?: { inputTokens?: number; outputTokens?: number; totalTokens?: number };
-  metadata?: Record<string, unknown>;
-  raw?: unknown;
+  model: reference() | openai("..."),
+  instructions: string,
+  name?: string,
+  description?: string,
+  tools?: SimpleTool[],
+  memory?: true | SimpleMemory,
 }
 ```
 
-## AgentStreamEvent
+## Stream events
 
-```ts
-| { type: "start"; executionId: string }
-| { type: "text"; text: string }
-| { type: "usage"; usage: AgentUsage }
-| { type: "complete"; executionId: string }
-```
+`start` | `text` | `tool_call` | `tool_result` | `usage` | `complete`
 
-## SimpleAgentError
+`tool_call` / `tool_result` are safe lifecycle events (no raw args/results by default).
 
-```js
-import { SimpleAgentError } from "@agentprodready/agent-framework";
+## Errors
 
-try {
-  await agent.invoke("Hello");
-} catch (error) {
-  if (error instanceof SimpleAgentError) {
-    console.error(error.code, error.message);
-  }
-}
-```
+`SimpleAgentError` with codes such as:
 
-Common codes: `AGENT_INVALID_CONFIG`, `AGENT_INVALID_MODEL`, `AGENT_MISSING_OPENAI_KEY`, `AGENT_MISSING_OPENAI_PACKAGE`, `AGENT_CLOSED`, `AGENT_INVOKE_FAILED`, `AGENT_STREAM_FAILED`.
+- `AGENT_INVALID_CONFIG` / `AGENT_INVALID_MODEL`
+- `AGENT_MISSING_OPENAI_KEY` / `AGENT_MISSING_OPENAI_PACKAGE`
+- `AGENT_TOOL_AUTHORIZATION` / `AGENT_TOOL_APPROVAL_REQUIRED` / `AGENT_TOOL_REJECTED`
+- `AGENT_CLOSED` / `AGENT_INVOKE_FAILED` / …
+
+## Limitations (honest)
+
+- Simple mode ≠ production multi-tenant HTTP authentication
+- `memory: true` is not durable
+- Approval-required tools fail closed
+- External tool side effects are not exactly-once
+- OpenAI is optional; reference mode needs no key
+
+## Advanced APIs
+
+Blueprints, manifests, ToolRegistry, MemoryEngine, Security facts, Capability Resolution, and Runtime checkpoints still operate underneath. Use advanced packages when you outgrow the facade — they are not deprecated.

@@ -11,9 +11,10 @@ import {
   InMemorySecurityEvents,
   NoopSecurityTelemetry,
   SecurityPlatform,
-  StaticPolicyResolver,
   type AuthorizationDecision,
   type AuthorityState,
+  type AuthorizationRequest,
+  type PolicyResolver,
   type Principal,
   type SecurityContext,
   type SecurityPolicy,
@@ -24,15 +25,31 @@ export const EMBEDDED_WORKSPACE = 'workspace-embedded';
 export const EMBEDDED_PROJECT = 'project-embedded';
 export const EMBEDDED_USER = 'principal:embedded-app';
 export const EMBEDDED_POLICY_VERSION = 'embedded-1';
+export const EMBEDDED_MEMORY_SCOPE = 'embedded';
+
+/** Tool ids starting with this prefix are denied by embedded Security (CI / test convention). */
+export const EMBEDDED_IMPLICIT_DENY_TOOL_PREFIX = 'deny_';
+
+export interface EmbeddedSecurityOptions {
+  readonly allowedToolIds?: readonly string[];
+  readonly deniedToolIds?: readonly string[];
+  readonly memoryEnabled?: boolean;
+}
 
 export class EmbeddedSecurity {
   readonly contexts = new Map<string, SecurityContext>();
   readonly decisions = new Map<string, AuthorizationDecision>();
   readonly platform: SecurityPlatform;
+  readonly #allowedToolIds: readonly string[];
+  readonly #deniedToolIds: readonly string[];
+  readonly #memoryEnabled: boolean;
 
-  public constructor() {
+  public constructor(options?: EmbeddedSecurityOptions) {
+    this.#allowedToolIds = Object.freeze([...(options?.allowedToolIds ?? [])]);
+    this.#deniedToolIds = Object.freeze([...(options?.deniedToolIds ?? [])]);
+    this.#memoryEnabled = options?.memoryEnabled === true;
     this.platform = new SecurityPlatform(
-      new StaticPolicyResolver(embeddedSecurityPolicies()),
+      new EmbeddedPolicyResolver(embeddedSecurityPolicies(), this.#deniedToolIds),
       new BasicSecurityPolicyEvaluator(),
       new ExplicitDenyConflictResolver(),
       new InMemoryDelegationStore(),
@@ -60,9 +77,9 @@ export class EmbeddedSecurity {
       agentPrincipalId,
       scope: freeze({ ...scope }),
       allowedCapabilities: Object.freeze(['text-generation']),
-      allowedTools: Object.freeze([]),
+      allowedTools: Object.freeze([...this.#allowedToolIds]),
       allowedKnowledgeScopes: Object.freeze([]),
-      allowedMemoryScopes: Object.freeze([]),
+      allowedMemoryScopes: Object.freeze(this.#memoryEnabled ? [EMBEDDED_MEMORY_SCOPE] : []),
       restrictions: Object.freeze(['application-local']),
       obligations: Object.freeze(['audit']),
       policyVersion: EMBEDDED_POLICY_VERSION,
@@ -108,7 +125,7 @@ export class EmbeddedSecurity {
       }),
       delegationIds: Object.freeze([]),
       capabilityRequirements: Object.freeze(['text-generation']),
-      toolPermissions: Object.freeze([]),
+      toolPermissions: Object.freeze([...this.#allowedToolIds]),
       pluginPermissions: Object.freeze([]),
       environmental: freeze({ network: 'local' }),
       policyContext: freeze({
@@ -135,9 +152,9 @@ export class EmbeddedSecurity {
       agentPrincipalId: params.agentPrincipalId,
       scope: freeze({ ...params.scope }),
       allowedCapabilities: Object.freeze(['text-generation']),
-      allowedTools: Object.freeze([]),
+      allowedTools: Object.freeze([...this.#allowedToolIds]),
       allowedKnowledgeScopes: Object.freeze([]),
-      allowedMemoryScopes: Object.freeze([]),
+      allowedMemoryScopes: Object.freeze(this.#memoryEnabled ? [EMBEDDED_MEMORY_SCOPE] : []),
       restrictions: Object.freeze(['application-local']),
       obligations: Object.freeze(['audit']),
       policyVersion: EMBEDDED_POLICY_VERSION,
@@ -154,9 +171,68 @@ export class EmbeddedSecurity {
     if (decision === undefined) return 'revoked';
     return this.platform.validity(decision).state;
   }
+
+  /** Returns true when SecurityPlatform would deny execute for this tool id. */
+  public isToolDenied(toolId: string): boolean {
+    return (
+      this.#deniedToolIds.includes(toolId) || toolId.startsWith(EMBEDDED_IMPLICIT_DENY_TOOL_PREFIX)
+    );
+  }
 }
 
-function embeddedPrincipal(at: string): Principal {
+class EmbeddedPolicyResolver implements PolicyResolver {
+  public constructor(
+    private readonly base: readonly SecurityPolicy[],
+    private readonly deniedToolIds: readonly string[],
+  ) {}
+
+  public async resolve(request: AuthorizationRequest): Promise<readonly SecurityPolicy[]> {
+    const policies: SecurityPolicy[] = [...this.base];
+    if (request.action === 'execute' && request.resource.type === 'tool') {
+      const toolId = request.resource.id.startsWith('tool:')
+        ? request.resource.id.slice('tool:'.length)
+        : request.resource.id;
+      const denied =
+        this.deniedToolIds.includes(toolId) || toolId.startsWith(EMBEDDED_IMPLICIT_DENY_TOOL_PREFIX);
+      if (denied) {
+        policies.push(denyToolPolicy(toolId));
+      }
+    }
+    return Object.freeze(policies);
+  }
+}
+
+function denyToolPolicy(toolId: string): SecurityPolicy {
+  return Object.freeze({
+    id: `policy:embedded-deny-tool:${toolId}`,
+    version: EMBEDDED_POLICY_VERSION,
+    schemaVersion: '1',
+    source: 'tool' as const,
+    priority: 100,
+    mandatory: true,
+    active: true,
+    effect: 'deny' as const,
+    principalTypes: Object.freeze([]),
+    requiredRoles: Object.freeze([]),
+    actions: Object.freeze(['execute' as const]),
+    resourceTypes: Object.freeze(['tool' as const]),
+    tenantIds: Object.freeze([EMBEDDED_TENANT]),
+    workspaceIds: Object.freeze([EMBEDDED_WORKSPACE]),
+    projectIds: Object.freeze([EMBEDDED_PROJECT]),
+    requiredLabels: Object.freeze([]),
+    conditions: Object.freeze([
+      Object.freeze({
+        type: 'allowed-tools' as const,
+        key: 'deniedToolId',
+        value: toolId,
+      }),
+    ]),
+    restrictions: Object.freeze([]),
+    obligations: Object.freeze([]),
+  });
+}
+
+export function embeddedPrincipal(at: string): Principal {
   return freeze({
     id: EMBEDDED_USER,
     type: 'human',
@@ -214,7 +290,7 @@ function embeddedSecurityPolicies(): readonly SecurityPolicy[] {
       conditions: Object.freeze([]),
       restrictions: Object.freeze([]),
       obligations: Object.freeze([]),
-      metadata: Object.freeze({ profile: 'embedded-simple-v1.1', applicationLocal: 'true' }),
+      metadata: Object.freeze({ profile: 'embedded-simple-v1.2', applicationLocal: 'true' }),
     }),
   ]);
 }

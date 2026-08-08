@@ -79,6 +79,33 @@ function resolveToolCalls(request: AiExecutionRequest, transcript: string): read
     ]);
   }
 
+  // Deterministic simple-facade / CI pattern: USE_TOOL:<toolName>:<jsonArgs?>
+  const simpleMatch = /^USE_TOOL:([A-Za-z][A-Za-z0-9_-]{0,63})(?::(.*))?$/u.exec(transcript.trim());
+  if (simpleMatch !== null) {
+    const toolName = simpleMatch[1] ?? '';
+    if (request.tools.some((tool) => tool.name === toolName)) {
+      let args: Record<string, unknown> = {};
+      const raw = simpleMatch[2]?.trim() ?? '';
+      if (raw !== '') {
+        try {
+          const parsed = JSON.parse(raw) as unknown;
+          if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+            args = parsed as Record<string, unknown>;
+          }
+        } catch {
+          args = Object.freeze({ value: raw });
+        }
+      }
+      return Object.freeze([
+        Object.freeze({
+          id: `call-${toolName}-1`,
+          name: toolName,
+          arguments: Object.freeze({ ...args }),
+        }),
+      ]);
+    }
+  }
+
   return Object.freeze([]);
 }
 

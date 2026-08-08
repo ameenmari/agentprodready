@@ -8,7 +8,10 @@ export type SimpleAgentErrorCode =
   | 'AGENT_CLOSED'
   | 'AGENT_INVOKE_FAILED'
   | 'AGENT_STREAM_FAILED'
-  | 'AGENT_MISSING_OPENAI_PACKAGE';
+  | 'AGENT_MISSING_OPENAI_PACKAGE'
+  | 'AGENT_TOOL_AUTHORIZATION'
+  | 'AGENT_TOOL_APPROVAL_REQUIRED'
+  | 'AGENT_TOOL_REJECTED';
 
 /** Developer-facing facade error — distinct from advanced AgentError. */
 export class SimpleAgentError extends Error {

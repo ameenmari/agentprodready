@@ -210,6 +210,8 @@ function mapInitError(error: unknown): SimpleAgentError {
 
 function mapInvokeError(error: unknown): SimpleAgentError {
   if (error instanceof SimpleAgentError) return error;
+  const fromCause = extractSimpleAgentFromCause(error);
+  if (fromCause !== undefined) return fromCause;
   if (error instanceof AgentError) {
     if (error.code === 'AGENT_RUNTIME_HANDOFF_FAILED') {
       return mapHandoffCause(error, 'AGENT_INVOKE_FAILED');
@@ -221,6 +223,8 @@ function mapInvokeError(error: unknown): SimpleAgentError {
       { cause: error },
     );
   }
+  const toolError = mapNormalizedToolCause(error);
+  if (toolError !== undefined) return toolError;
   return new SimpleAgentError(
     'AGENT_INVOKE_FAILED',
     'Agent invocation failed. Check configuration and try again.',
@@ -231,6 +235,8 @@ function mapInvokeError(error: unknown): SimpleAgentError {
 
 function mapStreamError(error: unknown): SimpleAgentError {
   if (error instanceof SimpleAgentError) return error;
+  const fromCause = extractSimpleAgentFromCause(error);
+  if (fromCause !== undefined) return fromCause;
   if (error instanceof AgentError) {
     if (error.code === 'AGENT_RUNTIME_HANDOFF_FAILED') {
       return mapHandoffCause(error, 'AGENT_STREAM_FAILED');
@@ -242,6 +248,8 @@ function mapStreamError(error: unknown): SimpleAgentError {
       { cause: error },
     );
   }
+  const toolError = mapNormalizedToolCause(error);
+  if (toolError !== undefined) return toolError;
   return new SimpleAgentError(
     'AGENT_STREAM_FAILED',
     'Agent stream failed. Check configuration and try again.',
@@ -250,10 +258,39 @@ function mapStreamError(error: unknown): SimpleAgentError {
   );
 }
 
+function extractSimpleAgentFromCause(error: unknown): SimpleAgentError | undefined {
+  let current: unknown = error;
+  while (current instanceof Error) {
+    if (current instanceof SimpleAgentError) return current;
+    current = current.cause;
+  }
+  return undefined;
+}
+
+function mapNormalizedToolCause(error: unknown): SimpleAgentError | undefined {
+  const cause = error instanceof Error ? (error.cause ?? error) : error;
+  if (!(cause instanceof Error)) return undefined;
+  const code = (cause as { code?: string }).code;
+  const message = cause.message;
+  const diagnosticId = (cause as { diagnosticId?: string }).diagnosticId;
+  if (code === 'TOOL_AUTHORIZATION') {
+    return new SimpleAgentError('AGENT_TOOL_AUTHORIZATION', message, diagnosticId, { cause });
+  }
+  if (code === 'TOOL_APPROVAL_REQUIRED') {
+    return new SimpleAgentError('AGENT_TOOL_APPROVAL_REQUIRED', message, diagnosticId, { cause });
+  }
+  if (code === 'TOOL_REJECTED') {
+    return new SimpleAgentError('AGENT_TOOL_REJECTED', message, diagnosticId, { cause });
+  }
+  return undefined;
+}
+
 function mapHandoffCause(
   error: AgentError,
   fallback: 'AGENT_INVOKE_FAILED' | 'AGENT_STREAM_FAILED',
 ): SimpleAgentError {
+  const fromCause = extractSimpleAgentFromCause(error);
+  if (fromCause !== undefined) return fromCause;
   const cause = error.cause;
   const text = cause instanceof Error ? cause.message : error.message;
   if (/timeout/i.test(text)) {

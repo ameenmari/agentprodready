@@ -13,7 +13,7 @@ This document is candid by design. It is not a sales pitch.
 - You want a **modular agent platform** with explicit ownership (Runtime, Security, Composition, Capability Resolution).
 - You need a **simple entrance** (`createAgent`) and a path to production controls later.
 - You prefer **provider-independent** contracts (reference + OpenAI today; adapters behind Capability Resolution).
-- You can run **Node.js 24** and accept an **ESM-first** library.
+- You can run **Node.js 24** (`>=24 <25` today) and accept an **ESM-first** library.
 - You are willing to own **production HTTP authentication** and multi-tenant security integration for internet-facing services.
 
 ## When it is not a good fit
@@ -101,6 +101,7 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 
 - Public packages use semver under `@agentprodready/*`
 - Prefer **selective** package bumps (not mechanical monorepo version locks after the 1.0.0 baseline)
+- Seeing `agent-framework@1.1.x` next to other packages at `1.0.x` is **expected** — see [package compatibility](./package-compatibility.md)
 - [CHANGELOG.md](../../CHANGELOG.md) is the canonical release history
 - Tags follow `vMAJOR.MINOR.PATCH` for product releases
 - See [npm distribution](./npm-distribution.md) and [upgrading](./upgrading.md)
