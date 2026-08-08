@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,6 +36,17 @@
     "@agentprodready/security": "workspace:*",
     "@agentprodready/tool-framework": "workspace:*",
     "@agentprodready/workflow": "workspace:*"
+  },
+  "peerDependencies": {
+    "@agentprodready/ai-provider-openai": "^1.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@agentprodready/ai-provider-openai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@agentprodready/ai-provider-openai": "workspace:*"
   },
   "license": "MIT",
   "publishConfig": {

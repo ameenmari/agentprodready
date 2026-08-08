@@ -14,14 +14,18 @@ The documentation is organized so that both engineers and AI coding assistants (
 
 | You want to… | Go to |
 |---|---|
+| **Build your first agent** | [Getting Started](guides/getting-started.md) · [Simple Agent API](guides/simple-agent-api.md) |
 | Install packages in your app | [Repository README](../README.md) · [npm distribution](guides/npm-distribution.md) |
-| Run the local reference host | [Repository README](../README.md) · [configuration](guides/configuration.md) |
+| Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · examples/`streaming-agent` |
+| Tools / Memory / Evaluation (advanced) | [guides/](guides/) feature docs |
+| Production deployment | [production-deployment.md](guides/production-deployment.md) · [security.md](guides/security.md) |
 | Understand architecture | [architecture-index.md](architecture-index.md) · [dependency-graph.md](architecture/dependency-graph.md) · [blueprints/](blueprints/) |
 | Change code in this monorepo | [cursor-start-here.md](cursor-start-here.md) · [CONTRIBUTING.md](../CONTRIBUTING.md) · [implementation-modes.md](implementation/implementation-modes.md) |
-| Operate / harden a deployment | [production-deployment.md](guides/production-deployment.md) · [security.md](guides/security.md) · [operations.md](guides/operations.md) |
-| Trace decisions | [adrs/](adrs/) · [glossary.md](glossary.md) |
+| Trace decisions (ADRs) | [adrs/](adrs/) · [glossary.md](glossary.md) |
 
-Product guides (features): [guides/](guides/) — AI providers, streaming, tools, memory, vector search, evaluation, persistence, recovery, routing.
+**Beginner path:** Getting Started → Simple Agent API → Streaming → Advanced Architecture → Production Deployment.
+
+Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
 
 ---
 

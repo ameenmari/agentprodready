@@ -2,6 +2,17 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.1.0] — Developer Experience facade
+
+- Simple Agent API on `@agentprodready/agent-framework`: `createAgent`, `reference`, `openai`, `invoke`, `stream`, `close`
+- Developer-facing `SimpleAgentError` (advanced `AgentError` unchanged)
+- Embedded isolated composition with in-memory defaults and application-local Security
+- Optional peer `@agentprodready/ai-provider-openai` for OpenAI (lazy; reference path needs no peer)
+- Developer-first package README, Getting Started, Simple Agent API guide
+- Examples: `examples/hello-agent`, `examples/streaming-agent`
+- Public DX clean-install script: `pnpm test:public-dx`
+- **Advanced APIs remain unchanged** — no deprecations
+
 ## [1.0.0] — Production release
 
 - Multi-provider chat routing via Capability Resolution ordered fallback + Runtime `ProviderAttemptLedger` (no `AiRouter`)

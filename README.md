@@ -1,15 +1,41 @@
 # AgentProdReady
 
-**Modular, provider-independent framework for production AI agents.**
+**Build an agent in minutes. Add production controls when you need them.**
 
-Build Node.js / TypeScript agent applications on stable contracts—Runtime, Capability Resolution, Security, Memory, Tools, Evaluation—without locking into a single model vendor.
+Modular, provider-independent framework for production AI agents — with a simple entrance for Node.js / TypeScript developers.
 
 | | |
 |---|---|
-| **Version** | `1.0.0` |
+| **Version** | `1.1.0` (simple Agent API on `@agentprodready/agent-framework`) |
 | **License** | [MIT](LICENSE) |
 | **Node** | `24` (see `packageManager` / `engines` in root `package.json`) |
 | **npm scope** | [`@agentprodready/*`](https://www.npmjs.com/org/agentprodready) |
+
+---
+
+## Quick start
+
+```bash
+npm install @agentprodready/agent-framework
+```
+
+```js
+import { createAgent, reference } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are a helpful assistant.",
+});
+
+const result = await agent.invoke("Hello");
+console.log(result.text);
+
+await agent.close();
+```
+
+No API key required for the deterministic `reference()` model.
+
+Guides: [Getting Started](docs/guides/getting-started.md) · [Simple Agent API](docs/guides/simple-agent-api.md)
 
 ---
 
@@ -17,11 +43,11 @@ Build Node.js / TypeScript agent applications on stable contracts—Runtime, Cap
 
 Most AI projects become infrastructure projects: auth, memory, retrieval, tools, workflows, observability, and provider wiring before any business logic.
 
-AgentProdReady is an **enterprise AI platform framework**: opinionated architecture, replaceable modules, and explicit ownership—so teams compose a platform instead of reinventing it.
+AgentProdReady is an **enterprise AI platform framework**: opinionated architecture, replaceable modules, and explicit ownership—so teams compose a platform instead of reinventing it. Start simple with `createAgent`, then adopt Runtime recovery, Memory, Tools, Evaluation, Routing, Audit, and Security when you need them.
 
 **It is**
 
-- A modular agent / AI application platform (31 blueprints)
+- A modular agent / AI application platform
 - Provider-independent (swap OpenAI ↔ reference ↔ future adapters via Capability Resolution)
 - Contract-first and ADR-governed
 
@@ -31,15 +57,15 @@ AgentProdReady is an **enterprise AI platform framework**: opinionated architect
 - A drop-in replacement for LangChain / NestJS / Spring as a general backend
 - A no-code product (code-first; Docker host is the language-agnostic path)
 
-Early product vision and problem framing informed the architecture; the authoritative engineering specs are the [blueprints](docs/blueprints/) and [ADRs](docs/adrs/).
-
 ---
 
 ## Two ways to use it
 
 ### 1) npm libraries (primary for TypeScript apps)
 
-Install what you need and compose in your application:
+**Simple path** — install one package and use `createAgent` (see Quick start above).
+
+**Advanced path** — compose frameworks directly:
 
 ```bash
 npm install @agentprodready/agent-framework
@@ -51,13 +77,11 @@ npm install @agentprodready/tool-framework
 ```
 
 ```ts
-import { buildAgentDefinition } from '@agentprodready/agent-framework';
+import { buildAgentDefinition, AgentFramework } from '@agentprodready/agent-framework';
 // wire Runtime, AI provider, Memory, Tools via Composition in your app
 ```
 
 Recommended packages and publish notes: [docs/guides/npm-distribution.md](docs/guides/npm-distribution.md).
-
-> A future `@agentprodready/core` facade is planned for a simpler “hello world” API. Until then, install the packages above.
 
 ### 2) Local reference host (HTTP / SSE)
 

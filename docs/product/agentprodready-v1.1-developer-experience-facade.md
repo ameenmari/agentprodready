@@ -1,210 +1,173 @@
-# AgentProdReady v1.1 — Developer Experience Facade
+# AgentProdReady v1.1 — Developer Experience & Simple Agent API
 
-**Status:** Design — In Review  
-**Mode:** Review-Gated (no production code in this document)  
-**Baseline:** v1.0.0 architecture + published `@agentprodready/*` packages  
-**Trigger:** First external-developer feedback (“not a chat agent in 10 lines”)
-
----
-
-## Verdict on the feedback
-
-Agree. v1.0 succeeded as an **architecture / platform** milestone. It did **not** yet succeed as a **product onboarding** milestone.
-
-Do **not** simplify the 31-blueprint architecture.  
-Do **simplify the entrance** to that architecture.
-
-Positioning target:
-
-> **Simple to start. Production-ready when you need it.**
+**Document type:** Product design  
+**Product version:** 1.1.0 (target)  
+**Implementation Mode:** Review-Gated  
+**Status:** Implemented (Autonomous)  
+**Baseline:** AgentProdReady v1.0.1 (published npm packages)  
+**Scope:** Entrance simplification only — no architectural ownership redesign
 
 ---
 
-## Problem
+## 1. Product principle
 
-Today a hello-world developer must manually assemble:
+Build an agent in minutes. Add production controls when you need them.
 
-manifest → catalog → security authorization → lifecycle → Runtime handoff → Capability Resolution → AI provider → Composition
+AgentProdReady v1.0 delivered a production-shaped architecture. External developer feedback confirms the main weakness is **onboarding / DX**, not architecture. Developers need too much knowledge of manifests, lifecycle, catalogs, auth outcomes, and runtime wiring before they can get a simple response.
 
-`@agentprodready/agent-framework` also pulls many sibling packages. That is correct for a platform, wrong as the *perceived* first step.
+v1.1 adds a **developer facade** on top of the existing platform. The architecture remains intact underneath.
 
 ---
 
-## Goal experience
+## 2. Target experience
 
-```bash
-npm install @agentprodready/agent-framework
-```
+### Reference (zero-secret) path
 
-```ts
-import { createAgent } from '@agentprodready/agent-framework';
+```js
+import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
-  name: 'assistant',
-  model: 'openai:gpt-4o-mini', // or reference model for CI
-  instructions: 'You are a helpful assistant.',
+  model: reference(),
+  instructions: "You are a helpful assistant.",
 });
 
-const result = await agent.invoke('Hello!');
-console.log(result.output);
+const result = await agent.invoke("Hello");
+console.log(result.text);
+
+await agent.close();
 ```
 
-Internally `createAgent()` must still:
+### OpenAI path
 
-1. Build a valid Agent Manifest / Definition  
-2. Validate against a default catalog  
-3. Register + lifecycle → `active` with safe defaults  
-4. Wire Composition + Runtime + Security defaults  
-5. Resolve AI chat capability  
-6. Return a small facade object (`invoke` / `invokeStream`)
+```js
+import { createAgent, openai } from "@agentprodready/agent-framework";
 
-Advanced APIs (`AgentFramework`, custom Security, Persistence, Evaluation, etc.) remain available and unchanged.
-
----
-
-## Non-goals (v1.1)
-
-- No blueprint ownership rewrite  
-- No deletion of low-level contracts  
-- No requirement that developers understand all 31 packages  
-- No full website yet (README + examples first)  
-- No replacement of `platform-host` (host remains the HTTP/SSE reference product)
-
----
-
-## Design decision (recommended)
-
-### Package surface
-
-| Option | Recommendation |
-|---|---|
-| A. New `@agentprodready/core` that re-exports + `createAgent` | Good long-term brand, **extra publish** |
-| B. Add `createAgent` (+ docs/examples) to `@agentprodready/agent-framework` | **Preferred for v1.1** — matches “one package quickstart” already in market |
-
-**Decision proposal:** ship facade in `@agentprodready/agent-framework` for v1.1. Revisit `@agentprodready/core` as a thin re-export alias later if naming surveys warrant it.
-
-### Defaults (hello-world)
-
-| Concern | Default for `createAgent` |
-|---|---|
-| Tenant / principal | `local-tenant` / local principal (explicitly **dev defaults**, documented unsafe for internet) |
-| AI provider | `reference` unless `model` starts with `openai:` and `OPENAI_API_KEY` is set |
-| Security | Auto-issue authorized outcomes for declared operations (dev-only path; production must inject Security) |
-| Lifecycle | Auto validate → register → approve → activate |
-| Runtime | In-process reference Runtime port that executes chat via AI Provider Framework |
-| Memory / tools / vector / eval | Off until options enable them |
-| Persistence | In-memory |
-
-Production escape hatch:
-
-```ts
-createAgent({
-  ...,
-  composition: existingRoot,      // bring-your-own Composition
-  security: 'strict',             // no auto-auth
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "You are a helpful assistant.",
 });
+
+const result = await agent.invoke("Hello");
+console.log(result.text);
+
+await agent.close();
 ```
 
-Exact option names are specification work; semantics above are normative for review.
+### Streaming
 
-### Public API sketch (not final contract)
-
-```ts
-export interface CreateAgentOptions {
-  name: string;
-  instructions: string;
-  model?: string;                 // 'reference' | 'openai:<model>'
-  tools?: CreateAgentTool[];      // v1.1.1 if needed
-  memory?: false | 'session';     // phased
+```js
+for await (const event of agent.stream("Hello")) {
+  if (event.type === "text") process.stdout.write(event.text);
 }
-
-export interface AgentHandle {
-  invoke(input: string): Promise<{ output: string; executionReference: string }>;
-  invokeStream?(input: string): AsyncIterable<string>; // may ship in same slice
-  readonly agentId: string;
-  readonly version: string;
-}
-
-export function createAgent(options: CreateAgentOptions): AgentHandle;
 ```
 
-Low-level exports stay: `buildAgentDefinition`, `AgentFramework`, reference stores, etc.
+No Blueprints, no manifest authoring, no lifecycle transitions, no CompositionRoot construction in the happy path.
 
 ---
 
-## Delivery slices (priority order)
+## 3. What v1.1 is / is not
 
-### Slice A — `createAgent` hello path (must)
-
-- Implementation behind facade; no ADR unless ownership moves  
-- Tests: unit + one external-style example test  
-- README rewrite: install → API key (optional) → first agent in &lt; 20 lines  
-- Example: `examples/hello-agent`
-
-### Slice B — Streaming
-
-- `agent.invokeStream` / example `examples/streaming-agent`  
-- Reuse Runtime stream + provider stream contracts
-
-### Slice C — Memory + tools (thin)
-
-- Opt-in options; examples `memory-agent`, `tool-agent`  
-- Still defaults-off for hello world
-
-### Slice D — Docs site / production example
-
-- `examples/production-shaped` showing Security + Persistence + routing  
-- Optional docs site later
+| Is | Is not |
+|---|---|
+| Additive simple API on `@agentprodready/agent-framework` | A new architectural owner |
+| Embedded library DX for local / app-local use | Hosted SaaS |
+| Safe defaults for hello-world | Production multi-tenant auth |
+| Progressive disclosure to advanced APIs | Deprecation of advanced APIs |
+| Reference path with no secrets / DB / Docker | Exactly-once tools or magic autonomy |
 
 ---
 
-## Documentation story
+## 4. Current-state product problem (summary)
 
-README must lead with **product**, not blueprints:
+Today a new developer who installs `@agentprodready/agent-framework` can import advanced types (`buildAgentDefinition`, `AgentFramework`, …) but **cannot** get a chat response without assembling:
 
-1. Install  
-2. First agent  
-3. Streaming  
-4. Memory / tools  
-5. “Need production?” → Security, recovery, evaluation, routing links  
+- Agent manifest + registry + lifecycle
+- Runtime + `AgentRuntimePort` handoff that actually executes
+- Capability Resolution bindings
+- AI Provider adapters (reference or OpenAI)
+- Security authorization outcomes or Security platform wiring
+- Composition / Persistence / Event Bus / Audit / Observability stubs
 
-Blueprints/ADRs remain the contributor path under `docs/`.
-
----
-
-## Success criteria
-
-An unrelated developer on a clean machine can:
-
-1. `npm install @agentprodready/agent-framework@1.1.0` (or next semver)  
-2. Copy a ≤20-line snippet from the README  
-3. See a successful `invoke` response without writing manifests/catalogs/auth by hand  
-4. Still import low-level contracts when they outgrow the facade  
+Most of that runnable wiring currently lives in **`apps/platform-host`**, which is **not** published to npm. The published package surface is architecturally correct and incomplete as a product entrance.
 
 ---
 
-## Semver note
+## 5. Product requirements (must)
 
-Additive public API → prefer **`1.1.0`** (not a breaking 2.0). Publish lockstep across packages if workspace cycles still require it.
+1. `npm install @agentprodready/agent-framework` then a ~10–20 line file yields a valid agent response (reference model).
+2. OpenAI path uses `OPENAI_API_KEY` from the environment and `openai(modelId)` — no manual adapter / resolver / composition construction.
+3. `result.text` is the primary field developers read.
+4. `stream()` is an embedded AsyncIterable API (not HTTP SSE).
+5. `close()` / disposal ends resources so Node can exit.
+6. Advanced APIs remain fully available and undeprecated.
+7. No phone-home telemetry. Reference mode makes no network calls.
+8. Docs lead with product quickstart, not Blueprints.
 
 ---
 
-## Stop condition
+## 6. Explicit non-goals (v1.1 core)
 
-This document is **Review-Gated**.  
-**Do not implement** until approved with:
+- Simplified Tool Calling API (`tools: [tool(...)]`) — defer to v1.1.x / v1.2
+- Simplified Memory (`memory: true` / `postgres(...)`) — defer
+- Evaluation / routing configuration on `createAgent`
+- Postgres / Docker / `DATABASE_URL` in first-agent docs
+- Dual CJS build (document ESM honestly)
+- New `@agentprodready/core` package (unless a stop condition forces it — preferred: **no**)
+- Analytics / phone-home
+- Softening Security ownership or Runtime ownership
 
-```text
-Implementation Mode: Autonomous
+---
+
+## 7. Positioning & trust
+
+**Recommended messaging:**
+
+> Build an agent in minutes. Add production controls when you need them.
+
+**Do not oversell:** hosted SaaS, magic autonomy, exactly-once tools, production auth defaults in simple mode.
+
+**Honest limitation:** Simple mode uses in-memory / embedded / application-local security defaults. Internet-facing multi-tenant services must use advanced platform configuration and production Security integration.
+
+---
+
+## 8. Success metrics (product)
+
+| Metric | Before (v1.0.1) | After (v1.1 target) |
+|---|---|---|
+| Packages to install (reference) | 1 (but incomplete path) | 1 working |
+| Secrets for first response | N/A / often assumed | 0 |
+| Concepts before first response | 10+ | ≤ 4 (`createAgent`, `reference`/`openai`, `invoke`, `close`) |
+| LOC | dozens–hundreds | ~10–20 |
+| Time to first response | hours / blocked | < 5 minutes |
+| Architecture regression | — | None (`pnpm verify` + release suites green) |
+
+---
+
+## 9. Documentation product path
+
+```
+README (root + package)
+  → Getting Started
+  → Simple Agent API
+  → Streaming
+  → Advanced Architecture
+  → Production Deployment
 ```
 
-(or explicit approval of Slice A plan + specification).
+Blueprints / ADRs remain under Architecture / Advanced. Beginners must not need them.
 
 ---
 
-## Open questions for approval
+## 10. Related implementation artifacts
 
-1. Confirm facade lives in `@agentprodready/agent-framework` (not new `@agentprodready/core` yet).  
-2. Confirm hello-world auto-Security / auto-lifecycle is acceptable as **explicitly unsafe-for-internet** (document + env/flag).  
-3. Confirm first ship is Slice A only (hello + README + example), streaming next.  
-4. Version: `1.1.0` lockstep publish of all public packages?
+| Artifact | Path |
+|---|---|
+| Plan | `docs/implementation/plans/agentprodready-v1.1-developer-experience-facade-plan.md` |
+| Specification | `docs/implementation/specifications/agentprodready-v1.1-developer-experience-facade-specification.md` |
+| Review | `docs/implementation/reviews/agentprodready-v1.1-developer-experience-review.md` |
+
+---
+
+## 11. Gate
+
+This product design is **Review-Gated**. No production TypeScript, no npm publish, and no tags until the review document receives approval for Autonomous implementation.

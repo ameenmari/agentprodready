@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 /**
- * Gated recursive publish for @agentprodready/* packages.
+ * Gated publish for @agentprodready/* packages.
  *
  * Usage:
  *   node scripts/npm-publish.mjs --dry-run
  *   node scripts/npm-publish.mjs --publish
  *
  * ALWAYS use pnpm publish (not npm publish) so workspace:* is rewritten.
+ *
+ * --publish only uploads packages whose local version is not already on npm.
+ * This keeps selective bumps intact (e.g. agent-framework@1.1.0) without
+ * re-publishing unchanged 1.0.x packages.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,17 +29,47 @@ if (!dryRun && !doPublish) {
 
 function run(command, commandArgs, options = {}) {
   const result = spawnSync(command, commandArgs, {
-    cwd: root,
-    stdio: 'inherit',
+    cwd: options.cwd ?? root,
+    stdio: options.stdio ?? 'inherit',
+    encoding: options.encoding,
     env: process.env,
+    shell: options.shell,
     ...options,
   });
-  if ((result.status ?? 1) !== 0) {
+  if ((result.status ?? 1) !== 0 && options.allowFail !== true) {
     process.exit(result.status ?? 1);
   }
+  return result;
 }
 
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
+function listPublicPackages() {
+  const packagesDir = join(root, 'packages');
+  const out = [];
+  for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
+    if (!dir.isDirectory()) continue;
+    const pkgPath = join(packagesDir, dir.name, 'package.json');
+    if (!existsSync(pkgPath)) continue;
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+    if (pkg.private === true) continue;
+    if (typeof pkg.name !== 'string' || typeof pkg.version !== 'string') continue;
+    out.push({ name: pkg.name, version: pkg.version, dir: dir.name });
+  }
+  return out;
+}
+
+function isPublished(name, version) {
+  const result = spawnSync(npm, ['view', `${name}@${version}`, 'version'], {
+    cwd: root,
+    encoding: 'utf8',
+    shell: process.platform === 'win32',
+    env: process.env,
+  });
+  if ((result.status ?? 1) !== 0) return false;
+  return (result.stdout ?? '').trim() === version;
+}
 
 process.stdout.write('Running publish audit...\n');
 run(process.execPath, [join(root, 'scripts/npm-publish-audit.mjs')], { shell: false });
@@ -79,20 +113,45 @@ if (dryRun) {
   process.exit(0);
 }
 
-process.stdout.write('\nPublishing all public @agentprodready packages with pnpm -r publish...\n');
-run(
-  pnpm,
-  [
-    '-r',
-    '--filter',
-    './packages/*',
-    'publish',
-    '--access',
-    'public',
-    '--no-git-checks',
-    '--report-summary',
-  ],
-  { shell: process.platform === 'win32' },
-);
+const publicPackages = listPublicPackages();
+const toPublish = [];
+const skipped = [];
+process.stdout.write('\nChecking registry for already-published versions...\n');
+for (const pkg of publicPackages) {
+  if (isPublished(pkg.name, pkg.version)) {
+    skipped.push(`${pkg.name}@${pkg.version}`);
+  } else {
+    toPublish.push(pkg);
+  }
+}
+
+if (skipped.length > 0) {
+  process.stdout.write(`Skipping ${skipped.length} already-published package version(s).\n`);
+}
+if (toPublish.length === 0) {
+  process.stdout.write('Nothing new to publish. Registry already has all local public versions.\n');
+  process.exit(0);
+}
+
+process.stdout.write(`Publishing ${toPublish.length} package(s):\n`);
+for (const pkg of toPublish) {
+  process.stdout.write(`  → ${pkg.name}@${pkg.version}\n`);
+}
+
+for (const pkg of toPublish) {
+  process.stdout.write(`\nPublishing ${pkg.name}@${pkg.version}...\n`);
+  run(
+    pnpm,
+    [
+      '--filter',
+      pkg.name,
+      'publish',
+      '--access',
+      'public',
+      '--no-git-checks',
+    ],
+    { shell: process.platform === 'win32' },
+  );
+}
 
 process.stdout.write('\nPublish complete. Verify with: npm view @agentprodready/agent-framework version\n');

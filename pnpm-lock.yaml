@@ -161,6 +161,10 @@ importers:
       '@agentprodready/workflow':
         specifier: workspace:*
         version: link:../workflow
+    devDependencies:
+      '@agentprodready/ai-provider-openai':
+        specifier: workspace:*
+        version: link:../ai-provider-openai
 
   packages/ai-provider:
     dependencies:

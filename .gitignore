@@ -11,6 +11,8 @@ coverage/
 .nyc_output/
 typedoc/
 .npm-pack/
+.npm-pack-dx/
+pnpm-publish-summary.json
 *.tgz
 
 # Logs and caches

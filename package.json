@@ -35,6 +35,8 @@
     "test:tools": "node scripts/run-tools-tests.mjs",
     "test:routing": "node scripts/run-routing-tests.mjs",
     "test:tenant-isolation": "pnpm exec vitest run apps/platform-host/src/tenant-isolation.spec.ts",
+    "test:public-dx": "node scripts/test-public-dx.mjs",
+    "verify-versioning": "node scripts/verify-versioning.mjs",
     "production-baseline": "node scripts/production-baseline.mjs",
     "npm:audit": "node scripts/npm-publish-audit.mjs",
     "npm:pack:dry": "node scripts/npm-publish.mjs --dry-run",

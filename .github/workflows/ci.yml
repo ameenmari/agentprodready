@@ -20,6 +20,8 @@ jobs:
           corepack prepare pnpm@10.15.1 --activate
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Versioning integrity
+        run: pnpm verify-versioning
       - name: Lint
         run: pnpm lint
       - name: Boundaries
@@ -36,6 +38,8 @@ jobs:
         run: pnpm test:tenant-isolation
       - name: Build
         run: pnpm build
+      - name: Public DX (packed external install)
+        run: pnpm test:public-dx
       - name: Smoke
         run: pnpm smoke
 

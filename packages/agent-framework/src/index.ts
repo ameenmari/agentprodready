@@ -78,3 +78,16 @@ function copy<T>(value:T):T{return JSON.parse(JSON.stringify(value)) as T;}
 export function freeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!Object.isFrozen(value)){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;}
 
 export * from './reference.js';
+export {
+  createAgent,
+  openai,
+  reference,
+  SimpleAgentError,
+  type Agent,
+  type AgentModel,
+  type AgentResult,
+  type AgentStreamEvent,
+  type AgentUsage,
+  type CreateAgentOptions,
+  type SimpleAgentErrorCode,
+} from './simple/index.js';

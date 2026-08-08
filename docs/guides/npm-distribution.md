@@ -10,15 +10,23 @@ GitHub can stay **private**. npm visibility is independent of GitHub visibility.
 
 ---
 
-## Registry status (v1.0.0)
+## Registry status
 
-Public packages under `@agentprodready/*` are **published** to npm at `1.0.0` (35 packages). External developers can install without cloning this repository:
+Public packages under `@agentprodready/*` are published to npm. Baseline synchronized release was `1.0.0` (35 packages). Selective bumps followed (for example `@agentprodready/agent-framework@1.1.0` for the Simple Agent API).
 
 ```bash
 npm install @agentprodready/agent-framework
 ```
 
 If you still see `E404`, check the package name/scope spelling and that you are not behind a registry mirror that has not synced yet.
+
+### Versioning policy (keep intact)
+
+- Do **not** mechanically bump every package on each release.
+- Bump only packages whose production/public surface changed.
+- `pnpm npm:publish` skips versions already present on the registry.
+- Every GitHub push runs `pnpm verify-versioning` + `pnpm test:public-dx` in CI.
+- npm publish happens from release tags / explicit publish — **not** from ordinary commits.
 
 ---
 
@@ -200,16 +208,16 @@ Keep `platform-host` off npm (`private: true`). Publish the image to GHCR when r
 
 ---
 
-## Publication order (conceptual)
+## Publication order
 
-Because of cycles, do **not** manually publish one package at a time for v1.0.0.
+- **First synchronized baseline** (`1.0.0`): publish all public packages together (dependency cycles).
+- **Later selective releases** (example `agent-framework@1.1.0`): bump and publish only changed packages. `pnpm npm:publish` skips already-published versions automatically.
 
-Use recursive publish once:
-
-1. foundation, plugin-framework, composition, runtime, planning, workflow, …
-2. …through agent-framework and the remaining packages in the same command
-
-`pnpm -r publish` handles the batch. Consumers then install any entry package and npm resolves the graph.
+```bash
+pnpm build
+pnpm verify-versioning
+pnpm npm:publish
+```
 
 ---
 
@@ -225,12 +233,13 @@ Use recursive publish once:
 
 ---
 
-## Checklist — first public npm release (v1.0.0)
+## Checklist — public npm distribution
 
 - [x] npm org / scope `@agentprodready` owned
-- [x] First recursive `pnpm npm:publish` completed (35 packages @ `1.0.0`)
-- [x] `npm view @agentprodready/agent-framework version` → `1.0.0`
-- [x] Fresh-folder `npm install @agentprodready/agent-framework` succeeds
+- [x] First recursive publish completed (35 packages @ `1.0.0`)
+- [x] Selective DX release path for `@agentprodready/agent-framework@1.1.0`
+- [x] Fresh-folder / `pnpm test:public-dx` install succeeds
+- [x] On-push CI: `verify-versioning` + `test:public-dx`
 - [ ] Granular `NPM_TOKEN` stored as GitHub Actions secret `NPM_TOKEN` (for gated release workflow)
 - [ ] Prefer Trusted Publishing / short-lived tokens for future releases
 - [ ] Docker / GHCR `platform-host` image (optional separate track)

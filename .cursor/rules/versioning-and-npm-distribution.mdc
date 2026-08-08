@@ -1,0 +1,39 @@
+---
+description: Versioning integrity and GitHub/npm distribution flow for AgentProdReady
+alwaysApply: true
+---
+
+# Versioning & npm Distribution
+
+## Keep versions intact
+
+- Do **not** mechanically bump every `@agentprodready/*` package.
+- Bump a package version only when its production source or public surface actually changes.
+- Root `package.json` private monorepo version is independent of public package versions.
+- `@agentprodready/platform-host` stays `private: true` (never publish to npm).
+- Git tags use `vMAJOR.MINOR.PATCH` for product releases that ship public package bumps (example: `v1.1.0` when agent-framework becomes `1.1.0`).
+
+## Every push (CI)
+
+On every `push` / `pull_request`, CI must keep versioning + DX gates green:
+
+1. `pnpm verify-versioning` — package version integrity
+2. Standard verify suites in `.github/workflows/ci.yml`
+3. `pnpm test:public-dx` — packed external install of `@agentprodready/agent-framework`
+
+Do **not** publish to npm from ordinary commits.
+
+## Release / npm publish flow
+
+1. Land code on GitHub (`main`) with correct package versions + CHANGELOG.
+2. Create annotated tag `vX.Y.Z` when cutting a product release.
+3. Publish **only packages whose version is not already on npm** (prefer `pnpm npm:publish` which skips already-published versions).
+4. Always publish with **pnpm** (never raw `npm publish`) so `workspace:*` is rewritten.
+5. Optional GitHub Actions: `.github/workflows/release.yml` on `v*` tags; npm job remains gated by `publish_npm` / `NPM_TOKEN`.
+
+## Agent rules when releasing
+
+- Commit and push only when the user asks to deploy/publish.
+- Never commit secrets, `.env`, or `pnpm-publish-summary.json` tokens.
+- After npm publish, verify with `npm view @agentprodready/<pkg> version`.
+- Document selective bumps in CHANGELOG (which packages moved, which stayed).
