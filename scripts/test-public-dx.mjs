@@ -167,6 +167,72 @@ assert(
   `Expected tool result text, got: ${JSON.stringify(toolsText)}`,
 );
 
+const memoryWiringSource = `import { createAgent, reference } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are a helpful assistant.",
+  memory: true,
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+const memory = result.metadata?.memory;
+console.log(JSON.stringify({
+  text: result.text,
+  memory,
+}));
+await agent.close();
+`;
+writeFileSync(join(projectDir, 'memory-wiring.mjs'), memoryWiringSource, 'utf8');
+
+process.stdout.write('Running memory wiring case (no NL recall assertion)...\n');
+const memoryWiring = run(process.execPath, ['memory-wiring.mjs'], { cwd: projectDir });
+const memoryPayload = JSON.parse((memoryWiring.stdout ?? '').trim());
+assert(
+  memoryPayload.text === 'What color did I mention?',
+  `reference() should echo the user message, got: ${JSON.stringify(memoryPayload.text)}`,
+);
+assert(memoryPayload.memory?.enabled === true, 'Expected metadata.memory.enabled');
+assert(
+  typeof memoryPayload.memory?.retrievedItemCount === 'number' &&
+    memoryPayload.memory.retrievedItemCount >= 1,
+  `Expected retrievedItemCount >= 1, got: ${JSON.stringify(memoryPayload.memory)}`,
+);
+assert(memoryPayload.memory?.injected === true, 'Expected metadata.memory.injected');
+assert(
+  /blue/i.test(memoryPayload.memory?.injectedPreview ?? ''),
+  `Expected injectedPreview to include captured fact, got: ${JSON.stringify(memoryPayload.memory)}`,
+);
+
+if (process.env.OPENAI_API_KEY) {
+  process.stdout.write('OPENAI_API_KEY present — packing/installing OpenAI peer for NL memory smoke...\n');
+  const openaiProviderTarball = packPackage('@agentprodready/ai-provider-openai', packDir);
+  copyFileSync(openaiProviderTarball, join(projectDir, basename(openaiProviderTarball)));
+  run(npm, ['install', `./${basename(openaiProviderTarball)}`], { cwd: projectDir });
+
+  const memoryOpenaiSource = `import { createAgent, openai } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "Answer using remembered user facts when present. Keep answers to one short sentence.",
+  memory: true,
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text);
+await agent.close();
+`;
+  writeFileSync(join(projectDir, 'memory-openai.mjs'), memoryOpenaiSource, 'utf8');
+  process.stdout.write('Running optional OpenAI memory NL recall smoke...\n');
+  const memoryOpenai = run(process.execPath, ['memory-openai.mjs'], { cwd: projectDir });
+  const openaiText = (memoryOpenai.stdout ?? '').trim();
+  assert(/blue/i.test(openaiText), `Expected OpenAI recall to mention blue, got: ${JSON.stringify(openaiText)}`);
+} else {
+  process.stdout.write('SKIP — OpenAI memory NL recall (OPENAI_API_KEY not set)\n');
+}
+
 process.stdout.write('Cleaning temp directory...\n');
 rmSync(externalRoot, { recursive: true, force: true });
 rmSync(packDir, { recursive: true, force: true });

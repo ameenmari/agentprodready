@@ -58,6 +58,8 @@ Hello
 
 No API key, database, or Docker is required.
 
+`reference()` is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory. For tools/memory demos see [`examples/tools-agent`](../../examples/tools-agent) and [`examples/memory-agent`](../../examples/memory-agent).
+
 ## First OpenAI agent
 
 ```bash

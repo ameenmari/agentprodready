@@ -1,9 +1,11 @@
 {
-  "name": "openai-agent",
+  "name": "memory-agent",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node index.mjs"
+    "start": "node index-reference.mjs",
+    "start:reference": "node index-reference.mjs",
+    "start:openai": "node index-openai.mjs"
   },
   "dependencies": {
     "@agentprodready/agent-framework": "^1.2.1",

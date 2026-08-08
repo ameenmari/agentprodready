@@ -1,5 +1,5 @@
 import { SimpleAgentError } from './errors.js';
-import type { AgentResult, AgentUsage } from './types.js';
+import type { AgentMemoryDiagnostics, AgentResult, AgentUsage } from './types.js';
 
 interface NormalizedAiLike {
   readonly content?: readonly { readonly type: string; readonly text?: string }[];
@@ -12,6 +12,7 @@ interface NormalizedAiLike {
 
 interface CapabilityOutputLike {
   readonly aiResult?: NormalizedAiLike;
+  readonly memory?: AgentMemoryDiagnostics;
 }
 
 export function mapRuntimeResultToAgentResult(runtimeResult: unknown): AgentResult {
@@ -48,13 +49,34 @@ export function mapRuntimeResultToAgentResult(runtimeResult: unknown): AgentResu
   }
 
   const usage = mapUsage(aiResult?.usage);
+  const memory = normalizeMemoryDiagnostics(output?.memory);
   return Object.freeze({
     text,
     output: record.output,
     executionId: record.executionId,
     ...(usage === undefined ? {} : { usage }),
-    metadata: Object.freeze({ mode: 'simple' as const }),
+    metadata: Object.freeze({
+      mode: 'simple' as const,
+      ...(memory === undefined ? {} : { memory }),
+    }),
     raw: runtimeResult,
+  });
+}
+
+function normalizeMemoryDiagnostics(value: unknown): AgentMemoryDiagnostics | undefined {
+  if (typeof value !== 'object' || value === null) return undefined;
+  const record = value as Partial<AgentMemoryDiagnostics>;
+  if (record.enabled !== true) return undefined;
+  if (typeof record.retrievedItemCount !== 'number' || !Number.isFinite(record.retrievedItemCount)) {
+    return undefined;
+  }
+  if (typeof record.injected !== 'boolean') return undefined;
+  if (typeof record.injectedPreview !== 'string') return undefined;
+  return Object.freeze({
+    enabled: true as const,
+    retrievedItemCount: record.retrievedItemCount,
+    injected: record.injected,
+    injectedPreview: record.injectedPreview,
   });
 }
 

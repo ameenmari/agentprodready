@@ -86,6 +86,7 @@ export {
   tool,
   SimpleAgentError,
   type Agent,
+  type AgentMemoryDiagnostics,
   type AgentModel,
   type AgentResult,
   type AgentStreamEvent,

@@ -152,22 +152,30 @@ Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRe
 
 ### C. Agent with memory (ephemeral)
 
+`memory: true` ≡ `inMemory()` — process-local, instance-scoped, ephemeral.  
+Durable Postgres memory is an advanced/host configuration — not `memory: true`.
+
+The reference provider is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory. Memory retrieval ≠ model intelligence.
+
+**Zero-key wiring** (`reference`) — prove capture/retrieve/inject via diagnostics:
+
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
   model: reference(),
-  instructions: "Remember user facts when helpful.",
-  memory: true, // same as inMemory() — process-local, not durable
+  instructions: "You are a helpful assistant.",
+  memory: true,
 });
 
 await agent.invoke("My favorite color is blue.");
 const result = await agent.invoke("What color did I mention?");
-console.log(result.text);
+console.log(result.text); // echoes the user message with reference() — expected
+console.log(result.metadata?.memory); // injected / retrievedItemCount proof
 await agent.close();
 ```
 
-Durable Postgres memory is an advanced/host configuration — not `memory: true`.
+**Natural-language recall** needs a reasoning-capable model (`openai(...)` + `OPENAI_API_KEY`). See [`examples/memory-agent`](examples/memory-agent) and [Simple Memory](docs/guides/simple-memory.md).
 
 ---
 
@@ -237,6 +245,8 @@ Docker image smoke and Postgres service jobs also run in CI. Local performance b
 |---|---|
 | [`examples/hello-agent`](examples/hello-agent) | `reference()` + `invoke` (no API key) |
 | [`examples/streaming-agent`](examples/streaming-agent) | library `stream()` (not HTTP SSE) |
+| [`examples/tools-agent`](examples/tools-agent) | `tool()` + `USE_TOOL:…` (no API key) |
+| [`examples/memory-agent`](examples/memory-agent) | memory wiring (`reference`) + NL recall (`openai`) |
 | [`examples/openai-agent`](examples/openai-agent) | `openai()` + `invoke` (needs `OPENAI_API_KEY`) |
 
 Each example uses published-style `@agentprodready/agent-framework` package names.

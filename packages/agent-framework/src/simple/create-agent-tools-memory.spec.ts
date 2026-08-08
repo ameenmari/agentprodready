@@ -168,3 +168,40 @@ describe('embedded tool loop limits', () => {
     expect(EMBEDDED_MAX_TOOL_CALLS).toBe(8);
   });
 });
+
+describe('createAgent memory wiring diagnostics', () => {
+  it('exposes retrieve/inject diagnostics without claiming NL recall', async () => {
+    const agent = createAgent({
+      model: reference(),
+      instructions: 'You are a helpful assistant.',
+      memory: true,
+    });
+    try {
+      await agent.invoke('My favorite color is blue.');
+      const result = await agent.invoke('What color did I mention?');
+      expect(result.text).toBe('What color did I mention?');
+      expect(result.metadata?.memory).toMatchObject({
+        enabled: true,
+        injected: true,
+      });
+      expect(result.metadata?.memory?.retrievedItemCount).toBeGreaterThanOrEqual(1);
+      expect(result.metadata?.memory?.injectedPreview).toMatch(/blue/i);
+    } finally {
+      await agent.close();
+    }
+  });
+
+  it('omits memory diagnostics when memory is not configured', async () => {
+    const agent = createAgent({
+      model: reference(),
+      instructions: 'You are a helpful assistant.',
+    });
+    try {
+      const result = await agent.invoke('Hello');
+      expect(result.metadata).toEqual({ mode: 'simple' });
+      expect(result.metadata?.memory).toBeUndefined();
+    } finally {
+      await agent.close();
+    }
+  });
+});

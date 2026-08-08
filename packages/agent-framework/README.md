@@ -93,12 +93,38 @@ Defaults are conservative (`mutating` / `non-idempotent`). See the Simple Tools 
 
 ## C. Agent with memory (ephemeral)
 
+`memory: true` ≡ `inMemory()` — process-local, instance-scoped, ephemeral (not durable Postgres).
+
+The reference provider is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory.
+
+### Zero-key wiring (`reference`)
+
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
   model: reference(),
-  instructions: "Remember user facts when helpful.",
+  instructions: "You are a helpful assistant.",
+  memory: true,
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text); // reference echoes the user message — expected
+console.log(result.metadata?.memory); // { enabled, retrievedItemCount, injected, injectedPreview }
+await agent.close();
+```
+
+### Natural-language recall (`openai`)
+
+Requires `@agentprodready/ai-provider-openai` and `OPENAI_API_KEY`.
+
+```js
+import { createAgent, openai } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "Answer using remembered user facts when present. Keep answers short.",
   memory: true,
 });
 
@@ -108,7 +134,7 @@ console.log(result.text);
 await agent.close();
 ```
 
-`memory: true` is process-local and instance-scoped — not durable Postgres memory.
+See the [Simple Memory guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md).
 
 ---
 

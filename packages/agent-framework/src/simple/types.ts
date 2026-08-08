@@ -22,12 +22,28 @@ export interface AgentUsage {
   readonly totalTokens?: number;
 }
 
+/**
+ * Diagnostic evidence that Simple Memory retrieve/inject ran for this turn.
+ * Not a durable product contract — for wiring demos and tests.
+ */
+export interface AgentMemoryDiagnostics {
+  readonly enabled: true;
+  readonly retrievedItemCount: number;
+  readonly injected: boolean;
+  readonly injectedPreview: string;
+}
+
+export interface AgentResultMetadata {
+  readonly mode: 'simple';
+  readonly memory?: AgentMemoryDiagnostics;
+}
+
 export interface AgentResult {
   readonly text: string;
   readonly output?: unknown;
   readonly executionId: string;
   readonly usage?: AgentUsage;
-  readonly metadata?: Readonly<Record<string, unknown>>;
+  readonly metadata?: AgentResultMetadata;
   readonly raw?: unknown;
 }
 

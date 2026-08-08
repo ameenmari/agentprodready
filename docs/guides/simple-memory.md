@@ -4,51 +4,83 @@ Ephemeral, process-local memory for the Simple Agent API.
 
 Production-oriented architecture with a young ecosystem.
 
-## Important
+## What `memory: true` means
 
-`memory: true` and `inMemory()` mean **ephemeral memory**:
+`memory: true` is an alias of `inMemory()`:
 
-- process-local
-- scoped to one `createAgent` instance
-- cleared when the process ends or `close()` runs
-- **not** durable Postgres / production persistence
+| Property | Meaning |
+|---|---|
+| Process-local | Lives in the current Node process only |
+| Instance-scoped | One `createAgent` instance; not shared with other agents |
+| Ephemeral | Cleared on process exit or `agent.close()` |
+| MemoryEngine-backed | Uses the existing MemoryEngine + in-memory provider |
+| Not durable | No Postgres / restart persistence |
+| Not model intelligence | Retrieval/injection ≠ the model answering from memory |
 
 Durable memory requires the advanced Memory + Persistence path (see [memory.md](./memory.md)).
 
-## Install
+## Memory retrieval ≠ model intelligence
 
-```bash
-npm install @agentprodready/agent-framework
-```
+AgentProdReady can **retrieve** prior turns and **inject** them into the prompt.
 
-## Example
+The selected model must actually **use** that context:
+
+- `reference()` is deterministic and intended for wiring/tests. It effectively echoes the last user message and does **not** perform natural-language reasoning over recalled memory.
+- Natural-language recall demos require a reasoning-capable model such as `openai(...)`.
+
+## Zero-key wiring demo (`reference`)
+
+Prove capture → retrieve → inject with diagnostics (do not expect `"blue"` as `result.text`):
 
 ```js
-import { createAgent, reference, inMemory } from "@agentprodready/agent-framework";
+import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
   model: reference(),
-  instructions: "Use remembered facts when they help.",
+  instructions: "You are a helpful assistant.",
   memory: true, // same as memory: inMemory()
 });
 
 await agent.invoke("My favorite color is blue.");
 const result = await agent.invoke("What color did I mention?");
+
+// reference() echoes the user message — that is expected.
 console.log(result.text);
+
+// Honest proof that memory was retrieved and injected into the prompt:
+console.log(result.metadata?.memory);
+// → { enabled: true, retrievedItemCount: ≥1, injected: true, injectedPreview: "...blue..." }
 
 await agent.close();
 ```
 
-`inMemory({ namespace: "demo" })` is supported for optional namespacing within an instance.
+`result.metadata.memory` is diagnostic evidence for wiring demos/tests — not a durable product contract.
 
-## Semantics
+## Natural-language recall (`openai`)
 
-| Question | Answer |
-|---|---|
-| Survives restart? | No |
-| Shared across `createAgent` instances? | No |
-| Uses MemoryEngine? | Yes |
-| Equals host Postgres memory? | No |
+```js
+import { createAgent, openai } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "Answer using remembered user facts when present. Keep answers short.",
+  memory: true,
+});
+
+await agent.invoke("My favorite color is blue.");
+const result = await agent.invoke("What color did I mention?");
+console.log(result.text); // expects a natural answer that mentions blue
+
+await agent.close();
+```
+
+Requires `@agentprodready/ai-provider-openai` and `OPENAI_API_KEY`.
+
+See [`examples/memory-agent`](../../examples/memory-agent).
+
+## Optional namespace
+
+`inMemory({ namespace: "demo" })` namespaces memory within an instance.
 
 ## Related
 

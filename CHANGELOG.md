@@ -2,6 +2,17 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.2.1] — DX honesty for Simple Memory + examples
+
+Documentation/product-story patch (Memory ownership unchanged):
+
+- Honest `reference()` + memory examples: wiring diagnostics, not natural-language recall claims
+- Additive diagnostic `result.metadata.memory` (`enabled`, `retrievedItemCount`, `injected`, `injectedPreview`) for zero-key proof
+- Guides: Simple Memory clarifies retrieval ≠ model intelligence
+- Examples: `examples/tools-agent`, `examples/memory-agent` (reference wiring + OpenAI-gated NL recall)
+- Public DX asserts memory inject path without false NL assertions
+- `@agentprodready/agent-framework@1.2.1` only
+
 ## [1.2.0] — Simple Tools, Simple Memory & developer compatibility
 
 Documentation + Simple Agent facade (architecture ownership unchanged):

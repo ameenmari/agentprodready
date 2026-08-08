@@ -5,6 +5,7 @@ export { openai, reference } from './models.js';
 export { tool, type SimpleTool, type SimpleToolDefinition } from './tool.js';
 export type {
   Agent,
+  AgentMemoryDiagnostics,
   AgentModel,
   AgentResult,
   AgentStreamEvent,

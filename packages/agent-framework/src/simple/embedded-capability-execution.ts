@@ -17,6 +17,9 @@ import { runEmbeddedToolLoop } from './embedded-tool-loop.js';
 import { formatMemoryForPrompt, type EmbeddedMemorySession } from './memory.js';
 import type { EmbeddedPromptService } from './embedded-prompt.js';
 import { SimpleAgentError } from './errors.js';
+import type { AgentMemoryDiagnostics } from './types.js';
+
+const MEMORY_PREVIEW_MAX = 280;
 
 export interface EmbeddedCapabilityOutput {
   readonly bindings: readonly CapabilityBinding[];
@@ -24,6 +27,7 @@ export interface EmbeddedCapabilityOutput {
   readonly planId: string;
   readonly workflowId: string;
   readonly promptPackageId: string;
+  readonly memory?: AgentMemoryDiagnostics;
 }
 
 export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
@@ -63,6 +67,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       planId: `plan:${context.executionId}`,
       workflowId: prepared.workflowId,
       promptPackageId: prepared.promptPackageId,
+      ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
     });
   }
 
@@ -108,6 +113,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
           planId: `plan:${context.executionId}`,
           workflowId: prepared.workflowId,
           promptPackageId: prepared.promptPackageId,
+          ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
         }),
       };
       return;
@@ -186,6 +192,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         planId: `plan:${context.executionId}`,
         workflowId: prepared.workflowId,
         promptPackageId: prepared.promptPackageId,
+        ...(prepared.memory === undefined ? {} : { memory: prepared.memory }),
       }),
     };
   }
@@ -250,6 +257,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     readonly objective: string;
     readonly workflowId: string;
     readonly promptPackageId: string;
+    readonly memory?: AgentMemoryDiagnostics;
   }> {
     const nodes = extractNodes(work);
     const objectiveAttr = context.attributes['objective'];
@@ -268,7 +276,8 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       constraints: Object.freeze({}),
     });
 
-    let memoryBlock: string | undefined;
+    let memoryBlock = '';
+    let memory: AgentMemoryDiagnostics | undefined;
     if (this.memorySession !== undefined) {
       const retrieval = await this.memorySession.retrieveForPrompt({
         executionId: context.executionId,
@@ -277,6 +286,12 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         decisionId: memoryDecisionId(context.executionId),
       });
       memoryBlock = formatMemoryForPrompt(retrieval);
+      memory = Object.freeze({
+        enabled: true as const,
+        retrievedItemCount: retrieval.memories.length,
+        injected: memoryBlock !== '',
+        injectedPreview: truncatePreview(memoryBlock),
+      });
     }
 
     const promptPackage = await this.prompts.build({
@@ -286,7 +301,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       correlationId: context.correlationId,
       tenantId: this.tenantId,
       workspaceId: this.workspaceId,
-      ...(memoryBlock === undefined || memoryBlock === '' ? {} : { memoryBlock }),
+      ...(memoryBlock === '' ? {} : { memoryBlock }),
     });
 
     const messages = Object.freeze([
@@ -321,8 +336,14 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       objective,
       workflowId: snapshot.workflowId,
       promptPackageId: promptPackage.id,
+      ...(memory === undefined ? {} : { memory }),
     });
   }
+}
+
+function truncatePreview(text: string): string {
+  if (text.length <= MEMORY_PREVIEW_MAX) return text;
+  return `${text.slice(0, MEMORY_PREVIEW_MAX)}…`;
 }
 
 function memoryDecisionId(executionId: string): string {

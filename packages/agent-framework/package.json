@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Build an AI agent in minutes. Add production controls when you need them. Simple Agent API (createAgent) plus advanced Agent Framework.",
   "type": "module",
   "main": "dist/index.js",

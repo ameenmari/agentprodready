@@ -52,22 +52,27 @@ See [Simple Tools](./simple-tools.md).
 
 ### C. Agent with memory
 
+`memory: true` ≡ `inMemory()` — ephemeral only. See [Simple Memory](./simple-memory.md).
+
+The reference provider is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory.
+
 ```js
-import { createAgent, reference, inMemory } from "@agentprodready/agent-framework";
+import { createAgent, reference } from "@agentprodready/agent-framework";
 
 const agent = createAgent({
   model: reference(),
-  instructions: "Use remembered facts when helpful.",
+  instructions: "You are a helpful assistant.",
   memory: true, // or memory: inMemory()
 });
 
 await agent.invoke("My favorite color is blue.");
 const result = await agent.invoke("What color did I mention?");
-console.log(result.text);
+console.log(result.text); // reference echoes the question — expected
+console.log(result.metadata?.memory); // wiring proof: injected / retrievedItemCount
 await agent.close();
 ```
 
-`memory: true` is **ephemeral**. See [Simple Memory](./simple-memory.md).
+For natural-language recall, use `openai(...)` + `OPENAI_API_KEY` ([`examples/memory-agent`](../../examples/memory-agent)).
 
 ---
 
@@ -76,7 +81,7 @@ await agent.close();
 | Export | Role |
 |---|---|
 | `createAgent(options)` | Create embedded agent |
-| `reference()` | Deterministic local model (no API key / network) |
+| `reference()` | Deterministic local model for wiring/tests (no API key / network; not NL reasoning) |
 | `openai(modelId)` | OpenAI descriptor (optional peer package + `OPENAI_API_KEY`) |
 | `tool(definition)` | Declare a simple tool |
 | `inMemory()` | Ephemeral memory descriptor |

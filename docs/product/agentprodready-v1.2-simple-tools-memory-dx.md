@@ -59,23 +59,10 @@ await agent.close();
 
 ### 2.2 Simple Memory (proposed)
 
-```js
-import { createAgent, reference, inMemory } from "@agentprodready/agent-framework";
-
-const agent = createAgent({
-  model: reference(),
-  instructions: "Remember user preferences when they appear.",
-  memory: inMemory(), // or memory: true (alias)
-});
-
-await agent.invoke("My favorite color is blue.");
-const result = await agent.invoke("What is my favorite color?");
-console.log(result.text);
-await agent.close();
-```
-
 **Product meaning of `memory: true` / `inMemory()`:** process-local ephemeral memory for this agent instance.  
 **Not** durable Postgres memory. **Not** multi-tenant production persistence.
+
+`reference()` verifies wiring (capture/retrieve/inject) but does **not** demonstrate natural-language recall. See v1.2.1 DX honesty docs and [`examples/memory-agent`](../../examples/memory-agent).
 
 ### 2.3 OpenAI example
 
