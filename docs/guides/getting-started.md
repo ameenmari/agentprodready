@@ -2,6 +2,10 @@
 
 Build an agent in minutes with `@agentprodready/agent-framework`.
 
+Production-oriented architecture with a young ecosystem.
+
+**v1.1 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `invoke()` · `stream()` · `close()`
+
 ## Requirements
 
 - Node.js **24**
@@ -112,9 +116,9 @@ await agent.close();
 
 `close()` is idempotent. Calling `invoke` / `stream` after close throws `AGENT_CLOSED`.
 
-## Simple mode warning
+## Simple mode & security
 
-Simple mode uses embedded in-memory defaults and application-local Security assumptions.
+Simple mode uses embedded in-memory defaults and **application-local** Security assumptions.
 
 Appropriate for:
 
@@ -124,9 +128,11 @@ Appropriate for:
 - embedded features
 - learning
 
-For internet-facing multi-tenant services, use advanced AgentProdReady platform configuration and production Security integration.
+**Not** production HTTP authentication. **LocalReference** host auth is development/reference only.
 
-`createAgent()` is an embedded library API. If you expose it through your own public HTTP API, you remain responsible for authenticating users.
+For internet-facing multi-tenant services, use advanced AgentProdReady platform configuration and production Security integration. If you expose `createAgent` through your own public HTTP API, you remain responsible for authenticating users.
+
+Vulnerability reporting: [SECURITY.md](../../SECURITY.md). Evaluator guide: [Adopting AgentProdReady](./adopting-agentprodready.md).
 
 ## Common errors
 

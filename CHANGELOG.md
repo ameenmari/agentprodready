@@ -2,6 +2,15 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.1.1] — Public credibility & trust (docs/metadata)
+
+Documentation and discoverability only (no Simple Agent behavior change):
+
+- Root README: badges, v1.1 Simple Agent API highlight, quality gates, support/limitations matrix, security prominence, maintainer honesty
+- `ROADMAP.md`, `SUPPORT.md`, `docs/guides/adopting-agentprodready.md`, `docs/benchmarks/README.md`
+- Lightweight GitHub issue/PR templates + `CODEOWNERS`
+- `@agentprodready/agent-framework` package metadata: `keywords`, `engines.node` (`>=24 <25`), description polish
+
 ## [1.1.0] — Developer Experience facade
 
 - Simple Agent API on `@agentprodready/agent-framework`: `createAgent`, `reference`, `openai`, `invoke`, `stream`, `close`

@@ -2,14 +2,36 @@
 
 **Build an agent in minutes. Add production controls when you need them.**
 
-Modular, provider-independent framework for production AI agents — with a simple entrance for Node.js / TypeScript developers.
+Production-oriented architecture with a young ecosystem.
+
+[![CI](https://github.com/ameenmari/agentprodready/workflows/CI/badge.svg)](https://github.com/ameenmari/agentprodready/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@agentprodready/agent-framework.svg)](https://www.npmjs.com/package/@agentprodready/agent-framework)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-24-brightgreen.svg)](package.json)
 
 | | |
 |---|---|
-| **Version** | `1.1.0` (simple Agent API on `@agentprodready/agent-framework`) |
+| **Entry package** | [`@agentprodready/agent-framework@1.1.1`](https://www.npmjs.com/package/@agentprodready/agent-framework) |
 | **License** | [MIT](LICENSE) |
-| **Node** | `24` (see `packageManager` / `engines` in root `package.json`) |
+| **Node** | `24` |
 | **npm scope** | [`@agentprodready/*`](https://www.npmjs.com/org/agentprodready) |
+
+---
+
+## New in v1.1 — Simple Agent API
+
+The public entrance is no longer Blueprint-first. Install one package and use:
+
+| API | Role |
+|---|---|
+| `createAgent(options)` | Create an embedded agent |
+| `reference()` | Deterministic local model (no API key) |
+| `openai(modelId)` | OpenAI model descriptor (optional peer) |
+| `agent.invoke(text)` | One-shot response → `result.text` |
+| `agent.stream(text)` | Embedded async stream (not HTTP SSE) |
+| `agent.close()` | Dispose this agent instance |
+
+Guide: [Simple Agent API](docs/guides/simple-agent-api.md) · [Getting Started](docs/guides/getting-started.md)
 
 ---
 
@@ -33,124 +55,185 @@ console.log(result.text);
 await agent.close();
 ```
 
-No API key required for the deterministic `reference()` model.
+No API key, database, or Docker required for `reference()`.
 
-Guides: [Getting Started](docs/guides/getting-started.md) · [Simple Agent API](docs/guides/simple-agent-api.md)
+### OpenAI
+
+```bash
+npm install @agentprodready/agent-framework @agentprodready/ai-provider-openai
+```
+
+```bash
+# bash
+export OPENAI_API_KEY="..."
+
+# PowerShell
+$env:OPENAI_API_KEY="..."
+```
+
+```js
+import { createAgent, openai } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "You are a helpful assistant.",
+});
+
+const result = await agent.invoke("Hello");
+console.log(result.text);
+
+await agent.close();
+```
+
+The library does **not** load `.env` files. Set the key in the environment.
+
+### Streaming
+
+```js
+import { createAgent, reference } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: reference(),
+  instructions: "You are a helpful assistant.",
+});
+
+for await (const event of agent.stream("Hello")) {
+  if (event.type === "text") process.stdout.write(event.text);
+}
+
+await agent.close();
+```
+
+This is an embedded library stream — not HTTP SSE.
 
 ---
 
-## Why AgentProdReady?
+## Quality & verification
 
-Most AI projects become infrastructure projects: auth, memory, retrieval, tools, workflows, observability, and provider wiring before any business logic.
+CI runs the verification suites on every push ([workflow: CI](.github/workflows/ci.yml)). Prefer the live workflow over any fixed test-count claim.
 
-AgentProdReady is an **enterprise AI platform framework**: opinionated architecture, replaceable modules, and explicit ownership—so teams compose a platform instead of reinventing it. Start simple with `createAgent`, then adopt Runtime recovery, Memory, Tools, Evaluation, Routing, Audit, and Security when you need them.
+| Gate | Command |
+|---|---|
+| Lint + typecheck + unit tests + build | `pnpm verify` |
+| Versioning integrity | `pnpm verify-versioning` |
+| Public DX (pack + external install) | `pnpm test:public-dx` |
+| Tools | `pnpm test:tools` |
+| Routing | `pnpm test:routing` |
+| Tenant isolation | `pnpm test:tenant-isolation` |
+| Streaming | `pnpm test:streaming` |
+| PostgreSQL persistence | `pnpm test:postgres` |
+| Runtime recovery | `pnpm test:runtime-recovery` |
+| Memory persistence | `pnpm test:memory-persistence` |
+| Evaluation persistence | `pnpm test:evaluation-persistence` |
+| Vector search | `pnpm test:vector-search` |
 
-**It is**
-
-- A modular agent / AI application platform
-- Provider-independent (swap OpenAI ↔ reference ↔ future adapters via Capability Resolution)
-- Contract-first and ADR-governed
-
-**It is not**
-
-- A foundation-model company
-- A drop-in replacement for LangChain / NestJS / Spring as a general backend
-- A no-code product (code-first; Docker host is the language-agnostic path)
+Docker image smoke and Postgres service jobs also run in CI. Local performance baseline: `pnpm production-baseline` (see [benchmarks](docs/benchmarks/README.md)) — **local baseline, not an SLA**.
 
 ---
 
-## Two ways to use it
+## Supported / limitations
 
-### 1) npm libraries (primary for TypeScript apps)
+**Available today**
 
-**Simple path** — install one package and use `createAgent` (see Quick start above).
+- Simple Agent API (`createAgent`, `reference`, `openai`, `invoke`, `stream`, `close`)
+- Streaming (library + host SSE)
+- Tool calling (advanced / host path)
+- Memory, evaluation, runtime recovery, multi-provider routing
+- OpenAI + deterministic reference providers
+- PostgreSQL persistence and pgvector paths
+- Deterministic CI / reference verification paths
 
-**Advanced path** — compose frameworks directly:
+**Honest limitations**
+
+- Young ecosystem — limited external adoption evidence
+- No SSE reconnect / stream replay
+- No durable HITL approval wait / resume
+- No exactly-once guarantee for external tool side effects
+- Limited vendor provider catalog (reference + OpenAI today)
+- No official GHCR image yet (build locally from `Dockerfile` / `compose.yaml`)
+- Embedded Simple Agent mode is **not** a hosted multi-tenant production platform
+
+---
+
+## Security
+
+- `createAgent` **simple/embedded mode** uses application-local security defaults. It is **not** production HTTP authentication.
+- **LocalReference** HTTP auth on the reference host is **development/reference only**.
+- Internet-facing multi-tenant applications must authenticate users themselves and use advanced Security integration.
+- Report vulnerabilities privately via [SECURITY.md](SECURITY.md) — do not open public issues for exploitable bugs.
+- More detail: [docs/guides/security.md](docs/guides/security.md)
+
+---
+
+## Examples
+
+| Example | What it shows |
+|---|---|
+| [`examples/hello-agent`](examples/hello-agent) | `reference()` + `invoke` (no API key) |
+| [`examples/streaming-agent`](examples/streaming-agent) | library `stream()` (not HTTP SSE) |
+
+Each example uses published-style `@agentprodready/agent-framework` package names.
+
+---
+
+## Roadmap & maintainer
+
+- Public roadmap: [ROADMAP.md](ROADMAP.md)
+- Evaluating for a larger project: [Adopting AgentProdReady](docs/guides/adopting-agentprodready.md)
+- Support expectations: [SUPPORT.md](SUPPORT.md)
+
+**Maintainer:** [ameenmari](https://github.com/ameenmari) (single maintainer today).  
+Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURITY.md).
+
+This project does not claim a foundation, company backing, or multi-maintainer team.
+
+---
+
+## Architecture (after onboarding)
+
+Capability-driven platform with explicit ownership: Runtime owns operational execution, Security owns authorization, Composition owns instantiation, Capability Resolution selects implementations.
+
+```text
+Foundation → Plugin Framework → Composition → Runtime → Planning → Workflow
+  → Capability Resolution → AI Provider → Tools → Knowledge → Memory
+  → Context Assembly → Prompt Builder → Evaluation → Security → …
+  → Agent Framework (includes Simple Agent API facade)
+```
+
+| Concern | Package (examples) |
+|---|---|
+| Simple + advanced agent APIs | `@agentprodready/agent-framework` |
+| Execution / cancellation / checkpoints | `@agentprodready/runtime` |
+| Implementation selection | `@agentprodready/capability-resolution` |
+| Authorization decisions | `@agentprodready/security` |
+| Instantiation / wiring | `@agentprodready/composition` |
+
+Deep docs: [Documentation index](docs/README.md) · [Architecture index](docs/architecture-index.md) · [Dependency graph](docs/architecture/dependency-graph.md) · [ADRs](docs/adrs/README.md) · [Blueprints](docs/blueprints/)
+
+Beginners should start with Getting Started / Simple Agent API — not Blueprints.
+
+---
+
+## Advanced / contributor paths
+
+**Advanced npm composition** (when you outgrow `createAgent`):
 
 ```bash
 npm install @agentprodready/agent-framework
 npm install @agentprodready/runtime
 npm install @agentprodready/ai-provider
 npm install @agentprodready/ai-provider-openai
-npm install @agentprodready/memory
-npm install @agentprodready/tool-framework
 ```
 
-```ts
-import { buildAgentDefinition, AgentFramework } from '@agentprodready/agent-framework';
-// wire Runtime, AI provider, Memory, Tools via Composition in your app
-```
-
-Recommended packages and publish notes: [docs/guides/npm-distribution.md](docs/guides/npm-distribution.md).
-
-### 2) Local reference host (HTTP / SSE)
-
-Run the monorepo reference composition (`platform-host`) for demos, smoke tests, and ops validation:
+**Local reference host** (HTTP / SSE demos in the monorepo):
 
 ```bash
-pnpm install
+pnpm install --frozen-lockfile
 pnpm verify
 pnpm start
 ```
 
-```bash
-curl http://127.0.0.1:3000/health
-curl -X POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke \
-  -H "Content-Type: application/json" \
-  -H "Authorization: LocalReference principalId=local-user;tenantId=local-tenant" \
-  -d "{\"objective\":\"hello\"}"
-```
-
-No database or API key required on the default `reference-ai` path. Opt-in OpenAI, Postgres, recovery, Memory, vector search, Evaluation, streaming, tools, and multi-provider routing—see [configuration](docs/guides/configuration.md) and [multi-provider routing](docs/guides/multi-provider-routing.md).
-
-**Docker / GHCR** for a ready-to-run server image is a separate distribution track (see [production deployment](docs/guides/production-deployment.md)).
-
----
-
-## Repository quickstart (contributors)
-
-Requires **Node 24** and **pnpm**.
-
-```bash
-pnpm install --frozen-lockfile
-pnpm verify          # lint + boundaries + typecheck + tests + build
-pnpm start           # reference host
-pnpm smoke           # host smoke script
-```
-
-Useful opt-in suites: `pnpm test:tools`, `pnpm test:routing`, `pnpm test:streaming`, `pnpm test:postgres` (Docker Postgres), `pnpm production-baseline`.
-
----
-
-## Architecture (31 blueprints)
-
-Capability-driven, composition-owned instantiation. Runtime owns operational execution. Security owns authorization.
-
-```text
-Foundation → Plugin Framework → Composition → Runtime → Planning → Workflow
-  → Capability Resolution → AI Provider → Tools → Knowledge → Memory
-  → Context Assembly → Prompt Builder → Evaluation → Security → Event Bus → Audit
-  → Agent Framework → Multi-Agent → Human Interaction → Marketplace
-  → Observability → Configuration → Persistence → Scheduler
-  → API → SDK → CLI → Deployment → Testing → Platform Governance
-```
-
-| Concern | Owner (examples) |
-|---|---|
-| Execution / cancellation / checkpoints | `@agentprodready/runtime` |
-| Implementation selection | `@agentprodready/capability-resolution` |
-| Authorization decisions | `@agentprodready/security` |
-| Instantiation / wiring | `@agentprodready/composition` |
-| Agent definition / lifecycle handoff | `@agentprodready/agent-framework` |
-
-Start here for architecture:
-
-- [Documentation index](docs/README.md)
-- [Architecture index](docs/architecture-index.md)
-- [Dependency graph](docs/architecture/dependency-graph.md)
-- [ADR index](docs/adrs/README.md)
-- [Glossary](docs/glossary.md)
-- [Cursor / Codex start guide](docs/cursor-start-here.md)
+Docker / Compose is a **local/dev convenience** today — not a published GHCR production image. See [production deployment](docs/guides/production-deployment.md).
 
 ---
 
@@ -158,51 +241,14 @@ Start here for architecture:
 
 | Audience | Start |
 |---|---|
-| App developers (npm) | This README + [npm distribution](docs/guides/npm-distribution.md) + [guides/](docs/guides/) |
-| Operators / host | [configuration](docs/guides/configuration.md), [security](docs/guides/security.md), [production deployment](docs/guides/production-deployment.md), [operations](docs/guides/operations.md) |
-| Contributors | [CONTRIBUTING.md](CONTRIBUTING.md), [implementation modes](docs/implementation/implementation-modes.md), [blueprints](docs/blueprints/) |
+| App developers | [Getting Started](docs/guides/getting-started.md) · [Simple Agent API](docs/guides/simple-agent-api.md) |
+| Evaluators / leads | [Adopting AgentProdReady](docs/guides/adopting-agentprodready.md) |
+| Operators | [configuration](docs/guides/configuration.md) · [security](docs/guides/security.md) · [production deployment](docs/guides/production-deployment.md) |
+| Contributors | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Security | [SECURITY.md](SECURITY.md) |
-| Releases | [CHANGELOG.md](CHANGELOG.md) |
-
-Guides (product slices): [AI providers](docs/guides/ai-providers.md) · [streaming](docs/guides/streaming.md) · [tools](docs/guides/tools.md) · [memory](docs/guides/memory.md) · [vector search](docs/guides/vector-search.md) · [evaluation](docs/guides/evaluation.md) · [persistence](docs/guides/persistence.md) · [runtime recovery](docs/guides/runtime-recovery.md).
+| Releases | [CHANGELOG.md](CHANGELOG.md) · [ROADMAP.md](ROADMAP.md) |
 
 ---
-
-## Status (v1.0.0)
-
-| Area | Status |
-|---|---|
-| Architecture (31 blueprints) | Complete |
-| Local reference host | Complete |
-| Public npm `@agentprodready/*` | **Published** (35 packages @ `1.0.0`) |
-| Multi-provider routing / production hardening | Complete (see CHANGELOG) |
-| Docker image on GHCR | Not the default track yet |
-| `@agentprodready/core` facade | Planned (not required for install) |
-
-`@agentprodready/platform-host` remains **private** (app / Docker), not an npm library.
-
----
-
-## Principles (constitutional)
-
-- Every framework owns **one** concern  
-- **Runtime** owns operational execution  
-- **Security** owns authorization  
-- **Composition** owns instantiation  
-- **Capability Resolution** selects implementations  
-- Providers stay behind contracts  
-- Events are facts; audit preserves accountability  
-- Changes to ownership / public contracts need an **ADR**
-
----
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md). One blueprint at a time; plan + specification before production code; no silent architecture redesign.
-
-## Security
-
-See [SECURITY.md](SECURITY.md). LocalReference HTTP auth is **not** production authentication.
 
 ## License
 

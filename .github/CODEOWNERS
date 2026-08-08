@@ -1,0 +1,8 @@
+# Default maintainer ownership. Update when co-maintainers are added.
+* @ameenmari
+
+/.github/ @ameenmari
+/docs/ @ameenmari
+/packages/ @ameenmari
+/apps/ @ameenmari
+/scripts/ @ameenmari

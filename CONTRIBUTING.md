@@ -1,13 +1,22 @@
 # Contributing to AgentProdReady
 
-## Prerequisites
+## Two audiences
+
+| Audience | Start here |
+|---|---|
+| **App developers** (npm consumers) | [README](README.md) · [Getting Started](docs/guides/getting-started.md) · [Simple Agent API](docs/guides/simple-agent-api.md) |
+| **Platform contributors** (this monorepo) | This document + [cursor-start-here](docs/cursor-start-here.md) |
+
+You do **not** need Blueprints to use `createAgent` from `@agentprodready/agent-framework`.
+
+## Prerequisites (contributors)
 
 - Node.js **24** (see root `package.json` `engines`)
 - pnpm (`packageManager` in root `package.json`)
 - Git
-- familiarity with TypeScript, NestJS, Vitest, and the blueprint being implemented
+- familiarity with TypeScript, Vitest, and the blueprint being implemented (for architecture work)
 
-Application integrators who only consume published packages should start with the [README](README.md) and [npm distribution guide](docs/guides/npm-distribution.md)—you do not need this contribution workflow.
+Support: [SUPPORT.md](SUPPORT.md). Security: [SECURITY.md](SECURITY.md). Roadmap: [ROADMAP.md](ROADMAP.md).
 
 ## Required Reading
 

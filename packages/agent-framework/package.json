@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.1.0",
+  "version": "1.1.1",
+  "description": "Build an AI agent in minutes. Add production controls when you need them. Simple Agent API (createAgent) plus advanced Agent Framework.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,6 +19,20 @@
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
   ],
+  "keywords": [
+    "ai",
+    "agents",
+    "agent-framework",
+    "llm",
+    "openai",
+    "typescript",
+    "nodejs",
+    "createAgent",
+    "streaming"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
   "dependencies": {
     "@agentprodready/ai-provider": "workspace:*",
     "@agentprodready/audit": "workspace:*",

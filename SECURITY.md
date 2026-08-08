@@ -12,6 +12,12 @@ AgentProdReady’s supported stable release line is **1.x** once `1.0.0` is the 
 
 Pre-1.0 local reference slices were architecture and product milestones, not a long-term supported security baseline.
 
+## Simple Agent API (`createAgent`) vs production auth
+
+The v1.1 **Simple Agent API** (`createAgent` on `@agentprodready/agent-framework`) uses **application-local / embedded** security defaults suitable for local apps, CLIs, prototypes, and embedded features.
+
+**Simple/embedded mode is not production HTTP authentication.** If you expose an agent through your own public API, you authenticate users and supply appropriate Security context via the advanced platform path.
+
 ## LocalReference authentication
 
 **LocalReference HTTP authentication is not production authentication.** It exists for local development and demos only.
@@ -38,4 +44,4 @@ You should receive an acknowledgment when maintainers are available. Please allo
 
 - Secrets must not appear in logs, metrics, audit payloads, health endpoints, or client errors
 - Core does not ship unrestricted shell/filesystem/SQL tools or an OAuth/OIDC server
-- Exactly-once external tool effects and durable HITL approval wait are not claimed in v1.0
+- Exactly-once external tool effects and durable HITL approval wait are not claimed in the current 1.x line

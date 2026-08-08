@@ -2,7 +2,13 @@
 
 Build an AI agent in minutes. Add production controls when you need them.
 
-`@agentprodready/agent-framework` is the package most developers should install first. It includes a simple embedded API (`createAgent`) plus the full advanced Agent Framework for production platforms.
+Production-oriented architecture with a young ecosystem.
+
+**v1.1 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `invoke()` · `stream()` · `close()`
+
+`@agentprodready/agent-framework` is the package most developers should install first. It includes a simple embedded API plus the full advanced Agent Framework for production platforms.
+
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Agent API](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-agent-api.md) · [Adopting AgentProdReady](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/adopting-agentprodready.md)
 
 ---
 
@@ -104,6 +110,8 @@ This is an embedded library stream API — not HTTP SSE.
 - Prompt Builder ownership for `instructions`
 
 Each `createAgent()` call owns its own composition. There is no global shared platform singleton.
+
+**Security:** simple/embedded mode is **not** production HTTP authentication. LocalReference host auth is development-only. Internet-facing multi-tenant apps must authenticate users and use advanced Security integration. See [SECURITY.md](https://github.com/ameenmari/agentprodready/blob/main/SECURITY.md).
 
 ---
 

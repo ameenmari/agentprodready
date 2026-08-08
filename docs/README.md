@@ -1,12 +1,33 @@
 # AgentProdReady Documentation
 
-**Version:** 1.0
+**Build an agent in minutes. Add production controls when you need them.**
 
-Welcome to the AgentProdReady documentation.
+Production-oriented architecture with a young ecosystem.
 
-This directory contains the complete architectural specification, implementation guidance, engineering standards, and governance documentation for the AgentProdReady platform.
+**New in v1.1 — Simple Agent API:** `createAgent`, `reference()`, `openai()`, `invoke()`, `stream()`, `close()` on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework).
 
-The documentation is organized so that both engineers and AI coding assistants (such as Cursor) can navigate the architecture deterministically.
+This directory contains product guides, architectural specification, implementation guidance, and governance documentation.
+
+---
+
+# Public navigation (start here)
+
+1. [Getting Started](guides/getting-started.md)
+2. [Simple Agent API](guides/simple-agent-api.md)
+3. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent)
+4. [Streaming](guides/streaming.md)
+5. [Tools](guides/tools.md)
+6. [Memory](guides/memory.md)
+7. [Production Deployment](guides/production-deployment.md)
+8. [Security](guides/security.md)
+9. [Operations](guides/operations.md)
+10. [Adopting AgentProdReady](guides/adopting-agentprodready.md) *(evaluators / leads)*
+11. [Architecture index](architecture-index.md)
+12. [Blueprints](blueprints/) · [ADRs](adrs/)
+
+**Beginner path:** Getting Started → Simple Agent API → Examples → Streaming → Production / Security → Architecture.
+
+Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
 
 ---
 
@@ -15,17 +36,16 @@ The documentation is organized so that both engineers and AI coding assistants (
 | You want to… | Go to |
 |---|---|
 | **Build your first agent** | [Getting Started](guides/getting-started.md) · [Simple Agent API](guides/simple-agent-api.md) |
+| Evaluate for a larger project | [Adopting AgentProdReady](guides/adopting-agentprodready.md) · [ROADMAP](../ROADMAP.md) |
 | Install packages in your app | [Repository README](../README.md) · [npm distribution](guides/npm-distribution.md) |
-| Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · examples/`streaming-agent` |
-| Tools / Memory / Evaluation (advanced) | [guides/](guides/) feature docs |
+| Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · [examples/streaming-agent](../examples/streaming-agent) |
+| Tools / Memory / Evaluation (advanced) | [tools](guides/tools.md) · [memory](guides/memory.md) · [evaluation](guides/evaluation.md) |
 | Production deployment | [production-deployment.md](guides/production-deployment.md) · [security.md](guides/security.md) |
+| Local performance baseline | [benchmarks](benchmarks/README.md) *(local baseline — not an SLA)* |
 | Understand architecture | [architecture-index.md](architecture-index.md) · [dependency-graph.md](architecture/dependency-graph.md) · [blueprints/](blueprints/) |
 | Change code in this monorepo | [cursor-start-here.md](cursor-start-here.md) · [CONTRIBUTING.md](../CONTRIBUTING.md) · [implementation-modes.md](implementation/implementation-modes.md) |
 | Trace decisions (ADRs) | [adrs/](adrs/) · [glossary.md](glossary.md) |
-
-**Beginner path:** Getting Started → Simple Agent API → Streaming → Advanced Architecture → Production Deployment.
-
-Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
+| Support / security | [SUPPORT.md](../SUPPORT.md) · [SECURITY.md](../SECURITY.md) |
 
 ---
 
