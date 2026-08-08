@@ -8,4 +8,4 @@
 - [x] CHANGELOG / ROADMAP / selective versions
 - [x] `pnpm verify` + `verify-versioning` green
 - [x] `pnpm test:public-dx` + `pnpm test:scaffold-dx` green
-- [ ] npm publish / tag (deploy step)
+- [x] npm publish / tag (`v1.5.0` — framework `1.5.0`, create-agentprodready `0.1.2`)

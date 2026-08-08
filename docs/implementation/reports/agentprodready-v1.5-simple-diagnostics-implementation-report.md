@@ -25,7 +25,9 @@
 - `pnpm verify-versioning` PASS
 - `pnpm verify` PASS (616 tests)
 - Simple diagnostics unit specs PASS
-- `pnpm test:public-dx` / `pnpm test:scaffold-dx` (run in deploy gate)
+- `pnpm test:public-dx` PASS
+- `pnpm test:scaffold-dx` PASS
+- Published: `@agentprodready/agent-framework@1.5.0`, `create-agentprodready@0.1.2`, tag `v1.5.0`
 
 ## Ownership
 
