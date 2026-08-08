@@ -10,9 +10,15 @@ GitHub can stay **private**. npm visibility is independent of GitHub visibility.
 
 ---
 
-## Why `npm install` fails today (`E404`)
+## Registry status (v1.0.0)
 
-`@agentprodready/*` packages are **not on the npm registry yet**. A private GitHub repo does not publish them automatically. Until the first successful `pnpm publish`, the registry correctly returns 404.
+Public packages under `@agentprodready/*` are **published** to npm at `1.0.0` (35 packages). External developers can install without cloning this repository:
+
+```bash
+npm install @agentprodready/agent-framework
+```
+
+If you still see `E404`, check the package name/scope spelling and that you are not behind a registry mirror that has not synced yet.
 
 ---
 
@@ -20,9 +26,9 @@ GitHub can stay **private**. npm visibility is independent of GitHub visibility.
 
 | Channel | Audience | Status |
 |---|---|---|
-| **npm `@agentprodready/*`** | Node/TypeScript integrators | Ready to configure (not published until you run gated publish) |
+| **npm `@agentprodready/*`** | Node/TypeScript integrators | **Published** @ `1.0.0` |
 | **Docker `platform-host`** | Language-agnostic HTTP/SSE consumers | Separate (GHCR) — see production-deployment guide |
-| **GitHub source** | Contributors / advanced forks | Tag `v1.0.0` already exists |
+| **GitHub source** | Contributors / advanced forks | Available |
 
 ---
 
@@ -219,14 +225,12 @@ Use recursive publish once:
 
 ---
 
-## Checklist before first public npm release
+## Checklist — first public npm release (v1.0.0)
 
-- [ ] npm user `ameenmari78` can create/own org `agentprodready`
-- [ ] Granular `NPM_TOKEN` created and stored (local + GitHub secret)
-- [ ] `pnpm npm:audit` passes
-- [ ] `pnpm npm:pack:dry` inspected
-- [ ] License accepted (MIT currently)
-- [ ] Decide GitHub remains private or goes public (optional)
-- [ ] Run `pnpm npm:publish` **once**
-- [ ] Confirm `npm view @agentprodready/agent-framework version` → `1.0.0`
-- [ ] Fresh-folder `npm install @agentprodready/agent-framework` succeeds
+- [x] npm org / scope `@agentprodready` owned
+- [x] First recursive `pnpm npm:publish` completed (35 packages @ `1.0.0`)
+- [x] `npm view @agentprodready/agent-framework version` → `1.0.0`
+- [x] Fresh-folder `npm install @agentprodready/agent-framework` succeeds
+- [ ] Granular `NPM_TOKEN` stored as GitHub Actions secret `NPM_TOKEN` (for gated release workflow)
+- [ ] Prefer Trusted Publishing / short-lived tokens for future releases
+- [ ] Docker / GHCR `platform-host` image (optional separate track)

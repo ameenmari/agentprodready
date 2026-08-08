@@ -1,14 +1,67 @@
 # AgentProdReady
 
-> **A Modular, Provider-Independent AI Agent Framework**
+**Modular, provider-independent framework for production AI agents.**
 
-**Version:** 1.0.0 (production-ready local reference product)
+Build Node.js / TypeScript agent applications on stable contracts—Runtime, Capability Resolution, Security, Memory, Tools, Evaluation—without locking into a single model vendor.
+
+| | |
+|---|---|
+| **Version** | `1.0.0` |
+| **License** | [MIT](LICENSE) |
+| **Node** | `24` (see `packageManager` / `engines` in root `package.json`) |
+| **npm scope** | [`@agentprodready/*`](https://www.npmjs.com/org/agentprodready) |
 
 ---
 
-# Quickstart
+## Why AgentProdReady?
 
-Requires **Node 24** and **pnpm** (`packageManager` in root `package.json`).
+Most AI projects become infrastructure projects: auth, memory, retrieval, tools, workflows, observability, and provider wiring before any business logic.
+
+AgentProdReady is an **enterprise AI platform framework**: opinionated architecture, replaceable modules, and explicit ownership—so teams compose a platform instead of reinventing it.
+
+**It is**
+
+- A modular agent / AI application platform (31 blueprints)
+- Provider-independent (swap OpenAI ↔ reference ↔ future adapters via Capability Resolution)
+- Contract-first and ADR-governed
+
+**It is not**
+
+- A foundation-model company
+- A drop-in replacement for LangChain / NestJS / Spring as a general backend
+- A no-code product (code-first; Docker host is the language-agnostic path)
+
+Early product vision and problem framing informed the architecture; the authoritative engineering specs are the [blueprints](docs/blueprints/) and [ADRs](docs/adrs/).
+
+---
+
+## Two ways to use it
+
+### 1) npm libraries (primary for TypeScript apps)
+
+Install what you need and compose in your application:
+
+```bash
+npm install @agentprodready/agent-framework
+npm install @agentprodready/runtime
+npm install @agentprodready/ai-provider
+npm install @agentprodready/ai-provider-openai
+npm install @agentprodready/memory
+npm install @agentprodready/tool-framework
+```
+
+```ts
+import { buildAgentDefinition } from '@agentprodready/agent-framework';
+// wire Runtime, AI provider, Memory, Tools via Composition in your app
+```
+
+Recommended packages and publish notes: [docs/guides/npm-distribution.md](docs/guides/npm-distribution.md).
+
+> A future `@agentprodready/core` facade is planned for a simpler “hello world” API. Until then, install the packages above.
+
+### 2) Local reference host (HTTP / SSE)
+
+Run the monorepo reference composition (`platform-host`) for demos, smoke tests, and ops validation:
 
 ```bash
 pnpm install
@@ -16,352 +69,117 @@ pnpm verify
 pnpm start
 ```
 
-Then:
-
 ```bash
 curl http://127.0.0.1:3000/health
-curl http://127.0.0.1:3000/ready
 curl -X POST http://127.0.0.1:3000/v1/agents/reference-agent/invoke \
   -H "Content-Type: application/json" \
   -H "Authorization: LocalReference principalId=local-user;tenantId=local-tenant" \
   -d "{\"objective\":\"hello\"}"
 ```
 
-Reference path needs no database and no API key. Opt-in: OpenAI, Postgres, recovery, Memory, vector, Evaluation, streaming, tools, and AI routing — see [docs/guides/configuration.md](docs/guides/configuration.md) and [docs/guides/multi-provider-routing.md](docs/guides/multi-provider-routing.md).
+No database or API key required on the default `reference-ai` path. Opt-in OpenAI, Postgres, recovery, Memory, vector search, Evaluation, streaming, tools, and multi-provider routing—see [configuration](docs/guides/configuration.md) and [multi-provider routing](docs/guides/multi-provider-routing.md).
 
-Production notes: [docs/guides/production-deployment.md](docs/guides/production-deployment.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md).
-
----
-
-# Vision
-
-AgentProdReady is a provider-independent framework for building intelligent agents, workflows, AI applications, automation systems, and multi-agent platforms.
-
-Its architecture separates planning, workflow interpretation, runtime execution, provider interaction, security, persistence, observability, and governance into independent, replaceable platform frameworks.
-
-The goal is to create a long-lived engineering platform where individual technologies can evolve without requiring architectural redesign.
+**Docker / GHCR** for a ready-to-run server image is a separate distribution track (see [production deployment](docs/guides/production-deployment.md)).
 
 ---
 
-# Philosophy
+## Repository quickstart (contributors)
 
-AgentProdReady follows several constitutional principles.
-
-* Single Responsibility
-* Explicit Ownership
-* Provider Independence
-* Replaceable Components
-* Technology Independence
-* Deterministic Contracts
-* Immutable Platform Artifacts
-* Explicit Governance
-* Architectural Traceability
-
-Every framework owns one architectural concern.
-
-No framework silently assumes responsibilities that belong to another.
-
----
-
-# Architecture
-
-AgentProdReady is composed of 31 engineering blueprints.
-
-These blueprints collectively define the platform architecture.
-
-```text
-Foundation
-    ↓
-Plugin Framework
-    ↓
-Dependency Injection & Composition
-    ↓
-Runtime
-    ↓
-Planning
-    ↓
-Workflow
-    ↓
-Capability Resolution
-    ↓
-AI Provider Framework
-    ↓
-Tool Framework
-    ↓
-Knowledge Engine
-    ↓
-Memory Engine
-    ↓
-Context Assembly
-    ↓
-Prompt Builder
-    ↓
-Evaluation Framework
-    ↓
-Security Platform
-    ↓
-Event Bus
-    ↓
-Audit Platform
-    ↓
-Agent Framework
-    ↓
-Multi-Agent Collaboration
-    ↓
-Human Interaction
-    ↓
-Plugin Marketplace
-    ↓
-Observability
-    ↓
-Configuration
-    ↓
-Persistence
-    ↓
-Scheduler
-    ↓
-API
-    ↓
-SDK
-    ↓
-CLI
-    ↓
-Deployment
-    ↓
-Testing
-    ↓
-Platform Governance
-```
-
----
-
-# Repository Structure
-
-```text
-AgentProdReady/
-│
-├── docs/
-│   ├── blueprints/
-│   ├── adrs/
-│   ├── implementation/
-│   │   ├── plans/
-│   │   ├── specifications/
-│   │   ├── reports/
-│   │   ├── checklists/
-│   │   └── reviews/
-│   ├── templates/
-│   └── diagrams/
-│
-├── packages/
-├── apps/
-├── tests/
-└── README.md
-```
-
----
-
-# Documentation
-
-The documentation is organized into several sections.
-
-Start with the [documentation index](docs/README.md), [architecture index](docs/architecture-index.md), [dependency graph](docs/architecture/dependency-graph.md), and [Cursor/Codex start guide](docs/cursor-start-here.md).
-
-Architectural anchors are [Blueprint 01](docs/blueprints/01-foundation.md), [Blueprint 31](docs/blueprints/31-platform-governance-and-evolution.md), the [ADR index](docs/adrs/README.md), and the [glossary](docs/glossary.md). Implementation uses the canonical [modes](docs/implementation/implementation-modes.md), [templates](docs/templates/), [plans](docs/implementation/plans/), [specifications](docs/implementation/specifications/), [reports](docs/implementation/reports/), [checklists](docs/implementation/checklists/), and [reviews](docs/implementation/reviews/).
-
-## Blueprints
-
-The Engineering Blueprints define the constitutional architecture of the platform.
-
-Every implementation must comply with these documents.
-
----
-
-## ADRs
-
-Architectural Decision Records document significant architectural decisions that affect the platform.
-
-They provide historical traceability for architectural evolution.
-
----
-
-## Implementation Plans
-
-Each blueprint is implemented through a dedicated implementation plan before code changes begin.
-
-Implementation plans identify:
-
-* Scope
-* Contracts
-* Dependencies
-* Risks
-* Testing strategy
-* Acceptance criteria
-
----
-
-## Implementation Reports
-
-Every completed implementation produces an implementation report documenting:
-
-* Files created
-* Files modified
-* Tests added
-* Acceptance criteria
-* Known limitations
-* Deferred work
-
----
-
-# Implementation Process
-
-Every blueprint follows the same implementation workflow.
-
-```text
-Read Blueprint
-        │
-        ▼
-Inspect Existing Code
-        │
-        ▼
-Create Implementation Plan
-        │
-        ▼
-Implement Contracts
-        │
-        ▼
-Implement Core Logic
-        │
-        ▼
-Implement Providers
-        │
-        ▼
-Testing
-        │
-        ▼
-Implementation Report
-```
-
-No blueprint should be implemented without an implementation plan.
-
----
-
-# Current Status
-
-| Area                    | Status                             |
-| ----------------------- | ---------------------------------- |
-| Architecture            | Approved — 31 blueprints           |
-| Documentation Hardening | Complete                            |
-| Implementation          | Blueprints 01–31 + v0.1–v0.9 product slices |
-| Tests                   | Deterministic CI green; OpenAI/Postgres tests opt-in |
-| Local reference product | v0.1 complete (`reference-ai` default) |
-| Real AI provider        | v0.2 OpenAI (`AI_PROVIDER=openai`) |
-| Durable persistence     | v0.3 PostgreSQL (`PERSISTENCE_PROVIDER=postgres`, default in-memory) |
-| Runtime recovery        | v0.4 checkpoints + `recoverIncomplete` (`RUNTIME_RECOVERY_ENABLED`, default false) |
-| Production Readiness    | Not Ready (no staging/secrets manager yet) |
-
----
-
-# Implementation Order
-
-Blueprints should be implemented in dependency order.
-
-The recommended sequence is:
-
-```
-01 → 02 → 03 → 04 → 05 → 06 → 07
-→ 08 → 09 → 10 → 11 → 12 → 13 → 14
-→ 15 → 16 → 17
-→ 18 → 19 → 20
-→ 21 → 22 → 23
-→ 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31
-```
-
-Completed blueprints become stable dependencies for subsequent implementations.
-
----
-
-# Architectural Principles
-
-AgentProdReady follows these permanent principles.
-
-* Every framework owns exactly one architectural concern.
-* Runtime exclusively owns operational execution.
-* Security exclusively owns authorization decisions.
-* Planning produces Execution Plans.
-* Workflow interprets Workflow Definitions.
-* Capability Resolution selects implementations.
-* Composition instantiates implementations.
-* Providers implement technology-specific behavior.
-* Events represent historical facts.
-* Audit preserves accountability.
-* Configuration is declarative.
-* Public contracts remain technology-independent.
-
-These principles must not be violated without an approved Architectural Decision Record (ADR).
-
----
-
-# Contributing
-
-All architectural and implementation contributions should follow:
-
-1. Engineering Blueprints
-2. Architectural Decision Records
-3. Implementation Guidelines
-4. Coding Standards
-5. Naming Conventions
-
-Architectural changes should never be introduced directly into the implementation without appropriate review and documentation.
-
----
-
-# License
-
-MIT — see [LICENSE](LICENSE).
-
-# npm packages
-
-Public install (after you publish once to the npm registry):
+Requires **Node 24** and **pnpm**.
 
 ```bash
-npm install @agentprodready/agent-framework
+pnpm install --frozen-lockfile
+pnpm verify          # lint + boundaries + typecheck + tests + build
+pnpm start           # reference host
+pnpm smoke           # host smoke script
 ```
 
-Setup, scope ownership (`@agentprodready`), dry-run, and gated publish steps:
-[docs/guides/npm-distribution.md](docs/guides/npm-distribution.md).
+Useful opt-in suites: `pnpm test:tools`, `pnpm test:routing`, `pnpm test:streaming`, `pnpm test:postgres` (Docker Postgres), `pnpm production-baseline`.
 
 ---
 
-# Project Status
+## Architecture (31 blueprints)
 
-**AgentProdReady v1.0**
+Capability-driven, composition-owned instantiation. Runtime owns operational execution. Security owns authorization.
 
-**Architecture:** Approved
+```text
+Foundation → Plugin Framework → Composition → Runtime → Planning → Workflow
+  → Capability Resolution → AI Provider → Tools → Knowledge → Memory
+  → Context Assembly → Prompt Builder → Evaluation → Security → Event Bus → Audit
+  → Agent Framework → Multi-Agent → Human Interaction → Marketplace
+  → Observability → Configuration → Persistence → Scheduler
+  → API → SDK → CLI → Deployment → Testing → Platform Governance
+```
 
-**Blueprints:** 31 Approved
+| Concern | Owner (examples) |
+|---|---|
+| Execution / cancellation / checkpoints | `@agentprodready/runtime` |
+| Implementation selection | `@agentprodready/capability-resolution` |
+| Authorization decisions | `@agentprodready/security` |
+| Instantiation / wiring | `@agentprodready/composition` |
+| Agent definition / lifecycle handoff | `@agentprodready/agent-framework` |
 
-**Documentation Hardening:** Complete
+Start here for architecture:
 
-**Implementation:** Blueprints 01–31 complete; v0.1–v0.9 product slices (local reference, OpenAI, PostgreSQL, Runtime recovery, Persistent Memory, Evaluation Framework, Vector Search & Semantic Memory, Streaming Responses, Tool Calling & Agent Actions)
+- [Documentation index](docs/README.md)
+- [Architecture index](docs/architecture-index.md)
+- [Dependency graph](docs/architecture/dependency-graph.md)
+- [ADR index](docs/adrs/README.md)
+- [Glossary](docs/glossary.md)
+- [Cursor / Codex start guide](docs/cursor-start-here.md)
 
-**Tests:** Deterministic CI; optional live OpenAI via `AI_LIVE_TESTS=1`; optional Postgres via `pnpm test:postgres` / `pnpm test:runtime-recovery` / `pnpm test:memory-persistence`; tools via `pnpm test:tools`
+---
 
-**AI providers:** `reference-ai` (default) · `openai-ai` (`AI_PROVIDER=openai`, see [docs/guides/ai-providers.md](docs/guides/ai-providers.md))
+## Documentation map
 
-**Persistence:** `in-memory` (default) · `postgres` (`PERSISTENCE_PROVIDER=postgres`, see [docs/guides/persistence.md](docs/guides/persistence.md))
+| Audience | Start |
+|---|---|
+| App developers (npm) | This README + [npm distribution](docs/guides/npm-distribution.md) + [guides/](docs/guides/) |
+| Operators / host | [configuration](docs/guides/configuration.md), [security](docs/guides/security.md), [production deployment](docs/guides/production-deployment.md), [operations](docs/guides/operations.md) |
+| Contributors | [CONTRIBUTING.md](CONTRIBUTING.md), [implementation modes](docs/implementation/implementation-modes.md), [blueprints](docs/blueprints/) |
+| Security | [SECURITY.md](SECURITY.md) |
+| Releases | [CHANGELOG.md](CHANGELOG.md) |
 
-**Memory:** `in-memory` (default) · `persistent` (`MEMORY_PROVIDER=persistent`, see [docs/guides/memory.md](docs/guides/memory.md))
+Guides (product slices): [AI providers](docs/guides/ai-providers.md) · [streaming](docs/guides/streaming.md) · [tools](docs/guides/tools.md) · [memory](docs/guides/memory.md) · [vector search](docs/guides/vector-search.md) · [evaluation](docs/guides/evaluation.md) · [persistence](docs/guides/persistence.md) · [runtime recovery](docs/guides/runtime-recovery.md).
 
-**Evaluation:** disabled by default; `EVALUATION_ENABLED=true` wires Blueprint 14 in the host (see [docs/guides/evaluation.md](docs/guides/evaluation.md))
+---
 
-**Vector search:** disabled by default; `VECTOR_SEARCH_ENABLED=true` enables semantic/hybrid Memory (see [docs/guides/vector-search.md](docs/guides/vector-search.md))
+## Status (v1.0.0)
 
-**Streaming:** `POST .../invoke/stream` (see [docs/guides/streaming.md](docs/guides/streaming.md))
+| Area | Status |
+|---|---|
+| Architecture (31 blueprints) | Complete |
+| Local reference host | Complete |
+| Public npm `@agentprodready/*` | **Published** (35 packages @ `1.0.0`) |
+| Multi-provider routing / production hardening | Complete (see CHANGELOG) |
+| Docker image on GHCR | Not the default track yet |
+| `@agentprodready/core` facade | Planned (not required for install) |
 
-**Tool calling:** disabled by default; `TOOLS_ENABLED=true` (see [docs/guides/tools.md](docs/guides/tools.md))
+`@agentprodready/platform-host` remains **private** (app / Docker), not an npm library.
 
-**Runtime recovery:** disabled by default; see [docs/guides/runtime-recovery.md](docs/guides/runtime-recovery.md)
+---
 
-**Production Readiness:** Not Ready
+## Principles (constitutional)
 
-**Current Phase:** Product slices after architecture implementation
+- Every framework owns **one** concern  
+- **Runtime** owns operational execution  
+- **Security** owns authorization  
+- **Composition** owns instantiation  
+- **Capability Resolution** selects implementations  
+- Providers stay behind contracts  
+- Events are facts; audit preserves accountability  
+- Changes to ownership / public contracts need an **ADR**
+
+---
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md). One blueprint at a time; plan + specification before production code; no silent architecture redesign.
+
+## Security
+
+See [SECURITY.md](SECURITY.md). LocalReference HTTP auth is **not** production authentication.
+
+## License
+
+[MIT](LICENSE) — Copyright (c) 2026 ameenmari

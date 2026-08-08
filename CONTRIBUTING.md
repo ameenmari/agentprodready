@@ -2,10 +2,12 @@
 
 ## Prerequisites
 
-- Node.js LTS
-- pnpm
+- Node.js **24** (see root `package.json` `engines`)
+- pnpm (`packageManager` in root `package.json`)
 - Git
 - familiarity with TypeScript, NestJS, Vitest, and the blueprint being implemented
+
+Application integrators who only consume published packages should start with the [README](README.md) and [npm distribution guide](docs/guides/npm-distribution.md)—you do not need this contribution workflow.
 
 ## Required Reading
 
