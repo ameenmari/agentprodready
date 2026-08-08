@@ -6,10 +6,12 @@
 
 AgentProdReady isolates AI vendors behind Blueprint 08. Higher layers consume only `NormalizedAiResult` / `NormalizedAiError`.
 
-| Implementation id | Package | Default | Requires secrets |
+| Implementation id | Package / Simple helper | Default | Requires secrets |
 |---|---|---|---|
-| `reference-ai` | `@agentprodready/ai-provider` | Yes | No |
-| `openai-ai` | `@agentprodready/ai-provider-openai` | No | `OPENAI_API_KEY` |
+| `reference-ai` | `reference()` | Yes | No |
+| `openai-ai` | `openai(...)` + `@agentprodready/ai-provider-openai` | No | `OPENAI_API_KEY` |
+| `openai-compatible-ai` | `openaiCompatible({ baseUrl, model })` + same package | No | `OPENAI_COMPATIBLE_API_KEY` (unless `auth: "none"`) |
+| Anthropic | **Not implemented** — next named provider track | — | — |
 
 ## Selection
 
@@ -17,15 +19,22 @@ AgentProdReady isolates AI vendors behind Blueprint 08. Higher layers consume on
 # Deterministic local / CI (default)
 AI_PROVIDER=reference
 
-# Production-capable OpenAI
+# Official OpenAI
 AI_PROVIDER=openai
 OPENAI_API_KEY=sk-...
 # optional
 OPENAI_MODEL=gpt-5
 OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_ORGANIZATION=
-OPENAI_PROJECT=
+
+# OpenAI Chat Completions–compatible endpoint (distinct identity)
+AI_PROVIDER=openai-compatible
+OPENAI_COMPATIBLE_BASE_URL=https://api.example.com/v1
+OPENAI_COMPATIBLE_MODEL=llama-3.1-70b
+OPENAI_COMPATIBLE_API_KEY=...
+# OPENAI_COMPATIBLE_AUTH=none   # explicit local/no-auth only
 ```
+
+**Security:** `OPENAI_API_KEY` is never automatically forwarded to compatible `baseUrl`s. See [openai-compatible.md](./openai-compatible.md).
 
 Copy `.env.example` to `.env` for local overrides. Never commit real keys.
 
@@ -56,9 +65,8 @@ AI_LIVE_TESTS=1 AI_PROVIDER=openai OPENAI_API_KEY=... pnpm test
 
 Default CI never sets `AI_LIVE_TESTS` and never requires OpenAI secrets.
 
-## Deferred in v0.2
+## Deferred / next
 
-- Streaming product responses
-- Tool-calling loops
-- Embeddings / image / audio product APIs
-- Anthropic / Gemini / Azure OpenAI adapters
+- Anthropic Messages API adapter (next named provider track)
+- Gemini / Bedrock / other non–Chat-Completions vendors
+- Claiming universal “OpenAI-compatible” gateway support

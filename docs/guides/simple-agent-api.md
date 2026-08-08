@@ -82,6 +82,7 @@ For natural-language recall, use `openai(...)` + `OPENAI_API_KEY` ([`examples/me
 |---|---|
 | `createAgent(options)` | Create embedded agent |
 | `reference()` | Deterministic local model for wiring/tests (no API key / network; not NL reasoning) |
+| `openaiCompatible({ baseUrl, model, … })` | OpenAI Chat Completions–compatible endpoint (`openai-compatible-ai`) |
 | `openai(modelId)` | OpenAI descriptor (optional peer package + `OPENAI_API_KEY`) |
 | `tool(definition)` | Declare a simple tool |
 | `inMemory()` | Ephemeral memory descriptor |

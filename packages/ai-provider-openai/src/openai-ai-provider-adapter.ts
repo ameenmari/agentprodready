@@ -32,12 +32,13 @@ export interface OpenAiChatClient {
 }
 
 export class OpenAiProviderAdapter implements AiProviderAdapter {
-  public readonly id = OPENAI_AI_ID;
+  public readonly id: string;
   readonly #config: OpenAiProviderConfig;
   readonly #client: OpenAiChatClient;
 
   public constructor(config: OpenAiProviderConfig, client?: OpenAiChatClient) {
     this.#config = config;
+    this.id = config.implementationId?.trim() || OPENAI_AI_ID;
     this.#client = client ?? createSdkClient(config);
   }
 

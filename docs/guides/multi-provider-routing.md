@@ -18,7 +18,7 @@ AgentProdReady selects AI implementations through **Capability Resolution** and 
 | Variable | Default | Meaning |
 |---|---|---|
 | `AI_ROUTING_MODE` | `fixed` | `fixed` (v0.9 behavior) or `fallback` |
-| `AI_PROVIDER` | `reference` | Primary selector (`reference` \| `openai`) |
+| `AI_PROVIDER` | `reference` | Primary selector (`reference` \| `openai` \| `openai-compatible`) |
 | `AI_FALLBACK_PROVIDERS` | _(empty)_ | Comma-separated secondaries when mode=`fallback` |
 
 ```bash
@@ -31,10 +31,11 @@ OPENAI_API_KEY=...
 
 - Unknown tokens → startup fail.
 - `AI_ROUTING_MODE=fallback` with empty fallbacks → startup fail.
-- OpenAI in the ordered list requires `OPENAI_API_KEY` at startup.
+- `openai` in the ordered list requires `OPENAI_API_KEY` at startup.
+- `openai-compatible` in the ordered list requires `OPENAI_COMPATIBLE_BASE_URL` and (unless `OPENAI_COMPATIBLE_AUTH=none`) `OPENAI_COMPATIBLE_API_KEY` — never `OPENAI_API_KEY`.
 - Default CI remains secret-free (`fixed` + `reference`).
 
-Real chat providers in v1.0: **reference-ai** and **openai-ai** only.
+Real chat providers: **reference-ai**, **openai-ai**, and **openai-compatible-ai** (distinct identity; same OpenAI adapter class). No `AiRouter`.
 
 ## Fallback-eligible errors
 

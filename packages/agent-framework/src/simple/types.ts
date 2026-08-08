@@ -3,9 +3,20 @@
 import type { SimpleMemory } from './memory.js';
 import type { SimpleTool } from './tool.js';
 
+export type OpenAiCompatibleAuth = 'api-key' | 'none';
+
 export type AgentModel =
   | { readonly provider: 'reference'; readonly modelId: 'reference' }
-  | { readonly provider: 'openai'; readonly modelId: string };
+  | { readonly provider: 'openai'; readonly modelId: string }
+  | {
+      readonly provider: 'openai-compatible';
+      readonly modelId: string;
+      readonly baseUrl: string;
+      readonly auth: OpenAiCompatibleAuth;
+      readonly apiKey?: string;
+      readonly organization?: string;
+      readonly project?: string;
+    };
 
 export interface CreateAgentOptions {
   readonly model: AgentModel;

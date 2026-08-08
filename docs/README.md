@@ -15,7 +15,7 @@ This directory contains product guides, architectural specification, implementat
 1. [Getting Started](guides/getting-started.md)
 2. [Simple Agent API](guides/simple-agent-api.md)
 3. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md)
-4. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent) · [openai-agent](../examples/openai-agent)
+4. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent) · [openai-agent](../examples/openai-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
 5. [Streaming](guides/streaming.md)
 6. [Tools](guides/tools.md) *(advanced)*
 7. [Memory](guides/memory.md) *(advanced / durable)*
@@ -170,6 +170,7 @@ Examples:
 Operator-facing guides for product slices.
 
 - [AI providers](guides/ai-providers.md)
+- [OpenAI-compatible](guides/openai-compatible.md)
 - [Persistence providers](guides/persistence.md)
 - [Runtime restart & recovery](guides/runtime-recovery.md)
 - [Memory providers](guides/memory.md)

@@ -4,7 +4,7 @@ Build an agent in minutes with `@agentprodready/agent-framework`.
 
 Production-oriented architecture with a young ecosystem.
 
-**v1.2 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
+**v1.3 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
 ## Requirements
 
@@ -59,6 +59,23 @@ Hello
 No API key, database, or Docker is required.
 
 `reference()` is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory. For tools/memory demos see [`examples/tools-agent`](../../examples/tools-agent) and [`examples/memory-agent`](../../examples/memory-agent).
+
+## OpenAI-compatible endpoint
+
+```js
+import { createAgent, openaiCompatible } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openaiCompatible({
+    baseUrl: process.env.OPENAI_COMPATIBLE_BASE_URL,
+    model: process.env.OPENAI_COMPATIBLE_MODEL ?? "llama-3.1-70b",
+  }),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Requires `@agentprodready/ai-provider-openai` and `OPENAI_COMPATIBLE_API_KEY` (unless `auth: "none"`).  
+`OPENAI_API_KEY` is never used for this path. See [openai-compatible.md](./openai-compatible.md).
 
 ## First OpenAI agent
 

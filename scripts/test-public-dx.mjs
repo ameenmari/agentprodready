@@ -205,6 +205,24 @@ assert(
   `Expected injectedPreview to include captured fact, got: ${JSON.stringify(memoryPayload.memory)}`,
 );
 
+const compatibleSource = `import { openaiCompatible } from "@agentprodready/agent-framework";
+
+const model = openaiCompatible({
+  baseUrl: "https://api.example.com/v1",
+  model: "llama-3.1-70b",
+  apiKey: "sk-dx-test-not-used",
+});
+console.log(JSON.stringify(model));
+`;
+writeFileSync(join(projectDir, 'compatible.mjs'), compatibleSource, 'utf8');
+process.stdout.write('Running openaiCompatible construct case (no network)...\n');
+const compatible = run(process.execPath, ['compatible.mjs'], { cwd: projectDir });
+const compatibleModel = JSON.parse((compatible.stdout ?? '').trim());
+assert(compatibleModel.provider === 'openai-compatible', 'Expected provider openai-compatible');
+assert(compatibleModel.baseUrl === 'https://api.example.com/v1', 'Expected baseUrl');
+assert(compatibleModel.modelId === 'llama-3.1-70b', 'Expected modelId');
+assert(compatibleModel.auth === 'api-key', 'Expected default auth api-key');
+
 if (process.env.OPENAI_API_KEY) {
   process.stdout.write('OPENAI_API_KEY present — packing/installing OpenAI peer for NL memory smoke...\n');
   const openaiProviderTarball = packPackage('@agentprodready/ai-provider-openai', packDir);

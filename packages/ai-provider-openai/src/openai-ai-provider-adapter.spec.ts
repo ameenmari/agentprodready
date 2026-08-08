@@ -2,7 +2,13 @@ import type { CapabilityBinding } from '@agentprodready/capability-resolution';
 import type { ExecutionContext } from '@agentprodready/foundation';
 import type { AiExecutionRequest } from '@agentprodready/ai-provider';
 import { describe, expect, it, vi } from 'vitest';
-import { DEFAULT_OPENAI_MODEL, loadOpenAiProviderConfig } from './config.js';
+import {
+  DEFAULT_OPENAI_MODEL,
+  OPENAI_COMPATIBLE_AI_ID,
+  OPENAI_NO_AUTH_API_KEY_PLACEHOLDER,
+  loadOpenAiCompatibleProviderConfig,
+  loadOpenAiProviderConfig,
+} from './config.js';
 import { OpenAiProviderAdapter, type OpenAiChatClient } from './openai-ai-provider-adapter.js';
 import { translateError } from './translate-error.js';
 
@@ -60,6 +66,17 @@ function mockClient(response: unknown): { client: OpenAiChatClient; create: Retu
 }
 
 describe('OpenAiProviderAdapter', () => {
+  it('reports openai-compatible-ai when implementationId is set', () => {
+    const adapter = new OpenAiProviderAdapter({
+      apiKey: OPENAI_NO_AUTH_API_KEY_PLACEHOLDER,
+      model: 'llama',
+      baseUrl: 'http://127.0.0.1:11434/v1',
+      implementationId: OPENAI_COMPATIBLE_AI_ID,
+      authMode: 'none',
+    });
+    expect(adapter.id).toBe('openai-compatible-ai');
+  });
+
   it('normalizes a successful chat completion', async () => {
     const { client, create } = mockClient({
       model: 'gpt-5',
@@ -357,5 +374,58 @@ describe('loadOpenAiProviderConfig', () => {
       OPENAI_BASE_URL: 'https://api.openai.com/v1',
     });
     expect(ok.baseUrl).toBe('https://api.openai.com/v1');
+  });
+});
+
+describe('loadOpenAiCompatibleProviderConfig', () => {
+  it('requires compatible base URL and never reads OPENAI_API_KEY', () => {
+    expect(() =>
+      loadOpenAiCompatibleProviderConfig({
+        OPENAI_API_KEY: 'sk-openai',
+        OPENAI_COMPATIBLE_API_KEY: 'sk-compat',
+      }),
+    ).toThrow(/OPENAI_COMPATIBLE_BASE_URL/);
+
+    expect(() =>
+      loadOpenAiCompatibleProviderConfig({
+        OPENAI_COMPATIBLE_BASE_URL: 'https://api.example.com/v1',
+        OPENAI_API_KEY: 'sk-openai',
+      }),
+    ).toThrow(/OPENAI_COMPATIBLE_API_KEY/);
+
+    const config = loadOpenAiCompatibleProviderConfig({
+      OPENAI_COMPATIBLE_BASE_URL: 'https://api.example.com/v1',
+      OPENAI_COMPATIBLE_API_KEY: 'sk-compat',
+      OPENAI_API_KEY: 'sk-openai-must-not-win',
+      OPENAI_COMPATIBLE_MODEL: 'llama-3.1',
+    });
+    expect(config).toMatchObject({
+      apiKey: 'sk-compat',
+      model: 'llama-3.1',
+      baseUrl: 'https://api.example.com/v1',
+      implementationId: 'openai-compatible-ai',
+      authMode: 'api-key',
+    });
+  });
+
+  it('supports auth none with placeholder key', () => {
+    const config = loadOpenAiCompatibleProviderConfig({
+      OPENAI_COMPATIBLE_BASE_URL: 'http://127.0.0.1:11434/v1',
+      OPENAI_COMPATIBLE_AUTH: 'none',
+      OPENAI_COMPATIBLE_MODEL: 'llama3.1',
+    });
+    expect(config.authMode).toBe('none');
+    expect(config.apiKey).toBe(OPENAI_NO_AUTH_API_KEY_PLACEHOLDER);
+    expect(config.implementationId).toBe('openai-compatible-ai');
+  });
+
+  it('rejects production metadata hosts', () => {
+    expect(() =>
+      loadOpenAiCompatibleProviderConfig({
+        NODE_ENV: 'production',
+        OPENAI_COMPATIBLE_BASE_URL: 'http://169.254.169.254/v1',
+        OPENAI_COMPATIBLE_API_KEY: 'sk',
+      }),
+    ).toThrow(/not permitted/);
   });
 });

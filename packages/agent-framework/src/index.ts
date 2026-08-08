@@ -82,6 +82,7 @@ export {
   createAgent,
   inMemory,
   openai,
+  openaiCompatible,
   reference,
   tool,
   SimpleAgentError,
@@ -93,8 +94,11 @@ export {
   type AgentToolStreamStatus,
   type AgentUsage,
   type CreateAgentOptions,
+  type OpenAiCompatibleAuth,
+  type OpenAiCompatibleOptions,
   type SimpleAgentErrorCode,
   type SimpleMemory,
   type SimpleTool,
   type SimpleToolDefinition,
 } from './simple/index.js';
+

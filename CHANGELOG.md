@@ -2,6 +2,19 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.3.0] — Provider Ecosystem (OpenAI-compatible)
+
+Facade-first OpenAI-compatible Simple path (architecture ownership unchanged):
+
+- `openaiCompatible({ baseUrl, model, apiKey?, auth?, … })` on `@agentprodready/agent-framework@1.3.0`
+- Distinct capability id `openai-compatible-ai` (reuses `OpenAiProviderAdapter`; not `openai-ai`)
+- Credential security: compatible path uses `OPENAI_COMPATIBLE_API_KEY` only — never silent `OPENAI_API_KEY` fallback
+- Explicit `auth: "none"` for local/no-auth compatible endpoints
+- Host parity: `AI_PROVIDER=openai-compatible` + compatible env vars
+- Guide: `docs/guides/openai-compatible.md`; example: `examples/openai-compatible-agent`
+- `@agentprodready/ai-provider-openai@1.0.2` — configurable implementation id, compatible config loader, no-auth placeholder
+- Anthropic remains next named provider track (not implemented)
+
 ## [1.2.1] — DX honesty for Simple Memory + examples
 
 Documentation/product-story patch (Memory ownership unchanged):

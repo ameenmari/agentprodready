@@ -4,9 +4,9 @@ Build an AI agent in minutes. Add production controls when you need them.
 
 Production-oriented architecture with a young ecosystem.
 
-**v1.2 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
+**v1.3 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
 
 ---
 
@@ -57,6 +57,22 @@ await agent.close();
 ```
 
 Set `OPENAI_API_KEY` in the environment (the library does not load `.env` files).
+
+### OpenAI-compatible
+
+```js
+import { createAgent, openaiCompatible } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openaiCompatible({
+    baseUrl: "https://api.example.com/v1",
+    model: "llama-3.1-70b",
+  }),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Uses capability id `openai-compatible-ai`. Credentials: `OPENAI_COMPATIBLE_API_KEY` (never silent `OPENAI_API_KEY` fallback). See the OpenAI-compatible guide.
 
 ---
 

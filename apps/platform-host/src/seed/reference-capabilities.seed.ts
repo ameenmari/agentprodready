@@ -4,7 +4,7 @@ import {
   ProviderRegistry,
   StaticResolutionConfiguration,
 } from '@agentprodready/capability-resolution';
-import { OPENAI_AI_ID } from '@agentprodready/ai-provider-openai';
+import { OPENAI_AI_ID, OPENAI_COMPATIBLE_AI_ID } from '@agentprodready/ai-provider-openai';
 import {
   REFERENCE_COUNTER_CAPABILITY,
   REFERENCE_COUNTER_TOOL_ID,
@@ -112,6 +112,21 @@ export function seedReferenceCapabilities(): {
   );
   providers.register(
     Object.freeze({
+      id: OPENAI_COMPATIBLE_AI_ID,
+      capabilityId: 'text-generation',
+      providerId: 'openai-compatible',
+      pluginId: 'openai',
+      contributionId: 'contribution:openai-compatible-ai',
+      contractVersions: Object.freeze(['1']),
+      implementationVersion: '1.0.0',
+      enabled: true,
+      health: 'healthy' as const,
+      priority: 11,
+      attributes: Object.freeze({ locality: 'external', compliance: 'openai-compatible' }),
+    }),
+  );
+  providers.register(
+    Object.freeze({
       id: `${OPENAI_AI_ID}:evaluation.judge`,
       capabilityId: 'evaluation.judge',
       providerId: 'openai',
@@ -123,6 +138,21 @@ export function seedReferenceCapabilities(): {
       health: 'healthy' as const,
       priority: 10,
       attributes: Object.freeze({ locality: 'external', compliance: 'production-capable' }),
+    }),
+  );
+  providers.register(
+    Object.freeze({
+      id: `${OPENAI_COMPATIBLE_AI_ID}:evaluation.judge`,
+      capabilityId: 'evaluation.judge',
+      providerId: 'openai-compatible',
+      pluginId: 'openai',
+      contributionId: 'contribution:openai-compatible-ai-judge',
+      contractVersions: Object.freeze(['1']),
+      implementationVersion: '1.0.0',
+      enabled: true,
+      health: 'healthy' as const,
+      priority: 11,
+      attributes: Object.freeze({ locality: 'external', compliance: 'openai-compatible' }),
     }),
   );
   providers.register(

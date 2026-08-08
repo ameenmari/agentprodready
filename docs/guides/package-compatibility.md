@@ -4,13 +4,13 @@ AgentProdReady uses **selective versioning**: packages bump only when their publ
 
 Production-oriented architecture with a young ecosystem.
 
-## Current published/repo line (v1.2 prep)
+## Current published/repo line (v1.3)
 
 | Package | Version | Notes |
 |---|---|---|
-| `@agentprodready/agent-framework` | **1.2.0** | Simple Agent API: chat + `tool()` + `inMemory()` |
+| `@agentprodready/agent-framework` | **1.3.0** | Simple Agent API: chat + tools + memory + `openaiCompatible()` |
 | `@agentprodready/ai-provider` | **1.0.2** | Reference adapter supports deterministic `USE_TOOL:<name>:<json>` |
-| `@agentprodready/ai-provider-openai` | 1.0.1 | Optional peer for `openai()` |
+| `@agentprodready/ai-provider-openai` | **1.0.2** | Optional peer for `openai()` / `openaiCompatible()` |
 | `@agentprodready/runtime` | 1.0.1 | Selective bump |
 | `@agentprodready/memory` | 1.0.1 | Selective bump |
 | `@agentprodready/tool-framework` | 1.0.1 | Selective bump |
@@ -47,7 +47,7 @@ Pulled automatically. Not typical direct installs for app developers.
 
 | Package | Peer | Required? |
 |---|---|---|
-| `@agentprodready/agent-framework` | `@agentprodready/ai-provider-openai@^1.0.1` | **Optional** — only for `openai()` |
+| `@agentprodready/agent-framework` | `@agentprodready/ai-provider-openai@^1.0.2` | **Optional** — for `openai()` / `openaiCompatible()` |
 
 ---
 
@@ -60,7 +60,7 @@ Pulled automatically. Not typical direct installs for app developers.
 | Tool Framework contracts | `tool-framework` + consumers |
 | Memory Engine contracts | `memory` (+ persistence if store contracts change) |
 
-Seeing `agent-framework@1.2.x` next to architecture packages at `1.0.x` is **expected**, not broken.
+Seeing `agent-framework@1.3.x` next to architecture packages at `1.0.x` is **expected**, not broken.
 
 ---
 

@@ -14,7 +14,11 @@ import {
   DeterministicRetentionResolver,
 } from '@agentprodready/audit';
 import { AiProviderFramework, FactoryAiAdapterResolver, InMemoryAiDiagnostics, InMemoryAiEvents, NoopAiTelemetry, ReferenceAiProviderAdapter } from '@agentprodready/ai-provider';
-import { OPENAI_AI_ID, OpenAiProviderAdapter } from '@agentprodready/ai-provider-openai';
+import {
+  OPENAI_AI_ID,
+  OPENAI_COMPATIBLE_AI_ID,
+  OpenAiProviderAdapter,
+} from '@agentprodready/ai-provider-openai';
 import {
   CapabilityResolver,
   InMemoryResolutionDiagnostics,
@@ -204,6 +208,26 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
     const openAiConfig = config.openAi;
     aiResolver.bind(OPENAI_AI_ID, async () => new OpenAiProviderAdapter(openAiConfig));
     aiResolver.bind(`${OPENAI_AI_ID}:evaluation.judge`, async () => new OpenAiProviderAdapter(openAiConfig));
+  }
+
+  const needsOpenAiCompatibleAdapter =
+    config.aiProvider === 'openai-compatible' ||
+    config.aiFallbackProviders.includes('openai-compatible');
+  if (needsOpenAiCompatibleAdapter) {
+    if (config.openAiCompatible === undefined) {
+      throw new Error(
+        'OpenAI-compatible configuration is required when openai-compatible is in the AI routing list',
+      );
+    }
+    const compatibleConfig = config.openAiCompatible;
+    aiResolver.bind(
+      OPENAI_COMPATIBLE_AI_ID,
+      async () => new OpenAiProviderAdapter(compatibleConfig),
+    );
+    aiResolver.bind(
+      `${OPENAI_COMPATIBLE_AI_ID}:evaluation.judge`,
+      async () => new OpenAiProviderAdapter(compatibleConfig),
+    );
   }
   const aiFramework = new AiProviderFramework(aiResolver, new InMemoryAiDiagnostics(), new InMemoryAiEvents(), new NoopAiTelemetry());
 
@@ -897,7 +921,9 @@ export async function buildLocalReferenceComposition(config: LocalReferenceConfi
 }
 
 function selectedAiImplementationId(aiProvider: AiProviderSelection): string {
-  return aiProvider === 'openai' ? OPENAI_AI_ID : REFERENCE_AI_ID;
+  if (aiProvider === 'openai') return OPENAI_AI_ID;
+  if (aiProvider === 'openai-compatible') return OPENAI_COMPATIBLE_AI_ID;
+  return REFERENCE_AI_ID;
 }
 
 export { validateInvokeRequest };

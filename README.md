@@ -19,17 +19,33 @@ Production-oriented architecture with a young ecosystem.
 
 ---
 
+## New in v1.3 — OpenAI-compatible providers
+
+```js
+import { createAgent, openaiCompatible } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openaiCompatible({
+    baseUrl: "https://api.example.com/v1",
+    model: "llama-3.1-70b",
+  }),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Distinct capability id `openai-compatible-ai`. Use `OPENAI_COMPATIBLE_API_KEY` (never silent `OPENAI_API_KEY` fallback). Guide: [openai-compatible.md](docs/guides/openai-compatible.md). Anthropic is next — not implemented yet.
+
 ## New in v1.2 — chat, tools, memory
 
 Three simple paths. No Blueprints required.
 
 | Path | API |
 |---|---|
-| **A. Simple chat** | `createAgent` + `reference()` / `openai()` + `invoke` / `stream` / `close` |
+| **A. Simple chat** | `createAgent` + `reference()` / `openai()` / `openaiCompatible()` + `invoke` / `stream` / `close` |
 | **B. Agent with tools** | `tool()` + `createAgent({ tools })` |
 | **C. Agent with memory** | `memory: true` or `inMemory()` (ephemeral) |
 
-Guides: [Simple Agent API](docs/guides/simple-agent-api.md) · [Simple Tools](docs/guides/simple-tools.md) · [Simple Memory](docs/guides/simple-memory.md) · [Getting Started](docs/guides/getting-started.md)
+Guides: [Simple Agent API](docs/guides/simple-agent-api.md) · [OpenAI-compatible](docs/guides/openai-compatible.md) · [Simple Tools](docs/guides/simple-tools.md) · [Simple Memory](docs/guides/simple-memory.md) · [Getting Started](docs/guides/getting-started.md)
 
 ---
 
@@ -248,6 +264,7 @@ Docker image smoke and Postgres service jobs also run in CI. Local performance b
 | [`examples/tools-agent`](examples/tools-agent) | `tool()` + `USE_TOOL:…` (no API key) |
 | [`examples/memory-agent`](examples/memory-agent) | memory wiring (`reference`) + NL recall (`openai`) |
 | [`examples/openai-agent`](examples/openai-agent) | `openai()` + `invoke` (needs `OPENAI_API_KEY`) |
+| [`examples/openai-compatible-agent`](examples/openai-compatible-agent) | `openaiCompatible()` (Chat Completions–compatible endpoint) |
 
 Each example uses published-style `@agentprodready/agent-framework` package names.
 

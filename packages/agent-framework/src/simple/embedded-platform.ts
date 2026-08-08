@@ -47,6 +47,7 @@ import {
 } from '../index.js';
 import {
   OPENAI_AI_ID,
+  OPENAI_COMPATIBLE_AI_ID,
   REFERENCE_AI_ID,
   seedEmbeddedCapabilities,
 } from './embedded-capabilities.js';
@@ -109,8 +110,10 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
   const aiResolver = new FactoryAiAdapterResolver();
   if (options.model.provider === 'reference') {
     aiResolver.bind(REFERENCE_AI_ID, async () => new ReferenceAiProviderAdapter());
-  } else {
+  } else if (options.model.provider === 'openai') {
     await bindOpenAiAdapter(aiResolver, options.model.modelId);
+  } else {
+    await bindOpenAiCompatibleAdapter(aiResolver, options.model);
   }
 
   const aiFramework = new AiProviderFramework(
@@ -350,6 +353,7 @@ class SimpleToolAdapter implements ToolAdapter {
 
 async function resolveImplementationId(model: AgentModel): Promise<string> {
   if (model.provider === 'reference') return REFERENCE_AI_ID;
+  if (model.provider === 'openai-compatible') return OPENAI_COMPATIBLE_AI_ID;
   return OPENAI_AI_ID;
 }
 
@@ -370,6 +374,8 @@ async function bindOpenAiAdapter(resolver: FactoryAiAdapterResolver, modelId: st
     const config = Object.freeze({
       apiKey,
       model: modelId,
+      implementationId: OPENAI_AI_ID,
+      authMode: 'api-key' as const,
       ...(baseUrl !== undefined && baseUrl !== '' ? { baseUrl } : {}),
       ...(organization !== undefined && organization !== '' ? { organization } : {}),
       ...(project !== undefined && project !== '' ? { project } : {}),
@@ -381,6 +387,59 @@ async function bindOpenAiAdapter(resolver: FactoryAiAdapterResolver, modelId: st
     throw new SimpleAgentError(
       'AGENT_MISSING_OPENAI_PACKAGE',
       'OpenAI support requires @agentprodready/ai-provider-openai. Install it with:\n npm install @agentprodready/ai-provider-openai',
+      undefined,
+      { cause: error },
+    );
+  }
+}
+
+async function bindOpenAiCompatibleAdapter(
+  resolver: FactoryAiAdapterResolver,
+  model: Extract<AgentModel, { provider: 'openai-compatible' }>,
+): Promise<void> {
+  try {
+    const openAiModule = await import('@agentprodready/ai-provider-openai');
+    // Re-validate baseUrl with package SSRF helper (production blocks).
+    const baseUrl = openAiModule.validateOpenAiBaseUrl(model.baseUrl, { envName: 'baseUrl' });
+
+    let apiKey = '';
+    let authMode: 'api-key' | 'none' = model.auth;
+    if (model.auth === 'none') {
+      apiKey = openAiModule.OPENAI_NO_AUTH_API_KEY_PLACEHOLDER;
+    } else {
+      apiKey = model.apiKey?.trim() || process.env['OPENAI_COMPATIBLE_API_KEY']?.trim() || '';
+      if (apiKey === '') {
+        throw new SimpleAgentError(
+          'AGENT_INVALID_CONFIG',
+          'openaiCompatible requires options.apiKey or OPENAI_COMPATIBLE_API_KEY when auth is "api-key". OPENAI_API_KEY is never used for compatible endpoints.',
+        );
+      }
+      // Security invariant: never read OPENAI_API_KEY here.
+      authMode = 'api-key';
+    }
+
+    const config = Object.freeze({
+      apiKey,
+      model: model.modelId,
+      baseUrl,
+      implementationId: OPENAI_COMPATIBLE_AI_ID,
+      authMode,
+      ...(model.organization === undefined ? {} : { organization: model.organization }),
+      ...(model.project === undefined ? {} : { project: model.project }),
+    });
+
+    resolver.bind(
+      OPENAI_COMPATIBLE_AI_ID,
+      async () => new openAiModule.OpenAiProviderAdapter(config),
+    );
+  } catch (error) {
+    if (error instanceof SimpleAgentError) throw error;
+    if (error instanceof Error && /not permitted|absolute http/i.test(error.message)) {
+      throw new SimpleAgentError('AGENT_INVALID_MODEL', error.message, undefined, { cause: error });
+    }
+    throw new SimpleAgentError(
+      'AGENT_MISSING_OPENAI_PACKAGE',
+      'OpenAI-compatible support requires @agentprodready/ai-provider-openai. Install it with:\n npm install @agentprodready/ai-provider-openai',
       undefined,
       { cause: error },
     );
