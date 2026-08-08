@@ -4,11 +4,12 @@ AgentProdReady uses **selective versioning**: packages bump only when their publ
 
 Production-oriented architecture with a young ecosystem.
 
-## Current published/repo line (v1.3)
+## Current published/repo line (v1.3.1 adoption)
 
 | Package | Version | Notes |
 |---|---|---|
-| `@agentprodready/agent-framework` | **1.3.0** | Simple Agent API: chat + tools + memory + `openaiCompatible()` |
+| `@agentprodready/agent-framework` | **1.3.1** | Simple Agent API + engines `>=22 <25` + adoption docs |
+| `create-agentprodready` | **0.1.0** | Unscoped `npm create` scaffold (publish pending) |
 | `@agentprodready/ai-provider` | **1.0.2** | Reference adapter supports deterministic `USE_TOOL:<name>:<json>` |
 | `@agentprodready/ai-provider-openai` | **1.0.2** | Optional peer for `openai()` / `openaiCompatible()` |
 | `@agentprodready/runtime` | 1.0.1 | Selective bump |
@@ -68,12 +69,10 @@ Seeing `agent-framework@1.3.x` next to architecture packages at `1.0.x` is **exp
 
 | Claim | Status |
 |---|---|
-| Verified baseline | **Node 24** (`engines`: `>=24 <25` until Node 22 CI is proven green) |
+| Supported engines | **`>=22 <25`** |
 | CI matrix | Node **22** and **24** (see `.github/workflows/ci.yml`) |
-| Engines widen to `>=22 <25` | **Only after** Node 22 verify job is green |
+| Operator Docker image | May remain Node 24 bookworm (image pin ≠ library engines) |
 | Node 20 | Not claimed |
-
-Why 24 today? Matching the verified runtime/CI image pin — not because production code requires Node-24-only APIs.
 
 ---
 

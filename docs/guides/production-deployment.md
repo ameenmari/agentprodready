@@ -1,6 +1,10 @@
-# Production Deployment (v1.0)
+# Production Deployment
 
-AgentProdReady v1.0 is intended for **operator-deployed** production use with documented limitations — not a hosted SaaS platform.
+AgentProdReady is intended for **operator-deployed** production use with documented limitations — not a hosted SaaS platform.
+
+**Embedding `createAgent` in your own Node service?** Start with the shorter recipe: [embed-agent-deployment.md](./embed-agent-deployment.md).
+
+This page covers the composed **platform-host** / operator baseline.
 
 ## Suitable baseline
 
@@ -64,14 +68,17 @@ Supply a real auth adapter before exposing HTTP beyond trusted networks. See [se
 - No exactly-once external tool effects
 - No durable HITL approval wait (fail-closed `TOOL_APPROVAL_REQUIRED`)
 - No SSE reconnect / stream replay
-- Provider catalog: reference + OpenAI only
+- Provider catalog today: reference + OpenAI + OpenAI-compatible (Anthropic not implemented)
 - Operator-managed migrations
 - No hosted management UI
 - Single reference-agent HTTP product surface
+- No Kubernetes / distributed Runtime requirement in the baseline
 
 ## Related
 
+- [Embed agent deployment](./embed-agent-deployment.md) *(Simple path)*
 - [Configuration](./configuration.md)
 - [Operations](./operations.md)
 - [Upgrading](./upgrading.md)
 - [Multi-provider routing](./multi-provider-routing.md)
+- [Security](./security.md)

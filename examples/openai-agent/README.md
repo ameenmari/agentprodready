@@ -1,30 +1,33 @@
 # openai-agent
 
-Minimal AgentProdReady OpenAI agent using the Simple Agent API.
+## What problem does this solve?
 
-## Requirements
+Live OpenAI chat via Simple `openai()` helper.
 
-- Node.js **24**
-- `OPENAI_API_KEY` in the environment (the library does **not** load `.env` files)
-
-## Run
+## How do I run it?
 
 ```bash
 npm install
-```
-
-```bash
-# bash
-export OPENAI_API_KEY="..."
-
-# PowerShell
-$env:OPENAI_API_KEY="..."
-```
-
-```bash
+export OPENAI_API_KEY="..."   # PowerShell: $env:OPENAI_API_KEY="..."
 npm start
 ```
 
-Uses `@agentprodready/agent-framework` + `@agentprodready/ai-provider-openai` with `openai()` and `createAgent`.
+## Env variables
 
-For a zero-secret path, use [`../hello-agent`](../hello-agent) with `reference()`.
+| Variable | Required |
+|---|---|
+| `OPENAI_API_KEY` | Yes |
+
+## Expected output
+
+Natural-language reply from the configured OpenAI model (non-deterministic).
+
+## Is it production-safe?
+
+No — example CLI only. Supply your own HTTP auth for services.
+
+## What should I read next?
+
+- Gateway path: [`../openai-compatible-agent`](../openai-compatible-agent)
+- Canonical wow: [`../backend-agent`](../backend-agent)
+- [Getting Started](../../docs/guides/getting-started.md)

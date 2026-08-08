@@ -2,6 +2,19 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.3.1] — Developer Adoption Sprint (DX)
+
+Adoption / discoverability cycle (architecture ownership unchanged):
+
+- Job-first README + package README promise: *TypeScript agents you can ship this week…*
+- Node engines widened to **`>=22 <25`** (CI matrix 22 + 24)
+- Canonical example: `examples/backend-agent`
+- Scaffold package: **`create-agentprodready@0.1.0`** (`npm create agentprodready@latest`) — publish pending authorization
+- Guides: `why-agentprodready.md`, `embed-agent-deployment.md`; production-deployment navigation fix
+- Community: issue forms, CODE_OF_CONDUCT, labels doc; Discussions remain a manual GitHub setting
+- DX gates: `pnpm test:public-dx`, `pnpm test:scaffold-dx`
+- `@agentprodready/agent-framework@1.3.1` — engines + public metadata/docs only (no Simple API behavior change)
+
 ## [1.3.0] — Provider Ecosystem (OpenAI-compatible)
 
 Facade-first OpenAI-compatible Simple path (architecture ownership unchanged):

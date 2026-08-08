@@ -41,8 +41,14 @@ for (const name of packageNames) {
     }
     continue;
   }
-  if (typeof pkg.name !== 'string' || !pkg.name.startsWith('@agentprodready/')) {
-    errors.push(`${name}: public package name must be @agentprodready/*`);
+  const isCreatePackage = pkg.name === 'create-agentprodready';
+  if (
+    typeof pkg.name !== 'string' ||
+    (!pkg.name.startsWith('@agentprodready/') && !isCreatePackage)
+  ) {
+    errors.push(
+      `${name}: public package name must be @agentprodready/* (or create-agentprodready)`,
+    );
     continue;
   }
   if (typeof pkg.version !== 'string' || !semver.test(pkg.version)) {
@@ -50,6 +56,9 @@ for (const name of packageNames) {
   }
   if (pkg.publishConfig?.access !== 'public') {
     errors.push(`${pkg.name}: publishConfig.access must be "public"`);
+  }
+  if (isCreatePackage) {
+    infos.push('create-agentprodready allowed as unscoped npm create package');
   }
   publicPackages.push({ name: pkg.name, version: pkg.version, dir: name });
 }

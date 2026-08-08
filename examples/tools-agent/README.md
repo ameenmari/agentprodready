@@ -1,24 +1,34 @@
 # tools-agent
 
-Zero-key Simple Tools demo with `createAgent` + `reference()` + `tool()`.
+## What problem does this solve?
 
-No API key. No workspace-relative imports.
+Focused Simple Tools demo — `tool()` + deterministic `reference()` trigger without an API key.
 
-## Run
+## How do I run it?
 
 ```bash
 npm install
 npm start
 ```
 
-Expected output includes a tool result for Paris (for example `Tool returned: ...`).
+## Env variables
 
-## Note
+None.
 
-`reference()` uses the deterministic trigger:
+## Expected output
 
-```text
-USE_TOOL:<toolName>:<jsonArgs>
-```
+Text that includes a tool result for Paris (for example `Tool returned: ...` with sunny/Paris).
 
-OpenAI tool selection uses tool schemas instead — see [`../openai-agent`](../openai-agent) for a live-model path.
+## Is it production-safe?
+
+No. Tool defaults are conservative but this example is not an HTTP service. Approvals fail closed; external effects are not exactly-once.
+
+## What should I read next?
+
+- Fuller path: [`../backend-agent`](../backend-agent)
+- [Simple Tools](../../docs/guides/simple-tools.md)
+- Live model tools: [`../openai-agent`](../openai-agent)
+
+### Note
+
+`reference()` uses `USE_TOOL:<toolName>:<jsonArgs>`. OpenAI selects tools from schemas instead.

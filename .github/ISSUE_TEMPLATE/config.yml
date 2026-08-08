@@ -3,6 +3,9 @@ contact_links:
   - name: Security vulnerability
     url: https://github.com/ameenmari/agentprodready/blob/main/SECURITY.md
     about: Report security issues privately — do not open a public issue for exploits.
-  - name: Getting Started
+  - name: Getting Started guide
     url: https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md
     about: First-agent guide for @agentprodready/agent-framework.
+  - name: Why AgentProdReady
+    url: https://github.com/ameenmari/agentprodready/blob/main/docs/guides/why-agentprodready.md
+    about: Fair positioning vs established alternatives.

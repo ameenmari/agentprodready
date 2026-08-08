@@ -1,0 +1,61 @@
+name: Bug report
+description: Something does not work as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve AgentProdReady. Redact secrets.
+        Solo maintainer — best-effort responses (see SUPPORT.md).
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: dropdown
+    id: path
+    attributes:
+      label: Path used
+      options:
+        - Simple Agent API (createAgent)
+        - create-agentprodready scaffold
+        - Advanced / platform-host
+        - Docs only
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      placeholder: "v22.x or v24.x"
+    validations:
+      required: true
+  - type: input
+    id: packages
+    attributes:
+      label: Package versions
+      placeholder: "@agentprodready/agent-framework@x.y.z"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal code or steps
+      render: javascript
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true

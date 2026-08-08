@@ -1,0 +1,50 @@
+name: Getting started problem
+description: Stuck installing, scaffolding, or running the first agent
+labels: ["question", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for first-install / first-success friction.
+        Check Getting Started and examples/hello-agent first.
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Where are you stuck?
+      options:
+        - npm create / scaffold
+        - npm install / engines
+        - reference hello agent
+        - tools example
+        - OpenAI / OpenAI-compatible
+        - streaming
+        - docs unclear
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version (`node -v`)
+    validations:
+      required: true
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands you ran
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output
+      description: Redact API keys
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true

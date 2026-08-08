@@ -1,0 +1,39 @@
+{
+  "name": "create-agentprodready",
+  "version": "0.1.0",
+  "description": "Scaffold a TypeScript AgentProdReady agent project (npm create agentprodready@latest)",
+  "type": "module",
+  "bin": {
+    "create-agentprodready": "./bin/create-agentprodready.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "keywords": [
+    "agentprodready",
+    "create-agentprodready",
+    "scaffold",
+    "ai-agents",
+    "typescript",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git",
+    "directory": "packages/create-agentprodready"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

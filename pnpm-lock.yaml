@@ -310,6 +310,8 @@ importers:
         specifier: workspace:*
         version: link:../workflow
 
+  packages/create-agentprodready: {}
+
   packages/deployment-framework:
     dependencies:
       '@agentprodready/api-framework':

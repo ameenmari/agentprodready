@@ -1,4 +1,4 @@
-# Manual GitHub repository metadata (P0)
+# Manual GitHub repository metadata
 
 Apply these settings in the GitHub UI if `gh` / tokens are unavailable:
 
@@ -6,11 +6,19 @@ Apply these settings in the GitHub UI if `gh` / tokens are unavailable:
 
 | Field | Value |
 |---|---|
-| Description | `Build an agent in minutes. Add production controls when you need them.` |
+| Description | `TypeScript agents you can ship this week — with a clean path to production controls when you need them.` |
 | Website / Homepage | `https://github.com/ameenmari/agentprodready#readme` |
 | Topics | `ai-agents`, `agent-framework`, `typescript`, `nodejs`, `llm`, `openai`, `ai`, `developer-tools` |
 
-Optional: enable Discussions later (P1/P2) when community questions appear.
+### Discussions (manual)
+
+1. **Settings → General → Features → Discussions** → enable
+2. Suggested categories: **Q&A**, **Ideas**, **Show and tell**
+3. Optional: add a contact_link in `.github/ISSUE_TEMPLATE/config.yml` once live
+
+### Labels (manual)
+
+Create labels listed in [docs/community/labels.md](../../community/labels.md) if missing.
 
 Do not invent stars, users, or adoption metrics in the description.
 
@@ -18,7 +26,7 @@ Do not invent stars, users, or adoption metrics in the description.
 
 ```bash
 gh repo edit ameenmari/agentprodready \
-  --description "Build an agent in minutes. Add production controls when you need them." \
+  --description "TypeScript agents you can ship this week — with a clean path to production controls when you need them." \
   --homepage "https://github.com/ameenmari/agentprodready#readme" \
   --add-topic ai-agents \
   --add-topic agent-framework \
@@ -28,4 +36,6 @@ gh repo edit ameenmari/agentprodready \
   --add-topic openai \
   --add-topic ai \
   --add-topic developer-tools
+
+gh repo edit ameenmari/agentprodready --enable-discussions
 ```

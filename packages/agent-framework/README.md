@@ -1,12 +1,12 @@
 # @agentprodready/agent-framework
 
-Build an AI agent in minutes. Add production controls when you need them.
+**TypeScript agents you can ship this week — with a clean path to production controls when you need them.**
 
 Production-oriented architecture with a young ecosystem.
 
-**v1.3 Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
+**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) · [Why AgentProdReady](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/why-agentprodready.md)
 
 ---
 
@@ -16,11 +16,17 @@ Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/
 npm install @agentprodready/agent-framework
 ```
 
-Requires **Node.js 24** (see repo CI for Node 22 status) and an **ESM** project.
+Requires **Node.js `>=22 <25`** and an **ESM** project.
+
+Scaffold (after `create-agentprodready` is published):
+
+```bash
+npm create agentprodready@latest my-agent
+```
 
 ---
 
-## A. Simple chat
+## Quick start (zero secrets)
 
 ```js
 import { createAgent, reference } from "@agentprodready/agent-framework";
@@ -72,11 +78,11 @@ const agent = createAgent({
 });
 ```
 
-Uses capability id `openai-compatible-ai`. Credentials: `OPENAI_COMPATIBLE_API_KEY` (never silent `OPENAI_API_KEY` fallback). See the OpenAI-compatible guide.
+Capability id `openai-compatible-ai`. Credentials: `OPENAI_COMPATIBLE_API_KEY` (never silent `OPENAI_API_KEY` fallback).
 
 ---
 
-## B. Agent with tools
+## Tools
 
 ```js
 import { createAgent, reference, tool } from "@agentprodready/agent-framework";
@@ -107,50 +113,11 @@ Defaults are conservative (`mutating` / `non-idempotent`). See the Simple Tools 
 
 ---
 
-## C. Agent with memory (ephemeral)
+## Memory (ephemeral)
 
 `memory: true` ≡ `inMemory()` — process-local, instance-scoped, ephemeral (not durable Postgres).
 
-The reference provider is deterministic and intended for wiring/tests. It does **not** perform natural-language reasoning over recalled memory.
-
-### Zero-key wiring (`reference`)
-
-```js
-import { createAgent, reference } from "@agentprodready/agent-framework";
-
-const agent = createAgent({
-  model: reference(),
-  instructions: "You are a helpful assistant.",
-  memory: true,
-});
-
-await agent.invoke("My favorite color is blue.");
-const result = await agent.invoke("What color did I mention?");
-console.log(result.text); // reference echoes the user message — expected
-console.log(result.metadata?.memory); // { enabled, retrievedItemCount, injected, injectedPreview }
-await agent.close();
-```
-
-### Natural-language recall (`openai`)
-
-Requires `@agentprodready/ai-provider-openai` and `OPENAI_API_KEY`.
-
-```js
-import { createAgent, openai } from "@agentprodready/agent-framework";
-
-const agent = createAgent({
-  model: openai("gpt-4o-mini"),
-  instructions: "Answer using remembered user facts when present. Keep answers short.",
-  memory: true,
-});
-
-await agent.invoke("My favorite color is blue.");
-const result = await agent.invoke("What color did I mention?");
-console.log(result.text);
-await agent.close();
-```
-
-See the [Simple Memory guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md).
+The reference provider is deterministic and does **not** perform natural-language reasoning over recalled memory. Use `openai()` for NL recall demos. See the Simple Memory guide.
 
 ---
 
@@ -159,13 +126,18 @@ See the [Simple Memory guide](https://github.com/ameenmari/agentprodready/blob/m
 ```js
 for await (const event of agent.stream("Hello")) {
   if (event.type === "text") process.stdout.write(event.text);
-  if (event.type === "tool_call") {
-    /* safe lifecycle only */
-  }
 }
 ```
 
 Embedded library stream — not HTTP SSE.
+
+---
+
+## Production path
+
+When you outgrow the weekend path: [embed deployment](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/embed-agent-deployment.md) · [production deployment](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/production-deployment.md) · [adopting](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/adopting-agentprodready.md).
+
+Simple/embedded mode is **not** production HTTP authentication.
 
 ---
 

@@ -1,38 +1,38 @@
 # memory-agent
 
-Simple Memory demos for `@agentprodready/agent-framework`.
+## What problem does this solve?
 
-**Important:** Memory retrieval/injection is not the same as model intelligence.  
-`reference()` verifies wiring; natural-language recall needs a reasoning-capable model.
+Honest Simple Memory story: wiring/diagnostics with `reference()`, optional NL recall with `openai()`.
 
-## A. Wiring / demo path (zero-key)
-
-Uses `reference()` + `memory: true`.
+## How do I run it?
 
 ```bash
 npm install
 npm run start:reference
+# optional NL recall:
+# export OPENAI_API_KEY="..."
+# npm run start:openai
 ```
 
-This path proves capture → retrieve → inject via `result.metadata.memory`.  
-It does **not** claim that `result.text` answers with `"blue"`.
+See `package.json` scripts if named differently in-tree.
 
-## B. Natural-language recall path (OpenAI)
+## Env variables
 
-Requires `OPENAI_API_KEY` and `@agentprodready/ai-provider-openai`.
+| Path | Vars |
+|---|---|
+| Reference wiring | none |
+| OpenAI NL recall | `OPENAI_API_KEY` + `@agentprodready/ai-provider-openai` |
 
-```bash
-# bash
-export OPENAI_API_KEY="..."
+## Expected output
 
-# PowerShell
-$env:OPENAI_API_KEY="..."
+- Reference: echoed user text + `metadata.memory` proof (not NL “intelligence”)
+- OpenAI: short answer that can mention recalled facts
 
-npm install
-npm run start:openai
-```
+## Is it production-safe?
 
-This example requires a reasoning-capable model.  
-`reference()` verifies wiring but is not intended to demonstrate semantic conversation recall.
+No. `memory: true` is **ephemeral**, not durable Postgres.
 
-No secrets are committed in this example.
+## What should I read next?
+
+- [simple-memory.md](../../docs/guides/simple-memory.md)
+- Canonical weekend path: [`../backend-agent`](../backend-agent)

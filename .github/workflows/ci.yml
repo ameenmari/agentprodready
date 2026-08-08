@@ -44,6 +44,8 @@ jobs:
         run: pnpm build
       - name: Public DX (packed external install)
         run: pnpm test:public-dx
+      - name: Scaffold DX (packed create-agentprodready)
+        run: pnpm test:scaffold-dx
       - name: Smoke
         run: pnpm smoke
 

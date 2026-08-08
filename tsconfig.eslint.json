@@ -52,5 +52,8 @@
     "vitest.runtime-recovery.config.ts",
     "vitest.memory-persistence.config.ts",
     "vitest.evaluation-persistence.config.ts"
+  ],
+  "exclude": [
+    "packages/create-agentprodready/templates/**"
   ]
 }

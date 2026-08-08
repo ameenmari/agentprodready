@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose an improvement (docs, DX, providers, Simple API)
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer concrete developer jobs over architecture redesign proposals.
+        Deep Runtime/Security changes are rarely good first issues.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What developer pain does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What would good look like?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - documentation
+        - examples / scaffold
+        - simple-api
+        - tools
+        - memory
+        - provider
+        - diagnostics
+        - deployment docs
+        - other
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints understood
+      options:
+        - label: I am not asking to weaken Security or Runtime ownership for a shorter demo
+          required: true

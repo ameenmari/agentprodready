@@ -8,31 +8,38 @@ This roadmap is directional. It does **not** promise delivery dates.
 
 ## Now
 
-- **v1.3 Provider Ecosystem** — OpenAI-compatible Simple path (`openaiCompatible`, `openai-compatible-ai`); publish pending authorization
-- Node 22+24 CI matrix; widen engines only after Node 22 is green
-- Package compatibility documentation
+- **Developer Adoption Sprint** — implemented in-tree; **publish pending** (`create-agentprodready@0.1.0`, `@agentprodready/agent-framework@1.3.1`)  
+  See [report](docs/implementation/reports/agentprodready-developer-adoption-sprint-implementation-report.md)
+- Record shareable demo GIF (manual; not a technical release gate) — [demo-script](docs/community/demo-script.md)
+- Apply manual GitHub About / Discussions / labels — [manual-actions](docs/implementation/manual-actions/github-repository-metadata.md)
 
 ---
 
-## Next
+## Next (after Adoption Sprint)
 
-- Soften engines to `>=22 <25` after Node 22 CI stays green
-- Anthropic provider (next named vendor; separate Review-Gated adapter)
-- Official GHCR image publication (immutable version tags)
-- Measured public performance baselines (`docs/benchmarks/` — local baseline, not an SLA)
-- CodeQL / dependency review in CI
-- Lightweight community contribution improvements (labels, Discussions if useful)
+Ordered for discovery → trust → expand (not architecture depth first):
+
+1. **Anthropic** provider (named-vendor credibility)
+2. **Diagnostics & debugging** (Simple-path DX)
+3. **Production deployment improvements** (evidence-driven; recipe starts in Adoption Sprint)
+4. Observe real users
+5. **Durable Simple Memory / HITL** only when justified by demand
+
+Also: official GHCR image publication; CodeQL / dependency review; community labels/Discussions (started in Adoption Sprint).
+
+The prior “five developer-job” track remains, but **Agent in My App** / front-door Deploy credibility are partially absorbed by the Adoption Sprint — do not duplicate those releases.
 
 ---
 
 ## Later
 
 - SSE reconnect / stream replay
-- Durable HITL approval wait / resume
+- Durable HITL approval wait / resume (demand-gated)
 - Additional model providers (Gemini / Bedrock / etc.)
 - Distributed Runtime (leader election / multi-node)
 - Public documentation site
 - Real-user showcase (only projects that actually exist)
+- Measured public performance baselines (`docs/benchmarks/` — local baseline, not an SLA)
 
 ---
 

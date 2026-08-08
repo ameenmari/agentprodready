@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.15.1",
   "engines": {
-    "node": ">=24 <25"
+    "node": ">=22 <25"
   },
   "scripts": {
     "dev": "tsc -b --watch --preserveWatchOutput",
@@ -36,6 +36,7 @@
     "test:routing": "node scripts/run-routing-tests.mjs",
     "test:tenant-isolation": "pnpm exec vitest run apps/platform-host/src/tenant-isolation.spec.ts",
     "test:public-dx": "node scripts/test-public-dx.mjs",
+    "test:scaffold-dx": "node scripts/test-scaffold-dx.mjs",
     "verify-versioning": "node scripts/verify-versioning.mjs",
     "production-baseline": "node scripts/production-baseline.mjs",
     "npm:audit": "node scripts/npm-publish-audit.mjs",

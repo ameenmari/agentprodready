@@ -14,20 +14,19 @@ This directory contains product guides, architectural specification, implementat
 
 1. [Getting Started](guides/getting-started.md)
 2. [Simple Agent API](guides/simple-agent-api.md)
-3. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md)
-4. [Examples](../examples/hello-agent) · [streaming-agent](../examples/streaming-agent) · [openai-agent](../examples/openai-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
-5. [Streaming](guides/streaming.md)
-6. [Tools](guides/tools.md) *(advanced)*
-7. [Memory](guides/memory.md) *(advanced / durable)*
-8. [Production Deployment](guides/production-deployment.md)
-9. [Security](guides/security.md)
-10. [Operations](guides/operations.md)
-11. [Package compatibility](guides/package-compatibility.md)
-12. [Adopting AgentProdReady](guides/adopting-agentprodready.md) *(evaluators / leads)*
-13. [Architecture index](architecture-index.md)
-14. [Blueprints](blueprints/) · [ADRs](adrs/)
+3. [Why AgentProdReady](guides/why-agentprodready.md)
+4. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md)
+5. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
+6. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
+7. [Streaming](guides/streaming.md)
+8. [Security](guides/security.md)
+9. [Package compatibility](guides/package-compatibility.md)
+10. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
+11. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [labels](community/labels.md)
+12. [Architecture index](architecture-index.md)
+13. [Blueprints](blueprints/) · [ADRs](adrs/)
 
-**Beginner path:** Getting Started → Simple Agent API → Simple Tools / Memory → Examples → Production / Security → Architecture.
+**Beginner path:** Getting Started → backend-agent → Why / Embed deploy → Architecture only if needed.
 
 Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
 
