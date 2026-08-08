@@ -38,6 +38,7 @@
     "test:public-dx": "node scripts/test-public-dx.mjs",
     "test:scaffold-dx": "node scripts/test-scaffold-dx.mjs",
     "verify-versioning": "node scripts/verify-versioning.mjs",
+    "verify-package-readmes": "node scripts/verify-package-readmes.mjs",
     "production-baseline": "node scripts/production-baseline.mjs",
     "npm:audit": "node scripts/npm-publish-audit.mjs",
     "npm:pack:dry": "node scripts/npm-publish.mjs --dry-run",

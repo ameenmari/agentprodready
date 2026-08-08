@@ -1,34 +1,33 @@
-# @agentprodready/vector-store-pgvector
+# `@agentprodready/vector-store-pgvector`
 
-pgvector adapter for `@agentprodready/vector-store` (AgentProdReady v0.7 Memory semantic search).
+**pgvector adapter** for `@agentprodready/vector-store` — durable semantic index for AgentProdReady Memory.
 
-**Package version:** `0.1.0`
+| | |
+|---|---|
+| **Status** | Production provider published (`1.0.x`) |
+| **Install** | `npm install @agentprodready/vector-store-pgvector` |
+| **Module** | ESM · Node.js `>=22 <25` |
+| **License** | MIT |
 
-## Ownership
+---
 
-Owns derived `memory_vector_index` schema, profile migrations, HNSW cosine index, and `PgvectorVectorStore`.
+## When to use
 
-Does **not** own Memory authorization, Persistence generic entity repositories, or embedding generation.
+You need Postgres + pgvector behind Memory semantic/hybrid search. Skip this for Simple ephemeral `memory: true`.
 
-## Profiles (Option C)
+---
 
-| `VECTOR_INDEX_PROFILE` | Dimensions | Embedding model id |
-|---|---|---|
-| `reference-32` | 32 | `reference-embedding-32` |
-| `openai-1536-small` | 1536 | `text-embedding-3-small` |
-
-Checked-in SQL under `migrations/profiles/<profile>/` freezes `vector(N)`. Changing dimensions requires an explicit profile rebuild + re-embed + reindex — never runtime DDL.
-
-## Migrations
+## Install
 
 ```bash
-VECTOR_INDEX_PROFILE=reference-32 pnpm db:migrate:vector
-VECTOR_INDEX_PROFILE=reference-32 pnpm db:status:vector
+npm install @agentprodready/vector-store @agentprodready/vector-store-pgvector
 ```
 
-Requires `DATABASE_URL` (same shape as `@agentprodready/persistence-postgres`). Not applied by default `pnpm db:migrate`.
+Requires `DATABASE_URL` (same shape as `@agentprodready/persistence-postgres`).
 
-## Runtime
+---
+
+## Sample
 
 ```ts
 import { PgvectorVectorStore } from '@agentprodready/vector-store-pgvector';
@@ -41,4 +40,33 @@ const store = new PgvectorVectorStore({
 await store.assertReady();
 ```
 
-`assertReady` fails closed unless the migrated `memory_vector_schema_contract` matches constructor dimensions / model / metric.
+```bash
+VECTOR_INDEX_PROFILE=reference-32 pnpm db:migrate:vector
+VECTOR_INDEX_PROFILE=reference-32 pnpm db:status:vector
+```
+
+| `VECTOR_INDEX_PROFILE` | Dimensions | Embedding model id |
+|---|---|---|
+| `reference-32` | 32 | `reference-embedding-32` |
+| `openai-1536-small` | 1536 | `text-embedding-3-small` |
+
+`assertReady` fails closed unless the migrated schema contract matches dimensions / model / metric.
+
+---
+
+## Ownership
+
+| Owns | Does **not** own |
+|---|---|
+| Derived `memory_vector_index` schema, HNSW cosine index, `PgvectorVectorStore` | Memory authorization; Persistence generic repos; embeddings |
+
+---
+
+## Docs
+
+- [Vector search guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/vector-search.md)
+- [Repository README](https://github.com/ameenmari/agentprodready#readme)
+
+## License
+
+MIT © 2026 ameenmari

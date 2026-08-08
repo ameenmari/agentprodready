@@ -22,7 +22,7 @@ This directory contains product guides, architectural specification, implementat
 8. [Security](guides/security.md)
 9. [Package compatibility](guides/package-compatibility.md)
 10. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
-11. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [labels](community/labels.md)
+11. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [package README standard](community/package-readme-standard.md) · [labels](community/labels.md)
 12. [Architecture index](architecture-index.md)
 13. [Blueprints](blueprints/) · [ADRs](adrs/)
 

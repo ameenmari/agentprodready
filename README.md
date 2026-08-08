@@ -11,6 +11,18 @@ Production-oriented architecture with a young ecosystem.
 
 For **TypeScript / Node.js backend developers** embedding AI agents into existing applications — without giving up production controls later.
 
+<p align="center">
+  <img src="docs/community/assets/demo.svg" alt="AgentProdReady terminal demo — createAgent invoke" width="920" />
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@agentprodready/agent-framework"><strong>npm install @agentprodready/agent-framework</strong></a>
+  ·
+  <a href="https://github.com/ameenmari/agentprodready/stargazers">⭐ Star</a>
+  ·
+  <a href="CONTRIBUTING.md">Contribute</a>
+</p>
+
 ```js
 import { createAgent, openai, tool } from "@agentprodready/agent-framework";
 
@@ -37,7 +49,11 @@ console.log(result.text);
 await agent.close();
 ```
 
-Also: `stream()`, `reference()` (zero API key), `openaiCompatible()` for Chat Completions gateways.
+Also: `stream()`, `reference()` (zero API key), `openaiCompatible()` / `anthropic()`, and `result.metadata` diagnostics.
+
+<!-- After you record: commit docs/community/assets/demo.gif and uncomment:
+![Live demo](docs/community/assets/demo.gif)
+-->
 
 ---
 
@@ -66,8 +82,6 @@ npm run dev
 ```
 
 Choose **Reference** (no API key), **OpenAI**, or **OpenAI-compatible**.
-
-> Until `create-agentprodready` is published, use Option B or clone examples from this repo.
 
 ### Option B — one package, zero secrets
 
@@ -257,11 +271,18 @@ CI runs verification on every push ([workflow](.github/workflows/ci.yml)). Prefe
 
 ## Community
 
-Single maintainer today ([ameenmari](https://github.com/ameenmari)) — no foundation-scale governance claims.
+Single maintainer today ([ameenmari](https://github.com/ameenmari)) — no foundation-scale governance claims. **Stars, issues, and small PRs are genuinely useful.**
+
+**Good first contributions** (docs / examples / DX — not Runtime/Security redesigns):
+
+- Improve an example README or add a focused recipe under `examples/`
+- Record / polish the [demo GIF](docs/community/demo-script.md) (`docs/community/assets/demo.gif`)
+- Fix package README clarity ([standard](docs/community/package-readme-standard.md))
+- Add a getting-started issue reproduction or a test around Simple API DX
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [SUPPORT.md](SUPPORT.md)
-- [ROADMAP.md](ROADMAP.md) · [CHANGELOG.md](CHANGELOG.md)
-- Demo recording script: [docs/community/demo-script.md](docs/community/demo-script.md)
+- [ROADMAP.md](ROADMAP.md) · [CHANGELOG.md](CHANGELOG.md) · [content plan](docs/community/content-plan.md)
+- Every public npm package ships install + sample code — start with [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework)
 
 ---
 

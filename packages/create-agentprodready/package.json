@@ -1,6 +1,6 @@
 {
   "name": "create-agentprodready",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Scaffold a TypeScript AgentProdReady agent project (npm create agentprodready@latest)",
   "type": "module",
   "bin": {

@@ -22,9 +22,18 @@ This is a **solo-maintainer** project today. Responses are best-effort — see [
 
 Prefer docs, examples, tests, and small DX improvements.
 
+Ideas that help the community immediately:
+
+- Example README clarity or a new focused `examples/*` recipe
+- Package README polish ([standard](docs/community/package-readme-standard.md))
+- Demo GIF from [demo-script.md](docs/community/demo-script.md)
+- Simple Agent API tests / getting-started reproductions
+
 Avoid first contributions that redesign Runtime, Security authorization, or Persistence migrations.
 
 Label guidance: [docs/community/labels.md](docs/community/labels.md).
+
+⭐ Starring [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready) helps others discover the project.
 
 ## Required reading (platform work)
 

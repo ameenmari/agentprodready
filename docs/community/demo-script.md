@@ -3,7 +3,7 @@
 **Purpose:** Shareable proof for README GIF, GitHub social preview, X/Twitter, LinkedIn, Reddit/HN.  
 **Rule:** Do not fabricate adoption, logos, or “used by” claims. Show a real local workflow.
 
-**Status:** Script + reproducible workflow ready. Recording a GIF/MP4 is an **adoption artifact**, not a technical release gate for the Adoption Sprint.
+**Status:** Script + reproducible workflow ready. Root README already embeds `docs/community/assets/demo.svg`. Recording `demo.gif` / MP4 is an **adoption artifact** — drop the file beside the SVG and uncomment the GIF embed in the root README.
 
 ---
 

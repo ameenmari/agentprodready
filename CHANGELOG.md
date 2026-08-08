@@ -2,6 +2,18 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.5.1] — Community Gravity (package surface)
+
+Adoption / discoverability cycle (architecture ownership unchanged):
+
+- Every public npm package README now includes install + sample + ownership (no Blueprint stubs)
+- Root README: visual demo SVG, star/contribute CTAs, good-first-issue ideas; removed stale scaffold caveat
+- Package README standard + `pnpm verify-package-readmes` CI gate
+- `@agentprodready/agent-framework@1.5.1` (docs/diagnostics links)
+- `create-agentprodready@0.1.3`, `@agentprodready/ai-provider-anthropic@1.0.1`, `@agentprodready/ai-provider-openai@1.0.3`
+- Selective `1.0.1` patches across platform packages so registry pages update
+- Demo GIF still a manual recording artifact (`docs/community/demo-script.md`)
+
 ## [1.5.0] — Simple diagnostics & debugging
 
 Richer Simple invoke metadata for local debugging (architecture ownership unchanged):

@@ -1,23 +1,61 @@
-# @agentprodready/evaluation
+# `@agentprodready/evaluation`
 
-Blueprint 14 provider-independent assessment of immutable normalized platform artifacts.
+**Evaluation framework — score and compare agent runs with replaceable evaluators.**
 
-**Package version:** `0.1.0` (package-complete)
+| | |
+|---|---|
+| **Status** | Production contracts published |
+| **Install** | `npm install @agentprodready/evaluation` |
+| **Module** | ESM · Node.js `>=22 <25` |
+| **License** | MIT |
+| **Repository** | [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready) |
+
+---
+
+## When to use
+
+You add offline/online evaluation to a host or CI quality gate.
+
+**Prefer not to start here** if manual `invoke` checks are enough for your prototype.
+
+---
+
+## Install
+
+```bash
+npm install @agentprodready/evaluation
+```
+
+---
+
+## Sample
+
+```ts
+import type { EvaluationRunner } from '@agentprodready/evaluation';
+
+declare const evaluation: EvaluationRunner;
+const report = await evaluation.run(/* EvaluationRunRequest */);
+console.log(report);
+```
+
+---
 
 ## Ownership
 
-Evaluation owns criteria, scoring, evidence, aggregation, and descriptive immutable `EvaluationResult` facts.
+| Owns | Does **not** own |
+|---|---|
+| Evaluation run / scoring contracts | Model training; Observability backends; Simple facade |
 
-It does **not** own:
+---
 
-- evaluator scheduling / timeout / retry / cancel / recovery (Runtime via `EvaluatorExecutionPort`)
-- AI SDKs or prompt package construction
-- authorization (Security)
-- Persistence bytes / SQL
-- Runtime execution stages
+## Documentation
 
-## Host productization (v0.6)
+- [Evaluation guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/evaluation.md)
+- [Blueprint 14](https://github.com/ameenmari/agentprodready/blob/main/docs/blueprints/14-evaluation-framework.md)
+- [Repository README](https://github.com/ameenmari/agentprodready#readme)
+- [Package README standard](https://github.com/ameenmari/agentprodready/blob/main/docs/community/package-readme-standard.md)
 
-Local reference host wires this package when `EVALUATION_ENABLED=true`. See [docs/guides/evaluation.md](../../docs/guides/evaluation.md).
 
-Default CI / smoke leave evaluation disabled. Durable results use Persistence repository `evaluation-results` (no Evaluation → `pg` dependency).
+## License
+
+MIT © 2026 ameenmari

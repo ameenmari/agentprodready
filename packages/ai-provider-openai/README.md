@@ -9,6 +9,24 @@
 | **Peer / dep** | Uses `openai@7.4.0` (exact pin) |
 | **License** | MIT |
 
+### Simple Agent path (most apps)
+
+```bash
+npm install @agentprodready/agent-framework @agentprodready/ai-provider-openai
+export OPENAI_API_KEY="..."
+```
+
+```js
+import { createAgent, openai } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: openai("gpt-4o-mini"),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Also powers `openaiCompatible({ baseUrl, model, … })` with capability id `openai-compatible-ai`.
+
 ---
 
 ## Installation

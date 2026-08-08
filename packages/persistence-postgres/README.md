@@ -1,32 +1,44 @@
-# @agentprodready/persistence-postgres
+# `@agentprodready/persistence-postgres`
 
-PostgreSQL provider for Blueprint 24 persistence contracts (`pg@8.22.0`, no ORM).
+**PostgreSQL persistence provider** for AgentProdReady (`pg`, no ORM).
 
-## Scope
+| | |
+|---|---|
+| **Status** | Production provider published (`1.0.x`) |
+| **Install** | `npm install @agentprodready/persistence-postgres` |
+| **Module** | ESM · Node.js `>=22 <25` |
+| **License** | MIT |
 
-Durable storage for:
+Default product path remains in-memory — Postgres is opt-in.
 
-- generic `PersistedEntity` rows
-- Blueprint 24 `SnapshotStore` snapshots
-- Blueprint 24 `MigrationProvider` application records
-- SQL migrator bookkeeping (`schema_migrations`)
+---
 
-## Non-goals (v0.3)
+## When to use
 
-Does **not** persist agents, audit, events, memory, knowledge, workflow engine state, Runtime `ExecutionSnapshotPort` recovery, or OpenAI adapter state.
+You need durable Persistence repositories / snapshots for a composed host. Not required for Simple `createAgent` + ephemeral `memory: true`.
 
-## Selection
+---
+
+## Install
+
+```bash
+npm install @agentprodready/persistence @agentprodready/persistence-postgres
+```
 
 ```bash
 PERSISTENCE_PROVIDER=postgres
 DATABASE_URL=postgres://agentprodready:agentprodready@127.0.0.1:5432/agentprodready
 ```
 
-Default product path remains `PERSISTENCE_PROVIDER=in-memory` (no database required).
+---
 
-## Migrations
+## Sample (host selection)
 
-Host startup does **not** auto-migrate. Apply explicitly:
+```ts
+// Composition / host selects the Postgres provider when PERSISTENCE_PROVIDER=postgres.
+// Apply migrations explicitly — hosts do not auto-migrate on startup.
+console.log(process.env.DATABASE_URL);
+```
 
 ```bash
 pnpm db:up
@@ -34,11 +46,24 @@ pnpm db:migrate
 pnpm db:status
 ```
 
-Destructive local/test reset requires `PERSISTENCE_ALLOW_RESET=1`.
+Destructive local reset requires `PERSISTENCE_ALLOW_RESET=1`.
+
+---
 
 ## Ownership
 
-- Persistence contracts: `@agentprodready/persistence`
-- Instantiation: Composition / platform-host
-- Operational retry/timeout/recovery: Runtime (not this package)
-- `pg` types never leave this package
+| Owns | Does **not** own |
+|---|---|
+| Postgres adapters for Persistence ports | Persistence contracts (see `@agentprodready/persistence`) |
+| SQL migrator bookkeeping | Runtime recovery policy; leaking `pg` types upward |
+
+---
+
+## Docs
+
+- [Persistence guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/persistence.md)
+- [Repository README](https://github.com/ameenmari/agentprodready#readme)
+
+## License
+
+MIT © 2026 ameenmari

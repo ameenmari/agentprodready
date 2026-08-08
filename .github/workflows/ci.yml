@@ -26,6 +26,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Versioning integrity
         run: pnpm verify-versioning
+      - name: Package README quality
+        run: pnpm verify-package-readmes
       - name: Lint
         run: pnpm lint
       - name: Boundaries

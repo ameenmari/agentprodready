@@ -6,7 +6,9 @@ Production-oriented architecture with a young ecosystem.
 
 **Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
+
+Star / contribute: [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready)
 
 ---
 
@@ -18,7 +20,7 @@ npm install @agentprodready/agent-framework
 
 Requires **Node.js `>=22 <25`** and an **ESM** project.
 
-Scaffold (after `create-agentprodready` is published):
+Scaffold:
 
 ```bash
 npm create agentprodready@latest my-agent
@@ -147,6 +149,12 @@ for await (const event of agent.stream("Hello")) {
 ```
 
 Embedded library stream — not HTTP SSE.
+
+---
+
+## Diagnostics
+
+Successful `invoke` results include `result.metadata` (`provider`, `modelId`, `durationMs`, `tools` counts, optional `memory`). See [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md).
 
 ---
 

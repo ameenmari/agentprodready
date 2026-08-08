@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420" role="img" aria-labelledby="title desc">
+  <title id="title">AgentProdReady  createAgent invoke demo</title>
+  <desc id="desc">Terminal mock showing createAgent with tools and a successful invoke</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#132033"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3dd6c6"/>
+      <stop offset="100%" stop-color="#5b9dff"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="420" rx="18" fill="url(#bg)"/>
+  <rect x="24" y="24" width="872" height="372" rx="12" fill="#0a101a" stroke="#243247"/>
+  <circle cx="56" cy="56" r="7" fill="#ff5f57"/>
+  <circle cx="80" cy="56" r="7" fill="#febc2e"/>
+  <circle cx="104" cy="56" r="7" fill="#28c840"/>
+  <text x="140" y="61" fill="#8aa0b8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">agentprodready  weekend path</text>
+  <text x="48" y="110" fill="#5b9dff" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">$</text>
+  <text x="68" y="110" fill="#e8eef7" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">npm create agentprodready@latest my-agent</text>
+  <text x="48" y="150" fill="#5b9dff" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">$</text>
+  <text x="68" y="150" fill="#e8eef7" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">npm run dev</text>
+  <text x="48" y="200" fill="#8aa0b8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">createAgent({ model, tools, memory: true })</text>
+  <text x="48" y="230" fill="#8aa0b8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">await agent.invoke("Check ticket T-1")</text>
+  <text x="48" y="280" fill="#3dd6c6" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16">’ Ticket T-1 is open</text>
+  <text x="48" y="320" fill="#c9d7e8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">TypeScript agents you can ship this week</text>
+  <rect x="48" y="350" width="280" height="8" rx="4" fill="url(#accent)" opacity="0.9"/>
+</svg>
