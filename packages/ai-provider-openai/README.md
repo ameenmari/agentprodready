@@ -1,15 +1,84 @@
-# @agentprodready/ai-provider-openai
+# `@agentprodready/ai-provider-openai`
 
-Additive Blueprint 08 provider adapter for OpenAI.
+**OpenAI adapter** for AgentProdReady. Implements `@agentprodready/ai-provider` contracts and keeps the OpenAI SDK encapsulated in this package.
 
-- Implements `AiProviderAdapter` with id `openai-ai` (chat)
-- Implements `AiEmbeddingAdapter` with id `openai-embedding` (parallel embedding surface; chat path unchanged)
-- Encapsulates the OpenAI SDK (`openai@7.4.0` exact pin)
-- Default chat model: `gpt-5` via `OPENAI_MODEL`
-- Default embedding model: `text-embedding-3-small` (1536 dimensions)
-- SDK retries disabled (`maxRetries: 0`); Runtime owns retry/timeout/cancellation
-- Chat streaming is supported (normalized `AiProviderAdapter.stream`; OpenAI SDK stream types are not exported)
-- Native tool calling (v0.5 / product v0.9): `AiToolDefinition[]` → OpenAI tools; vendor tool_calls → `NormalizedToolCall[]`; continuation messages → assistant `tool_calls` + `role=tool`; streamed fragments assembled before emission
-- SDK retries disabled (`maxRetries: 0`); Runtime owns retry/timeout/cancellation
+| | |
+|---|---|
+| **Status** | Production adapter published (`1.0.x`) |
+| **Install** | `npm install @agentprodready/ai-provider-openai` |
+| **Peer / dep** | Uses `openai@7.4.0` (exact pin) |
+| **License** | MIT |
 
-Higher layers must depend only on `@agentprodready/ai-provider` contracts. Hosts must not construct OpenAI tool messages directly. See [Tool Calling guide](../../docs/guides/tools.md) and [Streaming guide](../../docs/guides/streaming.md).
+---
+
+## Installation
+
+```bash
+npm install @agentprodready/ai-provider @agentprodready/ai-provider-openai
+```
+
+### Environment
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `OPENAI_API_KEY` | Required for live calls | — |
+| `OPENAI_MODEL` | Chat model | platform default (see host config) |
+
+---
+
+## Features
+
+| Feature | Description |
+|---|---|
+| Chat adapter | id `openai-ai` → `AiProviderAdapter` |
+| Embedding adapter | id `openai-embedding` → `AiEmbeddingAdapter` |
+| Streaming | Normalized stream events (SDK stream types not exported) |
+| Tool calling | OpenAI tools ↔ `NormalizedToolCall[]` |
+| No SDK retries | `maxRetries: 0` — Runtime owns retry/timeout/cancel |
+| Encapsulation | Higher layers never import `openai` package types |
+
+---
+
+## Usage
+
+Wire through Composition / Capability Resolution (recommended). Conceptual:
+
+```ts
+import type { AiProviderAdapter } from '@agentprodready/ai-provider';
+// Concrete factory is provided by this package — resolve via Composition in hosts
+
+declare const openaiChat: AiProviderAdapter;
+
+const result = await openaiChat.generate({
+  messages: [
+    { role: 'system', content: 'Be concise.' },
+    { role: 'user', content: 'What is AgentProdReady?' },
+  ],
+});
+```
+
+**Do not** build raw OpenAI `tool` / `tool_calls` messages in your app. Use normalized AI Provider types and continuation helpers from `@agentprodready/ai-provider`.
+
+---
+
+## Related packages
+
+| Package | Role |
+|---|---|
+| [`@agentprodready/ai-provider`](https://www.npmjs.com/package/@agentprodready/ai-provider) | Contracts you should import in app code |
+| [`@agentprodready/runtime`](https://www.npmjs.com/package/@agentprodready/runtime) | Operational policy |
+| [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) | Agent lifecycle |
+
+---
+
+## Documentation
+
+- [AI providers](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/ai-providers.md)
+- [Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/tools.md)
+- [Streaming](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/streaming.md)
+
+---
+
+## License
+
+MIT © 2026 ameenmari
