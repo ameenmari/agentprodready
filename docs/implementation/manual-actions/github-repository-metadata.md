@@ -10,6 +10,15 @@ Apply these settings in the GitHub UI if `gh` / tokens are unavailable:
 | Website / Homepage | `https://github.com/ameenmari/agentprodready#readme` |
 | Topics | `ai-agents`, `agent-framework`, `typescript`, `nodejs`, `llm`, `openai`, `ai`, `developer-tools` |
 
+### GitHub Releases (manual — `gh` unavailable on some machines)
+
+Create releases for tags already pushed:
+
+- `v1.3.1` — Developer Adoption Sprint  
+- `v1.4.0` — Anthropic provider  
+
+**Releases → Draft a new release → Choose tag** and paste notes from CHANGELOG.
+
 ### Discussions (manual)
 
 1. **Settings → General → Features → Discussions** → enable
