@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/runtime",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "Operational execution runtime for AgentProdReady — run, cancel, checkpoint, recover, and stream agent work.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,17 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "runtime",
+    "agent-runtime",
+    "streaming",
+    "checkpoints",
+    "production-ai",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "scripts": {
     "build": "tsc -b",

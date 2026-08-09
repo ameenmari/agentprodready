@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/multi-agent",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "Multi-agent coordination contracts for AgentProdReady — compose multiple agent identities under platform ownership rules.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,16 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "multi-agent",
+    "ai-agent",
+    "agents",
+    "agentic-ai",
+    "llm",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "dependencies": {
     "@agentprodready/agent-framework": "workspace:*",

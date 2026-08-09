@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/ai-provider-openai",
-  "version": "1.0.3",
+  "version": "1.0.4",
+  "description": "OpenAI and OpenAI-compatible AI provider adapters for AgentProdReady (chat, tools, streaming, embeddings).",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,18 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "openai",
+    "openai-compatible",
+    "ai-provider",
+    "llm",
+    "embeddings",
+    "streaming",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "dependencies": {
     "@agentprodready/ai-provider": "workspace:*",

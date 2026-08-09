@@ -2,6 +2,14 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.5.2] — Search metadata (npm + GitHub topics)
+
+Discovery hygiene (no architecture change):
+
+- Intent-oriented `keywords` / `description` on entry + core packages (`ai-agent`, `llm-agent`, `agentic-ai`, `multi-agent`, `rag`, `production-ai`, …) without stuffing every package
+- GitHub topics checklist updated in `docs/implementation/manual-actions/github-repository-metadata.md`
+- `@agentprodready/agent-framework@1.5.2` and selective peer/core patches for registry refresh
+
 ## [1.5.1] — Community Gravity (package surface)
 
 Adoption / discoverability cycle (architecture ownership unchanged):

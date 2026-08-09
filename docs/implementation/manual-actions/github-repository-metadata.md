@@ -8,7 +8,30 @@ Apply these settings in the GitHub UI if `gh` / tokens are unavailable:
 |---|---|
 | Description | `TypeScript agents you can ship this week — with a clean path to production controls when you need them.` |
 | Website / Homepage | `https://github.com/ameenmari/agentprodready#readme` |
-| Topics | `ai-agents`, `agent-framework`, `typescript`, `nodejs`, `llm`, `openai`, `ai`, `developer-tools` |
+| Topics | See list below (intent-oriented, no stuffing) |
+
+### Topics (recommended)
+
+Discovery-oriented topics that match what AgentProdReady actually is:
+
+| Topic | Why |
+|---|---|
+| `ai-agents` | Primary product category |
+| `ai-agent` | Common search intent |
+| `agentic-ai` | Broader agentic tooling searches |
+| `llm-agent` | LLM + agent intent |
+| `agent-framework` | Framework positioning |
+| `multi-agent` | Multi-agent package / platform capability |
+| `typescript` | Language |
+| `nodejs` | Runtime |
+| `llm` | Model layer |
+| `openai` | First-class provider |
+| `anthropic` | First-class provider |
+| `rag` | Knowledge / memory / vector path |
+| `production-ai` | Production-controls positioning |
+| `developer-tools` | GitHub classification |
+
+Do **not** add unrelated trendy topics (e.g. random frameworks you do not ship).
 
 ### GitHub Releases (manual — `gh` unavailable on some machines)
 
@@ -16,6 +39,8 @@ Create releases for tags already pushed:
 
 - `v1.3.1` — Developer Adoption Sprint  
 - `v1.4.0` — Anthropic provider  
+- `v1.5.0` — Simple diagnostics  
+- `v1.5.1` — Community Gravity package surface  
 
 **Releases → Draft a new release → Choose tag** and paste notes from CHANGELOG.
 
@@ -38,13 +63,23 @@ gh repo edit ameenmari/agentprodready \
   --description "TypeScript agents you can ship this week — with a clean path to production controls when you need them." \
   --homepage "https://github.com/ameenmari/agentprodready#readme" \
   --add-topic ai-agents \
+  --add-topic ai-agent \
+  --add-topic agentic-ai \
+  --add-topic llm-agent \
   --add-topic agent-framework \
+  --add-topic multi-agent \
   --add-topic typescript \
   --add-topic nodejs \
   --add-topic llm \
   --add-topic openai \
-  --add-topic ai \
+  --add-topic anthropic \
+  --add-topic rag \
+  --add-topic production-ai \
   --add-topic developer-tools
 
 gh repo edit ameenmari/agentprodready --enable-discussions
 ```
+
+### npm search metadata
+
+Package `description` + `keywords` in `package.json` power npm search. Keep keywords **role-specific** (see [package README standard](../../community/package-readme-standard.md#search-metadata)). New keywords only appear on the registry after the next package publish.

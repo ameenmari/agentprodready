@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/knowledge",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "Knowledge and RAG-oriented retrieval contracts for AgentProdReady hosts (distinct from execution-derived Memory).",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,16 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "rag",
+    "knowledge",
+    "retrieval",
+    "llm",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "dependencies": {
     "@agentprodready/ai-provider": "workspace:*",

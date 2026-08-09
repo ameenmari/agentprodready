@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/tool-framework",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "Tool calling framework for AgentProdReady — contracts, validation, and invocation with fail-closed authorization boundaries.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,16 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "tools",
+    "tool-calling",
+    "function-calling",
+    "llm",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "dependencies": {
     "@agentprodready/ai-provider": "workspace:*",

@@ -1,6 +1,7 @@
 {
   "name": "@agentprodready/ai-provider",
-  "version": "1.0.2",
+  "version": "1.0.3",
+  "description": "Provider-neutral AI contracts for AgentProdReady — execute, stream, tools, and embeddings without vendor lock-in at the boundary.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +18,17 @@
     "!dist/**/*.spec.d.ts",
     "!dist/**/*.map",
     "!dist/**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "ai-provider",
+    "llm",
+    "streaming",
+    "tool-calling",
+    "embeddings",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
   ],
   "dependencies": {
     "@agentprodready/foundation": "workspace:*",

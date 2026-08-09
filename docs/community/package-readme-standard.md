@@ -30,3 +30,16 @@ Every published package under `packages/` must pass `pnpm verify-package-readmes
 ## Visuals
 
 Root README may embed `docs/community/assets/demo.svg` (always) and `demo.gif` (after recording). Package READMEs stay text-first for npm.
+
+## Search metadata
+
+`package.json` `description` and `keywords` feed npm search. Prefer a short honest description plus a **small, role-specific** keyword set.
+
+| Package role | Intent keywords (examples) |
+|---|---|
+| Entry (`agent-framework`, scaffold) | `ai-agent`, `llm-agent`, `agentic-ai`, `agent-framework`, `production-ai` |
+| Providers | vendor name + `llm` + `ai-provider` |
+| Memory / knowledge / vectors | `rag`, `memory` / `knowledge`, `vector-search` |
+| Multi-agent | `multi-agent`, `ai-agent` |
+
+Avoid dumping every trendy AI term on every package. GitHub repo topics: [manual-actions/github-repository-metadata.md](../implementation/manual-actions/github-repository-metadata.md).
