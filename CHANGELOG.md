@@ -2,6 +2,15 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.7.0] — Team + workflow orchestration
+
+Simple multi-agent and workflow orchestration without breaking `createAgent`:
+
+- `@agentprodready/multi-agent@1.1.0` — `createTeam`, `createWorkflow`, `createOrchestrator`, `handoff`, strategies (`sequential` / `parallel` / `supervisor` / `hierarchical` / `consensus` / `debate-review` / `dynamic-assignment`), checkpoints, HITL approval gates, effect ledger
+- `@agentprodready/agent-framework@1.7.0` — re-exports the orchestration entrance APIs
+- Examples: `examples/multi-agent-*`, `durable-workflow`, `human-approval`
+- Team/workflow decide **what**; agent `invoke()` + Runtime still own **how**
+
 ## [1.6.1] — Evaluator clarity (docs / npm surface)
 
 Make the five “I can’t tell what this is” questions answerable from GitHub + npm:

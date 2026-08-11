@@ -23,6 +23,7 @@
     { "path": "../tool-framework" },
     { "path": "../knowledge" },
     { "path": "../memory" },
+    { "path": "../multi-agent" },
     { "path": "../context-assembly" },
     { "path": "../prompt-builder" },
     { "path": "../evaluation" },

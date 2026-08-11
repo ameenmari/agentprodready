@@ -4,13 +4,13 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `gemini()` · `tool()` · `inMemory()` · `fileMemory()` · `postgresMemory()` · `invoke()` · `stream()` · `replayStream()` · `approve()` · `reject()` · `resume()` · `close()`
+**Simple Agent API:** `createAgent` · `createTeam` · `createWorkflow` · `createOrchestrator` · `handoff` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `gemini()` · `tool()` · `inMemory()` · `fileMemory()` · `postgresMemory()` · `invoke()` · `stream()` · `replayStream()` · `approve()` · `reject()` · `resume()` · `close()`
 
-**What this package is:** an **agent + Runtime execution** entrance — **not** a graph DSL. Full evaluator FAQ: [What is AgentProdReady?](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/what-is-agentprodready.md).
+**What this package is:** an **agent + team + Runtime execution** entrance — **not** a graph DSL. Full evaluator FAQ: [What is AgentProdReady?](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/what-is-agentprodready.md).
 
 | Question | Short answer |
 |---|---|
-| Core abstraction | `createAgent` agent loop over Runtime — not LangGraph-style graphs |
+| Core abstraction | `createAgent` / `createTeam` over Runtime — not LangGraph-style graphs |
 | Durable state | Runtime checkpoints; `fileMemory` / `postgresMemory`; HITL park/resume; stream replay (`memory: true` stays ephemeral) |
 | Retries / idempotency / HITL | Runtime owns retries; tool idempotency + ledger; `approve` / `reject` / `resume` |
 | Provider routing | Simple helpers pick one model; hosts use Capability Resolution failover |

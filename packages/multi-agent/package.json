@@ -1,7 +1,7 @@
 {
   "name": "@agentprodready/multi-agent",
-  "version": "1.0.2",
-  "description": "Multi-agent coordination contracts for AgentProdReady — compose multiple agent identities under platform ownership rules.",
+  "version": "1.1.0",
+  "description": "Multi-agent coordination + createTeam orchestration for AgentProdReady.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,7 +30,6 @@
     "nodejs"
   ],
   "dependencies": {
-    "@agentprodready/agent-framework": "workspace:*",
     "@agentprodready/audit": "workspace:*",
     "@agentprodready/capability-resolution": "workspace:*",
     "@agentprodready/evaluation": "workspace:*",

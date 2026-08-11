@@ -8,7 +8,8 @@ Production-oriented architecture with a young ecosystem.
 
 | Package | Version | Notes |
 |---|---|---|
-| `@agentprodready/agent-framework` | **1.6.1** | Simple Agent API + durability + evaluator FAQ on npm README |
+| `@agentprodready/agent-framework` | **1.7.0** | Simple Agent + Team API (`createAgent`, `createTeam`) |
+| `@agentprodready/multi-agent` | **1.1.0** | Coordination contracts + `createTeam` strategies |
 | `@agentprodready/ai-provider-gemini` | **1.0.1** | Gemini adapter (`gemini-ai`) |
 | `@agentprodready/ai-provider-anthropic` | **1.0.2** | Anthropic Messages adapter (`anthropic-ai`) |
 | `create-agentprodready` | see package | Scaffold — prefer `^1.6.0` for framework |

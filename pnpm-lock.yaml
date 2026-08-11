@@ -143,6 +143,9 @@ importers:
       '@agentprodready/memory':
         specifier: workspace:*
         version: link:../memory
+      '@agentprodready/multi-agent':
+        specifier: workspace:*
+        version: link:../multi-agent
       '@agentprodready/persistence-postgres':
         specifier: ^1.0.0
         version: 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -474,9 +477,6 @@ importers:
 
   packages/multi-agent:
     dependencies:
-      '@agentprodready/agent-framework':
-        specifier: workspace:*
-        version: link:../agent-framework
       '@agentprodready/audit':
         specifier: workspace:*
         version: link:../audit

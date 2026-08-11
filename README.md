@@ -87,6 +87,7 @@ Also: `stream()` / stream replay, `reference()` (zero API key), `openaiCompatibl
 ## Why AgentProdReady?
 
 - **Simple Agent API** — `createAgent`, `invoke`, `stream`, `close`
+- **Simple Team / Workflow / Orchestrator** — `createTeam`, `createWorkflow`, `createOrchestrator`, `handoff`
 - **Tools with guardrails** — `tool()` with conservative defaults; durable HITL approve/resume when required
 - **Streaming** — embedded library streams + replay (`resumeFrom` / `replayStream`)
 - **Memory** — ephemeral `memory: true` / `inMemory()` for the weekend path; `fileMemory()` / `postgresMemory()` when you need durability
@@ -132,6 +133,33 @@ await agent.close();
 ```
 
 No API key, database, or Docker. Full walkthrough: [Getting Started](docs/guides/getting-started.md).
+
+### Multi-agent team
+
+```js
+import { createAgent, createTeam, reference } from "@agentprodready/agent-framework";
+
+const researcher = createAgent({
+  name: "researcher",
+  model: reference(),
+  instructions: "Research the topic.",
+});
+const analyst = createAgent({
+  name: "analyst",
+  model: reference(),
+  instructions: "Analyze the research.",
+});
+
+const team = createTeam({
+  agents: { researcher, analyst },
+  strategy: "sequential",
+});
+
+const result = await team.run("Research the TypeScript AI agent ecosystem.");
+console.log(result.text);
+```
+
+Examples: `examples/multi-agent-sequential`, `multi-agent-parallel`, `multi-agent-supervisor`.
 
 ### OpenAI
 

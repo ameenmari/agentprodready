@@ -1,59 +1,25 @@
 # `@agentprodready/multi-agent`
 
-**Multi-agent coordination contracts — compose multiple agents under platform ownership rules.**
+Multi-agent **coordination contracts** plus the Simple Team API (`createTeam`).
 
 | | |
-|---|---|
-| **Status** | Production contracts published |
+| --- | --- |
 | **Install** | `npm install @agentprodready/multi-agent` |
-| **Module** | ESM · Node.js `>=22 <25` |
-| **License** | MIT |
-| **Repository** | [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready) |
-
----
-
-## When to use
-
-You coordinate more than one agent identity in a host.
-
-**Prefer not to start here** if a single `createAgent` instance solves your problem.
-
----
-
-## Install
-
-```bash
-npm install @agentprodready/multi-agent
-```
-
----
-
-## Sample
+| **Entrance** | Prefer `createTeam` via `@agentprodready/agent-framework` |
+| **Strategies (v1.1)** | `sequential`, `parallel`, `supervisor` (+ `handoff`) |
 
 ```ts
-import type { MultiAgentCoordinator } from '@agentprodready/multi-agent';
+import { createAgent, createTeam, reference } from '@agentprodready/agent-framework';
 
-declare const coordinator: MultiAgentCoordinator;
-console.log(coordinator);
+const researcher = createAgent({ name: 'researcher', model: reference(), instructions: 'Research' });
+const analyst = createAgent({ name: 'analyst', model: reference(), instructions: 'Analyze' });
+
+const team = createTeam({
+  agents: { researcher, analyst },
+  strategy: 'sequential',
+});
+
+const result = await team.run('Topic');
 ```
 
----
-
-## Ownership
-
-| Owns | Does **not** own |
-|---|---|
-| Multi-agent coordination contracts | Single-agent Simple API; Runtime internals |
-
----
-
-## Documentation
-
-- [Blueprint 18](https://github.com/ameenmari/agentprodready/blob/main/docs/blueprints/18-multi-agent-orchestration.md)
-- [Repository README](https://github.com/ameenmari/agentprodready#readme)
-- [Package README standard](https://github.com/ameenmari/agentprodready/blob/main/docs/community/package-readme-standard.md)
-
-
-## License
-
-MIT © 2026 ameenmari
+Team decides **what** runs; each agent’s `invoke()` still uses Runtime for **how**.

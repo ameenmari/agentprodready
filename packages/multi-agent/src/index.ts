@@ -1,5 +1,7 @@
-﻿import type {AgentLifecycleState} from '@agentprodready/agent-framework';
-import type {AuthorityState} from '@agentprodready/security';
+﻿import type {AuthorityState} from '@agentprodready/security';
+
+/** Mirrors agent-framework lifecycle states without a package dependency cycle. */
+export type AgentLifecycleState='draft'|'validated'|'registered'|'approved'|'active'|'deprecated'|'deactivated'|'suspended'|'quarantined'|'retired'|'rejected'|'incompatible';
 
 export interface CollaborationScope{readonly tenantId:string;readonly workspaceId?:string;readonly projectId?:string;}
 export type CollaborationRole='coordinator'|'planner'|'specialist'|'executor'|'reviewer'|'evaluator'|'approver'|'observer';
@@ -53,4 +55,61 @@ function copy<T>(value:T):T{return JSON.parse(JSON.stringify(value)) as T;}
 export function freeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!Object.isFrozen(value)){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;}
 
 export * from './reference.js';
+export {
+  createTeam,
+  createWorkflow,
+  createOrchestrator,
+  handoff,
+  parseHandoff,
+  resolveStrategy,
+  ParallelStrategy,
+  SequentialStrategy,
+  SupervisorStrategy,
+  HierarchicalStrategy,
+  ConsensusStrategy,
+  DebateReviewStrategy,
+  DynamicAssignmentStrategy,
+  TeamError,
+  InMemoryCheckpointStore,
+  InMemoryEffectLedger,
+  runEffect,
+  type AgentTask,
+  type CheckpointStatus,
+  type CheckpointStore,
+  type CreateOrchestratorOptions,
+  type CreateWorkflowOptions,
+  type EffectLedger,
+  type EffectRecord,
+  type EffectStatus,
+  type HandoffRequest,
+  type OrchestrationCheckpoint,
+  type OrchestrationContext,
+  type OrchestrationResult,
+  type OrchestrationStrategy,
+  type Orchestrator,
+  type OrchestratorRun,
+  type OrchestratorRunStatus,
+  type OrchestratorRunType,
+  type OrchestratorTarget,
+  type SupervisorDecideContext,
+  type SupervisorDecision,
+  type Team,
+  type TeamConfig,
+  type TeamErrorCode,
+  type TeamEvent,
+  type TeamFailurePolicy,
+  type TeamMember,
+  type TeamMemberResult,
+  type TeamResult,
+  type TeamRunStatus,
+  type TeamState,
+  type TeamStrategyName,
+  type Workflow,
+  type WorkflowResult,
+  type WorkflowRunnable,
+  type WorkflowRunStatus,
+  type WorkflowSimpleEvent,
+  type WorkflowStep,
+  type WorkflowStepApproval,
+} from './simple/index.js';
 

@@ -1,7 +1,7 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.6.1",
-  "description": "TypeScript agent + Runtime entrance (createAgent) — durable memory/HITL/stream replay when you need them. Production-oriented architecture, young ecosystem — not a graph DSL.",
+  "version": "1.7.0",
+  "description": "TypeScript agent orchestration entrance (createAgent, createTeam) — durable memory/HITL/stream replay when you need them. Production-oriented architecture, young ecosystem — not a graph DSL.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -52,6 +52,7 @@
     "@agentprodready/foundation": "workspace:*",
     "@agentprodready/knowledge": "workspace:*",
     "@agentprodready/memory": "workspace:*",
+    "@agentprodready/multi-agent": "workspace:*",
     "@agentprodready/planning": "workspace:*",
     "@agentprodready/plugin-framework": "workspace:*",
     "@agentprodready/prompt-builder": "workspace:*",
