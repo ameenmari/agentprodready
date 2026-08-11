@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/ai-provider-gemini",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Gemini API adapter for AgentProdReady AI Provider",
   "type": "module",
   "main": "dist/index.js",

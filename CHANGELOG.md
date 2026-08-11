@@ -10,7 +10,7 @@ Durable Simple path without redefining `memory: true` or claiming impossible exa
 - **Durable HITL** — `agent.approve(approvalId)`, `agent.reject(approvalId)`, `agent.resume(executionId)`; `AGENT_TOOL_APPROVAL_REQUIRED` includes `approvalId` + `executionId` (Amendment D on embedded path)
 - **Stream replay** — `agent.stream(input, { resumeFrom })`, `agent.replayStream(executionId, afterSequence?)` via durable stream event log
 - **Tool idempotency ledger** — exactly-once-**capable** for `idempotency: "idempotent"` tools with durable ledger; non-idempotent external effects remain not exactly-once
-- **Gemini** — `@agentprodready/ai-provider-gemini@1.0.0`, Simple `gemini(modelId)`, `GEMINI_API_KEY`
+- **Gemini** — `@agentprodready/ai-provider-gemini@1.0.1`, Simple `gemini(modelId)`, `GEMINI_API_KEY`
 - Guides: [durable-memory](docs/guides/durable-memory.md), [hitl-approval](docs/guides/hitl-approval.md), [stream-replay](docs/guides/stream-replay.md), [gemini](docs/guides/gemini.md)
 - Product: [v1.6 Production Durability](docs/product/agentprodready-v1.6-production-durability.md)
 - `@agentprodready/agent-framework@1.6.0`
