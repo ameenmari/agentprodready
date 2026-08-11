@@ -1,12 +1,14 @@
 # `@agentprodready/multi-agent`
 
-Multi-agent **coordination contracts** plus the Simple Team API (`createTeam`).
+Multi-agent **coordination contracts** plus Simple orchestration APIs: `createTeam`, `createWorkflow`, `createOrchestrator`.
 
 | | |
 | --- | --- |
 | **Install** | `npm install @agentprodready/multi-agent` |
-| **Entrance** | Prefer `createTeam` via `@agentprodready/agent-framework` |
-| **Strategies (v1.1)** | `sequential`, `parallel`, `supervisor` (+ `handoff`) |
+| **Entrance** | Prefer re-exports from `@agentprodready/agent-framework` |
+| **Package version** | `1.1.0` |
+
+## Team
 
 ```ts
 import { createAgent, createTeam, reference } from '@agentprodready/agent-framework';
@@ -16,10 +18,14 @@ const analyst = createAgent({ name: 'analyst', model: reference(), instructions:
 
 const team = createTeam({
   agents: { researcher, analyst },
-  strategy: 'sequential',
+  strategy: 'sequential', // parallel | supervisor | hierarchical | consensus | debate-review | dynamic-assignment
 });
 
 const result = await team.run('Topic');
 ```
 
-Team decides **what** runs; each agent’s `invoke()` still uses Runtime for **how**.
+## Ownership
+
+Team / workflow decide **what** runs. Each agent’s `invoke()` still uses Runtime for **how** (retries, timeouts, checkpoints).
+
+Also exports: `handoff()`, `createWorkflow()`, `createOrchestrator()`, checkpoint store, and `runEffect()` for idempotent side effects.
