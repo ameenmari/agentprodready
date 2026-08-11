@@ -4,9 +4,9 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `tool()` · `inMemory()` · `invoke()` · `stream()` · `close()`
+**Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `gemini()` · `tool()` · `inMemory()` · `fileMemory()` · `postgresMemory()` · `invoke()` · `stream()` · `replayStream()` · `approve()` · `reject()` · `resume()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md)
+Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [Gemini](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/gemini.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) · [Durable Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/durable-memory.md) · [HITL Approval](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/hitl-approval.md) · [Stream Replay](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/stream-replay.md)
 
 Star / contribute: [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready)
 
@@ -99,6 +99,23 @@ const agent = createAgent({
 
 Set `ANTHROPIC_API_KEY`. Messages API — not `openaiCompatible()`.
 
+### Gemini
+
+```bash
+npm install @agentprodready/agent-framework @agentprodready/ai-provider-gemini
+```
+
+```js
+import { createAgent, gemini } from "@agentprodready/agent-framework";
+
+const agent = createAgent({
+  model: gemini("gemini-2.0-flash"),
+  instructions: "You are a helpful assistant.",
+});
+```
+
+Set `GEMINI_API_KEY`. Native Generative Language API — not `openaiCompatible()`.
+
 ---
 
 ## Tools
@@ -132,23 +149,34 @@ Defaults are conservative (`mutating` / `non-idempotent`). See the Simple Tools 
 
 ---
 
-## Memory (ephemeral)
+## Memory
 
-`memory: true` ≡ `inMemory()` — process-local, instance-scoped, ephemeral (not durable Postgres).
+**Ephemeral:** `memory: true` ≡ `inMemory()` — process-local, cleared on exit.  
+**Durable (v1.6):** `fileMemory({ directory })`, `postgresMemory({ connectionString })` — survives restart.
 
-The reference provider is deterministic and does **not** perform natural-language reasoning over recalled memory. Use `openai()` for NL recall demos. See the Simple Memory guide.
+The reference provider is deterministic and does **not** perform natural-language reasoning over recalled memory. Use `openai()` for NL recall demos. See [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) and [Durable Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/durable-memory.md).
 
 ---
 
-## Streaming
+## Streaming & replay
 
 ```js
-for await (const event of agent.stream("Hello")) {
+for await (const event of agent.stream("Hello", { resumeFrom: 0 })) {
   if (event.type === "text") process.stdout.write(event.text);
+}
+
+for await (const event of agent.replayStream(executionId)) {
+  // log-only replay
 }
 ```
 
-Embedded library stream — not HTTP SSE.
+Embedded library stream — not HTTP SSE. See [Stream Replay](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/stream-replay.md).
+
+---
+
+## HITL
+
+`approve(approvalId)`, `reject(approvalId)`, `resume(executionId)` for approval-required tools. See [HITL Approval](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/hitl-approval.md).
 
 ---
 

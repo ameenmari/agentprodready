@@ -1,14 +1,18 @@
 import type { ExecutionContext } from '@agentprodready/foundation';
 import {
+  FileBackedMemoryProvider,
   InMemoryMemoryDiagnostics,
   InMemoryMemoryEvents,
   InMemoryMemoryProvider,
   MemoryEngine,
   NoopMemoryAiPort,
   NoopMemoryTelemetry,
+  PersistenceBackedMemoryProvider,
   WeightedMemoryRanking,
   type MemoryAuthorization,
   type MemoryRetrievalResult,
+  type MemorySearchProvider,
+  type MemoryStorageProvider,
 } from '@agentprodready/memory';
 import { SimpleAgentError } from './errors.js';
 import {
@@ -17,11 +21,24 @@ import {
   EMBEDDED_WORKSPACE,
 } from './embedded-security.js';
 
-export interface SimpleMemory {
-  readonly __simpleMemory: true;
-  readonly kind: 'in-memory';
-  readonly namespace: string;
-}
+export type SimpleMemory =
+  | {
+      readonly __simpleMemory: true;
+      readonly kind: 'in-memory';
+      readonly namespace: string;
+    }
+  | {
+      readonly __simpleMemory: true;
+      readonly kind: 'file';
+      readonly namespace: string;
+      readonly directory: string;
+    }
+  | {
+      readonly __simpleMemory: true;
+      readonly kind: 'postgres';
+      readonly namespace: string;
+      readonly connectionString: string;
+    };
 
 export function inMemory(options?: { readonly namespace?: string }): SimpleMemory {
   const namespace = options?.namespace?.trim() || 'default';
@@ -35,37 +52,153 @@ export function inMemory(options?: { readonly namespace?: string }): SimpleMemor
   });
 }
 
-export function isSimpleMemory(value: unknown): value is SimpleMemory {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    (value as { __simpleMemory?: unknown }).__simpleMemory === true &&
-    typeof (value as { namespace?: unknown }).namespace === 'string'
-  );
+export function fileMemory(options: {
+  readonly directory: string;
+  readonly namespace?: string;
+}): SimpleMemory {
+  const record = options as { readonly directory?: unknown; readonly namespace?: unknown };
+  const directory = typeof record.directory === 'string' ? record.directory.trim() : '';
+  if (directory === '') {
+    throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'fileMemory requires a non-empty directory path.');
+  }
+  const namespace = typeof record.namespace === 'string' ? record.namespace.trim() || 'default' : 'default';
+  if (namespace === '') {
+    throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'fileMemory namespace must be non-empty when provided.');
+  }
+  return Object.freeze({
+    __simpleMemory: true as const,
+    kind: 'file' as const,
+    namespace,
+    directory,
+  });
 }
 
-/** Process-local MemoryEngine session scoped to one createAgent instance. */
+export function postgresMemory(options: {
+  readonly connectionString: string;
+  readonly namespace?: string;
+}): SimpleMemory {
+  const record = options as { readonly connectionString?: unknown; readonly namespace?: unknown };
+  const connectionString =
+    typeof record.connectionString === 'string' ? record.connectionString.trim() : '';
+  if (connectionString === '') {
+    throw new SimpleAgentError(
+      'AGENT_INVALID_CONFIG',
+      'postgresMemory requires a non-empty connectionString.',
+    );
+  }
+  const namespace = typeof record.namespace === 'string' ? record.namespace.trim() || 'default' : 'default';
+  if (namespace === '') {
+    throw new SimpleAgentError(
+      'AGENT_INVALID_CONFIG',
+      'postgresMemory namespace must be non-empty when provided.',
+    );
+  }
+  return Object.freeze({
+    __simpleMemory: true as const,
+    kind: 'postgres' as const,
+    namespace,
+    connectionString,
+  });
+}
+
+export function isSimpleMemory(value: unknown): value is SimpleMemory {
+  if (typeof value !== 'object' || value === null) return false;
+  const record = value as { __simpleMemory?: unknown; kind?: unknown; namespace?: unknown };
+  if (record.__simpleMemory !== true || typeof record.namespace !== 'string') return false;
+  if (record.kind === 'in-memory') return true;
+  if (record.kind === 'file') {
+    return typeof (value as { directory?: unknown }).directory === 'string';
+  }
+  if (record.kind === 'postgres') {
+    return typeof (value as { connectionString?: unknown }).connectionString === 'string';
+  }
+  return false;
+}
+
+/** MemoryEngine session scoped to one createAgent instance (ephemeral or durable). */
 export class EmbeddedMemorySession {
   readonly #engine: MemoryEngine;
-  readonly #provider: InMemoryMemoryProvider;
   readonly #agentId: string;
   readonly #namespace: string;
+  readonly #durable: boolean;
+  readonly #disposeProvider: (() => Promise<void>) | undefined;
   #closed = false;
   #sequence = 0;
 
-  public constructor(agentId: string, memory: SimpleMemory) {
+  private constructor(
+    agentId: string,
+    memory: SimpleMemory,
+    storage: MemoryStorageProvider & MemorySearchProvider,
+    disposeProvider?: () => Promise<void>,
+  ) {
     this.#agentId = agentId;
     this.#namespace = memory.namespace;
-    this.#provider = new InMemoryMemoryProvider();
+    this.#durable = memory.kind !== 'in-memory';
+    this.#disposeProvider = disposeProvider;
     this.#engine = new MemoryEngine(
-      this.#provider,
-      this.#provider,
+      storage,
+      storage,
       new WeightedMemoryRanking(),
       new NoopMemoryAiPort(),
       new InMemoryMemoryDiagnostics(),
       new InMemoryMemoryEvents(),
       new NoopMemoryTelemetry(),
     );
+  }
+
+  public static async create(agentId: string, memory: SimpleMemory): Promise<EmbeddedMemorySession> {
+    if (memory.kind === 'in-memory') {
+      return new EmbeddedMemorySession(agentId, memory, new InMemoryMemoryProvider());
+    }
+    if (memory.kind === 'file') {
+      const pathMod = await import('node:path');
+      const directory = pathMod.default.join(memory.directory, memory.namespace);
+      return new EmbeddedMemorySession(agentId, memory, new FileBackedMemoryProvider(directory));
+    }
+    // postgres
+    try {
+      const postgres = await import('@agentprodready/persistence-postgres');
+      const provider = new postgres.PostgresPersistenceProvider(
+        Object.freeze({
+          connectionString: memory.connectionString,
+          ssl: false,
+          poolMin: 0,
+          poolMax: 4,
+        }),
+      );
+      await provider.assertReady();
+      const storage = new PersistenceBackedMemoryProvider(provider);
+      return new EmbeddedMemorySession(agentId, memory, storage, async () => {
+        await provider.close();
+      });
+    } catch (error) {
+      if (error instanceof SimpleAgentError) throw error;
+      if (
+        error instanceof Error &&
+        /Cannot find module|Failed to resolve|Cannot find package/u.test(error.message)
+      ) {
+        throw new SimpleAgentError(
+          'AGENT_INVALID_CONFIG',
+          'postgresMemory requires @agentprodready/persistence-postgres. Install it with:\n npm install @agentprodready/persistence-postgres',
+          undefined,
+          { cause: error },
+        );
+      }
+      throw new SimpleAgentError(
+        'AGENT_INIT_FAILED',
+        'postgresMemory failed to initialize Persistence. Ensure migrations are applied and the connection string is valid.',
+        undefined,
+        { cause: error },
+      );
+    }
+  }
+
+  public get durable(): boolean {
+    return this.#durable;
+  }
+
+  public get namespace(): string {
+    return this.#namespace;
   }
 
   public async retrieveForPrompt(params: {
@@ -142,10 +275,13 @@ export class EmbeddedMemorySession {
       classification: Object.freeze({
         category: 'episodic' as const,
         importance: 'normal' as const,
-        lifetime: 'session' as const,
+        lifetime: this.#durable ? ('persistent' as const) : ('session' as const),
         visibility: 'user' as const,
       }),
-      retention: Object.freeze({ policyId: 'embedded-ephemeral', category: 'session-only' as const }),
+      retention: Object.freeze({
+        policyId: this.#durable ? 'embedded-durable' : 'embedded-ephemeral',
+        category: this.#durable ? ('policy-based' as const) : ('session-only' as const),
+      }),
       version: '1',
       occurredAt: new Date().toISOString(),
       semantics: Object.freeze({ sideEffect: 'state-producing' as const, idempotency: 'idempotent' as const }),
@@ -166,6 +302,7 @@ export class EmbeddedMemorySession {
 
   public async dispose(): Promise<void> {
     this.#closed = true;
+    await this.#disposeProvider?.();
   }
 
   #ensureOpen(): void {
@@ -197,7 +334,7 @@ export class EmbeddedMemorySession {
   }
 }
 
-export function formatMemoryForPrompt(result: MemoryRetrievalResult): string {
+export function formatMemoryForPrompt(result: MemoryRetrievalResult, durable = false): string {
   if (result.memories.length === 0) return '';
   const lines = result.memories.map((item, index) => {
     const content = item.content;
@@ -210,5 +347,8 @@ export function formatMemoryForPrompt(result: MemoryRetrievalResult): string {
     }
     return `${String(index + 1)}. ${JSON.stringify(content)}`;
   });
-  return ['Ephemeral agent memory (process-local, not durable):', ...lines].join('\n');
+  const header = durable
+    ? 'Durable agent memory (survives process restart):'
+    : 'Ephemeral agent memory (process-local, not durable):';
+  return [header, ...lines].join('\n');
 }

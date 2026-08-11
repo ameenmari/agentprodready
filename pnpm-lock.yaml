@@ -143,6 +143,9 @@ importers:
       '@agentprodready/memory':
         specifier: workspace:*
         version: link:../memory
+      '@agentprodready/persistence-postgres':
+        specifier: ^1.0.0
+        version: 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@agentprodready/planning':
         specifier: workspace:*
         version: link:../planning
@@ -168,6 +171,9 @@ importers:
       '@agentprodready/ai-provider-anthropic':
         specifier: workspace:*
         version: link:../ai-provider-anthropic
+      '@agentprodready/ai-provider-gemini':
+        specifier: workspace:*
+        version: link:../ai-provider-gemini
       '@agentprodready/ai-provider-openai':
         specifier: workspace:*
         version: link:../ai-provider-openai
@@ -192,6 +198,18 @@ importers:
       '@anthropic-ai/sdk':
         specifier: 0.116.0
         version: 0.116.0
+
+  packages/ai-provider-gemini:
+    dependencies:
+      '@agentprodready/ai-provider':
+        specifier: workspace:*
+        version: link:../ai-provider
+      '@agentprodready/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      '@google/generative-ai':
+        specifier: 0.24.1
+        version: 0.24.1
 
   packages/ai-provider-openai:
     dependencies:
@@ -812,6 +830,150 @@ importers:
 
 packages:
 
+  '@agentprodready/agent-framework@1.0.0':
+    resolution: {integrity: sha512-1ToUc0aAsK6f5T9VSFKGwvynftQnpU+15xnkRBEoY+RsglSZJ1C0pwhazTd2G1w5YxWBOQ1PaYItm18JMKKWJw==}
+
+  '@agentprodready/agent-framework@1.5.1':
+    resolution: {integrity: sha512-DKdSFHDkJyzolupVp04svPWZrj+gz2tLW1lIdQyVgtKa3QIWqoaIqSWaNB7AqcwBeiuOKuoE60tdR8KzwmIQmA==}
+    engines: {node: '>=22 <25'}
+    peerDependencies:
+      '@agentprodready/ai-provider-anthropic': ^1.0.0
+      '@agentprodready/ai-provider-openai': ^1.0.2
+    peerDependenciesMeta:
+      '@agentprodready/ai-provider-anthropic':
+        optional: true
+      '@agentprodready/ai-provider-openai':
+        optional: true
+
+  '@agentprodready/ai-provider@1.0.0':
+    resolution: {integrity: sha512-p8kE1SiAB814ca858D0tVzujE+YfxmfXDEvwd/wFXQkY/fR6Enra2MlTrStygdOTGjFKLebgKDLuUd+SaE2pog==}
+
+  '@agentprodready/ai-provider@1.0.1':
+    resolution: {integrity: sha512-VTv5sr4M3IipYW7Ws0XpoOix1nwZDz+au2YQt67R3kET9SBdOkPr1KEDMO9RfYln8WGc5Vzp+9tnrAGq7pq7uA==}
+
+  '@agentprodready/ai-provider@1.0.2':
+    resolution: {integrity: sha512-qZxg+xi1czvRQpPTbJOXq/3/YTCpTxkt4azpARyrniqM/jKejWyr5srQMnVq1WYaCb6C/LkiIZ6b5C5x6Xcs1g==}
+
+  '@agentprodready/audit@1.0.0':
+    resolution: {integrity: sha512-DHfW9qP+TIin41h0th/jORBeXphqGe9QK4ZFko1XKpAvE49SZ1JSjtrrjLctYRHCgBHsZN53mfBgKLKsrA9x5A==}
+
+  '@agentprodready/audit@1.0.1':
+    resolution: {integrity: sha512-OHJHl+IzTqoenajbWjhKJpHRFkkp5CjZedQtebZopZLlzRAkg6E9kVpztkfwuh+jXpcbCbpmfJj9+u1Zpxd9Ew==}
+
+  '@agentprodready/capability-resolution@1.0.0':
+    resolution: {integrity: sha512-7eBXzl8nvy+4QSgvh01z0EwUGv7fmlg/kest6aoq+ArDCRIgz8Y+46lcTP/ilcxYEBMCPJqymMz7spajfN36iA==}
+
+  '@agentprodready/capability-resolution@1.0.1':
+    resolution: {integrity: sha512-yuB89X5mWdQMJ/CAlhhbbeXRFqm9PxTuJiRwSw9lIrSC/U0sh/ibPVh/MmKMJf65LdYASk6N8MYkMeRuoPEFyA==}
+
+  '@agentprodready/composition@1.0.0':
+    resolution: {integrity: sha512-8shlv87oJTfWvKwPokz1NZGSXnihASbyH/dLaOaOLfBrKljNxBtmSsAEm45vjI4eKcgACT6AapThqqRDJSrXLA==}
+
+  '@agentprodready/composition@1.0.1':
+    resolution: {integrity: sha512-XPoI9taywjYgzttzVziWImYwYdv5RI9QiBK2b4Ki8dauy52LiwE/NnzcvcbpPNiQWozEx928AZaMNTqdzUn1aA==}
+
+  '@agentprodready/configuration@1.0.0':
+    resolution: {integrity: sha512-hKk4gjPyTPLUEgG44ZZkWa5Y7OMIePsfwdqTkiKUXsaZtzPAQ0hJFXJ2tBpjeeaWJ8ZoufMCQcmDypq9Nb+weA==}
+
+  '@agentprodready/configuration@1.0.1':
+    resolution: {integrity: sha512-kMGN8XA98unoq/fdHarkkkj5Yop+OgTkGO+g40+uND68mirhW0uTAkEbgjlHvhwzLXUjLc8G+pEowTqHjKo6zA==}
+
+  '@agentprodready/context-assembly@1.0.0':
+    resolution: {integrity: sha512-LxF7Gr8fvvfKZPCZhUst2cyIfTGxntCKQYw+XF+uFtJgRoNmyEWKyWn1ArtWA8xSp2hJqDZ9KEHy7XUBNCHzCA==}
+
+  '@agentprodready/context-assembly@1.0.1':
+    resolution: {integrity: sha512-n0VE/UbeaUZwtKYznn03FputkXPhVx4LQWKBD/2KCOh80mqVZGbEAqRyh/bfA7OP8pJWPjOS0bpzCfcAklizPg==}
+
+  '@agentprodready/evaluation@1.0.0':
+    resolution: {integrity: sha512-pcwZ6MLTk2Ub9MntR0CFa7Ih3vxJpUum70k6Ym2+63R9NX+wg2LlJzV3ZrhX5cl3Q+T227ZURhXKQFcdJPGolQ==}
+
+  '@agentprodready/evaluation@1.0.1':
+    resolution: {integrity: sha512-TMruvCCgkZxcDMiro7HbVdLXuqQ26geAcROxitIAVghaN1eE2ZwJbHkYBLPWYmYdazTXM4sPWwAkjNFUYeGdaw==}
+
+  '@agentprodready/event-bus@1.0.0':
+    resolution: {integrity: sha512-Yq9PqPw+mAegGoUtOdq8oapK0+ctq89NXZsMs8hZQEHN/wvgii8txzJhCeVL9BmGz02GfK8puZP9PQbVtAiZKg==}
+
+  '@agentprodready/event-bus@1.0.1':
+    resolution: {integrity: sha512-WZ+/75XNr43bxMEhPoJAZ2J3lw9V1NWQn0nSfEO7zJCbCNDplMAQv7PdCy9sOKV1T7CuSCGGbTn+sVKyA8akFg==}
+
+  '@agentprodready/foundation@1.0.0':
+    resolution: {integrity: sha512-BVN1SMKyH9KbbWQu360hBr8wHULHlUeVBFmmivxJ3x2QHzqBEYav+T9GtJaE4wmFVRzl4rKPbx1vg6H42WYEaw==}
+
+  '@agentprodready/foundation@1.0.1':
+    resolution: {integrity: sha512-ZSztAqxpFY11QIjv5nxzyM5n2SzAc3vDTA/DWw4ZEbh+tWbo9MVFXOxXdJyNBAKTvuRGYiqofUDBfBOEbpa2wQ==}
+
+  '@agentprodready/knowledge@1.0.0':
+    resolution: {integrity: sha512-Lj43LDHWN4VkJ3qjQ1rw5LqMqrMgJTKB/pCA476NZcOOPawrqUxxpLgfBZOaH+LvIUdo1D7JeSS/kxkhKem7Xw==}
+
+  '@agentprodready/knowledge@1.0.1':
+    resolution: {integrity: sha512-QVS+wEnLxT8B+EPT3slUFviv3ekMlj6h+4eakJGmDU974iZU+Oxxf1QaI8IH9C2cuJj/fo1YufYp2Ik2opBn3A==}
+
+  '@agentprodready/memory@1.0.0':
+    resolution: {integrity: sha512-Wu8HRL4sOumWdxcID+Fihq8kt73jN9XXCBXVGkX+pBhXWjEQe0N9FRLCYZW0/HnQOL1sfgilhAC3DZfmAsiTKQ==}
+
+  '@agentprodready/memory@1.0.1':
+    resolution: {integrity: sha512-ZKAm/Fo3/8EPj6fRGjf+Ct3uf0GrpVnb+FeCs2KkTJuqnE/tWqnBZBu+2P0OhZG3ydODYe8sf43+ABjb0DczbQ==}
+
+  '@agentprodready/observability@1.0.0':
+    resolution: {integrity: sha512-CT056Lx6J/tQawZuiyCboqOirjSD0nvo53HOADSeYkheFygihZNMWcmS6OMUwX+p1gPRij4vBQGgvsw97PF17g==}
+
+  '@agentprodready/observability@1.0.1':
+    resolution: {integrity: sha512-zsGUgKfXlfbGpohSKfcCJ2UymwnRWnrZ7yzLzCxoTox8WCHgW0yqDr6SyR9JWWIM0kW5O6HyktA4nZ/TGlKBjg==}
+
+  '@agentprodready/persistence-postgres@1.0.1':
+    resolution: {integrity: sha512-8l5Q5PlrXP6sdFVTBI9LCxwthaKoZe+v9xmYHZZDyl3oD+GZYoC0gZDoC741I+E493FnFYhgaH7SRtxMTIVkFA==}
+
+  '@agentprodready/persistence@1.0.0':
+    resolution: {integrity: sha512-Lz1NW7z1Jwkr9qDZmcDo8MVFOpNAdouMwJQ0qsOulSwytNZLcs7ONSk8mLGg+CYisjEOyBmIIU61bef8gQAf7A==}
+
+  '@agentprodready/persistence@1.0.1':
+    resolution: {integrity: sha512-qe1DSwxUnuyysgRrsUExamcz1l+DSGYiGgFGVlv6MgJLr1p/93yQxYrsbScYcbvlGBUyOLb7J63NkEBDkihV9w==}
+
+  '@agentprodready/planning@1.0.0':
+    resolution: {integrity: sha512-0WiEpSWvuuyH8c8Xz45Liv2dyolJ3J+v237/AoUV41KCzmrQN0Ky9NO6rBRQ3/FAxuZa2Zk270plP2lz7PIGcg==}
+
+  '@agentprodready/planning@1.0.1':
+    resolution: {integrity: sha512-bISerY7TM1vn1YA6rkBqixExeE6p+qnG1wUGrl9Y0D9qsTp638/4+1oQRGEXuR1hqqXkHAvMIbMQ1KF1+0nNNg==}
+
+  '@agentprodready/plugin-framework@1.0.0':
+    resolution: {integrity: sha512-iosAFywYmJRBCLVsr6fbSIXgXPnQlKfeJlLjVkdkwG0NXKoo6HMbV9VPblcunTKqNTqOKctj3oe4DYrK1bqHFQ==}
+
+  '@agentprodready/plugin-framework@1.0.1':
+    resolution: {integrity: sha512-huti470Va8rSNhI7DUswkNEttiVuT7X4HZ2tDsZollcLJM3tGTPMDdlNIfQCYfDcB6dy2G0fcJgI7HAixHuVKA==}
+
+  '@agentprodready/prompt-builder@1.0.0':
+    resolution: {integrity: sha512-HHLF4w1LYRq8XJoyRKTnxQLpuK7nCnQsMuhUmnOTpauC7xh/53Q/huasYa5qj+MpbiuHmEAiWXx+M6mYblhHOg==}
+
+  '@agentprodready/prompt-builder@1.0.1':
+    resolution: {integrity: sha512-E3szvDOhaDlXk9bhi9o88cMbqWavFvXLdfnvporb8qyfydDE5D4Wvf1yflHAf1oOTHFTU5d0w2L2K+BLwzK4jg==}
+
+  '@agentprodready/runtime@1.0.0':
+    resolution: {integrity: sha512-QkK2hIp3IhN++4+qQ+lL2Zsam/roSoxMLpUskdVTb8zPpZ8vbrCrcpO4dbcq9+O9vCRlpP910w+0qXcOgi5iig==}
+
+  '@agentprodready/runtime@1.0.1':
+    resolution: {integrity: sha512-TseI+NVL3a0rvUu6iokQnyd7NUIxh4bTNWZJLhEt52PHvNh/rJacJ2ZuOqO2SDRFV6SoDwXDZ9gGC5ng8BhJxQ==}
+
+  '@agentprodready/security@1.0.0':
+    resolution: {integrity: sha512-iRjrappDq17/WAthBfa3ABC8SFJs7+1BI0zqW1DPkIeKzBm6BcAkSus46HyIhnvdsC3hEmGglV2TINSqChvTyQ==}
+
+  '@agentprodready/security@1.0.1':
+    resolution: {integrity: sha512-nNFB9OtVGcl/zhS1UgZ1v5PCtGYZMoieFIOXvsyAA4vg9l9rzCP/XERQWTiPxAKc17xND3F1r+A1ll4wsqtw8Q==}
+
+  '@agentprodready/tool-framework@1.0.0':
+    resolution: {integrity: sha512-yhmpXq1Fn4HCSRS03fllVEI7uiqMt00RyDzva9OedcZm+MM8wA2qtUZ6pgYMB7DWa88c6rR78lYeFvYFHZUyTg==}
+
+  '@agentprodready/tool-framework@1.0.1':
+    resolution: {integrity: sha512-zaeDMbu4upM8XNpMWYuHdobValqluEu1jmgRwPvlx0UXP2pXf2u+PphZyIAliHs0WWkNzDYRgTF1E49tvXMa+g==}
+
+  '@agentprodready/vector-store@1.0.0':
+    resolution: {integrity: sha512-J6zTBIKoD+X+7phfE/BQMmMqBmWEIcZ3s4Yq90rVxom9vB2q8DOgg+zNUMC7GtS48EG/v2xlyfoDdATlbHFQyw==}
+
+  '@agentprodready/workflow@1.0.0':
+    resolution: {integrity: sha512-FZTqJ+a0MrD5DctcPAGGDGYObClmWoWYjNagU5mMqygajEwjsf1BCYwfOm8lxRkYE7mLQOMdB+SVb7nyr2Prew==}
+
+  '@agentprodready/workflow@1.0.1':
+    resolution: {integrity: sha512-V4FrFrjUmMHl1HxekOFg+q1yEXlZaGGerBb/pRIWVDhtM81tgRzgZ/9pN1P2zWCd4mDM5cxdM8LMnmHSqFTCVg==}
+
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
@@ -1055,6 +1217,10 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@google/generative-ai@0.24.1':
+    resolution: {integrity: sha512-MqO+MLfM6kjxcKoy0p1wRzG3b4ZZXtPI+z2IE26UogS2Cm/XHO+7gGRBh6gcJsOiIVoH93UwKvW4HdgiOZCy9Q==}
+    engines: {node: '>=18.0.0'}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2344,6 +2510,743 @@ packages:
 
 snapshots:
 
+  '@agentprodready/agent-framework@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/context-assembly': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/evaluation': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/knowledge': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/memory': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/planning': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/prompt-builder': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/tool-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/agent-framework@1.5.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/context-assembly': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/evaluation': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/knowledge': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/memory': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/planning': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/plugin-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/prompt-builder': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/tool-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    optionalDependencies:
+      '@agentprodready/ai-provider-anthropic': link:packages/ai-provider-anthropic
+      '@agentprodready/ai-provider-openai': link:packages/ai-provider-openai
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/ai-provider@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/ai-provider@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/ai-provider@1.0.2(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/audit@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/audit@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/composition': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/plugin-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/capability-resolution@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/capability-resolution@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/plugin-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/composition@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/composition@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/plugin-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/configuration@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/agent-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/observability': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/configuration@1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/agent-framework': 1.5.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/observability': 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@agentprodready/ai-provider-anthropic'
+      - '@agentprodready/ai-provider-openai'
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/context-assembly@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/knowledge': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/memory': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/planning': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/context-assembly@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/knowledge': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/memory': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/planning': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/evaluation@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/prompt-builder': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/evaluation@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/prompt-builder': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/event-bus@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/event-bus@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/foundation@1.0.0':
+    dependencies:
+      '@nestjs/common': 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - supports-color
+
+  '@agentprodready/foundation@1.0.1':
+    dependencies:
+      '@nestjs/common': 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.28(@nestjs/common@11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - supports-color
+
+  '@agentprodready/knowledge@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/knowledge@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/plugin-framework': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/memory@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/persistence': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/vector-store': 1.0.0
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/memory@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/persistence': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/vector-store': 1.0.0
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/observability@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/agent-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/observability@1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/agent-framework': 1.5.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/audit': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@agentprodready/ai-provider-anthropic'
+      - '@agentprodready/ai-provider-openai'
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/persistence-postgres@1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/persistence': 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      pg: 8.22.0
+    transitivePeerDependencies:
+      - '@agentprodready/ai-provider-anthropic'
+      - '@agentprodready/ai-provider-openai'
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - pg-native
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/persistence@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/audit': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/configuration': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/observability': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/persistence@1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/audit': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/configuration': 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/event-bus': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/observability': 1.0.1(@agentprodready/ai-provider-anthropic@packages+ai-provider-anthropic)(@agentprodready/ai-provider-openai@packages+ai-provider-openai)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/security': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@agentprodready/ai-provider-anthropic'
+      - '@agentprodready/ai-provider-openai'
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/planning@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/planning@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/plugin-framework@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@nestjs/common': 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/plugin-framework@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@nestjs/common': 11.1.28(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/prompt-builder@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/context-assembly': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/prompt-builder@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/context-assembly': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/runtime@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/runtime@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/security@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/evaluation': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/security@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/composition': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/evaluation': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/tool-framework@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/tool-framework@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/ai-provider': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/capability-resolution': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/plugin-framework': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/workflow': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/vector-store@1.0.0':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - supports-color
+
+  '@agentprodready/workflow@1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.0
+      '@agentprodready/planning': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.0(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
+  '@agentprodready/workflow@1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+    dependencies:
+      '@agentprodready/foundation': 1.0.1
+      '@agentprodready/planning': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@agentprodready/runtime': 1.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)
+    transitivePeerDependencies:
+      - '@nestjs/microservices'
+      - '@nestjs/platform-express'
+      - '@nestjs/websockets'
+      - class-transformer
+      - class-validator
+      - reflect-metadata
+      - rxjs
+      - supports-color
+
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
@@ -2512,6 +3415,8 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@google/generative-ai@0.24.1': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

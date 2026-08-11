@@ -19,7 +19,8 @@ This document is candid by design. It is not a sales pitch.
 ## When it is not a good fit
 
 - You need a **hosted SaaS** agent product or no-code builder.
-- You require **SSE reconnect/replay**, **durable HITL wait**, or **exactly-once** external tool side effects today.
+- You require **exactly-once** external tool side effects for **non-idempotent** tools today.
+- You need Bedrock / Azure native SDKs or distributed multi-node Runtime immediately.
 - You need a large **provider catalog** or a mature multi-vendor ecosystem with broad external adoption evidence immediately.
 - You need multi-maintainer / foundation-backed governance guarantees.
 - You cannot accept a **young ecosystem** (limited public adoption evidence).
@@ -35,7 +36,7 @@ This document is candid by design. It is not a sales pitch.
 
 Start simple. Move to advanced controls when requirements demand them. Advanced APIs are **not** deprecated by the Simple Agent API.
 
-Package: [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) (current line **1.1.x** — Simple Agent API since **1.1.0**).
+Package: [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) (current line **1.6.x** — Production Durability in **1.6.0**).
 
 ---
 
@@ -57,7 +58,7 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 - Simple/embedded `createAgent` uses **application-local** defaults. It is **not** production HTTP authentication.
 - Reference host **LocalReference** auth is **development/reference only**.
 - Internet-facing multi-tenant apps must authenticate users and integrate production Security.
-- Tool calling uses fail-closed approval boundaries; durable HITL wait is not available in the current line.
+- Tool calling supports approval wait/resume on the Simple embedded path (v1.6); host HTTP SSE reconnect remains separate.
 - Report vulnerabilities via [SECURITY.md](../../SECURITY.md).
 
 ---
@@ -65,7 +66,7 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 ## Provider independence
 
 - Contracts are vendor-neutral.
-- Shipped adapters today: **reference** (deterministic, no network) and **OpenAI**.
+- Shipped adapters today: **reference**, **OpenAI**, **OpenAI-compatible**, **Anthropic**, **Gemini**.
 - Selection goes through Capability Resolution — not hard-coded vendor SDKs in application contracts.
 
 ---
@@ -79,11 +80,17 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 - Streaming execution with explicit cancellation
 - Tenant isolation tests for the reference composition
 
+**What exists (v1.6 Simple path)**
+
+- Durable Simple Memory (`fileMemory` / `postgresMemory`)
+- HITL approve / reject / resume on embedded path
+- Stream replay (`resumeFrom` / `replayStream`) with durable event log
+- Idempotent tool ledger (exactly-once-**capable** for idempotent tools)
+
 **What is not guaranteed**
 
-- Exactly-once external tool side effects
-- Durable HITL approval wait/resume
-- SSE reconnect / stream replay
+- Exactly-once external tool side effects for **non-idempotent** tools
+- HTTP host SSE reconnect / resume tokens
 - Distributed Runtime leader election / multi-node consensus
 
 ---
@@ -114,8 +121,8 @@ See also the matrix in the [root README](../../README.md).
 
 - Young ecosystem / limited external adoption evidence
 - No official GHCR image yet
-- Limited provider catalog
-- No SSE reconnect/replay, durable HITL, or exactly-once tool effects
+- No exactly-once external effects for **non-idempotent** tools
+- HTTP host SSE reconnect not shipped (Simple library replay is available)
 - Embedded Simple Agent ≠ hosted multi-tenant platform
 
 ---

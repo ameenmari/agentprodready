@@ -81,9 +81,12 @@ export * from './reference.js';
 export {
   anthropic,
   createAgent,
+  fileMemory,
+  gemini,
   inMemory,
   openai,
   openaiCompatible,
+  postgresMemory,
   reference,
   tool,
   SimpleAgentError,
@@ -103,5 +106,6 @@ export {
   type SimpleMemory,
   type SimpleTool,
   type SimpleToolDefinition,
+  type StreamOptions,
 } from './simple/index.js';
 

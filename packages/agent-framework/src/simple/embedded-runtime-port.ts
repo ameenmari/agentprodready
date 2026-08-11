@@ -1,6 +1,11 @@
 import type { AgentRuntimePort, RuntimeAgentInvocation } from '../index.js';
 import type { CreateExecutionContextRequest } from '@agentprodready/foundation';
-import type { RuntimeOrchestrator, RuntimeResult, RuntimeStreamEvent } from '@agentprodready/runtime';
+import type {
+  RuntimeOrchestrator,
+  RuntimeResult,
+  RuntimeStreamEvent,
+  StreamEventLog,
+} from '@agentprodready/runtime';
 import type { SecurityContext } from '@agentprodready/security';
 
 export interface StoredExecutionResult {
@@ -18,6 +23,7 @@ export class EmbeddedRuntimePort implements AgentRuntimePort {
     private readonly securityContexts: ReadonlyMap<string, SecurityContext>,
     private readonly tenantId: string,
     private readonly workspaceId: string,
+    private readonly streamLog?: StreamEventLog,
   ) {}
 
   public async accept(request: RuntimeAgentInvocation): Promise<Readonly<{ executionReference: string }>> {
@@ -80,8 +86,19 @@ export class EmbeddedRuntimePort implements AgentRuntimePort {
     request: RuntimeAgentInvocation,
     stream: AsyncIterable<RuntimeStreamEvent>,
   ): AsyncIterable<RuntimeStreamEvent> {
+    let sequence = 0;
     try {
       for await (const event of stream) {
+        if (this.streamLog !== undefined) {
+          await this.streamLog.append(
+            Object.freeze({
+              executionId,
+              sequence: sequence++,
+              event,
+              occurredAt: new Date().toISOString(),
+            }),
+          );
+        }
         if (event.type === 'completed') {
           this.#results.set(executionId, Object.freeze({ runtime: event.result, invocation: request }));
         }

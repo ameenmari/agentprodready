@@ -49,7 +49,7 @@ console.log(result.text);
 await agent.close();
 ```
 
-Also: `stream()`, `reference()` (zero API key), `openaiCompatible()` / `anthropic()`, and `result.metadata` diagnostics.
+Also: `stream()` / stream replay, `reference()` (zero API key), `openaiCompatible()` / `anthropic()` / `gemini()`, durable memory & HITL, and `result.metadata` diagnostics.
 
 <!-- After you record: commit docs/community/assets/demo.gif and uncomment:
 ![Live demo](docs/community/assets/demo.gif)
@@ -62,8 +62,8 @@ Also: `stream()`, `reference()` (zero API key), `openaiCompatible()` / `anthropi
 - **Simple Agent API** — `createAgent`, `invoke`, `stream`, `close`
 - **Tools with guardrails** — `tool()` with conservative defaults; fail-closed approvals
 - **Streaming** — embedded library streams (not HTTP SSE)
-- **Memory** — ephemeral `memory: true` / `inMemory()` for the weekend path
-- **OpenAI + OpenAI-compatible** — first-class helpers; credential isolation for gateways
+- **Memory** — ephemeral `memory: true` / `inMemory()` for the weekend path; `fileMemory()` / `postgresMemory()` when you need durability
+- **OpenAI + OpenAI-compatible + Anthropic + Gemini** — first-class helpers; credential isolation for gateways
 - **Production controls when needed** — Runtime, Security, Capability Resolution, recovery — without rewriting your entrance API story
 
 Secondary tagline: *Build an agent in minutes. Add production controls when you need them.*
@@ -173,12 +173,14 @@ const result = await agent.invoke('USE_TOOL:getWeather:{"city":"Paris"}');
 ```
 
 Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRequirement: "none"`.  
-`approvalRequirement: "required"` fails closed. External effects are **not** exactly-once.
+`approvalRequirement: "required"` pauses for approval — use `agent.approve(approvalId)` + `agent.resume(executionId)`.  
+Idempotent tools with a durable ledger are exactly-once-**capable**; non-idempotent external effects are **not** exactly-once.
 
-### Memory (ephemeral)
+### Memory
 
-`memory: true` ≡ `inMemory()` — process-local, instance-scoped, **not** durable Postgres.  
-`reference()` does not reason over memory in natural language — use `openai()` for NL recall demos. See [Simple Memory](docs/guides/simple-memory.md).
+**Ephemeral (default):** `memory: true` ≡ `inMemory()` — process-local, instance-scoped, cleared on exit.  
+**Durable (v1.6):** `fileMemory({ directory })` or `postgresMemory({ connectionString })` — survives restart.  
+`reference()` does not reason over memory in natural language — use `openai()` for NL recall demos. See [Simple Memory](docs/guides/simple-memory.md) · [Durable Memory](docs/guides/durable-memory.md).
 
 ---
 
@@ -206,8 +208,9 @@ Defaults: `sideEffect: "mutating"`, `idempotency: "non-idempotent"`, `approvalRe
 | `openai()` | `@agentprodready/ai-provider-openai` | `OPENAI_API_KEY` |
 | `openaiCompatible()` | `@agentprodready/ai-provider-openai` | `OPENAI_COMPATIBLE_API_KEY` (or `auth: "none"`) |
 | `anthropic()` | `@agentprodready/ai-provider-anthropic` | `ANTHROPIC_API_KEY` |
+| `gemini()` | `@agentprodready/ai-provider-gemini` | `GEMINI_API_KEY` |
 
-Guide: [anthropic.md](docs/guides/anthropic.md).
+Guides: [anthropic.md](docs/guides/anthropic.md) · [gemini.md](docs/guides/gemini.md).
 
 ---
 
@@ -251,13 +254,21 @@ CI runs verification on every push ([workflow](.github/workflows/ci.yml)). Prefe
 ## Limitations
 
 - Young ecosystem — limited external adoption evidence
-- `memory: true` is **ephemeral**
-- Approval-required tools fail closed (no durable HITL wait/resume)
-- No SSE reconnect / stream replay
-- No exactly-once external tool side effects
-- Provider catalog today: reference + OpenAI + OpenAI-compatible + Anthropic
+- `memory: true` / `inMemory()` remain **ephemeral** by design (use `fileMemory` / `postgresMemory` for durability)
+- No exactly-once external tool side effects for **non-idempotent** tools (idempotent + durable ledger is exactly-once-**capable**)
 - No official GHCR image yet
 - Embedded Simple mode ≠ hosted multi-tenant platform
+- HTTP host SSE reconnect is separate from Simple `stream({ resumeFrom })` / `replayStream()` — see [stream replay](docs/guides/stream-replay.md)
+
+### Available in v1.6
+
+| Capability | Simple API |
+|---|---|
+| Durable memory | `fileMemory({ directory })`, `postgresMemory({ connectionString })` |
+| HITL wait / resume | `approve` / `reject` / `resume`; `AGENT_TOOL_APPROVAL_REQUIRED` includes `approvalId` + `executionId` |
+| Stream replay | `stream(input, { resumeFrom })`, `replayStream(executionId, afterSequence?)` |
+| Idempotent tool ledger | `idempotency: "idempotent"` + durable ledger — not a claim for non-idempotent external effects |
+| Gemini | `gemini(modelId)` + `@agentprodready/ai-provider-gemini` |
 
 ---
 

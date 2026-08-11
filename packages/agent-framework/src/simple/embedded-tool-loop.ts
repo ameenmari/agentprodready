@@ -54,6 +54,40 @@ export interface EmbeddedToolLoopDeps {
   readonly principal: Principal;
   readonly limits: EmbeddedToolLoopLimits;
   readonly toolDefinitions: () => readonly AiToolDefinition[];
+  /** Amendment D — park durable approval wait before failing closed to the caller. */
+  readonly onApprovalRequired?: (request: EmbeddedApprovalWaitRequest) => Promise<void>;
+  /** When set, resume an approved parked tool call instead of starting fresh. */
+  readonly resumeApproval?: EmbeddedApprovalResume | undefined;
+}
+
+export interface EmbeddedApprovalWaitRequest {
+  readonly approvalId: string;
+  readonly executionId: string;
+  readonly toolId: string;
+  readonly toolCallId: string;
+  readonly toolLoop: ToolLoopCheckpoint;
+  readonly messages: readonly AiMessage[];
+  readonly binding: CapabilityBinding;
+  readonly objective: string;
+}
+
+export interface EmbeddedApprovalResume {
+  readonly approvalId: string;
+  readonly toolLoop: ToolLoopCheckpoint;
+  readonly messages: readonly AiMessage[];
+  readonly binding: CapabilityBinding;
+}
+
+export class EmbeddedApprovalRequiredError extends Error {
+  public readonly code = 'TOOL_APPROVAL_REQUIRED' as const;
+  public constructor(
+    public readonly approvalId: string,
+    public readonly executionId: string,
+    message = 'Tool requires human approval',
+  ) {
+    super(message);
+    this.name = 'EmbeddedApprovalRequiredError';
+  }
 }
 
 /** Opaque tool-call counts for Simple result metadata (no payloads). */
@@ -78,12 +112,21 @@ export async function runEmbeddedToolLoop(
   signal: AbortSignal,
   control: CapabilityExecutionControl | undefined,
   emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
+  objective = '',
 ): Promise<EmbeddedToolLoopOutcome> {
+  if (deps.resumeApproval !== undefined) {
+    return resumeApprovedToolLoop(deps, deps.resumeApproval.binding, context, signal, control, emit);
+  }
+
   const existing = await control?.loadToolLoop();
   if (existing !== undefined) {
+    const awaiting = existing.calls.find((call) => call.stage === 'awaiting-approval');
+    if (awaiting?.approvalId !== undefined) {
+      throw new EmbeddedApprovalRequiredError(awaiting.approvalId, context.executionId);
+    }
     throw new NormalizedToolError(
       'TOOL_UNSAFE_RECOVERY',
-      'Resuming a prior tool loop is not supported in the simple Agent API',
+      'Resuming a prior tool loop is not supported without an approved HITL wait',
       false,
       `tool:${context.executionId}`,
     );
@@ -136,6 +179,7 @@ export async function runEmbeddedToolLoop(
       try {
         const outcome = await admitAndExecuteCall(
           deps,
+          binding,
           context,
           signal,
           call,
@@ -143,7 +187,9 @@ export async function runEmbeddedToolLoop(
           control,
           envelope,
           admitted,
+          turnBase,
           emit,
+          objective,
         );
         succeeded += 1;
         admitted.push(outcome.call);
@@ -182,6 +228,7 @@ export async function runEmbeddedToolLoop(
 
 async function admitAndExecuteCall(
   deps: EmbeddedToolLoopDeps,
+  capabilityBinding: CapabilityBinding,
   context: ExecutionContext,
   signal: AbortSignal,
   call: NormalizedToolCall,
@@ -189,7 +236,9 @@ async function admitAndExecuteCall(
   control: CapabilityExecutionControl | undefined,
   envelope: ToolLoopCheckpoint,
   priorAdmitted: readonly ToolLoopCallCheckpoint[],
+  turnBase: readonly AiMessage[],
   emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
+  objective = '',
 ): Promise<Readonly<{ call: ToolLoopCallCheckpoint; continuation: AiToolContinuationResult }>> {
   const requestId = `${context.executionId}:${call.id}`;
   const contract = deps.tools.get(call.name);
@@ -215,14 +264,201 @@ async function admitAndExecuteCall(
   }
   await publish(deps, 'tool.authorized', requestId, context.executionId, contract.id);
 
+  const idempotencyKey = `${context.executionId}:${call.id}`;
+
   if ((contract.approvalRequirement ?? 'none') === 'required') {
     await publish(deps, 'tool.approval-required', requestId, context.executionId, contract.id);
+    const approvalId = `approval:${context.executionId}:${call.id}`;
+    const awaiting: ToolLoopCallCheckpoint = Object.freeze({
+      turn,
+      toolCall: toCheckpointCall(call),
+      toolId: contract.id,
+      sideEffect: contract.sideEffect,
+      idempotency: contract.idempotency,
+      idempotencyKey,
+      stage: 'awaiting-approval' as const,
+      approvalId,
+    });
+    const toolLoop = Object.freeze({
+      ...envelope,
+      calls: Object.freeze([...priorAdmitted, awaiting]),
+    });
+    await control?.persistToolLoop(toolLoop);
+    await deps.onApprovalRequired?.({
+      approvalId,
+      executionId: context.executionId,
+      toolId: contract.id,
+      toolCallId: call.id,
+      toolLoop,
+      messages: turnBase,
+      binding: capabilityBinding,
+      objective,
+    });
+    throw new EmbeddedApprovalRequiredError(approvalId, context.executionId);
+  }
+
+  return executeAdmittedCall(
+    deps,
+    context,
+    signal,
+    call,
+    turn,
+    control,
+    envelope,
+    priorAdmitted,
+    decision,
+    idempotencyKey,
+    emit,
+  );
+}
+
+async function resumeApprovedToolLoop(
+  deps: EmbeddedToolLoopDeps,
+  binding: CapabilityBinding,
+  context: ExecutionContext,
+  signal: AbortSignal,
+  control: CapabilityExecutionControl | undefined,
+  emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
+): Promise<EmbeddedToolLoopOutcome> {
+  const resume = deps.resumeApproval;
+  if (resume === undefined) {
+    throw new NormalizedToolError('TOOL_UNSAFE_RECOVERY', 'Missing resume approval state', false, `tool:${context.executionId}`);
+  }
+  const awaiting = resume.toolLoop.calls.find((call) => call.stage === 'awaiting-approval');
+  if (awaiting === undefined) {
     throw new NormalizedToolError(
-      'TOOL_APPROVAL_REQUIRED',
-      'Tool requires human approval',
+      'TOOL_UNSAFE_RECOVERY',
+      'No awaiting-approval checkpoint to resume',
       false,
-      `tool:${requestId}`,
+      `tool:${context.executionId}`,
     );
+  }
+  const call: NormalizedToolCall = Object.freeze({
+    id: awaiting.toolCall.id,
+    name: awaiting.toolCall.name,
+    arguments: { ...awaiting.toolCall.arguments },
+  });
+  const decision = await authorizeTool(deps.security, deps.principal, context, awaiting.toolId);
+  if (!decision.authorized) {
+    throw new NormalizedToolError('TOOL_AUTHORIZATION', 'Tool authorization denied', false, `tool:${context.executionId}`);
+  }
+
+  const prior = resume.toolLoop.calls.filter((item) => item.stage !== 'awaiting-approval');
+  const envelope: ToolLoopCheckpoint = Object.freeze({
+    ...resume.toolLoop,
+    calls: Object.freeze(prior),
+  });
+  const outcome = await executeAdmittedCall(
+    deps,
+    context,
+    signal,
+    call,
+    awaiting.turn,
+    control,
+    envelope,
+    prior,
+    decision,
+    awaiting.idempotencyKey,
+    emit,
+  );
+
+  const turnBase = deserializeMessages(resume.toolLoop.baseMessages);
+  const proposed = resume.toolLoop.proposedCalls.map(
+    (item): NormalizedToolCall =>
+      Object.freeze({ id: item.id, name: item.name, arguments: { ...item.arguments } }),
+  );
+  let conversation: AiMessage[] = [
+    ...buildToolContinuationMessages({
+      baseMessages: turnBase,
+      toolCalls: proposed,
+      assistantContent: Object.freeze([{ type: 'text' as const, text: '' }]),
+      results: [outcome.continuation],
+    }),
+  ];
+
+  let turn = awaiting.turn + 1;
+  let totalCalls = 1;
+  let succeeded = 1;
+  const failed = 0;
+  const seenIds = new Set(proposed.map((item) => item.id));
+  const toolsOffered = deps.toolDefinitions();
+
+  while (turn < deps.limits.maxTurns) {
+    if (signal.aborted) throw new TypeError('Capability execution aborted');
+    const result = await deps.ai.execute(
+      makeAiRequest(binding, context, signal, false, conversation, toolsOffered),
+    );
+    if (result.finishReason !== 'tool-calls' || result.toolCalls.length === 0) {
+      return Object.freeze({
+        result,
+        tools: Object.freeze({ invoked: totalCalls, succeeded, failed }),
+      });
+    }
+    assertUniqueProposedIds(result.toolCalls, seenIds);
+    const turnBaseNext = conversation;
+    const proposedCalls = result.toolCalls.map(toCheckpointCall);
+    let nextEnvelope: ToolLoopCheckpoint = Object.freeze({
+      turn,
+      maxTurns: deps.limits.maxTurns,
+      baseMessages: serializeMessages(turnBaseNext),
+      proposedCalls,
+      calls: Object.freeze([]),
+    });
+    const admitted: ToolLoopCallCheckpoint[] = [];
+    const continuationResults: AiToolContinuationResult[] = [];
+    for (const nextCall of result.toolCalls) {
+      totalCalls += 1;
+      const nextOutcome = await admitAndExecuteCall(
+        deps,
+        binding,
+        context,
+        signal,
+        nextCall,
+        turn,
+        control,
+        nextEnvelope,
+        admitted,
+        turnBaseNext,
+        emit,
+        '',
+      );
+      succeeded += 1;
+      admitted.push(nextOutcome.call);
+      continuationResults.push(nextOutcome.continuation);
+      seenIds.add(nextCall.id);
+      nextEnvelope = Object.freeze({ ...nextEnvelope, calls: Object.freeze([...admitted]) });
+    }
+    conversation = [
+      ...buildToolContinuationMessages({
+        baseMessages: turnBaseNext,
+        toolCalls: result.toolCalls,
+        assistantContent: result.content,
+        results: continuationResults,
+      }),
+    ];
+    turn += 1;
+  }
+
+  throw new NormalizedToolError('TOOL_REJECTED', 'TOOL_MAX_TURNS exceeded', false, `tool:${context.executionId}`);
+}
+
+async function executeAdmittedCall(
+  deps: EmbeddedToolLoopDeps,
+  context: ExecutionContext,
+  signal: AbortSignal,
+  call: NormalizedToolCall,
+  turn: number,
+  control: CapabilityExecutionControl | undefined,
+  envelope: ToolLoopCheckpoint,
+  priorAdmitted: readonly ToolLoopCallCheckpoint[],
+  decision: AuthorizationDecision,
+  idempotencyKey: string,
+  emit?: (event: CapabilityStreamEvent) => void | Promise<void>,
+): Promise<Readonly<{ call: ToolLoopCallCheckpoint; continuation: AiToolContinuationResult }>> {
+  const requestId = `${context.executionId}:${call.id}`;
+  const contract = deps.tools.get(call.name);
+  if (contract === undefined) {
+    throw new NormalizedToolError('TOOL_NOT_FOUND', `Unknown tool ${call.name}`, false, `tool:${requestId}`);
   }
 
   const node = toolNode(context.executionId, call.id, contract.capability);
@@ -238,7 +474,6 @@ async function admitAndExecuteCall(
   );
   await deps.adapters.resolve(toolBinding);
 
-  const idempotencyKey = `${context.executionId}:${call.id}`;
   const preTool: ToolLoopCallCheckpoint = Object.freeze({
     turn,
     toolCall: toCheckpointCall(call),
@@ -304,6 +539,7 @@ async function admitAndExecuteCall(
       status: 'succeeded',
     }),
   });
+  await publish(deps, 'tool.completed', requestId, context.executionId, contract.id);
 
   return Object.freeze({
     call: postTool,
@@ -314,6 +550,11 @@ async function admitAndExecuteCall(
       ]),
     }),
   });
+}
+
+function deserializeMessages(value: unknown): readonly AiMessage[] {
+  if (!Array.isArray(value)) return Object.freeze([]);
+  return Object.freeze(value as AiMessage[]);
 }
 
 async function authorizeTool(
@@ -364,7 +605,7 @@ async function authorizeTool(
 
 async function publish(
   deps: EmbeddedToolLoopDeps,
-  type: 'tool.authorized' | 'tool.denied' | 'tool.started' | 'tool.approval-required',
+  type: 'tool.authorized' | 'tool.denied' | 'tool.started' | 'tool.approval-required' | 'tool.completed',
   requestId: string,
   executionId: string,
   toolId: string,

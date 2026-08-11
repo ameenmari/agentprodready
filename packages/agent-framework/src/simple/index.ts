@@ -1,8 +1,9 @@
 export { createAgent } from './create-agent.js';
 export { SimpleAgentError, type SimpleAgentErrorCode } from './errors.js';
-export { inMemory } from './memory.js';
+export { fileMemory, inMemory, postgresMemory } from './memory.js';
 export {
   anthropic,
+  gemini,
   openai,
   openaiCompatible,
   reference,
@@ -21,5 +22,6 @@ export type {
   AgentUsage,
   CreateAgentOptions,
   OpenAiCompatibleAuth,
+  StreamOptions,
 } from './types.js';
 export type { SimpleMemory } from './memory.js';

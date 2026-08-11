@@ -133,9 +133,10 @@ AgentProdReady does not ship a fake “production auth middleware” for demos.
 - Kubernetes operators
 - Distributed / multi-node Runtime
 - Multi-region failover
-- Exactly-once external tool effects
-- Durable HITL wait/resume
+- Exactly-once external tool effects for **non-idempotent** tools
 - Hosted SaaS control plane
+
+Durable Simple Memory, HITL, and stream replay are available on the embedded `createAgent` path — see [durable-memory.md](./durable-memory.md), [hitl-approval.md](./hitl-approval.md), [stream-replay.md](./stream-replay.md).
 
 ---
 

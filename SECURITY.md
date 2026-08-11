@@ -44,4 +44,4 @@ You should receive an acknowledgment when maintainers are available. Please allo
 
 - Secrets must not appear in logs, metrics, audit payloads, health endpoints, or client errors
 - Core does not ship unrestricted shell/filesystem/SQL tools or an OAuth/OIDC server
-- Exactly-once external tool effects and durable HITL approval wait are not claimed in the current 1.x line
+- Exactly-once external tool effects for **non-idempotent** tools are not claimed. Idempotent tools with a durable ledger are exactly-once-**capable**. Durable HITL wait/resume is available on the Simple path in v1.6 (`approve` / `reject` / `resume`).

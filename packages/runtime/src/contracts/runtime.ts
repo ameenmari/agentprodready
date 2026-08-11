@@ -83,7 +83,7 @@ export type CheckpointNormalizedToolCall = Readonly<{
   arguments: Readonly<Record<string, unknown>>;
 }>;
 
-export type ToolLoopCallStage = 'pre-tool' | 'post-tool';
+export type ToolLoopCallStage = 'pre-tool' | 'post-tool' | 'awaiting-approval';
 
 export type ToolLoopCallCheckpoint = Readonly<{
   turn: number;
@@ -93,6 +93,8 @@ export type ToolLoopCallCheckpoint = Readonly<{
   idempotency: 'idempotent' | 'non-idempotent';
   idempotencyKey: string;
   stage: ToolLoopCallStage;
+  /** Human Interaction id when stage is awaiting-approval (Amendment D). */
+  approvalId?: string;
   result?: unknown;
 }>;
 

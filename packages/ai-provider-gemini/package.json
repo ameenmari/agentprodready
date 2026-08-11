@@ -1,0 +1,53 @@
+{
+  "name": "@agentprodready/ai-provider-gemini",
+  "version": "1.0.0",
+  "description": "Google Gemini API adapter for AgentProdReady AI Provider",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "!dist/**/*.spec.js",
+    "!dist/**/*.spec.d.ts",
+    "!dist/**/*.map",
+    "!dist/**/*.tsbuildinfo"
+  ],
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "dependencies": {
+    "@agentprodready/ai-provider": "workspace:*",
+    "@agentprodready/foundation": "workspace:*",
+    "@google/generative-ai": "0.24.1"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameenmari/agentprodready.git",
+    "directory": "packages/ai-provider-gemini"
+  },
+  "homepage": "https://github.com/ameenmari/agentprodready#readme",
+  "bugs": {
+    "url": "https://github.com/ameenmari/agentprodready/issues"
+  },
+  "keywords": [
+    "gemini",
+    "google",
+    "ai-provider",
+    "llm",
+    "ai-agent",
+    "agentprodready",
+    "typescript",
+    "nodejs"
+  ]
+}

@@ -115,7 +115,47 @@ describe('createAgent tools invoke', () => {
     try {
       await expect(agent.invoke('USE_TOOL:needsApproval:{}')).rejects.toMatchObject({
         code: 'AGENT_TOOL_APPROVAL_REQUIRED',
+        approvalId: expect.stringMatching(/^approval:/),
+        executionId: expect.stringMatching(/^execution:/),
       });
+    } finally {
+      await agent.close();
+    }
+  });
+
+  it('approves and resumes a parked tool call', async () => {
+    const agent = createAgent({
+      model: reference(),
+      instructions: 'You are helpful.',
+      tools: [
+        tool({
+          name: 'needsApproval',
+          description: 'Requires approval',
+          parameters: Object.freeze({ type: 'object' as const, properties: Object.freeze({}) }),
+          approvalRequirement: 'required',
+          execute: () => ({ ok: true }),
+        }),
+      ],
+    });
+    try {
+      let executionId = '';
+      let approvalId = '';
+      try {
+        await agent.invoke('USE_TOOL:needsApproval:{}');
+        throw new Error('expected approval wait');
+      } catch (error) {
+        expect(error).toMatchObject({ code: 'AGENT_TOOL_APPROVAL_REQUIRED' });
+        const err = error as SimpleAgentError;
+        executionId = err.executionId ?? '';
+        approvalId = err.approvalId ?? '';
+      }
+      expect(executionId).toMatch(/^execution:/);
+      expect(approvalId).toMatch(/^approval:/);
+
+      await agent.approve(approvalId);
+      const result = await agent.resume(executionId);
+      expect(result.text).toMatch(/Tool returned|ok/);
+      expect(result.metadata?.tools).toMatchObject({ invoked: 1, succeeded: 1, failed: 0 });
     } finally {
       await agent.close();
     }

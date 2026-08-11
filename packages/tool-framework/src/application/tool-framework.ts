@@ -17,6 +17,7 @@ import type {
 } from '../contracts/tool.js';
 import { measureJsonBytes } from '../contracts/tool.js';
 import { ExternalToolError, NormalizedToolError } from '../errors/tool-error.js';
+import type { ToolIdempotencyLedger } from './idempotency-ledger.js';
 
 export class ToolRegistry implements ToolStore {
   readonly #items = new Map<string, ToolContract>();
@@ -95,6 +96,7 @@ export class ToolInvocationCoordinator {
     private readonly events: ToolEventPublisher,
     private readonly telemetry: ToolTelemetry,
     private readonly maxResultBytes?: number,
+    private readonly ledger?: ToolIdempotencyLedger,
   ) {}
 
   public async invoke(request: ToolExecutionRequest): Promise<NormalizedToolResult> {
@@ -107,8 +109,20 @@ export class ToolInvocationCoordinator {
       throw new NormalizedToolError('TOOL_NOT_FOUND', 'Selected tool contract is not registered', false, `tool:${request.requestId}`);
     }
     const validation = this.validator.validate(request, contract);
-    const adapter = await this.adapters.resolve(request.binding);
     const diagnosticId = `tool:${request.requestId}`;
+    const key = request.idempotencyKey?.trim() ?? '';
+    if (contract.idempotency === 'idempotent' && key !== '' && this.ledger !== undefined) {
+      const cached = await this.ledger.get(key);
+      if (cached !== undefined) {
+        this.diagnostics.record(
+          deepFreeze({ id: diagnosticId, requestId: request.requestId, toolId: contract.id, outcome: 'completed' }),
+        );
+        await this.#publish('tool.completed', request, contract, diagnosticId);
+        this.telemetry.completed(contract.id, Date.now() - started);
+        return cached;
+      }
+    }
+    const adapter = await this.adapters.resolve(request.binding);
     try {
       if (request.signal?.aborted) {
         throw new NormalizedToolError('TOOL_CANCELLED', 'Tool execution cancelled', false, diagnosticId);
@@ -118,6 +132,9 @@ export class ToolInvocationCoordinator {
         this.validator.assertResultBytes(raw.data, this.maxResultBytes, request.requestId);
       }
       const result = validateResult(raw, request, contract, validation, diagnosticId);
+      if (contract.idempotency === 'idempotent' && key !== '' && this.ledger !== undefined) {
+        await this.ledger.put(key, result);
+      }
       this.diagnostics.record(deepFreeze({ id: diagnosticId, requestId: request.requestId, toolId: contract.id, outcome: 'completed' }));
       await this.#publish('tool.completed', request, contract, diagnosticId);
       this.telemetry.completed(contract.id, Date.now() - started);

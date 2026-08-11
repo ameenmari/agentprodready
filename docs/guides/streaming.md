@@ -83,18 +83,27 @@ No `STREAMING_ENABLED` flag — the stream route is the opt-in surface.
 
 Host awaits Node `drain` when `write()` returns `false`. Provider/Runtime iterators pause naturally via pull. Drain timeout requests Runtime cancellation once (`backpressure-timeout` path).
 
-## Recovery limitation
+## Recovery limitation (host SSE)
 
-Chunks are **not** checkpointed. Final capability result may be checkpointed at post-invoke. Crash mid-stream does **not** resume the same HTTP/SSE connection.
+Chunks are **not** checkpointed for HTTP reconnect. Final capability result may be checkpointed at post-invoke. Crash mid-stream does **not** resume the same HTTP/SSE connection.
+
+## Simple library replay (v1.6)
+
+Embedded `createAgent` supports durable stream event logging and client replay:
+
+- `agent.stream(input, { resumeFrom })` — replay then live-tail
+- `agent.replayStream(executionId, afterSequence?)` — log-only replay
+
+Guide: [stream-replay.md](./stream-replay.md). Requires durable stream log (e.g. with `fileMemory({ directory })`).
 
 ## Reference vs OpenAI
 
 - Reference AI: deterministic whitespace-preserving chunks; secret-free CI
 - OpenAI: opt-in streaming in `@agentprodready/ai-provider-openai`; live calls not required in PR CI
 
-## Non-goals (v0.8)
+## Non-goals (host v0.8 baseline)
 
-Tool calling, WebSockets, stream replay/resume tokens, streaming Evaluation/Memory.
+Tool calling, WebSockets, HTTP SSE reconnect/resume tokens, streaming Evaluation/Memory on the operator host.
 
 ## Probe
 

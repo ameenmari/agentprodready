@@ -17,17 +17,22 @@ import {
 import { CompositionRoot } from '@agentprodready/composition';
 import {
   DEFAULT_RECOVERY_POLICY,
+  FileStreamEventLog,
   InMemoryExecutionCheckpointPort,
   InMemoryRuntimeEventPublisher,
+  InMemoryStreamEventLog,
   NoopRuntimeTelemetry,
   RuntimeOrchestrator,
   StaticRuntimePolicyProvider,
+  type StreamEventLog,
 } from '@agentprodready/runtime';
 import { SecurityRuntimeAdapter } from '@agentprodready/security';
 import {
   FactoryToolAdapterResolver,
+  FileToolIdempotencyLedger,
   InMemoryToolDiagnostics,
   InMemoryToolEvents,
+  InMemoryToolIdempotencyLedger,
   NoopToolTelemetry,
   ToolInvocationCoordinator,
   ToolRegistry,
@@ -47,17 +52,27 @@ import {
 } from '../index.js';
 import {
   ANTHROPIC_AI_ID,
+  GEMINI_AI_ID,
   OPENAI_AI_ID,
   OPENAI_COMPATIBLE_AI_ID,
   REFERENCE_AI_ID,
   seedEmbeddedCapabilities,
 } from './embedded-capabilities.js';
 import { EmbeddedCapabilityExecution } from './embedded-capability-execution.js';
+import {
+  EmbeddedHitlController,
+  FileHitlStore,
+  InMemoryHitlStore,
+} from './embedded-hitl.js';
 import { buildEmbeddedManifest, embeddedValidationCatalog } from './embedded-manifest.js';
 import { createEmbeddedPlanningAdapter, createEmbeddedWorkflowAdapter } from './embedded-planning.js';
 import { EmbeddedPromptService } from './embedded-prompt.js';
 import { EmbeddedRuntimePort } from './embedded-runtime-port.js';
-import type { EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
+import type {
+  EmbeddedApprovalResume,
+  EmbeddedApprovalWaitRequest,
+  EmbeddedToolLoopDeps,
+} from './embedded-tool-loop.js';
 import {
   EMBEDDED_MAX_ARGUMENT_BYTES,
   EMBEDDED_MAX_RESULT_BYTES,
@@ -94,6 +109,9 @@ export interface EmbeddedPlatform {
   readonly runtimePort: EmbeddedRuntimePort;
   readonly security: EmbeddedSecurity;
   readonly compositionRoot: CompositionRoot;
+  readonly hitl: EmbeddedHitlController;
+  readonly streamLog: StreamEventLog;
+  setResumeApproval(resume: EmbeddedApprovalResume | undefined): void;
   dispose(): Promise<void>;
 }
 
@@ -117,6 +135,8 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     await bindOpenAiAdapter(aiResolver, options.model.modelId);
   } else if (options.model.provider === 'anthropic') {
     await bindAnthropicAdapter(aiResolver, options.model.modelId);
+  } else if (options.model.provider === 'gemini') {
+    await bindGeminiAdapter(aiResolver, options.model.modelId);
   } else {
     await bindOpenAiCompatibleAdapter(aiResolver, options.model);
   }
@@ -145,6 +165,21 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     toolAdapterResolver.bind(simpleTool.contract.id, async () => new SimpleToolAdapter(simpleTool));
   }
 
+  const fileMemoryDirectory = options.memory?.kind === 'file' ? options.memory.directory : undefined;
+  const hitl = new EmbeddedHitlController(
+    fileMemoryDirectory === undefined
+      ? new InMemoryHitlStore()
+      : new FileHitlStore(await joinPath(fileMemoryDirectory, '.hitl')),
+  );
+  const idempotencyLedger =
+    fileMemoryDirectory === undefined
+      ? new InMemoryToolIdempotencyLedger()
+      : new FileToolIdempotencyLedger(await joinPath(fileMemoryDirectory, '.tool-ledger'));
+  const streamLog =
+    fileMemoryDirectory === undefined
+      ? new InMemoryStreamEventLog()
+      : new FileStreamEventLog(await joinPath(fileMemoryDirectory, '.streams'));
+
   const toolCoordinator = new ToolInvocationCoordinator(
     toolRegistry,
     toolAdapterResolver,
@@ -152,6 +187,8 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     new InMemoryToolDiagnostics(),
     new InMemoryToolEvents(),
     new NoopToolTelemetry(),
+    EMBEDDED_MAX_RESULT_BYTES,
+    idempotencyLedger,
   );
 
   const security = new EmbeddedSecurity({
@@ -170,9 +207,11 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
       ),
     );
 
+  const loopState: { resumeApproval?: EmbeddedApprovalResume | undefined } = {};
+
   const toolLoopDeps: EmbeddedToolLoopDeps | undefined =
     options.tools.length > 0
-      ? Object.freeze({
+      ? {
           ai: aiFramework,
           tools: toolRegistry,
           coordinator: toolCoordinator,
@@ -189,11 +228,29 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
             maxResultBytes: EMBEDDED_MAX_RESULT_BYTES,
           }),
           toolDefinitions,
-        })
+          get resumeApproval(): EmbeddedApprovalResume | undefined {
+            return loopState.resumeApproval;
+          },
+          onApprovalRequired: async (request: EmbeddedApprovalWaitRequest): Promise<void> => {
+            await hitl.park({
+              approvalId: request.approvalId,
+              executionId: request.executionId,
+              toolId: request.toolId,
+              toolCallId: request.toolCallId,
+              toolLoop: request.toolLoop,
+              messages: request.messages,
+              binding: request.binding,
+              objective: request.objective,
+              createdAt: new Date().toISOString(),
+            });
+          },
+        }
       : undefined;
 
   const memorySession =
-    options.memory === undefined ? undefined : new EmbeddedMemorySession(agentId, options.memory);
+    options.memory === undefined
+      ? undefined
+      : await EmbeddedMemorySession.create(agentId, options.memory);
 
   const prompts = new EmbeddedPromptService();
   const capabilityExecution = new EmbeddedCapabilityExecution(
@@ -228,7 +285,13 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     checkpoints: new InMemoryExecutionCheckpointPort(),
   });
 
-  const runtimePort = new EmbeddedRuntimePort(runtime, security.contexts, EMBEDDED_TENANT, EMBEDDED_WORKSPACE);
+  const runtimePort = new EmbeddedRuntimePort(
+    runtime,
+    security.contexts,
+    EMBEDDED_TENANT,
+    EMBEDDED_WORKSPACE,
+    streamLog,
+  );
 
   const framework = new AgentFramework(
     new InMemoryAgentRegistry(),
@@ -305,6 +368,11 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     runtimePort,
     security,
     compositionRoot,
+    hitl,
+    streamLog,
+    setResumeApproval(resume: EmbeddedApprovalResume | undefined): void {
+      loopState.resumeApproval = resume;
+    },
     async dispose(): Promise<void> {
       await memorySession?.dispose();
       await runtimePort.dispose();
@@ -362,7 +430,13 @@ async function resolveImplementationId(model: AgentModel): Promise<string> {
   if (model.provider === 'reference') return REFERENCE_AI_ID;
   if (model.provider === 'openai-compatible') return OPENAI_COMPATIBLE_AI_ID;
   if (model.provider === 'anthropic') return ANTHROPIC_AI_ID;
+  if (model.provider === 'gemini') return GEMINI_AI_ID;
   return OPENAI_AI_ID;
+}
+
+async function joinPath(directory: string, segment: string): Promise<string> {
+  const pathMod = await import('node:path');
+  return pathMod.default.join(directory, segment);
 }
 
 async function bindAnthropicAdapter(resolver: FactoryAiAdapterResolver, modelId: string): Promise<void> {
@@ -390,6 +464,37 @@ async function bindAnthropicAdapter(resolver: FactoryAiAdapterResolver, modelId:
     throw new SimpleAgentError(
       'AGENT_MISSING_ANTHROPIC_PACKAGE',
       'Anthropic support requires @agentprodready/ai-provider-anthropic. Install it with:\n npm install @agentprodready/ai-provider-anthropic',
+      undefined,
+      { cause: error },
+    );
+  }
+}
+
+async function bindGeminiAdapter(resolver: FactoryAiAdapterResolver, modelId: string): Promise<void> {
+  try {
+    const geminiModule = await import('@agentprodready/ai-provider-gemini');
+    const apiKey = process.env['GEMINI_API_KEY']?.trim() ?? '';
+    if (apiKey === '') {
+      throw new SimpleAgentError(
+        'AGENT_MISSING_GEMINI_KEY',
+        'GEMINI_API_KEY is required when using gemini(...). Set it in the environment (the library does not load .env files).',
+      );
+    }
+
+    const baseUrl = process.env['GEMINI_BASE_URL']?.trim();
+    const config = Object.freeze({
+      apiKey,
+      model: modelId,
+      implementationId: GEMINI_AI_ID,
+      ...(baseUrl !== undefined && baseUrl !== '' ? { baseUrl } : {}),
+    });
+
+    resolver.bind(GEMINI_AI_ID, async () => new geminiModule.GeminiProviderAdapter(config));
+  } catch (error) {
+    if (error instanceof SimpleAgentError) throw error;
+    throw new SimpleAgentError(
+      'AGENT_MISSING_GEMINI_PACKAGE',
+      'Gemini support requires @agentprodready/ai-provider-gemini. Install it with:\n npm install @agentprodready/ai-provider-gemini',
       undefined,
       { cause: error },
     );

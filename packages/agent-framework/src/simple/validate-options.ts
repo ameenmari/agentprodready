@@ -37,7 +37,7 @@ export function normalizeCreateAgentOptions(options: unknown): NormalizedCreateA
   if (!isAgentModel(record.model)) {
     throw new SimpleAgentError(
       'AGENT_INVALID_MODEL',
-      'model must be reference(), openai("model-id"), anthropic("model-id"), or openaiCompatible({ baseUrl, model }).',
+      'model must be reference(), openai("model-id"), anthropic("model-id"), gemini("model-id"), or openaiCompatible({ baseUrl, model }).',
     );
   }
 
@@ -107,6 +107,6 @@ function normalizeMemory(value: unknown): SimpleMemory | undefined {
   if (isSimpleMemory(value)) return value;
   throw new SimpleAgentError(
     'AGENT_INVALID_CONFIG',
-    'memory must be true (ephemeral in-memory) or inMemory({ namespace }).',
+    'memory must be true (ephemeral), inMemory(), fileMemory({ directory }), or postgresMemory({ connectionString }).',
   );
 }

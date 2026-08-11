@@ -47,7 +47,7 @@ See [multi-provider-routing.md](./multi-provider-routing.md).
 | `/ready` false | Postgres / OpenAI key / vector prerequisites |
 | Routing startup fail | Bad `AI_ROUTING_MODE` / empty or duplicate `AI_FALLBACK_PROVIDERS` |
 | Stream ends with error after partial text | Fallback blocked after first client-visible content (by design) |
-| `TOOL_APPROVAL_REQUIRED` | Approval-required tool; durable HITL deferred |
+| `TOOL_APPROVAL_REQUIRED` | Approval-required tool; use Simple `approve` + `resume` or host HITL wiring |
 
 ## Related
 

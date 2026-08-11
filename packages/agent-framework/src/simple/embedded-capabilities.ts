@@ -13,6 +13,8 @@ export const OPENAI_AI_ID = 'openai-ai';
 export const OPENAI_COMPATIBLE_AI_ID = 'openai-compatible-ai';
 /** Matches @agentprodready/ai-provider-anthropic ANTHROPIC_AI_ID — string only. */
 export const ANTHROPIC_AI_ID = 'anthropic-ai';
+/** Matches @agentprodready/ai-provider-gemini GEMINI_AI_ID — string only. */
+export const GEMINI_AI_ID = 'gemini-ai';
 
 export function seedEmbeddedCapabilities(
   implementationId: string,

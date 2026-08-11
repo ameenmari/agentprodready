@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Status** | Production contracts published (`1.0.x`) |
+| **Status** | Production contracts published (`1.1.x`) |
 | **Install** | `npm install @agentprodready/memory` |
 | **Module** | ESM |
 | **License** | MIT |
@@ -31,6 +31,7 @@ npm install @agentprodready/vector-store @agentprodready/vector-store-pgvector
 |---|---|
 | Memory lifecycle | Capture → store → retrieve → recall |
 | In-memory provider | Process-local default for demos/tests |
+| `FileBackedMemoryProvider` | JSON file durability for Simple `fileMemory()` |
 | Persistence-backed provider | Durable records via Persistence repository `memory-records` |
 | Search provider surface | Pluggable `MemorySearchProvider` |
 | Vector / hybrid search | Additive when host enables vector stack |
@@ -44,7 +45,8 @@ npm install @agentprodready/vector-store @agentprodready/vector-store-pgvector
 | Provider | Use when |
 |---|---|
 | `InMemoryMemoryProvider` | Local development, unit tests |
-| `PersistenceBackedMemoryProvider` | Cross-process durability |
+| `FileBackedMemoryProvider` | Single-node file durability (Simple `fileMemory`) |
+| `PersistenceBackedMemoryProvider` | Cross-process Postgres durability |
 
 ---
 
@@ -87,6 +89,7 @@ Runnable wiring: clone the monorepo and follow the [Memory guide](https://github
 
 ## Documentation
 
+- [Durable Memory guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/durable-memory.md)
 - [Memory guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/memory.md)
 - [Vector search](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/vector-search.md)
 - [Blueprint 11](https://github.com/ameenmari/agentprodready/blob/main/docs/blueprints/11-memory-engine.md)

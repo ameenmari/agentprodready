@@ -19,9 +19,9 @@ Security authorizes before tool execution. Capability Resolution / Composition s
 Hard rules retained from v0.9:
 
 - No eval / `Function` / arbitrary shell / model-selected paths / unrestricted FS / raw SQL tools in core
-- `approvalRequirement: 'required'` → fail closed `TOOL_APPROVAL_REQUIRED` (no durable HITL wait in v1.0)
+- `approvalRequirement: 'required'` → parks execution; Simple path: `approve` + `resume` (v1.6); host may still surface `TOOL_APPROVAL_REQUIRED`
 - Non-idempotent unknown recovery → `TOOL_UNSAFE_RECOVERY`
-- Exactly-once external effects are **not** claimed
+- Non-idempotent external effects are **not** exactly-once; idempotent tools with durable ledger are exactly-once-**capable**
 
 See [tools.md](./tools.md).
 

@@ -25,6 +25,16 @@ export function anthropic(modelId: string): AgentModel {
   return Object.freeze({ provider: 'anthropic', modelId: modelId.trim() });
 }
 
+export function gemini(modelId: string): AgentModel {
+  if (typeof modelId !== 'string' || modelId.trim() === '') {
+    throw new SimpleAgentError(
+      'AGENT_INVALID_MODEL',
+      'gemini(modelId) requires a non-empty model id string, for example gemini("gemini-2.0-flash").',
+    );
+  }
+  return Object.freeze({ provider: 'gemini', modelId: modelId.trim() });
+}
+
 export interface OpenAiCompatibleOptions {
   readonly baseUrl: string;
   readonly model: string;
@@ -96,7 +106,7 @@ export function isAgentModel(value: unknown): value is AgentModel {
     auth?: unknown;
   };
   if (record.provider === 'reference') return record.modelId === 'reference';
-  if (record.provider === 'openai' || record.provider === 'anthropic') {
+  if (record.provider === 'openai' || record.provider === 'anthropic' || record.provider === 'gemini') {
     return typeof record.modelId === 'string' && record.modelId.trim() !== '';
   }
   if (record.provider === 'openai-compatible') {

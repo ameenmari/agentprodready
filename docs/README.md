@@ -4,7 +4,9 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**New in v1.2 — Simple Agent API:** chat (`createAgent`), tools (`tool()`), ephemeral memory (`memory: true` / `inMemory()`) on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework).
+**New in v1.6 — Production Durability:** durable Simple Memory (`fileMemory` / `postgresMemory`), HITL approve/resume, stream replay, idempotent tool ledger, Gemini — on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) **1.6.0**.
+
+**New in v1.2 — Simple Agent API:** chat (`createAgent`), tools (`tool()`), ephemeral memory (`memory: true` / `inMemory()`).
 
 This directory contains product guides, architectural specification, implementation guidance, and governance documentation.
 
@@ -16,15 +18,16 @@ This directory contains product guides, architectural specification, implementat
 2. [Simple Agent API](guides/simple-agent-api.md)
 3. [Why AgentProdReady](guides/why-agentprodready.md)
 4. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md) · [Simple Diagnostics](guides/simple-diagnostics.md)
-5. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
-6. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
-7. [Streaming](guides/streaming.md)
-8. [Security](guides/security.md)
-9. [Package compatibility](guides/package-compatibility.md)
-10. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
-11. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [package README standard](community/package-readme-standard.md) · [labels](community/labels.md)
-12. [Architecture index](architecture-index.md)
-13. [Blueprints](blueprints/) · [ADRs](adrs/)
+5. **v1.6 durability:** [Durable Memory](guides/durable-memory.md) · [HITL Approval](guides/hitl-approval.md) · [Stream Replay](guides/stream-replay.md) · [Gemini](guides/gemini.md) · [product doc](product/agentprodready-v1.6-production-durability.md)
+6. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
+7. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
+8. [Streaming](guides/streaming.md)
+9. [Security](guides/security.md)
+10. [Package compatibility](guides/package-compatibility.md)
+11. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
+12. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [package README standard](community/package-readme-standard.md) · [labels](community/labels.md)
+13. [Architecture index](architecture-index.md)
+14. [Blueprints](blueprints/) · [ADRs](adrs/)
 
 **Beginner path:** Getting Started → backend-agent → Why / Embed deploy → Architecture only if needed.
 
@@ -39,7 +42,9 @@ Blueprints and ADRs are under **Architecture / Advanced** — you do not need th
 | **Build your first agent** | [Getting Started](guides/getting-started.md) · [Simple Agent API](guides/simple-agent-api.md) |
 | Evaluate for a larger project | [Adopting AgentProdReady](guides/adopting-agentprodready.md) · [ROADMAP](../ROADMAP.md) |
 | Install packages in your app | [Repository README](../README.md) · [npm distribution](guides/npm-distribution.md) · [package compatibility](guides/package-compatibility.md) |
-| Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · [examples/streaming-agent](../examples/streaming-agent) |
+| Streaming (library API) | [Getting Started](guides/getting-started.md#stream) · [Stream Replay](guides/stream-replay.md) · [examples/streaming-agent](../examples/streaming-agent) |
+| Durable memory / HITL (Simple) | [durable-memory](guides/durable-memory.md) · [hitl-approval](guides/hitl-approval.md) |
+| Gemini | [gemini](guides/gemini.md) |
 | Tools / Memory / Evaluation (advanced) | [tools](guides/tools.md) · [memory](guides/memory.md) · [evaluation](guides/evaluation.md) |
 | Production deployment | [production-deployment.md](guides/production-deployment.md) · [security.md](guides/security.md) |
 | Local performance baseline | [benchmarks](benchmarks/README.md) *(local baseline — not an SLA)* |
@@ -187,6 +192,7 @@ Product slice definitions.
 - [v0.5 Persistent Memory](product/agentprodready-v0.5-persistent-memory.md)
 - [v0.6 Evaluation Framework](product/agentprodready-v0.6-evaluation-framework.md)
 - [v0.7 Vector Search & Semantic Memory](product/agentprodready-v0.7-vector-search-semantic-memory.md)
+- [v1.6 Production Durability](product/agentprodready-v1.6-production-durability.md)
 - [v0.8 Streaming Responses](product/agentprodready-v0.8-streaming-responses.md)
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/memory",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Execution-derived agent memory for AgentProdReady — capture, retrieve, and recall with optional vector/hybrid search.",
   "type": "module",
   "main": "dist/index.js",

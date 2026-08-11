@@ -13,7 +13,7 @@ import type {
 import { NormalizedToolError } from '@agentprodready/tool-framework';
 import type { NodeExecutionContract } from '@agentprodready/workflow';
 import type { EmbeddedToolCallSummary, EmbeddedToolLoopDeps } from './embedded-tool-loop.js';
-import { runEmbeddedToolLoop } from './embedded-tool-loop.js';
+import { EmbeddedApprovalRequiredError, runEmbeddedToolLoop } from './embedded-tool-loop.js';
 import { formatMemoryForPrompt, type EmbeddedMemorySession } from './memory.js';
 import type { EmbeddedPromptService } from './embedded-prompt.js';
 import { SimpleAgentError } from './errors.js';
@@ -231,6 +231,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
           signal,
           control,
           emit,
+          prepared.objective,
         );
         return Object.freeze({ aiResult: outcome.result, tools: outcome.tools });
       }
@@ -297,7 +298,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         query: objective,
         decisionId: memoryDecisionId(context.executionId),
       });
-      memoryBlock = formatMemoryForPrompt(retrieval);
+      memoryBlock = formatMemoryForPrompt(retrieval, this.memorySession.durable === true);
       memory = Object.freeze({
         enabled: true as const,
         retrievedItemCount: retrieval.memories.length,
@@ -371,6 +372,13 @@ function extractText(aiResult: NormalizedAiResult): string | undefined {
 }
 
 function mapToolLoopError(error: unknown): Error {
+  if (error instanceof EmbeddedApprovalRequiredError) {
+    return new SimpleAgentError('AGENT_TOOL_APPROVAL_REQUIRED', error.message, error.approvalId, {
+      cause: error,
+      approvalId: error.approvalId,
+      executionId: error.executionId,
+    });
+  }
   if (!(error instanceof NormalizedToolError)) {
     return error instanceof Error ? error : new Error(String(error));
   }

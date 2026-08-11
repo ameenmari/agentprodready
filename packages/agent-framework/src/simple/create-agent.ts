@@ -3,8 +3,8 @@ import { buildEmbeddedPlatform, type EmbeddedPlatform } from './embedded-platfor
 import { EMBEDDED_POLICY_VERSION, EMBEDDED_USER } from './embedded-security.js';
 import { SimpleAgentError } from './errors.js';
 import { mapRuntimeResultToAgentResult } from './result-map.js';
-import { mapRuntimeStream } from './stream-map.js';
-import type { Agent, AgentResult, AgentStreamEvent, CreateAgentOptions } from './types.js';
+import { mapReplayStream, mapRuntimeStream } from './stream-map.js';
+import type { Agent, AgentResult, AgentStreamEvent, CreateAgentOptions, StreamOptions } from './types.js';
 import { normalizeCreateAgentOptions } from './validate-options.js';
 
 class SimpleAgent implements Agent {
@@ -17,7 +17,96 @@ class SimpleAgent implements Agent {
 
   public async invoke(input: string): Promise<AgentResult> {
     this.#ensureOpen();
+    return this.#invokeObjective(normalizeInput(input));
+  }
+
+  public async *stream(input: string, _options?: StreamOptions): AsyncIterable<AgentStreamEvent> {
+    this.#ensureOpen();
     const objective = normalizeInput(input);
+    try {
+      const correlationId = `correlation:${crypto.randomUUID()}`;
+      const secured = await this.#platform.security.authorizeInvoke({
+        scope: this.#platform.scope,
+        agentId: this.#platform.agentId,
+        agentPrincipalId: this.#platform.agentPrincipalId,
+        correlationId,
+      });
+      const request = buildInvocationRequest({
+        platform: this.#platform,
+        objective,
+        correlationId,
+        authorization: secured.authorization,
+        securityContextReference: secured.securityContextReference,
+      });
+      const acceptance = await this.#platform.framework.invokeStream(request);
+      const executionId = acceptance.runtimeExecutionReference;
+      const runtimeStream = this.#platform.runtimePort.getStream(executionId);
+      if (runtimeStream === undefined) {
+        throw new SimpleAgentError(
+          'AGENT_STREAM_FAILED',
+          'Agent stream handoff completed but no stream was available.',
+          executionId,
+        );
+      }
+      yield* mapRuntimeStream(executionId, runtimeStream);
+    } catch (error) {
+      throw mapStreamError(error);
+    }
+  }
+
+  public async *replayStream(
+    executionId: string,
+    afterSequence?: number,
+  ): AsyncIterable<AgentStreamEvent> {
+    this.#ensureOpen();
+    if (typeof executionId !== 'string' || executionId.trim() === '') {
+      throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'replayStream requires a non-empty executionId.');
+    }
+    yield* mapReplayStream(executionId.trim(), this.#platform.streamLog, afterSequence);
+  }
+
+  public async approve(approvalId: string): Promise<void> {
+    this.#ensureOpen();
+    if (typeof approvalId !== 'string' || approvalId.trim() === '') {
+      throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'approve requires a non-empty approvalId.');
+    }
+    await this.#platform.hitl.approve(approvalId.trim());
+  }
+
+  public async reject(approvalId: string, reason?: string): Promise<void> {
+    this.#ensureOpen();
+    if (typeof approvalId !== 'string' || approvalId.trim() === '') {
+      throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'reject requires a non-empty approvalId.');
+    }
+    await this.#platform.hitl.reject(approvalId.trim(), reason);
+  }
+
+  public async resume(executionId: string): Promise<AgentResult> {
+    this.#ensureOpen();
+    if (typeof executionId !== 'string' || executionId.trim() === '') {
+      throw new SimpleAgentError('AGENT_INVALID_CONFIG', 'resume requires a non-empty executionId.');
+    }
+    const record = await this.#platform.hitl.requireApproved(executionId.trim());
+    this.#platform.setResumeApproval({
+      approvalId: record.approvalId,
+      toolLoop: record.toolLoop,
+      messages: record.messages,
+      binding: record.binding,
+    });
+    try {
+      return await this.#invokeObjective(record.objective);
+    } finally {
+      this.#platform.setResumeApproval(undefined);
+    }
+  }
+
+  public async close(): Promise<void> {
+    if (this.#closed) return;
+    this.#closed = true;
+    await this.#platform.dispose();
+  }
+
+  async #invokeObjective(objective: string): Promise<AgentResult> {
     const startedAt = Date.now();
     try {
       const correlationId = `correlation:${crypto.randomUUID()}`;
@@ -52,45 +141,6 @@ class SimpleAgent implements Agent {
     } catch (error) {
       throw mapInvokeError(error);
     }
-  }
-
-  public async *stream(input: string): AsyncIterable<AgentStreamEvent> {
-    this.#ensureOpen();
-    const objective = normalizeInput(input);
-    try {
-      const correlationId = `correlation:${crypto.randomUUID()}`;
-      const secured = await this.#platform.security.authorizeInvoke({
-        scope: this.#platform.scope,
-        agentId: this.#platform.agentId,
-        agentPrincipalId: this.#platform.agentPrincipalId,
-        correlationId,
-      });
-      const request = buildInvocationRequest({
-        platform: this.#platform,
-        objective,
-        correlationId,
-        authorization: secured.authorization,
-        securityContextReference: secured.securityContextReference,
-      });
-      const acceptance = await this.#platform.framework.invokeStream(request);
-      const runtimeStream = this.#platform.runtimePort.getStream(acceptance.runtimeExecutionReference);
-      if (runtimeStream === undefined) {
-        throw new SimpleAgentError(
-          'AGENT_STREAM_FAILED',
-          'Agent stream handoff completed but no stream was available.',
-          acceptance.runtimeExecutionReference,
-        );
-      }
-      yield* mapRuntimeStream(acceptance.runtimeExecutionReference, runtimeStream);
-    } catch (error) {
-      throw mapStreamError(error);
-    }
-  }
-
-  public async close(): Promise<void> {
-    if (this.#closed) return;
-    this.#closed = true;
-    await this.#platform.dispose();
   }
 
   #ensureOpen(): void {
@@ -141,9 +191,28 @@ function createAgentSyncFacade(normalized: ReturnType<typeof normalizeCreateAgen
       const ready = await ensurePlatform();
       return new SimpleAgent(ready).invoke(input);
     },
-    async *stream(input: string): AsyncIterable<AgentStreamEvent> {
+    async *stream(input: string, options?: StreamOptions): AsyncIterable<AgentStreamEvent> {
       const ready = await ensurePlatform();
-      yield* new SimpleAgent(ready).stream(input);
+      yield* new SimpleAgent(ready).stream(input, options);
+    },
+    async *replayStream(
+      executionId: string,
+      afterSequence?: number,
+    ): AsyncIterable<AgentStreamEvent> {
+      const ready = await ensurePlatform();
+      yield* new SimpleAgent(ready).replayStream(executionId, afterSequence);
+    },
+    async approve(approvalId: string): Promise<void> {
+      const ready = await ensurePlatform();
+      await new SimpleAgent(ready).approve(approvalId);
+    },
+    async reject(approvalId: string, reason?: string): Promise<void> {
+      const ready = await ensurePlatform();
+      await new SimpleAgent(ready).reject(approvalId, reason);
+    },
+    async resume(executionId: string): Promise<AgentResult> {
+      const ready = await ensurePlatform();
+      return new SimpleAgent(ready).resume(executionId);
     },
     async close(): Promise<void> {
       if (closed) return;
@@ -216,6 +285,8 @@ function mapInitError(error: unknown): SimpleAgentError {
 
 function mapInvokeError(error: unknown): SimpleAgentError {
   if (error instanceof SimpleAgentError) return error;
+  const approval = extractApprovalRequiredError(error);
+  if (approval !== undefined) return approval;
   const fromCause = extractSimpleAgentFromCause(error);
   if (fromCause !== undefined) return fromCause;
   if (error instanceof AgentError) {
@@ -241,6 +312,8 @@ function mapInvokeError(error: unknown): SimpleAgentError {
 
 function mapStreamError(error: unknown): SimpleAgentError {
   if (error instanceof SimpleAgentError) return error;
+  const approval = extractApprovalRequiredError(error);
+  if (approval !== undefined) return approval;
   const fromCause = extractSimpleAgentFromCause(error);
   if (fromCause !== undefined) return fromCause;
   if (error instanceof AgentError) {
@@ -268,6 +341,30 @@ function extractSimpleAgentFromCause(error: unknown): SimpleAgentError | undefin
   let current: unknown = error;
   while (current instanceof Error) {
     if (current instanceof SimpleAgentError) return current;
+    current = current.cause;
+  }
+  return undefined;
+}
+
+function extractApprovalRequiredError(error: unknown): SimpleAgentError | undefined {
+  let current: unknown = error;
+  while (current instanceof Error) {
+    if (current instanceof SimpleAgentError && current.code === 'AGENT_TOOL_APPROVAL_REQUIRED') {
+      return current;
+    }
+    const name = current.name;
+    const code = (current as { code?: string }).code;
+    if (name === 'EmbeddedApprovalRequiredError' || code === 'TOOL_APPROVAL_REQUIRED') {
+      const approvalId =
+        (current as { approvalId?: string }).approvalId ??
+        (current as { diagnosticId?: string }).diagnosticId;
+      const executionId = (current as { executionId?: string }).executionId;
+      return new SimpleAgentError('AGENT_TOOL_APPROVAL_REQUIRED', current.message, approvalId, {
+        cause: current,
+        ...(approvalId === undefined ? {} : { approvalId }),
+        ...(executionId === undefined ? {} : { executionId }),
+      });
+    }
     current = current.cause;
   }
   return undefined;

@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "TypeScript agents you can ship this week — with a clean path to production controls when you need them. Simple Agent API (createAgent) plus advanced Agent Framework.",
   "type": "module",
   "main": "dist/index.js",
@@ -62,7 +62,9 @@
   },
   "peerDependencies": {
     "@agentprodready/ai-provider-openai": "^1.0.2",
-    "@agentprodready/ai-provider-anthropic": "^1.0.0"
+    "@agentprodready/ai-provider-anthropic": "^1.0.0",
+    "@agentprodready/ai-provider-gemini": "^1.0.0",
+    "@agentprodready/persistence-postgres": "^1.0.0"
   },
   "peerDependenciesMeta": {
     "@agentprodready/ai-provider-openai": {
@@ -70,11 +72,18 @@
     },
     "@agentprodready/ai-provider-anthropic": {
       "optional": true
+    },
+    "@agentprodready/ai-provider-gemini": {
+      "optional": true
+    },
+    "@agentprodready/persistence-postgres": {
+      "optional": true
     }
   },
   "devDependencies": {
     "@agentprodready/ai-provider-openai": "workspace:*",
-    "@agentprodready/ai-provider-anthropic": "workspace:*"
+    "@agentprodready/ai-provider-anthropic": "workspace:*",
+    "@agentprodready/ai-provider-gemini": "workspace:*"
   },
   "license": "MIT",
   "publishConfig": {

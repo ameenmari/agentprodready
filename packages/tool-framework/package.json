@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/tool-framework",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Tool calling framework for AgentProdReady — contracts, validation, and invocation with fail-closed authorization boundaries.",
   "type": "module",
   "main": "dist/index.js",

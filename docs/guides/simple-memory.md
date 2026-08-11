@@ -14,10 +14,10 @@ Production-oriented architecture with a young ecosystem.
 | Instance-scoped | One `createAgent` instance; not shared with other agents |
 | Ephemeral | Cleared on process exit or `agent.close()` |
 | MemoryEngine-backed | Uses the existing MemoryEngine + in-memory provider |
-| Not durable | No Postgres / restart persistence |
+| Not durable | No Postgres / restart persistence (use `fileMemory` / `postgresMemory` for that) |
 | Not model intelligence | Retrieval/injection ≠ the model answering from memory |
 
-Durable memory requires the advanced Memory + Persistence path (see [memory.md](./memory.md)).
+Durable Simple Memory is available in v1.6 — see [Durable Memory](./durable-memory.md). The advanced Memory + Persistence path remains in [memory.md](./memory.md).
 
 ## Memory retrieval ≠ model intelligence
 
@@ -82,8 +82,11 @@ See [`examples/memory-agent`](../../examples/memory-agent).
 
 `inMemory({ namespace: "demo" })` namespaces memory within an instance.
 
+Same for `fileMemory({ directory, namespace })` and `postgresMemory({ connectionString, namespace })`.
+
 ## Related
 
 - [Simple Agent API](./simple-agent-api.md)
+- [Durable Memory](./durable-memory.md)
 - [Memory (advanced)](./memory.md)
 - [Adopting AgentProdReady](./adopting-agentprodready.md)

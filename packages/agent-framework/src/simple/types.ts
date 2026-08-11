@@ -9,6 +9,7 @@ export type AgentModel =
   | { readonly provider: 'reference'; readonly modelId: 'reference' }
   | { readonly provider: 'openai'; readonly modelId: string }
   | { readonly provider: 'anthropic'; readonly modelId: string }
+  | { readonly provider: 'gemini'; readonly modelId: string }
   | {
       readonly provider: 'openai-compatible';
       readonly modelId: string;
@@ -25,6 +26,7 @@ export interface CreateAgentOptions {
   readonly name?: string;
   readonly description?: string;
   readonly tools?: readonly SimpleTool[];
+  /** `true` ≡ ephemeral `inMemory()`. Use `fileMemory` / `postgresMemory` for durable recall. */
   readonly memory?: true | SimpleMemory;
 }
 
@@ -95,8 +97,21 @@ export type AgentStreamEvent =
   | { readonly type: 'usage'; readonly usage: AgentUsage }
   | { readonly type: 'complete'; readonly executionId: string };
 
+export interface StreamOptions {
+  /** Exclusive lower bound — replay persisted events with sequence greater than this value. */
+  readonly resumeFrom?: number;
+}
+
 export interface Agent {
   invoke(input: string): Promise<AgentResult>;
-  stream(input: string): AsyncIterable<AgentStreamEvent>;
+  stream(input: string, options?: StreamOptions): AsyncIterable<AgentStreamEvent>;
+  /** Replay persisted stream events only (no live tail). */
+  replayStream(executionId: string, afterSequence?: number): AsyncIterable<AgentStreamEvent>;
+  /** Approve a parked tool call (Amendment D / durable HITL). */
+  approve(approvalId: string): Promise<void>;
+  /** Reject a parked tool call. */
+  reject(approvalId: string, reason?: string): Promise<void>;
+  /** Resume an execution after approve(...). */
+  resume(executionId: string): Promise<AgentResult>;
   close(): Promise<void>;
 }

@@ -84,10 +84,34 @@ You do not configure those systems for the simple path. Advanced Tool Framework 
 
 Raw arguments and results are **not** included by default.
 
+## Approvals (HITL)
+
+`approvalRequirement: "required"` parks execution and throws `AGENT_TOOL_APPROVAL_REQUIRED` with `approvalId` and `executionId`.
+
+```js
+import { SimpleAgentError } from "@agentprodready/agent-framework";
+
+try {
+  await agent.invoke("...");
+} catch (error) {
+  if (error instanceof SimpleAgentError && error.code === "AGENT_TOOL_APPROVAL_REQUIRED") {
+    await agent.approve(error.approvalId);
+    await agent.resume(error.executionId);
+  }
+}
+```
+
+See [HITL Approval](./hitl-approval.md).
+
+## Idempotency ledger
+
+Tools marked `idempotency: "idempotent"` consult a durable ledger (when configured) so repeated invocations with the same key return the cached result without a second adapter call.
+
+This is exactly-once-**capable** for idempotent tools only. **Non-idempotent** external side effects are **not** exactly-once.
+
 ## Limitations
 
-- `approvalRequirement: "required"` **fails closed** (no durable HITL wait)
-- External side effects are **not** exactly-once
+- External side effects on **non-idempotent** tools are **not** exactly-once
 - Simple mode is **not** production multi-tenant HTTP authentication
 - Reference provider tool demos use `USE_TOOL:<name>:<json>` for deterministic CI
 
@@ -95,4 +119,5 @@ Raw arguments and results are **not** included by default.
 
 - [Simple Agent API](./simple-agent-api.md)
 - [Simple Memory](./simple-memory.md)
+- [HITL Approval](./hitl-approval.md)
 - [Tools (advanced)](./tools.md)

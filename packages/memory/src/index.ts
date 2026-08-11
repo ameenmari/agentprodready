@@ -69,6 +69,7 @@ function deepFreeze<T>(value:T):T{if(typeof value==='object'&&value!==null&&!Obj
 export * from './reference.js';
 export * from './memory-id.js';
 export { PersistenceBackedMemoryProvider } from './persistence-backed-memory-provider.js';
+export { FileBackedMemoryProvider } from './file-backed-memory-provider.js';
 export { VectorMemoryIndexProvider, type VectorMemoryIndexProviderOptions } from './vector-memory-index-provider.js';
 export {
   VectorCapableMemorySearchProvider,

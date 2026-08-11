@@ -1,9 +1,12 @@
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { EmbeddedMemorySession, formatMemoryForPrompt, inMemory } from './memory.js';
+import { EmbeddedMemorySession, fileMemory, formatMemoryForPrompt, inMemory } from './memory.js';
 
 describe('EmbeddedMemorySession', () => {
   it('recalls prior turns in retrieveForPrompt', async () => {
-    const session = new EmbeddedMemorySession('agent-test-1', inMemory());
+    const session = await EmbeddedMemorySession.create('agent-test-1', inMemory());
     try {
       await session.rememberTurn({
         executionId: 'exec-1',
@@ -28,8 +31,8 @@ describe('EmbeddedMemorySession', () => {
   });
 
   it('isolates memory between agent sessions', async () => {
-    const sessionA = new EmbeddedMemorySession('agent-a', inMemory({ namespace: 'a' }));
-    const sessionB = new EmbeddedMemorySession('agent-b', inMemory({ namespace: 'b' }));
+    const sessionA = await EmbeddedMemorySession.create('agent-a', inMemory({ namespace: 'a' }));
+    const sessionB = await EmbeddedMemorySession.create('agent-b', inMemory({ namespace: 'b' }));
     try {
       await sessionA.rememberTurn({
         executionId: 'exec-a',
@@ -53,7 +56,7 @@ describe('EmbeddedMemorySession', () => {
   });
 
   it('rejects use after dispose', async () => {
-    const session = new EmbeddedMemorySession('agent-dispose', inMemory());
+    const session = await EmbeddedMemorySession.create('agent-dispose', inMemory());
     await session.dispose();
     await expect(
       session.retrieveForPrompt({
@@ -63,5 +66,40 @@ describe('EmbeddedMemorySession', () => {
         decisionId: 'decision-x',
       }),
     ).rejects.toMatchObject({ code: 'AGENT_CLOSED' });
+  });
+
+  it('survives process restart with file-backed durable memory', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'agent-memory-'));
+    const memory = fileMemory({ directory, namespace: 'restart-test' });
+    const agentId = 'agent-file-durable';
+    try {
+      const sessionA = await EmbeddedMemorySession.create(agentId, memory);
+      await sessionA.rememberTurn({
+        executionId: 'exec-file-1',
+        correlationId: 'corr-file-1',
+        decisionId: 'decision-file-1',
+        userInput: 'Remember the code word: horizon.',
+        assistantText: 'I will remember horizon.',
+      });
+      await sessionA.dispose();
+
+      const sessionB = await EmbeddedMemorySession.create(agentId, memory);
+      try {
+        expect(sessionB.durable).toBe(true);
+        const retrieval = await sessionB.retrieveForPrompt({
+          executionId: 'exec-file-2',
+          correlationId: 'corr-file-2',
+          query: 'code word',
+          decisionId: 'decision-file-2',
+        });
+        const block = formatMemoryForPrompt(retrieval, true);
+        expect(block).toMatch(/Durable agent memory/);
+        expect(block).toMatch(/horizon/);
+      } finally {
+        await sessionB.dispose();
+      }
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });

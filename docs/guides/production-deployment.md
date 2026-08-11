@@ -65,10 +65,9 @@ Supply a real auth adapter before exposing HTTP beyond trusted networks. See [se
 ## Known limitations
 
 - No distributed Runtime / multi-region / leader election
-- No exactly-once external tool effects
-- No durable HITL approval wait (fail-closed `TOOL_APPROVAL_REQUIRED`)
-- No SSE reconnect / stream replay
-- Provider catalog today: reference + OpenAI + OpenAI-compatible (Anthropic not implemented)
+- No exactly-once external tool effects for **non-idempotent** tools (idempotent + ledger: exactly-once-**capable**)
+- HTTP host SSE reconnect / resume tokens not shipped (Simple library replay available — see [stream-replay.md](./stream-replay.md))
+- Provider catalog: reference + OpenAI + OpenAI-compatible + Anthropic + Gemini
 - Operator-managed migrations
 - No hosted management UI
 - Single reference-agent HTTP product surface

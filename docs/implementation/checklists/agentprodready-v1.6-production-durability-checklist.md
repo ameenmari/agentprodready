@@ -1,0 +1,25 @@
+# Checklist — v1.6 Production Durability
+
+- [x] Autonomous mode + plan/spec + Amendment D reference
+- [x] `fileMemory({ directory })` + `FileBackedMemoryProvider` — restart survives retrieve
+- [x] `postgresMemory({ connectionString })` — Persistence-backed path
+- [x] `memory: true` / `inMemory()` remain ephemeral (no silent upgrade)
+- [x] Amendment D — `awaiting-approval` tool-loop stage
+- [x] Simple HITL — `approve` / `reject` / `resume`
+- [x] `AGENT_TOOL_APPROVAL_REQUIRED` includes `approvalId` + `executionId`
+- [x] `StreamEventLog` + `stream(input, { resumeFrom })` + `replayStream(executionId, afterSequence?)`
+- [x] `ToolIdempotencyLedger` — idempotent tools exactly-once-**capable**; non-idempotent honesty preserved
+- [x] `@agentprodready/ai-provider-gemini@1.0.0` + Simple `gemini(modelId)` + `GEMINI_API_KEY`
+- [x] Unit / integration tests (memory restart, HITL, stream replay, ledger, Gemini translate)
+- [x] README limitations → v1.6 capability table + remaining non-claims
+- [x] ROADMAP — durable memory/HITL, stream replay, Gemini → Shipped
+- [x] CHANGELOG `1.6.0` section
+- [x] Guides: durable-memory, hitl-approval, stream-replay, gemini; simple-memory/tools/streaming updates
+- [x] docs/README.md links + product doc
+- [x] Package READMEs (agent-framework, human-interaction, runtime, memory, tool-framework, ai-provider-gemini)
+- [x] adopting / upgrading / security / production-deployment / embed / operations — stale blockers removed
+- [x] Selective version bumps: agent-framework 1.6.0; runtime/memory/tool-framework/human-interaction 1.1.0; ai-provider-gemini 1.0.0
+- [x] Implementation report + checklist (this file)
+- [x] `pnpm verify-versioning` green
+- [x] `pnpm verify` green
+- [x] `pnpm test:public-dx` green

@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Status** | Production contracts published (`1.0.x`) |
+| **Status** | Production contracts published (`1.1.x`) |
 | **Install** | `npm install @agentprodready/runtime` |
 | **Module** | ESM |
 | **License** | MIT |
@@ -34,7 +34,8 @@ npm install @agentprodready/agent-framework @agentprodready/composition @agentpr
 | **Checkpoints** | Durable `ExecutionCheckpointPort` for restart safety |
 | **Recovery** | `recoverIncomplete` with `resume-if-safe` defaults |
 | **Streaming** | `executeStream` → deltas + exactly one terminal event |
-| **Tool-loop checkpoints** | Optional multi-turn tool state for agent tool calling |
+| **Tool-loop checkpoints** | Optional multi-turn tool state (`pre-tool` / `post-tool` / `awaiting-approval`) |
+| **Stream event log** | Durable `StreamEventLog` for Simple replay (`resumeFrom` / `replayStream`) |
 | **Provider failover ledger** | Attempt tracking for multi-provider routing (host-wired) |
 | **Ports, not vendors** | No OpenAI / Postgres imports in this package |
 
@@ -112,8 +113,16 @@ Guide: [Streaming](https://github.com/ameenmari/agentprodready/blob/main/docs/gu
 
 ## Tool-loop checkpoints
 
-Additive `ExecutionCheckpoint.toolLoop` for multi-turn tool calling (`pre-tool` / `post-tool`).  
-Guide: [Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/tools.md)
+Additive `ExecutionCheckpoint.toolLoop` for multi-turn tool calling (`pre-tool` / `post-tool` / `awaiting-approval`).  
+Guide: [Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/tools.md) · [HITL Approval](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/hitl-approval.md)
+
+---
+
+## Stream event log
+
+`StreamEventLog` appends normalized stream events during execution. Simple `stream({ resumeFrom })` and `replayStream(executionId)` read from this log.
+
+Guide: [Stream Replay](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/stream-replay.md)
 
 ---
 

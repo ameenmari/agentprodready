@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Status** | Production contracts published (`1.0.x`) |
+| **Status** | Production contracts published (`1.1.x`) |
 | **Install** | `npm install @agentprodready/tool-framework` |
 | **Module** | ESM |
 | **License** | MIT |
@@ -29,6 +29,7 @@ npm install @agentprodready/agent-framework @agentprodready/runtime @agentprodre
 | Tool contracts | Stable describe / execute shapes |
 | Approval requirement | `none` \| `required` per tool |
 | AbortSignal | Cooperative cancellation |
+| Idempotency ledger | Durable cache for `idempotent` tools — exactly-once-**capable** when ledger hits |
 | Lifecycle facts | requested → authorized/denied → started → completed/failed/cancelled |
 | Reference tools | `reference.echo`, `reference.counter` |
 | Typed errors | e.g. `TOOL_APPROVAL_REQUIRED`, `TOOL_CANCELLED` |
@@ -60,6 +61,8 @@ declare const echoTool: ToolContract;
 
 Full host loop (Security → Cap Resolution → Runtime checkpoints):  
 [Tools guide](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/tools.md)
+
+Idempotent tools consult `ToolIdempotencyLedger` before adapter invoke. Non-idempotent external effects are **not** exactly-once.
 
 Enable tools on the reference host with `TOOLS_ENABLED=true`.
 

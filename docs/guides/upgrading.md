@@ -1,4 +1,24 @@
-# Upgrading v0.9 → v1.0
+# Upgrading
+
+## v1.5 → v1.6 (Production Durability)
+
+Additive Simple API — no breaking changes to `createAgent` / `invoke` / `stream` / `close`.
+
+| Feature | Adoption |
+|---|---|
+| Durable memory | Replace `memory: true` with `fileMemory({ directory })` or `postgresMemory({ connectionString })` when you need restart safety |
+| HITL | Catch `AGENT_TOOL_APPROVAL_REQUIRED`, call `approve` + `resume` |
+| Stream replay | Pass `{ resumeFrom }` to `stream()`; use `replayStream(executionId)` for log-only replay |
+| Idempotent tools | Set `idempotency: "idempotent"`; configure durable ledger via `fileMemory` directory |
+| Gemini | `npm install @agentprodready/ai-provider-gemini`, `gemini(modelId)`, `GEMINI_API_KEY` |
+
+`memory: true` / `inMemory()` remain ephemeral by design.
+
+Packages: `@agentprodready/agent-framework@1.6.0`; `@agentprodready/runtime`, `memory`, `tool-framework`, `human-interaction` at **1.1.0**; `@agentprodready/ai-provider-gemini@1.0.0`.
+
+---
+
+## v0.9 → v1.0
 
 The v0.9 → v1.0 path is **non-destructive**. Existing Persistence and vector data remain valid; no forced wipe.
 
@@ -26,7 +46,7 @@ The v0.9 → v1.0 path is **non-destructive**. Existing Persistence and vector d
 
 - Embedding / `VECTOR_INDEX_PROFILE` changes (fail closed; rebuild deliberately)
 - Production auth (you must supply a real adapter)
-- Deferred features (durable HITL wait, SSE replay, third AI vendor SDKs)
+- Deferred features (HTTP host SSE reconnect tokens, Bedrock / Azure native SDKs, distributed Runtime)
 
 ## Rollback
 
