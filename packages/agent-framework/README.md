@@ -6,7 +6,17 @@ Production-oriented architecture with a young ecosystem.
 
 **Simple Agent API:** `createAgent` · `reference()` · `openai()` · `openaiCompatible()` · `anthropic()` · `gemini()` · `tool()` · `inMemory()` · `fileMemory()` · `postgresMemory()` · `invoke()` · `stream()` · `replayStream()` · `approve()` · `reject()` · `resume()` · `close()`
 
-Guides: [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [Gemini](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/gemini.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) · [Durable Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/durable-memory.md) · [HITL Approval](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/hitl-approval.md) · [Stream Replay](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/stream-replay.md)
+**What this package is:** an **agent + Runtime execution** entrance — **not** a graph DSL. Full evaluator FAQ: [What is AgentProdReady?](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/what-is-agentprodready.md).
+
+| Question | Short answer |
+|---|---|
+| Core abstraction | `createAgent` agent loop over Runtime — not LangGraph-style graphs |
+| Durable state | Runtime checkpoints; `fileMemory` / `postgresMemory`; HITL park/resume; stream replay (`memory: true` stays ephemeral) |
+| Retries / idempotency / HITL | Runtime owns retries; tool idempotency + ledger; `approve` / `reject` / `resume` |
+| Provider routing | Simple helpers pick one model; hosts use Capability Resolution failover |
+| “Production ready” | Architecture for production controls; **young ecosystem** — not a huge-fleet claim |
+
+Guides: [What is AgentProdReady?](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/what-is-agentprodready.md) · [Getting Started](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/getting-started.md) · [Simple Diagnostics](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-diagnostics.md) · [Anthropic](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/anthropic.md) · [Gemini](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/gemini.md) · [OpenAI-compatible](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/openai-compatible.md) · [Simple Tools](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-tools.md) · [Simple Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/simple-memory.md) · [Durable Memory](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/durable-memory.md) · [HITL Approval](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/hitl-approval.md) · [Stream Replay](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/stream-replay.md)
 
 Star / contribute: [ameenmari/agentprodready](https://github.com/ameenmari/agentprodready)
 

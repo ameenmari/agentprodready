@@ -11,6 +11,33 @@ Production-oriented architecture with a young ecosystem.
 
 For **TypeScript / Node.js backend developers** embedding AI agents into existing applications — without giving up production controls later.
 
+**Start here if you are evaluating the project:** [What is AgentProdReady?](docs/guides/what-is-agentprodready.md) — core abstraction, durability, retries/HITL, provider routing, and what “production-oriented” does and does not mean.
+
+---
+
+## Core model (30 seconds)
+
+| Question | Answer |
+|---|---|
+| **Abstraction** | **Agent + Runtime execution** — `createAgent` / `invoke` / `stream` + tools. **Not** a graph DSL (LangGraph-style) as the primary API. |
+| **Durable state** | Runtime **checkpoints** + optional `fileMemory` / `postgresMemory`, HITL park/resume, stream replay. `memory: true` stays ephemeral. |
+| **Retries / idempotency / HITL** | Runtime owns retries; tools declare idempotency (+ ledger for idempotent); `approve` / `reject` / `resume` for required approvals. |
+| **Provider routing** | Simple helpers pick one model; hosts use **Capability Resolution** ordered failover (no separate `AiRouter`). |
+| **“Production ready”** | Means **architecture for production controls**, not “large known production fleet.” Young ecosystem — honest about that. |
+
+<details>
+<summary>How it fits together</summary>
+
+```text
+createAgent  →  Runtime (timeout / checkpoint / recover / stream)
+                    ↓
+               Security (authorize)
+                    ↓
+        Capability Resolution → AI Provider | Tools | Memory
+```
+
+</details>
+
 <p align="center">
   <img src="docs/community/assets/demo.svg" alt="AgentProdReady terminal demo — createAgent invoke" width="920" />
 </p>
@@ -60,13 +87,15 @@ Also: `stream()` / stream replay, `reference()` (zero API key), `openaiCompatibl
 ## Why AgentProdReady?
 
 - **Simple Agent API** — `createAgent`, `invoke`, `stream`, `close`
-- **Tools with guardrails** — `tool()` with conservative defaults; fail-closed approvals
-- **Streaming** — embedded library streams (not HTTP SSE)
+- **Tools with guardrails** — `tool()` with conservative defaults; durable HITL approve/resume when required
+- **Streaming** — embedded library streams + replay (`resumeFrom` / `replayStream`)
 - **Memory** — ephemeral `memory: true` / `inMemory()` for the weekend path; `fileMemory()` / `postgresMemory()` when you need durability
 - **OpenAI + OpenAI-compatible + Anthropic + Gemini** — first-class helpers; credential isolation for gateways
 - **Production controls when needed** — Runtime, Security, Capability Resolution, recovery — without rewriting your entrance API story
 
 Secondary tagline: *Build an agent in minutes. Add production controls when you need them.*
+
+Fair comparison: [Why AgentProdReady](docs/guides/why-agentprodready.md) · evaluator FAQ: [What is AgentProdReady?](docs/guides/what-is-agentprodready.md).
 
 ---
 

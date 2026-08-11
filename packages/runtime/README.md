@@ -2,6 +2,8 @@
 
 **Operational execution engine for AgentProdReady** — run work, cancel it, checkpoint it, recover it, and stream results.
 
+This is the **core execution abstraction** behind `createAgent`: Runtime owns timeout, retry, cancellation, checkpoints, recovery, and streaming — not a graph engine. See [What is AgentProdReady?](https://github.com/ameenmari/agentprodready/blob/main/docs/guides/what-is-agentprodready.md).
+
 | | |
 |---|---|
 | **Status** | Production contracts published (`1.1.x`) |

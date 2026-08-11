@@ -4,20 +4,21 @@ AgentProdReady uses **selective versioning**: packages bump only when their publ
 
 Production-oriented architecture with a young ecosystem.
 
-## Current published/repo line (v1.4 Anthropic)
+## Current published/repo line (v1.6 Production Durability + clarity)
 
 | Package | Version | Notes |
 |---|---|---|
-| `@agentprodready/agent-framework` | **1.4.0** | Simple Agent API + `anthropic()` (publish pending) |
-| `@agentprodready/ai-provider-anthropic` | **1.0.0** | Anthropic Messages adapter (`anthropic-ai`) |
-| `create-agentprodready` | **0.1.1** | Scaffold pins framework `^1.4.0` |
-| `@agentprodready/ai-provider` | **1.0.2** | Reference adapter supports deterministic `USE_TOOL:<name>:<json>` |
-| `@agentprodready/ai-provider-openai` | **1.0.2** | Optional peer for `openai()` / `openaiCompatible()` |
-| `@agentprodready/runtime` | 1.0.1 | Selective bump |
-| `@agentprodready/memory` | 1.0.1 | Selective bump |
-| `@agentprodready/tool-framework` | 1.0.1 | Selective bump |
-| `@agentprodready/security` | 1.0.1 | Selective bump |
-| Most other `@agentprodready/*` | **1.0.0** | Baseline synchronized public release |
+| `@agentprodready/agent-framework` | **1.6.1** | Simple Agent API + durability + evaluator FAQ on npm README |
+| `@agentprodready/ai-provider-gemini` | **1.0.1** | Gemini adapter (`gemini-ai`) |
+| `@agentprodready/ai-provider-anthropic` | **1.0.2** | Anthropic Messages adapter (`anthropic-ai`) |
+| `create-agentprodready` | see package | Scaffold — prefer `^1.6.0` for framework |
+| `@agentprodready/ai-provider` | **1.0.3** | Reference adapter supports deterministic `USE_TOOL:<name>:<json>` |
+| `@agentprodready/ai-provider-openai` | **1.0.4** | Optional peer for `openai()` / `openaiCompatible()` |
+| `@agentprodready/runtime` | **1.1.1** | Checkpoints, recovery, stream event log, awaiting-approval |
+| `@agentprodready/memory` | **1.1.0** | Includes file-backed Simple memory provider |
+| `@agentprodready/tool-framework` | **1.1.0** | Idempotency ledger |
+| `@agentprodready/human-interaction` | **1.1.0** | HITL contracts |
+| Most other `@agentprodready/*` | **1.0.x** | Selective patches; not lockstep |
 
 `@agentprodready/platform-host` is **private** (not an npm library).
 

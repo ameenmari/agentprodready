@@ -6,14 +6,16 @@ Guide for engineering leads evaluating AgentProdReady for a real project.
 
 This document is candid by design. It is not a sales pitch.
 
+**Read first:** [What is AgentProdReady?](./what-is-agentprodready.md) — answers abstraction, durability, retries/HITL, provider routing, and what the name claims.
+
 ---
 
 ## When AgentProdReady is a good fit
 
 - You want a **modular agent platform** with explicit ownership (Runtime, Security, Composition, Capability Resolution).
-- You need a **simple entrance** (`createAgent`) and a path to production controls later.
-- You prefer **provider-independent** contracts (reference + OpenAI today; adapters behind Capability Resolution).
-- You can run **Node.js 24** (`>=24 <25` today) and accept an **ESM-first** library.
+- You need a **simple entrance** (`createAgent`) and a path to production controls later — **without** adopting a graph DSL as the primary API.
+- You prefer **provider-independent** contracts (reference + OpenAI + OpenAI-compatible + Anthropic + Gemini today; adapters behind Capability Resolution).
+- You can run **Node.js `>=22 <25`** and accept an **ESM-first** library.
 - You are willing to own **production HTTP authentication** and multi-tenant security integration for internet-facing services.
 
 ## When it is not a good fit
@@ -24,6 +26,7 @@ This document is candid by design. It is not a sales pitch.
 - You need a large **provider catalog** or a mature multi-vendor ecosystem with broad external adoption evidence immediately.
 - You need multi-maintainer / foundation-backed governance guarantees.
 - You cannot accept a **young ecosystem** (limited public adoption evidence).
+- Your primary requirement is a **graph-first** orchestration framework with a large existing graph ecosystem.
 
 ---
 
@@ -31,21 +34,21 @@ This document is candid by design. It is not a sales pitch.
 
 | Path | Use when |
 |---|---|
-| **Simple** — `createAgent` / `reference` / `openai` / `invoke` / `stream` / `close` | Local apps, CLIs, prototypes, embedded features, learning |
+| **Simple** — `createAgent` / helpers / `invoke` / `stream` / `approve`/`resume` / `close` | Local apps, CLIs, prototypes, embedded features, learning |
 | **Advanced** — `AgentFramework`, Runtime, Composition, Security, Memory, Tools, Evaluation | Production hosts, multi-tenant services, custom policies, recovery, routing |
 
 Start simple. Move to advanced controls when requirements demand them. Advanced APIs are **not** deprecated by the Simple Agent API.
 
-Package: [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) (current line **1.6.x** — Production Durability in **1.6.0**).
+Package: [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) (current line **1.6.x** — Production Durability in **1.6.0**+).
 
 ---
 
 ## Architecture ownership (overview)
 
-- **Runtime** — operational execution, timeout, retry, cancellation, streaming execution
+- **Runtime** — operational execution, timeout, retry, cancellation, checkpoints, recovery, streaming execution
 - **Security** — authorization decisions
 - **Composition** — instantiation / wiring
-- **Capability Resolution** — implementation selection
+- **Capability Resolution** — implementation selection (including optional provider failover)
 - **AI Provider** — vendor-neutral normalization
 - **Agent Framework** — agent definition, lifecycle, handoff; Simple Agent API assembles these for embedded use
 
@@ -68,6 +71,7 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 - Contracts are vendor-neutral.
 - Shipped adapters today: **reference**, **OpenAI**, **OpenAI-compatible**, **Anthropic**, **Gemini**.
 - Selection goes through Capability Resolution — not hard-coded vendor SDKs in application contracts.
+- Host failover: [multi-provider-routing.md](./multi-provider-routing.md).
 
 ---
 
@@ -78,19 +82,16 @@ Ownership is documented in blueprints/ADRs for contributors. Evaluators do not n
 - Runtime timeout / retry / cancellation ownership
 - Checkpoint-oriented recovery paths (opt-in / configured)
 - Streaming execution with explicit cancellation
-- Tenant isolation tests for the reference composition
-
-**What exists (v1.6 Simple path)**
-
-- Durable Simple Memory (`fileMemory` / `postgresMemory`)
+- Simple durable memory / HITL / stream replay (v1.6)
 - HITL approve / reject / resume on embedded path
-- Stream replay (`resumeFrom` / `replayStream`) with durable event log
 - Idempotent tool ledger (exactly-once-**capable** for idempotent tools)
 
-**What is not guaranteed**
+**What is not claimed / not guaranteed**
 
 - Exactly-once external tool side effects for **non-idempotent** tools
-- HTTP host SSE reconnect / resume tokens
+- Large-scale production fleet evidence
+- Hosted multi-tenant SaaS semantics out of the box
+- HTTP host SSE reconnect / resume tokens (Simple library replay is available)
 - Distributed Runtime leader election / multi-node consensus
 
 ---
@@ -165,8 +166,10 @@ pnpm test:vector-search
 
 ## Next reading
 
+- [What is AgentProdReady?](./what-is-agentprodready.md)
 - [Getting Started](./getting-started.md)
 - [Simple Agent API](./simple-agent-api.md)
+- [Why AgentProdReady](./why-agentprodready.md)
 - [ROADMAP.md](../../ROADMAP.md)
 - [SECURITY.md](../../SECURITY.md)
 - [SUPPORT.md](../../SUPPORT.md)

@@ -4,7 +4,9 @@
 
 Production-oriented architecture with a young ecosystem.
 
-**New in v1.6 — Production Durability:** durable Simple Memory (`fileMemory` / `postgresMemory`), HITL approve/resume, stream replay, idempotent tool ledger, Gemini — on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) **1.6.0**.
+**New in v1.6 — Production Durability:** durable Simple Memory (`fileMemory` / `postgresMemory`), HITL approve/resume, stream replay, idempotent tool ledger, Gemini — on [`@agentprodready/agent-framework`](https://www.npmjs.com/package/@agentprodready/agent-framework) **1.6.x**.
+
+**Evaluating the project?** Start with [What is AgentProdReady?](guides/what-is-agentprodready.md) (abstraction, durability, retries/HITL, routing, maturity).
 
 **New in v1.2 — Simple Agent API:** chat (`createAgent`), tools (`tool()`), ephemeral memory (`memory: true` / `inMemory()`).
 
@@ -14,22 +16,23 @@ This directory contains product guides, architectural specification, implementat
 
 # Public navigation (start here)
 
-1. [Getting Started](guides/getting-started.md)
-2. [Simple Agent API](guides/simple-agent-api.md)
-3. [Why AgentProdReady](guides/why-agentprodready.md)
-4. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md) · [Simple Diagnostics](guides/simple-diagnostics.md)
-5. **v1.6 durability:** [Durable Memory](guides/durable-memory.md) · [HITL Approval](guides/hitl-approval.md) · [Stream Replay](guides/stream-replay.md) · [Gemini](guides/gemini.md) · [product doc](product/agentprodready-v1.6-production-durability.md)
-6. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
-7. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
-8. [Streaming](guides/streaming.md)
-9. [Security](guides/security.md)
-10. [Package compatibility](guides/package-compatibility.md)
-11. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
-12. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [package README standard](community/package-readme-standard.md) · [labels](community/labels.md)
-13. [Architecture index](architecture-index.md)
-14. [Blueprints](blueprints/) · [ADRs](adrs/)
+1. [What is AgentProdReady?](guides/what-is-agentprodready.md) ← evaluators start here
+2. [Getting Started](guides/getting-started.md)
+3. [Simple Agent API](guides/simple-agent-api.md)
+4. [Why AgentProdReady](guides/why-agentprodready.md)
+5. [Simple Tools](guides/simple-tools.md) · [Simple Memory](guides/simple-memory.md) · [Simple Diagnostics](guides/simple-diagnostics.md)
+6. **v1.6 durability:** [Durable Memory](guides/durable-memory.md) · [HITL Approval](guides/hitl-approval.md) · [Stream Replay](guides/stream-replay.md) · [Gemini](guides/gemini.md) · [product doc](product/agentprodready-v1.6-production-durability.md)
+7. [Examples](../examples/hello-agent) · [**backend-agent**](../examples/backend-agent) · [tools-agent](../examples/tools-agent) · [openai-compatible-agent](../examples/openai-compatible-agent)
+8. [Embed agent deployment](guides/embed-agent-deployment.md) · [Production Deployment](guides/production-deployment.md)
+9. [Streaming](guides/streaming.md)
+10. [Security](guides/security.md)
+11. [Package compatibility](guides/package-compatibility.md)
+12. [Adopting AgentProdReady](guides/adopting-agentprodready.md)
+13. [Community](community/content-plan.md) · [demo script](community/demo-script.md) · [package README standard](community/package-readme-standard.md) · [labels](community/labels.md)
+14. [Architecture index](architecture-index.md)
+15. [Blueprints](blueprints/) · [ADRs](adrs/)
 
-**Beginner path:** Getting Started → backend-agent → Why / Embed deploy → Architecture only if needed.
+**Beginner path:** What is AgentProdReady? → Getting Started → backend-agent → Why / Embed deploy → Architecture only if needed.
 
 Blueprints and ADRs are under **Architecture / Advanced** — you do not need them for hello-world.
 

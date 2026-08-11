@@ -2,6 +2,18 @@
 
 All notable AgentProdReady product releases are summarized here. Architecture blueprints (01–31) underpin these slices.
 
+## [1.6.1] — Evaluator clarity (docs / npm surface)
+
+Make the five “I can’t tell what this is” questions answerable from GitHub + npm:
+
+- Guide: [What is AgentProdReady?](docs/guides/what-is-agentprodready.md) — abstraction, durability, retries/HITL, provider routing, maturity meaning
+- Root README **Core model** table; updated Why / Adopting / docs index
+- `@agentprodready/agent-framework@1.6.1` — npm README + description clarify **agent + Runtime**, not a graph DSL
+- `@agentprodready/runtime@1.1.1` — README clarifies Runtime as the execution core behind `createAgent`
+- `create-agentprodready@0.1.5` — scaffold pins `@agentprodready/agent-framework@^1.6.0`
+
+No Simple API behavior change.
+
 ## [1.6.0] — Production Durability
 
 Durable Simple path without redefining `memory: true` or claiming impossible exactly-once for non-idempotent external tools:
