@@ -193,30 +193,24 @@ export function createTeam(config: TeamConfig): Team {
 }
 
 function normalizeConfig(config: TeamConfig): NormalizedTeamConfig {
-  if (config === null || typeof config !== 'object') {
-    throw new TeamError('TEAM_INVALID_CONFIG', 'createTeam requires a config object');
-  }
-  if (config.agents === null || typeof config.agents !== 'object') {
+  const agents = config.agents;
+  if (typeof agents !== 'object') {
     throw new TeamError('TEAM_INVALID_CONFIG', 'createTeam requires agents');
   }
   const order =
     config.order !== undefined
       ? [...config.order]
-      : Object.keys(config.agents);
+      : Object.keys(agents);
   if (order.length < 2) {
     throw new TeamError('TEAM_INVALID_CONFIG', 'createTeam requires at least two agents');
   }
   for (const id of order) {
-    if (config.agents[id] === undefined) {
+    const agent = agents[id];
+    if (agent === undefined) {
       throw new TeamError('TEAM_INVALID_CONFIG', `Agent missing for id: ${id}`);
     }
-    if (typeof config.agents[id]?.invoke !== 'function') {
+    if (typeof agent.invoke !== 'function') {
       throw new TeamError('TEAM_INVALID_CONFIG', `Agent "${id}" must implement invoke()`);
-    }
-  }
-  for (const id of Object.keys(config.agents)) {
-    if (!order.includes(id) && config.strategy !== 'supervisor') {
-      // allow extra agents only for supervisor-controlled routing
     }
   }
 
@@ -233,7 +227,7 @@ function normalizeConfig(config: TeamConfig): NormalizedTeamConfig {
   if (needsSupervisor || strategy === 'debate-review') {
     if (needsSupervisor) {
       supervisorId = supervisorId ?? order[0];
-      if (supervisorId === undefined || config.agents[supervisorId] === undefined) {
+      if (supervisorId === undefined || agents[supervisorId] === undefined) {
         throw new TeamError(
           'TEAM_INVALID_CONFIG',
           `${strategy} strategy requires supervisor agent id present in agents`,
@@ -254,14 +248,8 @@ function normalizeConfig(config: TeamConfig): NormalizedTeamConfig {
     throw new TeamError('TEAM_INVALID_CONFIG', 'maxIterations must be an integer 1..100');
   }
 
-  const failurePolicy = config.failurePolicy ?? 'fail-fast';
-  if (
-    failurePolicy !== 'fail-fast' &&
-    failurePolicy !== 'continue' &&
-    failurePolicy !== 'best-effort'
-  ) {
-    throw new TeamError('TEAM_INVALID_CONFIG', 'Invalid failurePolicy');
-  }
+  const rawPolicy = config.failurePolicy ?? 'fail-fast';
+  const failurePolicy = normalizeFailurePolicy(rawPolicy);
 
   const teamId =
     typeof config.name === 'string' && config.name.trim() !== ''
@@ -271,7 +259,7 @@ function normalizeConfig(config: TeamConfig): NormalizedTeamConfig {
   return {
     teamId,
     strategy,
-    agents: config.agents,
+    agents,
     order,
     failurePolicy,
     maxIterations,
@@ -284,24 +272,45 @@ function normalizeConfig(config: TeamConfig): NormalizedTeamConfig {
   };
 }
 
+function normalizeFailurePolicy(
+  value: string,
+): NonNullable<TeamConfig['failurePolicy']> {
+  if (value === 'fail-fast' || value === 'continue' || value === 'best-effort') {
+    return value;
+  }
+  throw new TeamError('TEAM_INVALID_CONFIG', 'Invalid failurePolicy');
+}
+
 function linkSignals(
   internal: AbortSignal,
   external?: AbortSignal,
 ): { readonly signal: AbortSignal; dispose(): void } {
   if (external === undefined) {
-    return { signal: internal, dispose: () => undefined };
+    return {
+      signal: internal,
+      dispose(): void {
+        /* no-op */
+      },
+    };
   }
   const controller = new AbortController();
-  const abort = (): void => controller.abort();
+  const abort = (): void => {
+    controller.abort();
+  };
   if (internal.aborted || external.aborted) {
     controller.abort();
-    return { signal: controller.signal, dispose: () => undefined };
+    return {
+      signal: controller.signal,
+      dispose(): void {
+        /* no-op */
+      },
+    };
   }
   internal.addEventListener('abort', abort);
   external.addEventListener('abort', abort);
   return {
     signal: controller.signal,
-    dispose: () => {
+    dispose(): void {
       internal.removeEventListener('abort', abort);
       external.removeEventListener('abort', abort);
     },

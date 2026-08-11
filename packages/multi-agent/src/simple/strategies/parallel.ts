@@ -18,7 +18,9 @@ export class ParallelStrategy implements OrchestrationStrategy {
 
     if (context.failurePolicy === 'fail-fast') {
       const controller = new AbortController();
-      const onAbort = (): void => controller.abort();
+      const onAbort = (): void => {
+        controller.abort();
+      };
       context.signal?.addEventListener('abort', onAbort, { once: true });
       try {
         const settlements = await Promise.all(

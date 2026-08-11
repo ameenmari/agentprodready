@@ -188,11 +188,18 @@ class SimpleWorkflow implements Workflow {
     }
     if (!decision.approved) {
       const error = `Approval rejected${decision.approvedBy === undefined ? '' : ` by ${decision.approvedBy}`}`;
-      const { pendingApproval: _ignored, ...base } = checkpoint;
       const failed: OrchestrationCheckpoint = {
-        ...base,
+        runId: checkpoint.runId,
+        kind: checkpoint.kind,
+        ...(checkpoint.workflowId === undefined ? {} : { workflowId: checkpoint.workflowId }),
+        ...(checkpoint.teamId === undefined ? {} : { teamId: checkpoint.teamId }),
+        input: checkpoint.input,
+        completedSteps: checkpoint.completedSteps,
+        ...(checkpoint.currentStep === undefined ? {} : { currentStep: checkpoint.currentStep }),
+        stepOutputs: checkpoint.stepOutputs,
         status: 'failed',
         error,
+        createdAt: checkpoint.createdAt,
         updatedAt: new Date().toISOString(),
       };
       await this.#store.save(failed);
@@ -207,11 +214,17 @@ class SimpleWorkflow implements Workflow {
       };
     }
     const stepId = checkpoint.pendingApproval.stepId;
-    const { pendingApproval: _ignoredApproval, ...baseResume } = checkpoint;
     const resumed: OrchestrationCheckpoint = {
-      ...baseResume,
-      status: 'running',
+      runId: checkpoint.runId,
+      kind: checkpoint.kind,
+      ...(checkpoint.workflowId === undefined ? {} : { workflowId: checkpoint.workflowId }),
+      ...(checkpoint.teamId === undefined ? {} : { teamId: checkpoint.teamId }),
+      input: checkpoint.input,
       completedSteps: [...checkpoint.completedSteps, `approval:${stepId}`],
+      ...(checkpoint.currentStep === undefined ? {} : { currentStep: checkpoint.currentStep }),
+      stepOutputs: checkpoint.stepOutputs,
+      status: 'running',
+      createdAt: checkpoint.createdAt,
       updatedAt: new Date().toISOString(),
     };
     await this.#store.save(resumed);
@@ -229,7 +242,8 @@ class SimpleWorkflow implements Workflow {
     const outputs: Record<string, string> = { ...checkpoint.stepOutputs };
 
     try {
-      while (true) {
+      let active = true;
+      while (active) {
         this.#ensureActive(signal);
         const ready = this.#steps.filter(
           (step) =>
@@ -287,7 +301,8 @@ class SimpleWorkflow implements Workflow {
 
         if (executable.length === 0) {
           if (completed.size >= this.#steps.length) {
-            break;
+            active = false;
+            continue;
           }
           // waiting on approval already handled; otherwise blocked
           if (checkpoint.status === 'waiting') {
@@ -302,7 +317,8 @@ class SimpleWorkflow implements Workflow {
                 : { approvalId: checkpoint.pendingApproval.approvalId }),
             };
           }
-          break;
+          active = false;
+          continue;
         }
 
         // Fan-out: execute independent ready steps in parallel
@@ -410,11 +426,12 @@ class SimpleWorkflow implements Workflow {
 }
 
 export function createWorkflow(options: CreateWorkflowOptions): Workflow {
-  if (!Array.isArray(options.steps) || options.steps.length === 0) {
+  const steps: readonly WorkflowStep[] = options.steps;
+  if (steps.length === 0) {
     throw new TeamError('TEAM_INVALID_CONFIG', 'createWorkflow requires at least one step');
   }
   const ids = new Set<string>();
-  for (const step of options.steps) {
+  for (const step of steps) {
     if (typeof step.id !== 'string' || step.id.trim() === '') {
       throw new TeamError('TEAM_INVALID_CONFIG', 'Each workflow step requires an id');
     }
@@ -422,16 +439,13 @@ export function createWorkflow(options: CreateWorkflowOptions): Workflow {
       throw new TeamError('TEAM_INVALID_CONFIG', `Duplicate workflow step id: ${step.id}`);
     }
     ids.add(step.id);
-    if (step.run === undefined) {
-      throw new TeamError('TEAM_INVALID_CONFIG', `Step ${step.id} requires run`);
-    }
     for (const dep of step.dependsOn ?? []) {
-      if (!options.steps.some((candidate) => candidate.id === dep)) {
+      if (!steps.some((candidate) => candidate.id === dep)) {
         throw new TeamError('TEAM_INVALID_CONFIG', `Unknown dependsOn "${dep}" on step ${step.id}`);
       }
     }
   }
-  const roots = options.steps.filter((step) => (step.dependsOn ?? []).length === 0);
+  const roots = steps.filter((step) => (step.dependsOn ?? []).length === 0);
   if (roots.length === 0) {
     throw new TeamError('TEAM_INVALID_CONFIG', 'Workflow must have at least one root step');
   }
@@ -441,7 +455,7 @@ export function createWorkflow(options: CreateWorkflowOptions): Workflow {
       : `workflow:${crypto.randomUUID()}`;
   return new SimpleWorkflow(
     workflowId,
-    options.steps,
+    steps,
     options.checkpointStore ?? new InMemoryCheckpointStore(),
     options.onEvent,
   );
@@ -453,7 +467,10 @@ function resolveStepInput(
   dependsOn: readonly string[] | undefined,
 ): string {
   if (dependsOn === undefined || dependsOn.length === 0) return rootInput;
-  if (dependsOn.length === 1) return outputs[dependsOn[0]!] ?? rootInput;
+  const first = dependsOn[0];
+  if (dependsOn.length === 1 && first !== undefined) {
+    return outputs[first] ?? rootInput;
+  }
   return dependsOn.map((id) => `[${id}] ${outputs[id] ?? ''}`).join('\n');
 }
 
@@ -471,11 +488,5 @@ async function executeRunnable(runnable: WorkflowRunnable, input: string): Promi
 }
 
 function isTeam(value: WorkflowRunnable): value is Team {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'run' in value &&
-    typeof (value as Team).run === 'function' &&
-    'getState' in value
-  );
+  return typeof value === 'object' && 'run' in value && 'getState' in value;
 }

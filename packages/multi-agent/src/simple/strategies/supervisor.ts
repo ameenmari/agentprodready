@@ -155,7 +155,10 @@ async function resolveSupervisorDecision(
     return validateSupervisorDecision(decision, context);
   }
 
-  const supervisorId = context.supervisorId!;
+  const supervisorId = context.supervisorId;
+  if (supervisorId === undefined) {
+    throw new TeamError('TEAM_INVALID_CONFIG', 'supervisor strategy requires a valid supervisor agent id');
+  }
   const prompt = buildSupervisorPrompt(context, agentOutputs, iteration);
   const outcome = await invokeAgent({
     context,
@@ -192,7 +195,7 @@ function buildSupervisorPrompt(
   ].join('\n');
 }
 
-function parseSupervisorDecisionText(text: string): SupervisorDecision {
+function parseSupervisorDecisionText(text: string): unknown {
   const trimmed = text.trim();
   const start = trimmed.indexOf('{');
   const end = trimmed.lastIndexOf('}');
@@ -200,47 +203,54 @@ function parseSupervisorDecisionText(text: string): SupervisorDecision {
     throw new TeamError('TEAM_SUPERVISOR_INVALID', 'Supervisor response was not JSON');
   }
   try {
-    return JSON.parse(trimmed.slice(start, end + 1)) as SupervisorDecision;
+    return JSON.parse(trimmed.slice(start, end + 1)) as unknown;
   } catch (error) {
     throw new TeamError('TEAM_SUPERVISOR_INVALID', 'Supervisor JSON parse failed', error);
   }
 }
 
 function validateSupervisorDecision(
-  decision: SupervisorDecision,
-  context: OrchestrationContext,
+  decision: unknown,
+  context: Pick<OrchestrationContext, 'agents'>,
 ): SupervisorDecision {
-  if (decision === null || typeof decision !== 'object' || !('action' in decision)) {
+  if (typeof decision !== 'object' || decision === null || !('action' in decision)) {
     throw new TeamError('TEAM_SUPERVISOR_INVALID', 'Invalid supervisor decision shape');
   }
-  if (decision.action === 'finish') {
-    if (typeof decision.output !== 'string') {
+  const record = decision as Record<string, unknown>;
+  if (record.action === 'finish') {
+    if (typeof record.output !== 'string') {
       throw new TeamError('TEAM_SUPERVISOR_INVALID', 'finish requires string output');
     }
-    return decision;
+    return { action: 'finish', output: record.output };
   }
-  if (decision.action === 'delegate') {
-    if (typeof decision.agent !== 'string' || typeof decision.task !== 'string') {
+  if (record.action === 'delegate') {
+    if (typeof record.agent !== 'string' || typeof record.task !== 'string') {
       throw new TeamError('TEAM_SUPERVISOR_INVALID', 'delegate requires agent and task');
     }
-    if (context.agents[decision.agent] === undefined) {
-      throw new TeamError('TEAM_SUPERVISOR_INVALID', `Unknown delegate agent: ${decision.agent}`);
+    if (context.agents[record.agent] === undefined) {
+      throw new TeamError('TEAM_SUPERVISOR_INVALID', `Unknown delegate agent: ${record.agent}`);
     }
-    return decision;
+    return { action: 'delegate', agent: record.agent, task: record.task };
   }
-  if (decision.action === 'parallel') {
-    if (!Array.isArray(decision.tasks) || decision.tasks.length === 0) {
+  if (record.action === 'parallel') {
+    if (!Array.isArray(record.tasks) || record.tasks.length === 0) {
       throw new TeamError('TEAM_SUPERVISOR_INVALID', 'parallel requires non-empty tasks');
     }
-    for (const task of decision.tasks) {
-      if (typeof task.agent !== 'string' || typeof task.task !== 'string') {
+    const tasks: Array<{ agent: string; task: string }> = [];
+    for (const item of record.tasks) {
+      if (typeof item !== 'object' || item === null) {
         throw new TeamError('TEAM_SUPERVISOR_INVALID', 'parallel tasks require agent and task');
       }
-      if (context.agents[task.agent] === undefined) {
-        throw new TeamError('TEAM_SUPERVISOR_INVALID', `Unknown parallel agent: ${task.agent}`);
+      const taskRecord = item as Record<string, unknown>;
+      if (typeof taskRecord.agent !== 'string' || typeof taskRecord.task !== 'string') {
+        throw new TeamError('TEAM_SUPERVISOR_INVALID', 'parallel tasks require agent and task');
       }
+      if (context.agents[taskRecord.agent] === undefined) {
+        throw new TeamError('TEAM_SUPERVISOR_INVALID', `Unknown parallel agent: ${taskRecord.agent}`);
+      }
+      tasks.push({ agent: taskRecord.agent, task: taskRecord.task });
     }
-    return decision;
+    return { action: 'parallel', tasks };
   }
   throw new TeamError('TEAM_SUPERVISOR_INVALID', 'Unknown supervisor action');
 }

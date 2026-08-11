@@ -29,7 +29,7 @@ export async function invokeAgent(options: {
   }
 
   const taskId = context.createTaskId(agentId);
-  const at = () => new Date().toISOString();
+  const at = (): string => new Date().toISOString();
 
   context.emit({
     type: 'task.created',

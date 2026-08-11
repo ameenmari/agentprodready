@@ -15,7 +15,7 @@ function member(
   impl: (input: string) => Promise<TeamMemberResult> | TeamMemberResult,
 ): TeamMember {
   return {
-    invoke: async (input: string) => {
+    invoke: async (input: string): Promise<TeamMemberResult> => {
       const result = await impl(input);
       return { text: result.text, executionId: `exec:${name}` };
     },
@@ -142,13 +142,14 @@ describe('createWorkflow', () => {
 
     const saved = await store.load(first.runId);
     expect(saved).toBeTruthy();
+    if (saved === undefined) {
+      throw new Error('expected checkpoint');
+    }
     await store.save({
-      ...saved!,
+      ...saved,
       status: 'running',
       completedSteps: ['a'],
       stepOutputs: { a: 'done-a' },
-      output: undefined,
-      error: undefined,
       currentStep: 'a',
       updatedAt: new Date().toISOString(),
     });
@@ -167,7 +168,7 @@ describe('createWorkflow', () => {
           id: 'refund',
           run: member('refund', async () => ({ text: 'refunded' })),
           approval: {
-            requiredWhen: ({ input }) => input.includes('large'),
+            requiredWhen: ({ input }): boolean => input.includes('large'),
           },
         },
       ],
@@ -175,8 +176,11 @@ describe('createWorkflow', () => {
     const waiting = await workflow.run('large refund');
     expect(waiting.status).toBe('waiting');
     expect(waiting.approvalId).toBeTruthy();
+    if (waiting.approvalId === undefined) {
+      throw new Error('expected approvalId');
+    }
     const done = await workflow.approve(waiting.runId, {
-      approvalId: waiting.approvalId!,
+      approvalId: waiting.approvalId,
       approved: true,
       approvedBy: 'user-1',
     });

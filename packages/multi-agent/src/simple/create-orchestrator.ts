@@ -84,49 +84,46 @@ class SimpleOrchestrator implements Orchestrator {
     if (typeof input !== 'string' || input.trim() === '') {
       throw new TeamError('TEAM_INVALID_CONFIG', 'orchestrator.run requires non-empty input');
     }
-    const kind = detectKind(target);
-    const id =
-      kind === 'workflow'
-        ? // workflow assigns its own run id; we sync after
-          `orch:${crypto.randomUUID()}`
-        : `orch:${crypto.randomUUID()}`;
+    const trimmed = input.trim();
     const startedAt = new Date().toISOString();
+
+    if (isWorkflow(target)) {
+      const result = await target.run(trimmed, options);
+      const record = mapWorkflowResult(result, startedAt);
+      this.#runs.set(result.runId, { record, target, kind: 'workflow' });
+      this.#onEvent?.({
+        type: result.status === 'waiting' ? 'human.approval.requested' : 'orchestration.completed',
+        runId: result.runId,
+        at: new Date().toISOString(),
+      });
+      return record;
+    }
+
+    const id = `orch:${crypto.randomUUID()}`;
     let record: OrchestratorRun = {
       id,
-      type: kind,
+      type: isTeam(target) ? 'team' : 'agent',
       status: 'running',
-      input: input.trim(),
+      input: trimmed,
       startedAt,
     };
-    this.#runs.set(id, { record, target, kind });
+    this.#runs.set(id, { record, target, kind: record.type });
     this.#onEvent?.({ type: 'orchestration.started', runId: id, at: startedAt });
 
     try {
-      if (kind === 'agent') {
-        const result = await (target as TeamMember).invoke(input.trim());
+      if (isTeam(target)) {
+        const result = await target.run(trimmed, options);
+        record = mapTeamResult(id, trimmed, startedAt, result);
+      } else {
+        const result = await target.invoke(trimmed);
         record = {
           ...record,
           status: 'completed',
           output: result.text,
           completedAt: new Date().toISOString(),
         };
-      } else if (kind === 'team') {
-        const result = await (target as Team).run(input.trim(), options);
-        record = mapTeamResult(id, input.trim(), startedAt, result);
-      } else {
-        const result = await (target as Workflow).run(input.trim(), options);
-        record = mapWorkflowResult(result, startedAt);
-        // re-key under workflow run id for approve/resume
-        this.#runs.delete(id);
-        this.#runs.set(result.runId, { record, target, kind });
-        this.#onEvent?.({
-          type: result.status === 'waiting' ? 'human.approval.requested' : 'orchestration.completed',
-          runId: result.runId,
-          at: new Date().toISOString(),
-        });
-        return record;
       }
-      this.#runs.set(id, { record, target, kind });
+      this.#runs.set(id, { record, target, kind: record.type });
       this.#onEvent?.({
         type: 'orchestration.completed',
         runId: id,
@@ -140,7 +137,7 @@ class SimpleOrchestrator implements Orchestrator {
         error,
         completedAt: new Date().toISOString(),
       };
-      this.#runs.set(id, { record, target, kind });
+      this.#runs.set(id, { record, target, kind: record.type });
       this.#onEvent?.({
         type: 'orchestration.failed',
         runId: id,
@@ -183,32 +180,17 @@ export function createOrchestrator(options: CreateOrchestratorOptions = {}): Orc
   return new SimpleOrchestrator(options);
 }
 
-function detectKind(target: OrchestratorTarget): OrchestratorRunType {
-  if (isWorkflow(target)) return 'workflow';
-  if (isTeam(target)) return 'team';
-  if (typeof (target as TeamMember).invoke === 'function') return 'agent';
-  throw new TeamError('TEAM_INVALID_CONFIG', 'orchestrator.run target must be agent, team, or workflow');
+function isWorkflow(value: OrchestratorTarget): value is Workflow {
+  return (
+    'approve' in value &&
+    'resume' in value &&
+    typeof value.approve === 'function' &&
+    typeof value.resume === 'function'
+  );
 }
 
 function isTeam(value: OrchestratorTarget): value is Team {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'run' in value &&
-    typeof (value as Team).run === 'function' &&
-    'getState' in value &&
-    !('approve' in value && 'resume' in value && typeof (value as Workflow).approve === 'function')
-  );
-}
-
-function isWorkflow(value: OrchestratorTarget): value is Workflow {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as Workflow).run === 'function' &&
-    typeof (value as Workflow).approve === 'function' &&
-    typeof (value as Workflow).resume === 'function'
-  );
+  return 'run' in value && 'getState' in value && !isWorkflow(value);
 }
 
 function mapTeamResult(
@@ -217,12 +199,11 @@ function mapTeamResult(
   startedAt: string,
   result: TeamResult,
 ): OrchestratorRun {
-  const status: OrchestratorRunStatus =
-    result.status === 'partial' || result.status === 'idle'
-      ? result.status === 'idle'
-        ? 'pending'
-        : 'completed'
-      : result.status;
+  let status: OrchestratorRunStatus;
+  if (result.status === 'idle') status = 'pending';
+  else if (result.status === 'partial') status = 'completed';
+  else status = result.status;
+
   return {
     id,
     type: 'team',
@@ -251,5 +232,4 @@ function mapWorkflowResult(result: WorkflowResult, startedAt?: string): Orchestr
   };
 }
 
-// re-export helpers used by hosts that build teams/workflows inline
 export { createTeam, createWorkflow };

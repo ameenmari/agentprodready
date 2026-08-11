@@ -6,7 +6,7 @@ function member(
   impl: (input: string) => Promise<TeamMemberResult> | TeamMemberResult,
 ): TeamMember {
   return {
-    invoke: async (input: string) => {
+    invoke: async (input: string): Promise<TeamMemberResult> => {
       const result = await impl(input);
       return { text: result.text, output: result.output, executionId: `exec:${name}` };
     },

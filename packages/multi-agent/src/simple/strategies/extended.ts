@@ -4,6 +4,7 @@ import type {
   OrchestrationContext,
   OrchestrationResult,
   OrchestrationStrategy,
+  SupervisorDecision,
   TeamMemberResult,
 } from '../types.js';
 import { ParallelStrategy } from './parallel.js';
@@ -34,7 +35,7 @@ export class DynamicAssignmentStrategy implements OrchestrationStrategy {
       ...context,
       supervisorDecide:
         context.supervisorDecide ??
-        (async ({ agentOutputs, input }) => {
+        (async ({ agentOutputs, input }): Promise<SupervisorDecision> => {
           const workers = context.order.filter((id) => id !== context.supervisorId);
           const pending = workers.filter((id) => agentOutputs[id] === undefined);
           if (pending.length === 0) {
@@ -47,7 +48,11 @@ export class DynamicAssignmentStrategy implements OrchestrationStrategy {
               tasks: pending.map((agent) => ({ agent, task: input })),
             };
           }
-          return { action: 'delegate', agent: pending[0]!, task: input };
+          const next = pending[0];
+          if (next === undefined) {
+            return { action: 'finish', output: input };
+          }
+          return { action: 'delegate', agent: next, task: input };
         }),
     });
   }

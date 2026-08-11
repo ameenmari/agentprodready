@@ -1,4 +1,3 @@
-import { TeamError } from '../errors.js';
 import type { OrchestrationStrategy, TeamStrategyName } from '../types.js';
 import {
   ConsensusStrategy,
@@ -21,14 +20,7 @@ const registry: Readonly<Record<TeamStrategyName, () => OrchestrationStrategy>> 
 };
 
 export function resolveStrategy(name: TeamStrategyName): OrchestrationStrategy {
-  const factory = registry[name];
-  if (factory === undefined) {
-    throw new TeamError(
-      'TEAM_STRATEGY_UNSUPPORTED',
-      `Strategy "${name}" is not registered`,
-    );
-  }
-  return factory();
+  return registry[name]();
 }
 
 export {
