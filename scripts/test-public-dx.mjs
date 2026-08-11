@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * External clean-install DX gate for @agentprodready/agent-framework simple API.
- * Packs local packages (including unpublished selective bumps), installs outside the
- * workspace, runs hello / stream / tools smoke.
+ * Packs the full @agentprodready dependency closure (including unpublished selective
+ * bumps), installs outside the workspace, runs hello / stream / tools smoke.
  */
 import { spawnSync } from 'node:child_process';
 import {
@@ -15,8 +15,9 @@ import {
   existsSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, dirname, isAbsolute, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { packAgentprodreadyClosure, packPackage } from './lib/pack-workspace-closure.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
@@ -43,36 +44,27 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function packPackage(filter, packDir) {
-  const pack = run(pnpm, ['--filter', filter, 'pack', '--pack-destination', packDir]);
-  const packOut = `${pack.stdout ?? ''}\n${pack.stderr ?? ''}`;
-  const packLine = packOut
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .find((line) => line.endsWith('.tgz'));
-  assert(packLine !== undefined, `Could not determine tarball for ${filter}:\n${packOut}`);
-  const tarballPath = isAbsolute(packLine) ? packLine : join(packDir, packLine);
-  assert(existsSync(tarballPath), `Missing tarball at ${tarballPath}`);
-  return tarballPath;
-}
-
-process.stdout.write('Building @agentprodready/agent-framework and ai-provider...\n');
+process.stdout.write('Building @agentprodready/agent-framework and dependencies...\n');
 run(pnpm, ['--filter', '@agentprodready/agent-framework...', 'build']);
 
 const packDir = join(root, '.npm-pack-dx');
 rmSync(packDir, { recursive: true, force: true });
 mkdirSync(packDir, { recursive: true });
 
-process.stdout.write('Packing @agentprodready/ai-provider...\n');
-const aiProviderTarball = packPackage('@agentprodready/ai-provider', packDir);
-process.stdout.write('Packing @agentprodready/agent-framework...\n');
-const frameworkTarball = packPackage('@agentprodready/agent-framework', packDir);
+process.stdout.write('Packing agent-framework workspace closure...\n');
+const closureTarballs = packAgentprodreadyClosure(
+  run,
+  pnpm,
+  root,
+  '@agentprodready/agent-framework',
+  packDir,
+);
 
 const externalRoot = mkdtempSync(join(tmpdir(), 'agentprodready-dx-'));
 const projectDir = join(externalRoot, 'demo');
 mkdirSync(projectDir, { recursive: true });
 
-for (const tarball of [aiProviderTarball, frameworkTarball]) {
+for (const tarball of closureTarballs) {
   copyFileSync(tarball, join(projectDir, basename(tarball)));
 }
 
@@ -80,12 +72,11 @@ process.stdout.write(`External project: ${projectDir}\n`);
 run(npm, ['init', '-y'], { cwd: projectDir });
 run(npm, ['pkg', 'set', 'type=module'], { cwd: projectDir });
 
-process.stdout.write('Installing packed tarballs (no workspace linking)...\n');
-run(
-  npm,
-  ['install', `./${basename(aiProviderTarball)}`, `./${basename(frameworkTarball)}`],
-  { cwd: projectDir },
+const localInstallArgs = closureTarballs.map((path) => `./${basename(path)}`);
+process.stdout.write(
+  `Installing ${String(localInstallArgs.length)} packed tarballs (no workspace linking)...\n`,
 );
+run(npm, ['install', ...localInstallArgs], { cwd: projectDir });
 
 const pkg = JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf8'));
 assert(
@@ -225,7 +216,7 @@ assert(compatibleModel.auth === 'api-key', 'Expected default auth api-key');
 
 if (process.env.OPENAI_API_KEY) {
   process.stdout.write('OPENAI_API_KEY present — packing/installing OpenAI peer for NL memory smoke...\n');
-  const openaiProviderTarball = packPackage('@agentprodready/ai-provider-openai', packDir);
+  const openaiProviderTarball = packPackage(run, pnpm, '@agentprodready/ai-provider-openai', packDir);
   copyFileSync(openaiProviderTarball, join(projectDir, basename(openaiProviderTarball)));
   run(npm, ['install', `./${basename(openaiProviderTarball)}`], { cwd: projectDir });
 

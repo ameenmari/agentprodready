@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Clean-machine DX gate for create-agentprodready (packed artifacts only).
- * Generates a reference project outside the workspace, installs packed
- * @agentprodready tarballs (no workspace linking), runs npm run dev.
+ * Generates a reference project outside the workspace, installs the full
+ * packed @agentprodready dependency closure (no workspace linking), runs npm run dev.
  */
 import { spawnSync } from 'node:child_process';
 import {
@@ -14,8 +14,9 @@ import {
   rmSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, dirname, isAbsolute, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { packAgentprodreadyClosure, packPackage } from './lib/pack-workspace-closure.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
@@ -42,19 +43,6 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-function packPackage(filter, packDir) {
-  const pack = run(pnpm, ['--filter', filter, 'pack', '--pack-destination', packDir]);
-  const packOut = `${pack.stdout ?? ''}\n${pack.stderr ?? ''}`;
-  const packLine = packOut
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .find((line) => line.endsWith('.tgz'));
-  assert(packLine !== undefined, `Could not determine tarball for ${filter}:\n${packOut}`);
-  const tarballPath = isAbsolute(packLine) ? packLine : join(packDir, packLine);
-  assert(existsSync(tarballPath), `Missing tarball at ${tarballPath}`);
-  return tarballPath;
-}
-
 process.stdout.write('Building agent-framework graph...\n');
 run(pnpm, ['--filter', '@agentprodready/agent-framework...', 'build']);
 
@@ -62,16 +50,21 @@ const packDir = join(root, '.npm-pack-scaffold-dx');
 rmSync(packDir, { recursive: true, force: true });
 mkdirSync(packDir, { recursive: true });
 
-process.stdout.write('Packing create-agentprodready + framework deps...\n');
-const createTarball = packPackage('create-agentprodready', packDir);
-const aiProviderTarball = packPackage('@agentprodready/ai-provider', packDir);
-const frameworkTarball = packPackage('@agentprodready/agent-framework', packDir);
+process.stdout.write('Packing create-agentprodready + agent-framework workspace closure...\n');
+const createTarball = packPackage(run, pnpm, 'create-agentprodready', packDir);
+const closureTarballs = packAgentprodreadyClosure(
+  run,
+  pnpm,
+  root,
+  '@agentprodready/agent-framework',
+  packDir,
+);
 
 const externalRoot = mkdtempSync(join(tmpdir(), 'agentprodready-scaffold-dx-'));
 const workDir = join(externalRoot, 'work');
 mkdirSync(workDir, { recursive: true });
 
-for (const tarball of [createTarball, aiProviderTarball, frameworkTarball]) {
+for (const tarball of [createTarball, ...closureTarballs]) {
   copyFileSync(tarball, join(workDir, basename(tarball)));
 }
 
@@ -107,20 +100,17 @@ assert(
   'Generated project must not use workspace: protocol',
 );
 
-copyFileSync(aiProviderTarball, join(projectDir, basename(aiProviderTarball)));
-copyFileSync(frameworkTarball, join(projectDir, basename(frameworkTarball)));
+for (const tarball of closureTarballs) {
+  copyFileSync(tarball, join(projectDir, basename(tarball)));
+}
 
-process.stdout.write('Installing generated project (packed framework + tsx)...\n');
+const localInstallArgs = closureTarballs.map((path) => `./${basename(path)}`);
+process.stdout.write(
+  `Installing generated project (${String(localInstallArgs.length)} packed tarballs + tsx)...\n`,
+);
 run(
   npm,
-  [
-    'install',
-    `./${basename(aiProviderTarball)}`,
-    `./${basename(frameworkTarball)}`,
-    'tsx@^4.20.0',
-    'typescript@^5.9.2',
-    '@types/node@^22.17.0',
-  ],
+  ['install', ...localInstallArgs, 'tsx@^4.20.0', 'typescript@^5.9.2', '@types/node@^22.17.0'],
   { cwd: projectDir },
 );
 
