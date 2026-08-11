@@ -113,11 +113,14 @@ describe('createAgent tools invoke', () => {
       ],
     });
     try {
-      await expect(agent.invoke('USE_TOOL:needsApproval:{}')).rejects.toMatchObject({
-        code: 'AGENT_TOOL_APPROVAL_REQUIRED',
-        approvalId: expect.stringMatching(/^approval:/),
-        executionId: expect.stringMatching(/^execution:/),
-      });
+      await agent.invoke('USE_TOOL:needsApproval:{}');
+      expect.fail('expected AGENT_TOOL_APPROVAL_REQUIRED');
+    } catch (error) {
+      expect(error).toBeInstanceOf(SimpleAgentError);
+      const err = error as SimpleAgentError;
+      expect(err.code).toBe('AGENT_TOOL_APPROVAL_REQUIRED');
+      expect(err.approvalId).toMatch(/^approval:/);
+      expect(err.executionId).toMatch(/^execution:/);
     } finally {
       await agent.close();
     }

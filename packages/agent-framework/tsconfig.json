@@ -1,1 +1,33 @@
-{"extends":"../../tsconfig.base.json","compilerOptions":{"rootDir":"src","outDir":"dist","tsBuildInfoFile":"dist/.tsbuildinfo","composite":true},"include":["src/**/*.ts"],"exclude":["src/**/*.spec.ts"],"references":[{"path":"../foundation"},{"path":"../plugin-framework"},{"path":"../composition"},{"path":"../runtime"},{"path":"../planning"},{"path":"../workflow"},{"path":"../capability-resolution"},{"path":"../ai-provider"},{"path":"../ai-provider-openai"},{"path":"../ai-provider-anthropic"},{"path":"../tool-framework"},{"path":"../knowledge"},{"path":"../memory"},{"path":"../context-assembly"},{"path":"../prompt-builder"},{"path":"../evaluation"},{"path":"../security"},{"path":"../event-bus"},{"path":"../audit"}]}
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "composite": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    { "path": "../foundation" },
+    { "path": "../plugin-framework" },
+    { "path": "../composition" },
+    { "path": "../runtime" },
+    { "path": "../planning" },
+    { "path": "../workflow" },
+    { "path": "../capability-resolution" },
+    { "path": "../ai-provider" },
+    { "path": "../ai-provider-openai" },
+    { "path": "../ai-provider-anthropic" },
+    { "path": "../ai-provider-gemini" },
+    { "path": "../tool-framework" },
+    { "path": "../knowledge" },
+    { "path": "../memory" },
+    { "path": "../context-assembly" },
+    { "path": "../prompt-builder" },
+    { "path": "../evaluation" },
+    { "path": "../security" },
+    { "path": "../event-bus" },
+    { "path": "../audit" }
+  ]
+}

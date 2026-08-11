@@ -82,7 +82,7 @@ export class FileHitlStore implements EmbeddedHitlStore {
     try {
       const raw = await readFile(path.join(this.directory, `exec__${safe(executionId)}.json`), 'utf8');
       const { approvalId } = JSON.parse(raw) as { approvalId: string };
-      return this.get(approvalId);
+      return await this.get(approvalId);
     } catch {
       return undefined;
     }

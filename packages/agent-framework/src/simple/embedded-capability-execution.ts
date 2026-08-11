@@ -298,7 +298,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
         query: objective,
         decisionId: memoryDecisionId(context.executionId),
       });
-      memoryBlock = formatMemoryForPrompt(retrieval, this.memorySession.durable === true);
+      memoryBlock = formatMemoryForPrompt(retrieval, this.memorySession.durable);
       memory = Object.freeze({
         enabled: true as const,
         retrievedItemCount: retrieval.memories.length,
