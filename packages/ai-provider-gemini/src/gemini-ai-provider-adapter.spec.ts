@@ -113,7 +113,7 @@ describe('GeminiProviderAdapter', () => {
       readonly candidates: readonly [
         {
           readonly finishReason?: 'STOP';
-          readonly content: { readonly parts: readonly [{ readonly text: string }] };
+          readonly content: { readonly parts: readonly { readonly text?: string }[] };
         },
       ];
       readonly usageMetadata?: {
