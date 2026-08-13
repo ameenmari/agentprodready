@@ -44,6 +44,7 @@ export interface EmbeddedToolLoopLimits {
 
 export interface EmbeddedToolLoopDeps {
   readonly ai: AiProviderFramework;
+  readonly maxOutputTokens: number;
   readonly tools: ToolRegistry;
   readonly coordinator: ToolInvocationCoordinator;
   readonly validator: ToolValidator;
@@ -143,7 +144,7 @@ export async function runEmbeddedToolLoop(
   while (turn < deps.limits.maxTurns) {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const result = await deps.ai.execute(
-      makeAiRequest(binding, context, signal, false, conversation, toolsOffered),
+      makeAiRequest(binding, context, signal, false, conversation, toolsOffered, deps.maxOutputTokens),
     );
     if (result.finishReason !== 'tool-calls' || result.toolCalls.length === 0) {
       return Object.freeze({
@@ -386,7 +387,7 @@ async function resumeApprovedToolLoop(
   while (turn < deps.limits.maxTurns) {
     if (signal.aborted) throw new TypeError('Capability execution aborted');
     const result = await deps.ai.execute(
-      makeAiRequest(binding, context, signal, false, conversation, toolsOffered),
+      makeAiRequest(binding, context, signal, false, conversation, toolsOffered, deps.maxOutputTokens),
     );
     if (result.finishReason !== 'tool-calls' || result.toolCalls.length === 0) {
       return Object.freeze({
@@ -664,13 +665,14 @@ function makeAiRequest(
   streaming: boolean,
   messages: readonly AiMessage[],
   tools: readonly AiToolDefinition[] | undefined,
+  maxOutputTokens: number,
 ): AiExecutionRequest {
   return Object.freeze({
     requestId: `${context.executionId}:${binding.bindingId}:${crypto.randomUUID().slice(0, 8)}`,
     binding,
     context,
     messages: Object.freeze([...messages]),
-    generation: Object.freeze({ maximumOutputTokens: 512 }),
+    generation: Object.freeze({ maximumOutputTokens: maxOutputTokens }),
     ...(streaming ? { streaming: Object.freeze({ enabled: true, includeUsage: true }) } : {}),
     ...(tools === undefined || tools.length === 0 ? {} : { tools: Object.freeze([...tools]) }),
     metadata: Object.freeze({ source: 'simple-facade' }),

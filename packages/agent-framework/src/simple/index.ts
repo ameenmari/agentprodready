@@ -9,6 +9,12 @@ export {
   reference,
   type OpenAiCompatibleOptions,
 } from './models.js';
+export {
+  DEFAULT_SIMPLE_MAX_OUTPUT_TOKENS,
+  SIMPLE_MAX_OUTPUT_TOKENS_CEILING,
+  resolveSimpleMaxOutputTokens,
+  validateMaxOutputTokens,
+} from './output-tokens.js';
 export { tool, type SimpleTool, type SimpleToolDefinition } from './tool.js';
 export type {
   Agent,
@@ -22,6 +28,7 @@ export type {
   AgentUsage,
   CreateAgentOptions,
   OpenAiCompatibleAuth,
+  ProviderModelOptions,
   StreamOptions,
 } from './types.js';
 export type { SimpleMemory } from './memory.js';

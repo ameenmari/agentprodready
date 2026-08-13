@@ -1,6 +1,6 @@
 {
   "name": "@agentprodready/agent-framework",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "TypeScript agent orchestration entrance (createAgent, createTeam) — durable memory/HITL/stream replay when you need them. Production-oriented architecture, young ecosystem — not a graph DSL.",
   "type": "module",
   "main": "dist/index.js",

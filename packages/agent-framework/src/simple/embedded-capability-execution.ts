@@ -50,6 +50,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
     private readonly instructions: string,
     private readonly tenantId: string,
     private readonly workspaceId: string,
+    private readonly maxOutputTokens: number,
     toolLoopDeps?: EmbeddedToolLoopDeps,
     memorySession?: EmbeddedMemorySession,
   ) {
@@ -335,7 +336,7 @@ export class EmbeddedCapabilityExecution implements CapabilityInvocationPort {
       binding,
       context,
       messages,
-      generation: Object.freeze({ maximumOutputTokens: 512 }),
+      generation: Object.freeze({ maximumOutputTokens: this.maxOutputTokens }),
       ...(streaming ? { streaming: Object.freeze({ enabled: true, includeUsage: true }) } : {}),
       metadata: Object.freeze({ source: 'simple-facade', promptPackageId: promptPackage.id }),
       constraints: Object.freeze({}),

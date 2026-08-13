@@ -1,38 +1,85 @@
 import { SimpleAgentError } from './errors.js';
-import type { AgentModel, OpenAiCompatibleAuth } from './types.js';
+import { validateMaxOutputTokens } from './output-tokens.js';
+import type { AgentModel, OpenAiCompatibleAuth, ProviderModelOptions } from './types.js';
 
-export function reference(): AgentModel {
-  return Object.freeze({ provider: 'reference', modelId: 'reference' });
+function optionalMaxOutputTokens(value: unknown): { readonly maxOutputTokens?: number } {
+  if (value === undefined) return {};
+  return { maxOutputTokens: validateMaxOutputTokens(value) };
 }
 
-export function openai(modelId: string): AgentModel {
-  if (typeof modelId !== 'string' || modelId.trim() === '') {
+function modelIdFromOptions(options: ProviderModelOptions): string {
+  if (typeof options.model !== 'string' || options.model.trim() === '') {
     throw new SimpleAgentError(
       'AGENT_INVALID_MODEL',
-      'openai(modelId) requires a non-empty model id string, for example openai("gpt-4o-mini").',
+      'Provider model options require a non-empty model string.',
     );
   }
-  return Object.freeze({ provider: 'openai', modelId: modelId.trim() });
+  return options.model.trim();
 }
 
-export function anthropic(modelId: string): AgentModel {
-  if (typeof modelId !== 'string' || modelId.trim() === '') {
-    throw new SimpleAgentError(
-      'AGENT_INVALID_MODEL',
-      'anthropic(modelId) requires a non-empty model id string, for example anthropic("claude-sonnet-4-20250514").',
-    );
-  }
-  return Object.freeze({ provider: 'anthropic', modelId: modelId.trim() });
+export function reference(maxOutputTokens?: number): AgentModel {
+  return Object.freeze({
+    provider: 'reference',
+    modelId: 'reference',
+    ...optionalMaxOutputTokens(maxOutputTokens),
+  });
 }
 
-export function gemini(modelId: string): AgentModel {
-  if (typeof modelId !== 'string' || modelId.trim() === '') {
-    throw new SimpleAgentError(
-      'AGENT_INVALID_MODEL',
-      'gemini(modelId) requires a non-empty model id string, for example gemini("gemini-2.0-flash").',
-    );
+export function openai(modelOrOptions: string | ProviderModelOptions): AgentModel {
+  if (typeof modelOrOptions === 'string') {
+    const modelId = modelOrOptions.trim();
+    if (modelId === '') {
+      throw new SimpleAgentError(
+        'AGENT_INVALID_MODEL',
+        'openai(modelId) requires a non-empty model id string, for example openai("gpt-4o-mini").',
+      );
+    }
+    return Object.freeze({ provider: 'openai', modelId });
   }
-  return Object.freeze({ provider: 'gemini', modelId: modelId.trim() });
+  const modelId = modelIdFromOptions(modelOrOptions);
+  return Object.freeze({
+    provider: 'openai',
+    modelId,
+    ...optionalMaxOutputTokens(modelOrOptions.maxOutputTokens),
+  });
+}
+
+export function anthropic(modelOrOptions: string | ProviderModelOptions): AgentModel {
+  if (typeof modelOrOptions === 'string') {
+    const modelId = modelOrOptions.trim();
+    if (modelId === '') {
+      throw new SimpleAgentError(
+        'AGENT_INVALID_MODEL',
+        'anthropic(modelId) requires a non-empty model id string, for example anthropic("claude-sonnet-4-20250514").',
+      );
+    }
+    return Object.freeze({ provider: 'anthropic', modelId });
+  }
+  const modelId = modelIdFromOptions(modelOrOptions);
+  return Object.freeze({
+    provider: 'anthropic',
+    modelId,
+    ...optionalMaxOutputTokens(modelOrOptions.maxOutputTokens),
+  });
+}
+
+export function gemini(modelOrOptions: string | ProviderModelOptions): AgentModel {
+  if (typeof modelOrOptions === 'string') {
+    const modelId = modelOrOptions.trim();
+    if (modelId === '') {
+      throw new SimpleAgentError(
+        'AGENT_INVALID_MODEL',
+        'gemini(modelId) requires a non-empty model id string, for example gemini("gemini-2.0-flash").',
+      );
+    }
+    return Object.freeze({ provider: 'gemini', modelId });
+  }
+  const modelId = modelIdFromOptions(modelOrOptions);
+  return Object.freeze({
+    provider: 'gemini',
+    modelId,
+    ...optionalMaxOutputTokens(modelOrOptions.maxOutputTokens),
+  });
 }
 
 export interface OpenAiCompatibleOptions {
@@ -42,6 +89,7 @@ export interface OpenAiCompatibleOptions {
   readonly auth?: OpenAiCompatibleAuth;
   readonly organization?: string;
   readonly project?: string;
+  readonly maxOutputTokens?: number;
 }
 
 export function openaiCompatible(raw: OpenAiCompatibleOptions): AgentModel {
@@ -94,6 +142,7 @@ export function openaiCompatible(raw: OpenAiCompatibleOptions): AgentModel {
     ...(apiKey === undefined ? {} : { apiKey }),
     ...(organization === undefined ? {} : { organization }),
     ...(project === undefined ? {} : { project }),
+    ...optionalMaxOutputTokens(record.maxOutputTokens),
   });
 }
 
@@ -104,7 +153,15 @@ export function isAgentModel(value: unknown): value is AgentModel {
     modelId?: unknown;
     baseUrl?: unknown;
     auth?: unknown;
+    maxOutputTokens?: unknown;
   };
+  if (record.maxOutputTokens !== undefined) {
+    try {
+      validateMaxOutputTokens(record.maxOutputTokens);
+    } catch {
+      return false;
+    }
+  }
   if (record.provider === 'reference') return record.modelId === 'reference';
   if (record.provider === 'openai' || record.provider === 'anthropic' || record.provider === 'gemini') {
     return typeof record.modelId === 'string' && record.modelId.trim() !== '';

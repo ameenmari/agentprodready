@@ -5,12 +5,21 @@ import type { SimpleTool } from './tool.js';
 
 export type OpenAiCompatibleAuth = 'api-key' | 'none';
 
+export interface ProviderModelOptions {
+  readonly model: string;
+  readonly maxOutputTokens?: number;
+}
+
+type ModelWithOptionalOutputTokens = {
+  readonly maxOutputTokens?: number;
+};
+
 export type AgentModel =
-  | { readonly provider: 'reference'; readonly modelId: 'reference' }
-  | { readonly provider: 'openai'; readonly modelId: string }
-  | { readonly provider: 'anthropic'; readonly modelId: string }
-  | { readonly provider: 'gemini'; readonly modelId: string }
-  | {
+  | ({ readonly provider: 'reference'; readonly modelId: 'reference' } & ModelWithOptionalOutputTokens)
+  | ({ readonly provider: 'openai'; readonly modelId: string } & ModelWithOptionalOutputTokens)
+  | ({ readonly provider: 'anthropic'; readonly modelId: string } & ModelWithOptionalOutputTokens)
+  | ({ readonly provider: 'gemini'; readonly modelId: string } & ModelWithOptionalOutputTokens)
+  | ({
       readonly provider: 'openai-compatible';
       readonly modelId: string;
       readonly baseUrl: string;
@@ -18,7 +27,7 @@ export type AgentModel =
       readonly apiKey?: string;
       readonly organization?: string;
       readonly project?: string;
-    };
+    } & ModelWithOptionalOutputTokens);
 
 export interface CreateAgentOptions {
   readonly model: AgentModel;

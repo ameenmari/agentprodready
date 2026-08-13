@@ -92,6 +92,7 @@ import { SimpleAgentError } from './errors.js';
 import type { SimpleTool } from './tool.js';
 import type { AgentModel } from './types.js';
 import type { NormalizedCreateAgentOptions } from './validate-options.js';
+import { resolveSimpleMaxOutputTokens } from './output-tokens.js';
 
 export interface EmbeddedPlatform {
   readonly agentId: string;
@@ -209,10 +210,13 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
 
   const loopState: { resumeApproval?: EmbeddedApprovalResume | undefined } = {};
 
+  const maxOutputTokens = resolveSimpleMaxOutputTokens(options.model);
+
   const toolLoopDeps: EmbeddedToolLoopDeps | undefined =
     options.tools.length > 0
       ? {
           ai: aiFramework,
+          maxOutputTokens,
           tools: toolRegistry,
           coordinator: toolCoordinator,
           validator: new ToolValidator(),
@@ -260,6 +264,7 @@ export async function buildEmbeddedPlatform(options: NormalizedCreateAgentOption
     options.instructions,
     EMBEDDED_TENANT,
     EMBEDDED_WORKSPACE,
+    maxOutputTokens,
     toolLoopDeps,
     memorySession,
   );
